@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Financial Postings &amp; Documents — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#6B4C8F;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --gui-bg:#ECECEC;
+    --gui-panel:#F5F4F0;
+    --gui-border:#8E8E8E;
+    --gui-titlebar1:#4A85B8;
+    --gui-titlebar2:#2E5C87;
+    --gui-tab-inactive:#C6C2B6;
+    --gui-tab-active:#F5F4F0;
+    --gui-field-border:#7F9DB9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241A2E 55%, #402C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4); border-radius:0 10px 10px 0; padding:14px 20px; max-width:680px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(107,76,143,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-area{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(107,76,143,0.1); color:var(--t4-dark); margin-left:8px; vertical-align:middle; }
+
+  .task-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t4-dark); font-weight:700; margin-bottom:10px; }
+
+  .spro-box{ background:white; border:1px solid var(--border); border-radius:10px; padding:16px 20px 16px 18px; margin-bottom:26px; box-shadow:0 2px 8px rgba(10,15,28,0.04); }
+  .spro-tree{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; line-height:1.5; }
+  .spro-tree, .spro-tree ul{ list-style:none; margin:0; padding-left:0; }
+  .spro-tree ul{ padding-left:20px; border-left:1.5px dashed #C9BEDD; margin-left:7px; }
+  .spro-tree li{ position:relative; padding:4px 0 4px 18px; color:var(--body); }
+  .spro-tree li::before{ content:''; position:absolute; left:0; top:14px; width:14px; height:1.5px; background:#C9BEDD; }
+  .spro-tree .folder .icon{ margin-right:5px; opacity:.8; }
+  .spro-tree .target{ background:var(--t4-pale); border:1.5px solid var(--t4-dark); border-radius:6px; padding:4px 12px; display:inline-flex; align-items:center; gap:7px; color:var(--t4-dark); font-weight:700; }
+
+  .gui-screen{ background:var(--gui-bg); border:1px solid #6E6E6E; border-radius:2px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.14); font-family:Arial,Tahoma,sans-serif; color:#000; }
+  .gui-titlebar{ background:linear-gradient(180deg,var(--gui-titlebar1),var(--gui-titlebar2)); color:white; padding:4px 10px; font-size:11px; display:flex; justify-content:space-between; align-items:center; }
+  .gui-titlebar .gt-icons{ opacity:.85; letter-spacing:3px; font-size:9px; }
+  .gui-menubar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:3px 10px; font-size:10.5px; color:#222; display:flex; gap:14px; }
+  .gui-toolbar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:5px 8px; display:flex; align-items:center; gap:5px; }
+  .gui-toolbar .t-btn{ width:22px; height:19px; background:#DEDEDE; border:1px solid #9A9A9A; border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:10.5px; color:#333; }
+  .gui-crumbbar{ background:#DEDEDE; border-bottom:1px solid #B8B8B8; padding:5px 10px; font-size:11.5px; font-weight:700; color:#111; }
+  .gui-tabs{ display:flex; background:var(--gui-bg); padding:5px 8px 0; gap:2px; }
+  .gui-tab{ padding:5px 14px; font-size:10.5px; background:var(--gui-tab-inactive); border:1px solid var(--gui-border); border-bottom:none; color:#333; }
+  .gui-tab.active{ background:var(--gui-tab-active); font-weight:700; color:#000; }
+  .gui-body{ background:var(--gui-panel); padding:18px; border-top:1px solid #fff; }
+  .gui-field-row{ display:grid; grid-template-columns:150px 1fr; gap:8px; align-items:center; margin-bottom:9px; font-size:11.5px; }
+  .gui-field-row label{ text-align:right; color:#000; }
+  .gui-field-row .val{ background:white; border:1px solid var(--gui-field-border); padding:3px 7px; font-family:'Courier New',monospace; font-size:11.5px; max-width:280px; }
+  .gui-field-row .val.grey{ background:#E8E8E8; border-color:#B8B8B8; color:#555; }
+  .gui-field-row .val.check{ font-family:Arial,sans-serif; }
+  .gui-table{ width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+  .gui-table th{ background:var(--gui-tab-inactive); border:1px solid var(--gui-border); padding:5px 9px; text-align:left; font-weight:700; color:#111; }
+  .gui-table td{ border:1px solid #C6C2B6; padding:5px 9px; background:white; font-family:'Courier New',monospace; }
+  .gui-statusbar{ background:var(--gui-bg); border-top:1px solid #B8B8B8; padding:4px 10px; font-size:10px; color:#555; display:flex; justify-content:space-between; }
+  .gui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E; margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Document Types</a>
+  <a href="#s2">Number Ranges</a>
+  <a href="#s3">Field Status</a>
+  <a href="#s4">Posting Keys</a>
+  <a href="#s5">Fiscal Year Variant</a>
+  <a href="#s6">Assign FY Variant</a>
+  <a href="#s7">Open/Close Periods</a>
+  <a href="#s8">Verification Workflow</a>
+  <a href="#s9">Reversal Reasons</a>
+  <a href="#s10">Clearing Tolerances</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">General Ledger</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+      <span class="pill pill-secondary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Asset Accounting</span>
+      <span class="pill pill-secondary">Controlling</span>
+    </div>
+    <h1>Financial <span class="accent">Postings</span> &amp; Documents</h1>
+    <h2>Asientos y Documentos Financieros — Configuración en SPRO</h2>
+    <p class="desc">Los diez ajustes de customizing que dejan lista la base para que Kevin y José trabajen en Fiori: tipos de documento, rangos de numeración, claves de contabilización, año fiscal, períodos, workflow de verificación y tolerancias de compensación.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Implementación Bike Company · Financial Accounting</div>
+        <div class="p-note">Cada pantalla de este recorrido arma la base que Kevin y José usan del otro lado, en Fiori (T3)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Document Types</span>
+          <span class="sec-title-es">Definiendo los tipos de documento</span>
+          <span class="sec-area">Document Types</span>
+        </div>
+        <div class="sec-desc">De acá sale la "SA" que Kevin vio sola en la cabecera de cada asiento (T3 §1-2).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cada vez que alguien contabiliza, el sistema propone un <strong>Journal Entry Type</strong> sin que nadie lo tipee. Ese tipo no existe solo — hay que definirlo acá, con su propio rango de numeración asignado.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Types
+                      <ul>
+                        <li><span class="target">⚙️ Define Document Types for Entry View</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Document Types": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Document Types": Overview — T-Code: OBA7</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Type</th><th>Description</th><th>Number Range</th><th>Reverse Doc. Type</th></tr></thead>
+          <tbody>
+            <tr><td>SA</td><td>G/L Account Document</td><td>01</td><td>SA</td></tr>
+            <tr><td>KR</td><td>Vendor Invoice</td><td>19</td><td>KA</td></tr>
+            <tr><td>DR</td><td>Customer Invoice</td><td>18</td><td>DA</td></tr>
+            <tr><td>DG</td><td>Customer Credit Memo</td><td>18</td><td>DA</td></tr>
+            <tr><td>ZP</td><td>Payment Posting</td><td>15</td><td>ZP</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 El "Number Range" de esta tabla es solo el nombre del intervalo — sus límites reales se configuran aparte (§02).</div>
+      </div>
+      <div class="gui-statusbar"><span>5 entries</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Number Range Intervals</span>
+          <span class="sec-title-es">Definiendo los intervalos de numeración</span>
+          <span class="sec-area">Document Number Ranges</span>
+        </div>
+        <div class="sec-desc">El intervalo real detrás del "01" que quedó asignado a SA en §01 — específico por Company Code.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El intervalo de números es lo que hace que el documento <strong>1400000512</strong> caiga donde cae. Se define por sociedad, y en el cierre de año se decide si continúa o reinicia.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Number Ranges
+                      <ul>
+                        <li><span class="target">⚙️ Define Document Number Ranges — T-Code: FBN1</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Number Range Intervals: Accounting Document</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Interval</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-crumbbar">Company Code: DE01 — T-Code: FBN1</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>No.</th><th>Year</th><th>From Number</th><th>To Number</th><th>Current Number</th><th>Ext</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>2026</td><td>1400000000</td><td>1499999999</td><td>1400000512</td><td>☐</td></tr>
+            <tr><td>19</td><td>2026</td><td>1900000000</td><td>1999999999</td><td>1900004421</td><td>☐</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 "Ext" sin marcar = numeración interna. Marcado, el usuario ingresaría el número él mismo (numeración externa).</div>
+      </div>
+      <div class="gui-statusbar"><span>DE01</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining Field Status Groups</span>
+          <span class="sec-title-es">Manteniendo los grupos de status de campo</span>
+          <span class="sec-area">Fields</span>
+        </div>
+        <div class="sec-desc">Qué campos son obligatorios, opcionales u ocultos al cargar una línea de G/L.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cuando Kevin cargó la línea de <strong>Software Costs</strong>, el sistema le exigió el texto pero no le pidió Cost Center. Eso lo decide el <strong>Field Status Group</strong> asignado a la cuenta.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Fields
+                      <ul>
+                        <li><span class="target">⚙️ Define Field Status Variants — T-Code: OBC4</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Field Status Group": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-crumbbar">Field Status Group G001 — T-Code: OBC4</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Field Status Group</label><div class="val">G001</div></div>
+        <div class="gui-field-row"><label>&nbsp;</label><div class="val grey">General (with text, allocation)</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Field</th><th>Suppress</th><th>Required</th><th>Optional</th><th>Display</th></tr></thead>
+          <tbody>
+            <tr><td>Text</td><td>☐</td><td>☐</td><td>☑</td><td>☐</td></tr>
+            <tr><td>Assignment</td><td>☐</td><td>☐</td><td>☑</td><td>☐</td></tr>
+            <tr><td>Cost Center</td><td>☑</td><td>☐</td><td>☐</td><td>☐</td></tr>
+            <tr><td>Segment</td><td>☐</td><td>☐</td><td>☐</td><td>☑</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Segment queda en "Display": lo deriva el sistema desde el Profit Center, nunca se tipea a mano.</div>
+      </div>
+      <div class="gui-statusbar"><span>G001</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining Posting Keys</span>
+          <span class="sec-title-es">Manteniendo las claves de contabilización</span>
+          <span class="sec-area">Document</span>
+        </div>
+        <div class="sec-desc">De acá salen el 40 y el 50 que Kevin vio al habilitar la columna Posting Key (T3 §04).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La posting key define, entre otras cosas, el <strong>tipo de cuenta</strong> permitido y si la línea es de <strong>débito o crédito</strong> — es lo que el sistema usa para traducir la partida automáticamente.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Definition of Document Types for Entry View
+                      <ul>
+                        <li><span class="target">⚙️ Maintain Posting Keys — T-Code: OB41</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Maintain Posting Keys</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Posting Key</span><span>Edit</span><span>Goto</span><span>System</span><span>Help</span></div>
+      <div class="gui-crumbbar">T-Code: OB41</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Posting Key</label><div class="val">40</div></div>
+        <div class="gui-field-row"><label>Debit/Credit Indicator</label><div class="val grey check">Debit</div></div>
+        <div class="gui-field-row"><label>Account Type</label><div class="val grey check">G — G/L account</div></div>
+        <div class="gui-field-row"><label>Sales-related</label><div class="val grey check">☐</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Key</th><th>Debit/Credit</th><th>Account Type</th></tr></thead>
+          <tbody>
+            <tr><td>40</td><td>Debit</td><td>G — G/L account</td></tr>
+            <tr><td>50</td><td>Credit</td><td>G — G/L account</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>2 entries</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining the Fiscal Year Variant</span>
+          <span class="sec-title-es">Manteniendo la variante de año fiscal</span>
+          <span class="sec-area">Fiscal Year</span>
+        </div>
+        <div class="sec-desc">De acá sale que junio sea período 6 o período 3, según cómo se configure (T1 §08).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La <strong>Fiscal Year Variant</strong> define en qué mes arranca el año fiscal y cuántos períodos tiene. Bike GmbH usa año calendario; una variante no-calendario arrancaría en un mes distinto de enero.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Fiscal Year and Posting Periods
+                      <ul>
+                        <li><span class="target">⚙️ Maintain Fiscal Year Variant — T-Code: OB29</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Fiscal Year Variants": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>System</span><span>Help</span></div>
+      <div class="gui-crumbbar">Fiscal Year Variant: K4 — T-Code: OB29</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>FV</label><div class="val">K4</div></div>
+        <div class="gui-field-row"><label>&nbsp;</label><div class="val grey">Calendar year, 12 periods + 4 special</div></div>
+        <div class="gui-field-row"><label>Calendar Year</label><div class="val grey check">☑</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Period</th><th>Month</th><th>Year Shift</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>January</td><td>0</td></tr>
+            <tr><td>2</td><td>February</td><td>0</td></tr>
+            <tr><td>6</td><td>June</td><td>0</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Con "Calendar Year" marcado, no hace falta configurar el mapeo mes-por-mes — el sistema ya sabe que enero es 1.</div>
+      </div>
+      <div class="gui-statusbar"><span>K4</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning the Fiscal Year Variant to the Company Code</span>
+          <span class="sec-title-es">Asignando la variante de año fiscal a la sociedad</span>
+          <span class="sec-area">Fiscal Year</span>
+        </div>
+        <div class="sec-desc">La variante definida en §05 no aplica sola — hay que enlazarla a DE01.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Una <strong>Fiscal Year Variant</strong> puede reutilizarse en varias sociedades. Este paso es el que conecta <strong>K4</strong> específicamente con <strong>DE01</strong>.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Fiscal Year and Posting Periods
+                      <ul>
+                        <li><span class="target">⚙️ Assign Company Code to a Fiscal Year Variant — T-Code: OB37</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Company Code": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>System</span><span>Help</span></div>
+      <div class="gui-crumbbar">T-Code: OB37</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>CoCd</th><th>Company Name</th><th>Fiscal Year Variant</th></tr></thead>
+          <tbody>
+            <tr><td>DE01</td><td>Bike GmbH</td><td>K4</td></tr>
+            <tr><td>US01</td><td>Bike Inc</td><td>K4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>2 entries</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Opening and Closing Posting Periods</span>
+          <span class="sec-title-es">Abriendo y cerrando períodos de contabilización</span>
+          <span class="sec-area">Document</span>
+        </div>
+        <div class="sec-desc">Cada tipo de cuenta puede tener su propia ventana de períodos abiertos (T2 §04).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El responsable de contabilidad decide qué períodos están <strong>abiertos</strong> para cada tipo de cuenta. El campo "Account Type" (+, D, K, A, S) es lo que permite que Accounts Payable cierre en un momento distinto que Asset Accounting.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Posting Periods
+                      <ul>
+                        <li><span class="target">⚙️ Open and Close Posting Periods — T-Code: OB52</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Posting Periods: Specify Time Periods"</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>System</span><span>Help</span></div>
+      <div class="gui-crumbbar">Variant: DE01 — T-Code: OB52</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Var.</th><th>Acct Type</th><th>From Per.1</th><th>Year</th><th>To Period</th></tr></thead>
+          <tbody>
+            <tr><td>DE01</td><td>+ (all)</td><td>3</td><td>2026</td><td>3</td></tr>
+            <tr><td>DE01</td><td>D (Customers)</td><td>3</td><td>2026</td><td>3</td></tr>
+            <tr><td>DE01</td><td>K (Vendors)</td><td>2</td><td>2026</td><td>3</td></tr>
+            <tr><td>DE01</td><td>A (Assets)</td><td>3</td><td>2026</td><td>3</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 "K" (Vendors) quedó abierto desde el período 2 — Accounts Payable necesitaba terminar de cargar facturas atrasadas.</div>
+      </div>
+      <div class="gui-statusbar"><span>DE01</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Workflow for Verification of Journal Entries</span>
+          <span class="sec-title-es">Definiendo el workflow de verificación de asientos</span>
+          <span class="sec-area">Document Header</span>
+        </div>
+        <div class="sec-desc">El interruptor que hace que un asiento pase por aprobación antes de contabilizarse (T3 §07).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Sin este paso, ningún journal entry pasaría por <strong>Submitted – Parked</strong>. Acá se activa el workflow y se define desde qué condición empieza a exigir aprobación.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Header
+                      <ul>
+                        <li><span class="target">⚙️ Define Workflow for Verification of Journal Entries</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Verification of Journal Entries": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>System</span><span>Help</span></div>
+      <div class="gui-crumbbar">Company Code: DE01</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Company Code</label><div class="val">DE01</div></div>
+        <div class="gui-field-row"><label>Verification Active</label><div class="val grey check">☑</div></div>
+        <div class="gui-field-row"><label>Trigger Condition</label><div class="val">Amount &gt; 10.000 EUR</div></div>
+        <div class="gui-field-row"><label>Workflow Template</label><div class="val">WS00800012</div></div>
+        <div class="gui-hint">💡 Solo los asientos que cumplen la condición entran al workflow — el resto se contabiliza directo.</div>
+      </div>
+      <div class="gui-statusbar"><span>DE01</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Reasons for Reversal</span>
+          <span class="sec-title-es">Definiendo los motivos de reversión</span>
+          <span class="sec-area">Document Header</span>
+        </div>
+        <div class="sec-desc">De acá sale la lista que Kevin vio al revertir el documento con el importe mal (T3 §09).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cada motivo de reversión define además si dispara <strong>Normal Reversal</strong> o <strong>Negative Posting</strong> — y esto último no siempre es legal, según el país.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Header
+                      <ul>
+                        <li><span class="target">⚙️ Define Reasons for Reversal</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Reasons for Reversal": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>System</span><span>Help</span></div>
+      <div class="gui-crumbbar">Reasons for Reversal</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Reason</th><th>Text</th><th>Negative Posting</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>Reversal in current period</td><td>☐</td></tr>
+            <tr><td>02</td><td>Reversal in closed period</td><td>☑</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 El motivo 02 dispara Negative Posting — hay países que no permiten esta opción, hay que validarlo con el auditor local.</div>
+      </div>
+      <div class="gui-statusbar"><span>2 entries</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Tolerance Groups for G/L Accounts</span>
+          <span class="sec-title-es">Definiendo los grupos de tolerancia para cuentas de mayor</span>
+          <span class="sec-area">Ledgers</span>
+        </div>
+        <div class="sec-desc">El límite que le permitió a José contabilizar la diferencia al compensar (T3 §10).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cuando el total de las partidas seleccionadas no coincide exactamente con el documento de compensación, el sistema permite contabilizar la <strong>diferencia</strong> — pero solo dentro de los límites definidos acá.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Ledger
+                      <ul>
+                        <li><span class="target">⚙️ Define Tolerance Groups for G/L Accounts</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Tolerance Groups": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>System</span><span>Help</span></div>
+      <div class="gui-crumbbar">Company Code: DE01 — Group: (blank = default)</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Company Code</label><div class="val">DE01</div></div>
+        <div class="gui-field-row"><label>Tolerance Group</label><div class="val grey">(blank — default)</div></div>
+        <div class="gui-field-row"><label>Permitted Payment Diff. Gain</label><div class="val">10,00 EUR / 2 %</div></div>
+        <div class="gui-field-row"><label>Permitted Payment Diff. Loss</label><div class="val">10,00 EUR / 2 %</div></div>
+        <div class="gui-hint">💡 Si la diferencia entra dentro de estos límites, José puede compensar sin que el sistema lo bloquee.</div>
+      </div>
+      <div class="gui-statusbar"><span>DE01</span><span>INS</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Financial Postings &amp; Documents · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

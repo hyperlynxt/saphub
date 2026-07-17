@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Receivables Management — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* SAP Fiori — colores reales, uso EXCLUSIVO dentro de mockups de pantalla */
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-blue-dark:#0040A0;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t3);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  /* protagonista block (reemplaza el hlbox generico en T3/T4) */
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  /* BREADCRUMB (Como llegaste) */
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  /* FIORI SCREEN MOCKUP */
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-appbar .tag{ background:#FFF3CD; color:#8A6A1E; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-body{ padding:22px 20px; }
+  .fiori-tabs{ display:flex; gap:22px; border-bottom:1px solid #EAEAEA; margin-bottom:18px; flex-wrap:wrap; }
+  .fiori-tab{ padding:7px 2px; font-size:0.8rem; color:var(--sap-muted); border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px 22px; margin-bottom:6px; }
+  .fiori-field label{ display:block; font-size:0.7rem; color:var(--sap-muted); margin-bottom:4px; }
+  .fiori-field .val{ font-size:0.83rem; color:var(--sap-text); padding:7px 10px; background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; }
+  .fiori-field .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-table td.num{ text-align:right; font-family:'JetBrains Mono',monospace; }
+  .fiori-table tr.total td{ font-weight:700; border-top:1.5px solid var(--sap-border); border-bottom:none; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .fiori-btn.text{ border:none; color:var(--sap-blue); background:none; padding:7px 4px; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.open{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-status.critical{ background:#FDEAEA; color:#C0392B; }
+
+  /* APP TILES (Fiori Launchpad — seccion 1) */
+  .tile-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .app-tile{ background:white; border:1px solid var(--sap-border); border-radius:8px; padding:16px 14px; position:relative; min-height:96px; display:flex; flex-direction:column; justify-content:space-between; }
+  .app-tile .icon{ font-size:22px; }
+  .app-tile .name{ font-size:0.78rem; font-weight:600; color:var(--sap-text); margin-top:8px; line-height:1.32; }
+  .app-tile .badge{ position:absolute; top:10px; right:10px; background:var(--sap-blue); color:white; font-size:0.63rem; font-weight:700; padding:2px 7px; border-radius:20px; }
+
+  /* PROCESS FLOW MINI (secciones 3, 9) */
+  .pflow{ display:flex; align-items:center; gap:8px; margin-bottom:18px; }
+  .pflow-node{ display:flex; flex-direction:column; align-items:center; gap:4px; font-size:0.7rem; color:var(--sap-muted); white-space:nowrap; }
+  .pflow-circle{ width:34px; height:34px; border-radius:50%; border:2px solid #B8C4D6; display:flex; align-items:center; justify-content:center; font-size:14px; background:white; }
+  .pflow-circle.done{ border-color:#1D7A3E; color:#1D7A3E; background:#E4F5E9; }
+  .pflow-circle.pending{ border-color:#C0392B; color:#C0392B; background:#FDEAEA; }
+  .pflow-line{ flex:1; height:2px; background:#D9D9D9; min-width:20px; }
+  .pflow-cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:6px; }
+  .pflow-card{ border:1px solid var(--sap-border); border-radius:6px; padding:10px 12px; font-size:0.76rem; }
+  .pflow-card .pc-title{ font-weight:700; color:var(--sap-text); margin-bottom:4px; }
+  .pflow-card .pc-status{ font-size:0.68rem; font-weight:700; }
+  .pflow-card .pc-status.ok{ color:#1D7A3E; }
+  .pflow-card .pc-status.pending{ color:#C0392B; }
+  .pflow-card .pc-line{ color:var(--sap-muted); font-size:0.7rem; margin-top:2px; }
+
+  /* NOTA INFORMATIVA (sin Debe/Haber) */
+  .info-note{ background:#EEF4FA; border:1px solid #D3E3F0; border-radius:8px; padding:12px 16px; margin-top:16px; font-size:0.82rem; color:var(--sap-text); line-height:1.6; }
+  .info-note b{ color:var(--t3-dark); }
+
+  /* DEBE/HABER */
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Fiori Launchpad</a>
+  <a href="#s2">Create Billing Doc</a>
+  <a href="#s3">Post Billing Doc</a>
+  <a href="#s4">Invoice w/o Order</a>
+  <a href="#s5">Customer Line Items</a>
+  <a href="#s6">Incoming Payment</a>
+  <a href="#s7">Dunning Proposal</a>
+  <a href="#s8">Account Statement</a>
+  <a href="#s9">Document Flow</a>
+  <a href="#s10">AR Reconciliation</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Sales &amp; Distribution</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Order to Cash</span>
+    </div>
+    <h1><span class="accent">Receivables</span> Management</h1>
+    <h2>Gestión de Cuentas por Cobrar — Vivida por Linda</h2>
+    <p class="desc">Cómo se vive Receivables Management desde Fiori, día a día: facturar, cobrar, reclamar y conciliar — pantallas reales, un caso a la vez, con el primer pedido de Velotics como hilo conductor.</p>
+    <div class="protagonist">
+      <div class="avatar">L</div>
+      <div>
+        <div class="p-name">Linda</div>
+        <div class="p-role">Accounts Receivable · Bike GmbH (DE01)</div>
+        <div class="p-note">Guía única de este recorrido — Receivables Management es su dominio exclusivo dentro de Bike Company.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — Fiori Launchpad -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Linda's Fiori Launchpad</span>
+          <span class="sec-title-es">El punto de partida de cada día</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">Las apps que cubren sus seis frentes de trabajo, todas a un clic.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Todas las mañanas, Linda arranca en el <strong>Fiori Launchpad</strong>. Ahí tiene agrupadas las apps que cubren sus seis frentes de trabajo: facturación, cobro, dunning, correspondencia, analítica y gestión de cuentas.
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Fiori Launchpad</div>
+      <div class="fiori-appbar">
+        <div><h6>Buenos días, Linda</h6><span class="sub">lunes 13.03.2023 · Accounts Receivable · Bike GmbH (DE01)</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="tile-grid">
+          <div class="app-tile"><span class="badge">8</span><span class="icon">🧾</span><span class="name">Create Billing Documents</span></div>
+          <div class="app-tile"><span class="icon">📄</span><span class="name">Create Outgoing Invoices</span></div>
+          <div class="app-tile"><span class="icon">📋</span><span class="name">Manage Customer Line Items</span></div>
+          <div class="app-tile"><span class="icon">💳</span><span class="name">Manage Incoming Payments</span></div>
+          <div class="app-tile"><span class="badge">3</span><span class="icon">🔔</span><span class="name">Dunning</span></div>
+          <div class="app-tile"><span class="icon">✉️</span><span class="name">Customer Correspondence</span></div>
+          <div class="app-tile"><span class="icon">📊</span><span class="name">Customer Analytics</span></div>
+          <div class="app-tile"><span class="icon">🔍</span><span class="name">Reconcile Sub-Ledger to GL</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — Create Billing Document -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating a Billing Document from a Sales Order</span>
+          <span class="sec-title-es">Facturando el primer pedido de Velotics</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">La entrega ya salió — ahora toca convertirla en factura.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      <strong>Velotics</strong> hizo su primer pedido: la <strong>Standard Order 31</strong> ya se despachó y está lista para facturar. Linda entra a la lista de documentos pendientes de facturación y selecciona el que corresponde.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Create Billing Documents</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Create Billing Documents</div>
+      <div class="fiori-appbar">
+        <div><h6>Billing Due List Items (1)</h6><span class="sub">Billing Date hasta 13.03.2023</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th></th><th>SD Document</th><th>SD Document Category</th><th>Sold-to Party</th><th>Billing Date</th><th>Net Value</th></tr></thead>
+          <tbody>
+            <tr><td>☑</td><td>80000019</td><td>Delivery</td><td>Velotics (10100001)</td><td>13.03.2023</td><td class="num">500,00 EUR</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Billing Settings</button>
+          <button class="fiori-btn primary">Create Billing Documents</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — Post Billing Document -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Billing Document</span>
+          <span class="sec-title-es">Contabilizando la factura</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">Recién con este clic nace el Journal Entry en Accounts Receivable.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El sistema generó el documento de facturación <strong>90000008</strong>, pero todavía no impactó contablemente. Linda revisa el Process Flow y contabiliza — recién ahí nace el <strong>Journal Entry</strong>.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Create Billing Documents</div><span class="sep">›</span>
+      <div class="crumb current">Invoice 90000008</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Invoice 90000008</div>
+      <div class="fiori-appbar">
+        <div><h6>Standard Order 31 · Sold-to Party: Velotics</h6><span class="sub">Net Value 500,00 EUR · Billed On 13.03.2023</span></div>
+        <span class="tag">⏳ No Journal Entry</span>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab">General Information</div>
+          <div class="fiori-tab">Items</div>
+          <div class="fiori-tab active">Process Flow</div>
+          <div class="fiori-tab">Accounting Data</div>
+        </div>
+        <div class="pflow">
+          <div class="pflow-node"><div class="pflow-circle done">✓</div>Order Processing</div>
+          <div class="pflow-line"></div>
+          <div class="pflow-node"><div class="pflow-circle done">✓</div>Delivery Processing</div>
+          <div class="pflow-line"></div>
+          <div class="pflow-node"><div class="pflow-circle pending">!</div>Invoicing</div>
+        </div>
+        <div class="pflow-cards">
+          <div class="pflow-card"><div class="pc-title">Standard Order 31</div><div class="pc-status ok">✓ Completed</div><div class="pc-line">Amount: 500,00 EUR</div></div>
+          <div class="pflow-card"><div class="pc-title">Outbound Delivery 80000019</div><div class="pc-status ok">✓ Shipped</div><div class="pc-line">Shipped On: 13.03.2023</div></div>
+          <div class="pflow-card"><div class="pc-title">Invoice 90000008</div><div class="pc-status pending">✗ No Journal Entry</div><div class="pc-line">Net Value: 500,00 EUR</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Preview</button>
+          <button class="fiori-btn">Cancel Billing Document</button>
+          <button class="fiori-btn primary">Post Billing Document</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Accounts Receivable (Velotics) → Debe:</b> 550,00 EUR — aumenta lo que el cliente debe. <b>Revenue → Haber:</b> 500,00 EUR — el ingreso neto por la venta. <b>Output Tax → Haber:</b> 50,00 EUR — IVA débito a pagar al fisco.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — Invoice without Sales Order -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating an Outgoing Invoice Without a Sales Order</span>
+          <span class="sec-title-es">Facturando sin pedido de venta</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">Un cargo puntual que nunca pasó por Sales &amp; Distribution.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      No todas las facturas nacen de un pedido de venta. Velotics pidió un <strong>servicio de instalación adicional</strong> — Linda lo factura directo, sin pasar por Sales &amp; Distribution.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Create Outgoing Invoices</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Create Outgoing Invoices</div>
+      <div class="fiori-appbar">
+        <div><h6>Nueva factura manual</h6><span class="sub">Sin referencia a Sales Order</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Customer</label><div class="val filled">Velotics (10100001)</div></div>
+          <div class="fiori-field"><label>Company Code</label><div class="val filled">DE01</div></div>
+          <div class="fiori-field"><label>Invoice Date</label><div class="val filled">14.03.2023</div></div>
+          <div class="fiori-field"><label>Currency</label><div class="val filled">EUR</div></div>
+          <div class="fiori-field"><label>G/L Account</label><div class="val filled">80000000 Service Revenue</div></div>
+          <div class="fiori-field"><label>Amount</label><div class="val filled">120,00</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Simulate</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Accounts Receivable (Velotics) → Debe:</b> 132,00 EUR. <b>Revenue (Service) → Haber:</b> 120,00 EUR. <b>Output Tax → Haber:</b> 12,00 EUR.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — Customer Line Items -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking Customer Line Items</span>
+          <span class="sec-title-es">Qué le debe Velotics hasta ahora</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">Partidas abiertas y compensadas, todas juntas.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de seguir facturando, Linda quiere ver de un vistazo qué le debe <strong>Velotics</strong>: qué está abierto y qué ya se cobró.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Manage Customer Line Items</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Customer Line Items</div>
+      <div class="fiori-appbar">
+        <div><h6>Velotics (10100001)</h6><span class="sub">Company Code DE01 · todas las partidas</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Documento</th><th>Fecha</th><th>Importe</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>90000002</td><td>20.02.2023</td><td class="num">340,00 EUR</td><td><span class="fiori-status ok">✓ Compensado</span></td></tr>
+            <tr><td>90000005</td><td>01.03.2023</td><td class="num">1.200,00 EUR</td><td><span class="fiori-status open">⏳ Abierto</span></td></tr>
+            <tr><td>90000008</td><td>13.03.2023</td><td class="num">550,00 EUR</td><td><span class="fiori-status open">⏳ Abierto</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Export</button>
+          <button class="fiori-btn primary">Clear Manually</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — Incoming Payment -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Processing an Incoming Payment</span>
+          <span class="sec-title-es">Procesando un pago con diferencia</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">El pago no coincide exactamente con la factura — pero está dentro de tolerancia.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Llegó el pago de <strong>Velotics</strong> por la factura 90000005 — pero no coincide exactamente con el importe facturado. Linda lo aplica contra la partida abierta correspondiente.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Manage Incoming Payments</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Incoming Payments</div>
+      <div class="fiori-appbar">
+        <div><h6>Velotics · Referencia bancaria BT-88213</h6><span class="sub">Value Date 15.03.2023</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Payment Amount</label><div class="val filled">1.150,00 EUR</div></div>
+          <div class="fiori-field"><label>Bank Account</label><div class="val filled">Main Bank Account</div></div>
+          <div class="fiori-field"><label>Value Date</label><div class="val filled">15.03.2023</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>Factura</th><th>Importe facturado</th><th>Pago aplicado</th><th>Diferencia</th></tr></thead>
+          <tbody>
+            <tr><td>90000005</td><td class="num">1.200,00 EUR</td><td class="num">1.150,00 EUR</td><td class="num">50,00 EUR</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Simulate</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Main Bank Account → Debe:</b> 1.150,00 EUR — ingresa dinero real. <b>Payment Difference (dentro de tolerancia) → Debe:</b> 50,00 EUR — se ajusta solo. <b>Accounts Receivable (Velotics) → Haber:</b> 1.200,00 EUR — la factura queda completamente compensada.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — Dunning Proposal -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Dunning Proposal</span>
+          <span class="sec-title-es">Revisando la propuesta de dunning</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">No todos los clientes vencidos entran en el mismo nivel.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Una vez por semana corre la <strong>propuesta de dunning</strong>. Linda la revisa antes de que salgan las cartas — cada cliente vencido aparece en el nivel que le corresponde.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Dunning</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Dunning Proposal</div>
+      <div class="fiori-appbar">
+        <div><h6>Run Date: 20.03.2023</h6><span class="sub">Company Code DE01</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Cliente</th><th>Nivel</th><th>Importe Vencido</th><th>Días Vencidos</th></tr></thead>
+          <tbody>
+            <tr><td>North Wheels Co.</td><td>Nivel 1</td><td class="num">340,00 EUR</td><td><span class="fiori-status open">12</span></td></tr>
+            <tr><td>Metro Bike Supply</td><td>Nivel 3</td><td class="num">4.630,00 EUR</td><td><span class="fiori-status critical">68</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Remove Selected</button>
+          <button class="fiori-btn primary">Release Dunning Notices</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-note"><b>Velotics no aparece en esta lista</b> — sus facturas están al día, todavía dentro del plazo pactado. El dunning no genera ningún asiento contable: es pura comunicación.</div>
+  </section>
+
+  <!-- SECCIÓN 8 — Account Statement -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Sending an Account Statement</span>
+          <span class="sec-title-es">Enviando un extracto de cuenta</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">Comunicación oficial, directo desde Fiori.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      <strong>Velotics</strong> pidió un extracto de cuenta para validar que sus registros coinciden con los de Bike Company. Linda lo genera y lo envía sin salir de Fiori.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Customer Correspondence</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Customer Correspondence</div>
+      <div class="fiori-appbar">
+        <div><h6>Velotics (10100001)</h6><span class="sub">Company Code DE01</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Correspondence Type</label><div class="val filled">Account Statement</div></div>
+          <div class="fiori-field"><label>Period</label><div class="val filled">01.03.2023 – 31.03.2023</div></div>
+          <div class="fiori-field"><label>Output</label><div class="val filled">E-mail</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Preview</button>
+          <button class="fiori-btn primary">Send</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — Document Flow -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking the Document Flow</span>
+          <span class="sec-title-es">El recorrido completo del pedido de Velotics</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">De la cotización a los asientos contables, todo linkeado.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de dar por cerrado el caso, Linda quiere ver el recorrido completo: desde la <strong>Quotation</strong> hasta los <strong>Journal Entries</strong> que generó cada paso.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Display Document Flow</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Display Document Flow</div>
+      <div class="fiori-appbar">
+        <div><h6>Sales Document: 31</h6><span class="sub">Velotics · Company Code DE01</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab active">Operational Document Flow</div>
+          <div class="fiori-tab">G/L Document Flow</div>
+        </div>
+        <div class="pflow">
+          <div class="pflow-node"><div class="pflow-circle done">✓</div>Quotation 20000004</div>
+          <div class="pflow-line"></div>
+          <div class="pflow-node"><div class="pflow-circle done">✓</div>Sales Order 31</div>
+          <div class="pflow-line"></div>
+          <div class="pflow-node"><div class="pflow-circle done">✓</div>Delivery 80000019</div>
+          <div class="pflow-line"></div>
+          <div class="pflow-node"><div class="pflow-circle done">✓</div>Invoice 90000008</div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>Journal Entry</th><th>Tipo</th><th>Importe</th></tr></thead>
+          <tbody>
+            <tr><td>4900000024</td><td>Goods Issue / Delivery</td><td class="num">—</td></tr>
+            <tr><td>7000000005</td><td>Billing (SA)</td><td class="num">550,00 EUR</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="info-note">Cada eslabón del <b>Document Flow</b> es un documento distinto, pero todos están linkeados — Linda puede navegar de cualquiera al resto en un clic.</div>
+  </section>
+
+  <!-- SECCIÓN 10 — AR Reconciliation -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reconciling AR Against the General Ledger</span>
+          <span class="sec-title-es">Conciliando AR contra el Libro Mayor</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">El chequeo diario que no espera al cierre del mes.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Todas las mañanas, antes de tocar nada nuevo, Linda corre la <strong>conciliación de AR</strong> contra el Libro Mayor. No espera al cierre — si algo no coincide, prefiere enterarse hoy.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Reconcile Sub-Ledger to GL</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Reconcile Sub-Ledger to GL</div>
+      <div class="fiori-appbar">
+        <div><h6>Accounts Receivable — Company Code DE01</h6><span class="sub">Cuenta de enlace: Trade Receivables EUR · corte de hoy</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Cliente</th><th>Saldo Sub-Libro AR</th><th>Saldo Cuenta de Enlace GL</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Velotics</td><td class="num">682,00 EUR</td><td class="num">682,00 EUR</td><td><span class="fiori-status ok">✓ Coincide</span></td></tr>
+            <tr><td>North Wheels Co.</td><td class="num">7.200,00 EUR</td><td class="num">7.200,00 EUR</td><td><span class="fiori-status ok">✓ Coincide</span></td></tr>
+            <tr><td>Metro Bike Supply</td><td class="num">4.980,00 EUR</td><td class="num">4.630,00 EUR</td><td><span class="fiori-status open">⚠ Diferencia</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Export</button>
+          <button class="fiori-btn primary">Investigar Diferencia</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Receivables Management · Biblioteca de Guías SAP · Fuente: documento del curso + flujo real de Fiori</footer>
+
+</body>
+</html>

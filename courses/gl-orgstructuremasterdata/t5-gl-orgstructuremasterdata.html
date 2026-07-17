@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · G/L Account Master Data — Holístico/Ecosistema | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t5:#E0A56F;
+    --t5-dark:#A85F2B;
+    --t5-pale:rgba(224,165,111,0.14);
+    --t5-pale-border:rgba(224,165,111,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t5); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t5); border-bottom-color:var(--t5); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1D14 55%, #4A2E14 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t5); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,165,111,0.14); border-left:4px solid var(--t5); border-radius:0 8px 8px 0; padding:13px 18px; max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t5); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:52px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:18px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t5-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(168,95,43,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .tag-row{ display:flex; align-items:center; gap:8px; margin-top:4px; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .orbit-tag{ display:inline-flex; align-items:center; gap:5px; font-size:9.5px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(168,95,43,0.1); color:var(--t5-dark); vertical-align:middle; }
+  .kind-tag{ display:inline-flex; align-items:center; font-size:9px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; color:white; vertical-align:middle; }
+  .kind-tag.kind-nest{ background:#5A6B8C; }
+  .kind-tag.flow{ background:var(--cat-sales); }
+
+  .theory-box{ background:var(--t5-pale); border-left:4px solid var(--t5-dark); border-radius:0 10px 10px 0; padding:15px 22px; margin-bottom:22px; font-size:0.93rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t5-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:30px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:600px; }
+
+  /* MAMUSHKA - capas anidadas */
+  .nest-stage{ display:flex; justify-content:center; padding:6px 0; }
+  .nest{ border:2px dashed; border-radius:26px; padding:36px 32px 26px; position:relative; display:inline-flex; flex-direction:column; align-items:center; }
+  .nest-label{ position:absolute; top:-11px; left:24px; background:white; padding:0 10px; font-size:10.5px; font-weight:700; letter-spacing:.3px; }
+  .nest-core{ border-radius:14px; padding:18px 30px; color:white; font-family:'Syne',sans-serif; font-weight:800; text-align:center; font-size:1rem; }
+  .nest-core .sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:0.72rem; opacity:.85; margin-top:5px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">GL Master Data</a>
+  <a href="#s2">Reconciliation Flow</a>
+  <a href="#s3">Enterprise Structure</a>
+  <a href="#s4">Cost Element Flow</a>
+  <a href="#s5">Segment &amp; PC</a>
+  <a href="#s6">Audit Flow</a>
+  <a href="#s7">Three Views</a>
+  <a href="#s8">Functional Area Flow</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">General Ledger</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Enterprise Structure</span>
+      <span class="pill pill-secondary">Chart of Accounts</span>
+    </div>
+    <h1>Organizational Structure &amp; <span class="accent">G/L Master Data</span></h1>
+    <h2>Estructura Organizativa y Datos Maestros de Cuentas de Mayor — Ecosistema</h2>
+    <p class="desc">Dónde vive cada pieza del mantenimiento de Cuentas de Mayor dentro de capas más grandes, y qué entra y sale hacia actividades puntuales de otros módulos — no el panorama completo de siempre, sino la ubicación exacta.</p>
+    <div class="hlbox">Resumen Visual — <b>G/L Account Master Data</b>, Tipo 5 (Holístico). 8 secciones — 4 de posicionamiento (geometrías variadas), 4 de flujo de entrada/salida con módulos puntuales.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — mamushka -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where the G/L Account Master Record Lives</span>
+          <span class="sec-title-es">Dónde vive el maestro de la Cuenta de Mayor</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No es un módulo aparte — es una capa, adentro de otra, adentro de otra.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El maestro de la Cuenta de Mayor no compite con Financial Accounting ni con Controlling — <strong>vive adentro</strong> de FI, que a su vez es una pieza de S/4HANA Finance. No es un módulo propio: es el dato base que ambos comparten (T1 §1).
+    </div>
+    <div class="visual-wrap">
+      <div class="nest-stage">
+        <div class="nest" style="border-color:#94A3B8;">
+          <span class="nest-label" style="color:#64748B;">SAP S/4HANA — Digital Core</span>
+          <div class="nest" style="border-color:#B08A6F;">
+            <span class="nest-label" style="color:#8A6A4E;">S/4HANA Finance</span>
+            <div class="nest" style="border-color:#C2843F;">
+              <span class="nest-label" style="color:#A85F2B;">Financial Accounting (FI)</span>
+              <div class="nest-core" style="background:var(--t5-dark);">
+                G/L Account Master Data
+                <div class="sub">Chart of Accounts, Company Code &amp; Controlling Area views</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — flujo -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds the Reconciliation Account, Where It Goes</span>
+          <span class="sec-title-es">Qué alimenta la Cuenta de Enlace, hacia dónde sale</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Procurement</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Una actividad puntual de Procurement, no todo el módulo de Compras.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La verificación de factura en Procurement no elige la cuenta a mano — llega directo a la <strong>Reconciliation Account</strong> 21100000 (T1 §6, T4 §8), y desde ahí queda reflejada en el Libro Mayor sin pasos manuales.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="240" y1="65" x2="330" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a2)"/>
+        <line x1="570" y1="65" x2="660" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a2)"/>
+        <rect x="20" y="35" width="220" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Invoice Verification</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">MM — Procurement</text>
+
+        <rect x="330" y="35" width="240" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Reconciliation Account 21100000</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">G/L Account Master Data</text>
+
+        <rect x="660" y="35" width="220" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">General Ledger</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">saldo consolidado</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra desde Procurement</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale hacia el Libro Mayor</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — fundacion + pilares -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where the Enterprise Structure Sits</span>
+          <span class="sec-title-es">Dónde se ubica la Estructura Empresarial</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Fundación Cross-Módulo</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No es propiedad del mantenimiento de cuentas — es la base que varios usan por igual.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El Chart of Accounts, la Company Code y el Controlling Area no son propiedad exclusiva del mantenimiento de Cuentas de Mayor — son la <strong>fundación compartida</strong> (T1 §1) sobre la que también se apoyan Controlling y el reporting externo.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
+        <rect x="90" y="50" width="230" height="115" rx="8" fill="#1A4B8C"/>
+        <text x="205" y="100" text-anchor="middle" fill="white" class="box-label">G/L Account Master Data</text>
+        <text x="205" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">se apoya en Chart of Accounts + Company Code</text>
+
+        <rect x="335" y="50" width="230" height="115" rx="8" fill="#1A6B99"/>
+        <text x="450" y="100" text-anchor="middle" fill="white" class="box-label">Controlling</text>
+        <text x="450" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">se apoya en Controlling Area</text>
+
+        <rect x="580" y="50" width="230" height="115" rx="8" fill="#C9932E"/>
+        <text x="695" y="100" text-anchor="middle" fill="white" class="box-label">External Reporting</text>
+        <text x="695" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">se apoya en Company Code</text>
+
+        <rect x="30" y="165" width="840" height="60" rx="8" fill="#A85F2B"/>
+        <text x="450" y="190" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Enterprise Structure</text>
+        <text x="450" y="208" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Chart of Accounts · Company Code · Controlling Area — la base que todos comparten</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — flujo -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds the Cost Element Category, What It Feeds</span>
+          <span class="sec-title-es">Qué alimenta a la Categoría de Elemento de Costo, qué alimenta ella</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Controlling</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Una dependencia en los dos sentidos, no una configuración aislada.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La Cost Element Category no aparece de la nada — depende de que el <strong>Cost Center</strong> ya exista en Controlling (T2 §6). Una vez asignada, cada posteo con esa cuenta termina alimentando los reportes de ese mismo Cost Center.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="240" y1="65" x2="330" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a4)"/>
+        <line x1="570" y1="65" x2="660" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a4)"/>
+        <rect x="20" y="35" width="220" height="60" rx="10" fill="#1A6B99"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Cost Center Accounting</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">CO — Controlling</text>
+
+        <rect x="330" y="35" width="240" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Cost Element Category</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">G/L Account — vista Controlling Area</text>
+
+        <rect x="660" y="35" width="220" height="60" rx="10" fill="#1A6B99"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">Cost Center Reports</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">CO — Controlling</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra desde Controlling</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">vuelve a alimentar Controlling</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — bifurcacion -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Segment and Profit Center Sit</span>
+          <span class="sec-title-es">Dónde se ubican el Segmento y el Profit Center</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Controlling</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Dos caminos paralelos, no uno adentro del otro.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Acá S/4HANA Finance se abre en <strong>dos caminos paralelos</strong>: Financial Accounting, del lado legal y externo, y Controlling, del lado de gestión interna. El Segmento nace del primero; el Profit Center, del segundo (T1 §9, T2 §6).
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="65" x2="450" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="630" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="270" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="90" x2="630" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="175" x2="270" y2="205" stroke="#A85F2B" stroke-width="2.5"/>
+        <line x1="630" y1="175" x2="630" y2="205" stroke="#1A6B99" stroke-width="2.5"/>
+
+        <rect x="350" y="10" width="200" height="55" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="42" text-anchor="middle" fill="white" class="box-label">S/4HANA Finance</text>
+
+        <rect x="140" y="115" width="260" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="270" y="141" text-anchor="middle" fill="white" class="box-label">Financial Accounting</text>
+        <text x="270" y="158" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">legal · hacia afuera</text>
+
+        <rect x="500" y="115" width="260" height="60" rx="10" fill="#1A6B99"/>
+        <text x="630" y="141" text-anchor="middle" fill="white" class="box-label">Controlling (CO)</text>
+        <text x="630" y="158" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">gestión · hacia adentro</text>
+
+        <rect x="140" y="205" width="260" height="60" rx="10" fill="#A85F2B"/>
+        <text x="270" y="231" text-anchor="middle" fill="white" class="box-label">Segment</text>
+        <text x="270" y="248" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">reporting externo · IFRS 8</text>
+
+        <rect x="500" y="205" width="260" height="60" rx="10" fill="#1A6B99"/>
+        <text x="630" y="231" text-anchor="middle" fill="white" class="box-label">Profit Center</text>
+        <text x="630" y="248" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">reporting interno de gestión</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — flujo -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds the G/L Account Changes Audit Trail</span>
+          <span class="sec-title-es">Qué alimenta el registro de auditoría de Cambios en Cuentas de Mayor</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Compliance &amp; Tecnología</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un mecanismo técnico silencioso, no algo que el usuario activa a mano.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cada cambio que Kevin hace en Manage G/L Account Master Data (T3 §6, T3 §7) no se guarda solo — el sistema genera automáticamente un <strong>Change Document</strong> a nivel técnico. La app <strong>G/L Account Changes</strong> (T1 §7) es la que expone esos documentos para auditoría.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="240" y1="65" x2="330" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6)"/>
+        <line x1="570" y1="65" x2="660" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6)"/>
+        <rect x="20" y="35" width="220" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">User Edits</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Individual / Mass Processing</text>
+
+        <rect x="330" y="35" width="240" height="60" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Change Documents</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">capa técnica · System/Basis</text>
+
+        <rect x="660" y="35" width="220" height="60" rx="10" fill="#C9932E"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">Compliance Review</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">vía G/L Account Changes</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra desde cualquier edición</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale hacia auditoría</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — stack de capas -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Each View of a G/L Account Sits</span>
+          <span class="sec-title-es">Dónde se ubica cada vista de una Cuenta de Mayor</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Niveles apilados, cada uno más específico que el anterior — no contención, no ramas paralelas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Las tres vistas de una Cuenta de Mayor no están una adentro de la otra ni una al lado de la otra — son <strong>niveles apilados</strong>, cada uno más específico que el anterior (T1 §2, T1 §3, T1 §4). No todas las cuentas llegan al tercer nivel.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="80" x2="450" y2="103" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a7)"/>
+        <line x1="450" y1="180" x2="450" y2="203" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a7)"/>
+
+        <rect x="60" y="15" width="780" height="65" rx="10" fill="#1A4B8C"/>
+        <text x="450" y="42" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Chart of Accounts View</text>
+        <text x="450" y="60" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">universal — vale para todas las Company Codes</text>
+
+        <rect x="60" y="103" width="780" height="65" rx="10" fill="#1A6B99"/>
+        <text x="450" y="130" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Company Code View</text>
+        <text x="450" y="148" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">específica de cada sociedad (DE01, US01...)</text>
+
+        <rect x="60" y="203" width="780" height="65" rx="10" fill="#A85F2B"/>
+        <text x="450" y="230" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Controlling Area View</text>
+        <text x="450" y="248" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">condicional — solo cuentas Primary/Secondary Costs</text>
+
+        <text x="450" y="298" text-anchor="middle" fill="#64748B" font-size="10.5">cada nivel agrega especificidad — ninguno reemplaza al anterior</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — flujo -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds Functional Area, Where It Goes</span>
+          <span class="sec-title-es">Qué alimenta al Área Funcional, hacia dónde sale</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Reporting</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un campo que nace en el maestro y termina en un reporte externo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El Área Funcional no se tipea a mano — se determina sola desde el maestro de la cuenta o el Cost Center (T2 §5). De ahí sale directo a alimentar el estado de resultados por función (T1 §10), un reporte que mira hacia afuera de la empresa.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="240" y1="65" x2="330" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+        <line x1="570" y1="65" x2="660" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+        <rect x="20" y="35" width="220" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Cost Center / G/L Account</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">maestro de origen</text>
+
+        <rect x="330" y="35" width="240" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Functional Area Determination</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">automático, en la línea del asiento</text>
+
+        <rect x="660" y="35" width="220" height="60" rx="10" fill="#C9932E"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">Cost of Sales Accounting P&amp;L</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">reporting externo</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra desde el maestro</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale hacia el estado de resultados</text>
+      </svg>
+    </div>
+  </section>
+
+</main>
+
+<footer>T5 · Holístico/Ecosistema — G/L Account Master Data · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

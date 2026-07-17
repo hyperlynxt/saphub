@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · Parallel Accounting &amp; Document Splitting — Holístico/Ecosistema | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t5:#E0A56F;
+    --t5-dark:#A85F2B;
+    --t5-pale:rgba(224,165,111,0.14);
+    --t5-pale-border:rgba(224,165,111,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t5); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t5); border-bottom-color:var(--t5); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1D14 55%, #4A2E14 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t5); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,165,111,0.14); border-left:4px solid var(--t5); border-radius:0 8px 8px 0; padding:13px 18px; max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t5); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:52px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:18px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t5-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(168,95,43,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .tag-row{ display:flex; align-items:center; gap:8px; margin-top:4px; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .orbit-tag{ display:inline-flex; align-items:center; gap:5px; font-size:9.5px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(168,95,43,0.1); color:var(--t5-dark); vertical-align:middle; }
+  .kind-tag{ display:inline-flex; align-items:center; font-size:9px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; color:white; vertical-align:middle; }
+  .kind-tag.kind-nest{ background:#5A6B8C; }
+  .kind-tag.flow{ background:var(--cat-sales); }
+
+  .theory-box{ background:var(--t5-pale); border-left:4px solid var(--t5-dark); border-radius:0 10px 10px 0; padding:15px 22px; margin-bottom:22px; font-size:0.93rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t5-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:30px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:600px; }
+
+  /* MAMUSHKA - capas anidadas */
+  .nest-stage{ display:flex; justify-content:center; padding:6px 0; }
+  .nest{ border:2px dashed; border-radius:26px; padding:36px 32px 26px; position:relative; display:inline-flex; flex-direction:column; align-items:center; }
+  .nest-label{ position:absolute; top:-11px; left:24px; background:white; padding:0 10px; font-size:10.5px; font-weight:700; letter-spacing:.3px; }
+  .nest-core{ border-radius:14px; padding:18px 30px; color:white; font-family:'Syne',sans-serif; font-weight:800; text-align:center; font-size:1rem; }
+  .nest-core .sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:0.72rem; opacity:.85; margin-top:5px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">Parallel Ledgers</a>
+  <a href="#s2">Document Splitting Branch</a>
+  <a href="#s3">P&amp;L Views</a>
+  <a href="#s4">Period-End Stack</a>
+  <a href="#s5">Splitting Flow</a>
+  <a href="#s6">Segment Flow</a>
+  <a href="#s7">Functional Area Flow</a>
+  <a href="#s8">Regulatory Flow</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+    </div>
+    <h1>Parallel Accounting &amp; <span class="accent">Document</span> Splitting</h1>
+    <h2>Contabilidad Paralela y Segmentación de Documentos — Ecosistema</h2>
+    <p class="desc">Dónde vive cada pieza de este tema dentro de capas más grandes, y qué entra y sale hacia actividades puntuales de otros módulos — no el panorama completo de siempre, sino la ubicación exacta.</p>
+    <div class="hlbox">Resumen Visual — <b>Parallel Accounting &amp; Document Splitting</b>, Tipo 5 (Holístico). 8 secciones — 4 de posicionamiento (cada una con una geometría distinta), 4 de flujo de entrada/salida con actividades puntuales.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — mamushka (contención pura) -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Parallel Ledgers Live</span>
+          <span class="sec-title-es">Dónde viven los Ledgers Paralelos</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No son un módulo aparte — son una subdivisión de la misma tabla única de siempre.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los ledgers paralelos no compiten entre sí en tablas separadas — <strong>viven adentro</strong> del Diario Universal, cada uno como una porción de la misma tabla. Y esa unificación corre sobre un núcleo mayor: SAP S/4HANA Finance, que a su vez es una pieza de todo S/4HANA.
+    </div>
+    <div class="visual-wrap">
+      <div class="nest-stage">
+        <div class="nest" style="border-color:#94A3B8;">
+          <span class="nest-label" style="color:#64748B;">SAP S/4HANA — Digital Core</span>
+          <div class="nest" style="border-color:#B08A6F;">
+            <span class="nest-label" style="color:#8A6A4E;">S/4HANA Finance</span>
+            <div class="nest" style="border-color:#C2843F;">
+              <span class="nest-label" style="color:#A85F2B;">Universal Journal — fuente única de verdad</span>
+              <div class="nest-core" style="background:var(--t5-dark);">
+                Parallel Ledgers
+                <div class="sub">0L (IFRS) · 2L (Local GAAP) · TX (Local Tax)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — bifurcación -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Document Splitting Sits Between FI and CO</span>
+          <span class="sec-title-es">Dónde se ubica Document Splitting entre FI y CO</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Controlling</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Vive en un lado, pero toma prestadas las dimensiones del otro.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      S/4HANA Finance se abre en <strong>dos caminos paralelos</strong>, no uno adentro del otro: Financial Accounting, donde vive Document Splitting como función de General Ledger Accounting, y Controlling, donde viven Profit Center y Segment — las dimensiones que Document Splitting usa prestadas para segmentar.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="65" x2="450" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="630" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="270" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="90" x2="630" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="175" x2="270" y2="205" stroke="#A85F2B" stroke-width="2.5"/>
+
+        <rect x="350" y="10" width="200" height="55" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="42" text-anchor="middle" fill="white" class="box-label">S/4HANA Finance</text>
+
+        <rect x="140" y="115" width="260" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="270" y="141" text-anchor="middle" fill="white" class="box-label">Financial Accounting (FI)</text>
+        <text x="270" y="158" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">General Ledger Accounting</text>
+
+        <rect x="500" y="115" width="260" height="60" rx="10" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="630" y="141" text-anchor="middle" fill="#5A6B8C" class="box-label">Controlling (CO)</text>
+        <text x="630" y="158" text-anchor="middle" fill="#94A3B8" class="box-sub">dueño de Profit Center &amp; Segment (ver §6)</text>
+
+        <rect x="130" y="205" width="280" height="60" rx="10" fill="#A85F2B"/>
+        <text x="270" y="231" text-anchor="middle" fill="white" class="box-label">Document Splitting</text>
+        <text x="270" y="248" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">usa dimensiones prestadas de CO</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — fundación + pilares -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where the Two P&amp;L Views Stand</span>
+          <span class="sec-title-es">Dónde se paran las dos vistas de P&amp;L</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No son dos sistemas — son dos formas de leer la misma base.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El Diario Universal es la base ancha de abajo. <strong>Period Accounting</strong> y <strong>Cost of Sales Accounting</strong> no son sistemas distintos con datos propios — son dos formas de leer esa misma base, paradas una al lado de la otra, sin que ninguna sea "la oficial".
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
+        <rect x="210" y="50" width="220" height="115" rx="8" fill="#1A6B99"/>
+        <text x="320" y="100" text-anchor="middle" fill="white" class="box-label">Period Accounting</text>
+        <text x="320" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">P&amp;L por tipo de gasto</text>
+
+        <rect x="470" y="50" width="220" height="115" rx="8" fill="#A85F2B"/>
+        <text x="580" y="100" text-anchor="middle" fill="white" class="box-label">Cost of Sales Accounting</text>
+        <text x="580" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">P&amp;L por Área Funcional</text>
+
+        <rect x="60" y="165" width="780" height="60" rx="8" fill="#0A0F1C"/>
+        <text x="450" y="190" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Universal Journal</text>
+        <text x="450" y="208" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">la fuente única que ambas vistas leen, sin duplicar datos</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — stack de capas horizontales -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Parallel Valuation Sits in the Period-End Stack</span>
+          <span class="sec-title-es">Dónde se ubica la Valoración Paralela en el stack de cierre</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Una capa técnica intermedia, no el primer ni el último paso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Las contabilizaciones del día a día quedan abajo, en la capa operativa. <strong>Parallel Valuation</strong> es una capa técnica que corre <strong>al cierre de período</strong>, entre lo ya contabilizado y el resultado final. Arriba de todo, ese resultado ya valuado alimenta los <strong>Estados Financieros específicos por ledger</strong>.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="201" x2="450" y2="178" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a4)"/>
+        <line x1="450" y1="108" x2="450" y2="85" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a4)"/>
+
+        <rect x="60" y="15" width="780" height="70" rx="10" fill="#A85F2B"/>
+        <text x="450" y="45" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Ledger-Specific Financial Statements</text>
+        <text x="450" y="63" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">resultado final, por ledger</text>
+
+        <rect x="60" y="108" width="780" height="70" rx="10" fill="#1A6B99"/>
+        <text x="450" y="138" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Parallel Valuation</text>
+        <text x="450" y="156" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">capa técnica de cierre de período</text>
+
+        <rect x="60" y="201" width="780" height="70" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="231" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Business Transactions</text>
+        <text x="450" y="249" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">contabilizaciones del día a día</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — flujo -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds Document Splitting, Where the Result Goes</span>
+          <span class="sec-title-es">Qué alimenta a Document Splitting, hacia dónde sale el resultado</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Una actividad puntual de Accounts Payable, no "Compras" entera.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Document Splitting no arranca de la nada — necesita un documento con dimensiones ya asignadas del lado del débito, típicamente desde una <strong>factura de proveedor</strong> de Accounts Payable. De ahí, el resultado sale directo al <strong>Libro Mayor</strong>, ya segmentado.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="245" y1="65" x2="325" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a5)"/>
+        <line x1="575" y1="65" x2="655" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a5)"/>
+
+        <rect x="15" y="35" width="230" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Vendor Invoice Posting</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Accounts Payable · interno</text>
+
+        <rect x="325" y="35" width="250" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Document Splitting</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">General Ledger Accounting</text>
+
+        <rect x="655" y="35" width="230" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">Segmented General Ledger</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">listo para reporting</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra con dimensiones ya asignadas</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale ya segmentado</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — flujo -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds the Segment, What It Feeds</span>
+          <span class="sec-title-es">Qué alimenta al Segmento, hacia dónde sale</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Compliance</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un dato que nace en Controlling y termina en un reporte externo obligatorio.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El Segmento no se completa a mano — llega heredado del <strong>maestro del Profit Center</strong> (T2 §7). De ahí, el dato viaja en una sola dirección: hacia afuera, a satisfacer una exigencia regulatoria puntual (IFRS 8), no hacia un reporte interno genérico.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="245" y1="65" x2="325" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6)"/>
+        <line x1="575" y1="65" x2="655" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6)"/>
+
+        <rect x="15" y="35" width="230" height="60" rx="10" fill="#1A6B99"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Profit Center Master Data</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Controlling · interno</text>
+
+        <rect x="325" y="35" width="250" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Segment on Document Line Item</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">General Ledger Accounting</text>
+
+        <rect x="655" y="35" width="230" height="60" rx="10" fill="#C9932E"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">Regulatory Filing</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">IFRS 8 · externo</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra heredado</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale hacia afuera de la empresa</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — flujo -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds the Functional Area, What It Feeds</span>
+          <span class="sec-title-es">Qué alimenta al Área Funcional, hacia dónde sale</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Controlling</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Tampoco se tipea a mano — sale de un maestro puntual de Controlling.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El Área Funcional sale del maestro de un <strong>Cost Center</strong> o <strong>WBS Element</strong> — no del documento. De ahí alimenta directamente el <strong>Cost of Sales Report</strong>, sin ningún paso manual intermedio.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="270" y1="65" x2="340" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a7)"/>
+        <line x1="570" y1="65" x2="640" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a7)"/>
+
+        <rect x="10" y="35" width="260" height="60" rx="10" fill="#1A6B99"/>
+        <text x="140" y="53" text-anchor="middle" fill="white" class="box-label">Cost Center / WBS Element</text>
+        <text x="140" y="70" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Controlling · interno</text>
+
+        <rect x="340" y="35" width="230" height="60" rx="10" fill="#A85F2B"/>
+        <text x="455" y="53" text-anchor="middle" fill="white" class="box-label">Functional Area — Account</text>
+        <text x="455" y="70" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Assignment, heredado</text>
+
+        <rect x="640" y="35" width="250" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="765" y="59" text-anchor="middle" fill="white" class="box-label">Cost of Sales Report</text>
+        <text x="765" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">reporting de margen</text>
+
+        <text x="140" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra desde el maestro</text>
+        <text x="765" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale sin pasos manuales</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — flujo, multi-destino -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Ledger-Specific Postings Send Outward</span>
+          <span class="sec-title-es">Hacia dónde salen las contabilizaciones específicas por Ledger</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Compliance</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">La boca de salida final — y son varios destinos, no uno solo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Acá converge todo lo contabilizado ledger por ledger — y de acá sale hacia <strong>varios destinatarios externos distintos</strong>, cada uno pidiendo el mismo hecho económico bajo su propia norma, no un solo "gobierno" genérico.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="75" x2="450" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="100" x2="750" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="100" x2="150" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+        <line x1="450" y1="100" x2="450" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+        <line x1="750" y1="100" x2="750" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+
+        <rect x="310" y="15" width="280" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="39" text-anchor="middle" fill="white" class="box-label">Ledger-Specific Postings</text>
+        <text x="450" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">0L · 2L · TX</text>
+
+        <rect x="40" y="125" width="220" height="60" rx="10" fill="#C9932E"/>
+        <text x="150" y="149" text-anchor="middle" fill="white" class="box-label">IFRS Filing</text>
+        <text x="150" y="166" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">vía Ledger 0L</text>
+
+        <rect x="340" y="125" width="220" height="60" rx="10" fill="#1A6B99"/>
+        <text x="450" y="149" text-anchor="middle" fill="white" class="box-label">Local GAAP Filing</text>
+        <text x="450" y="166" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">vía Ledger 2L</text>
+
+        <rect x="640" y="125" width="220" height="60" rx="10" fill="#C0392B"/>
+        <text x="750" y="149" text-anchor="middle" fill="white" class="box-label">Local Tax Filing</text>
+        <text x="750" y="166" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">vía Ledger TX</text>
+      </svg>
+    </div>
+  </section>
+
+</main>
+
+<footer>T5 · Holístico/Ecosistema — Parallel Accounting &amp; Document Splitting · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

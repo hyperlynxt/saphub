@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Management Accounting Processes — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-blue-dark:#0040A0;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t3);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-appbar .tag{ background:#FFF3CD; color:#8A6A1E; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-body{ padding:22px 20px; }
+  .fiori-tabs{ display:flex; gap:22px; border-bottom:1px solid #EAEAEA; margin-bottom:18px; }
+  .fiori-tab{ padding:7px 2px; font-size:0.8rem; color:var(--sap-muted); border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px 22px; margin-bottom:6px; }
+  .fiori-field label{ display:block; font-size:0.7rem; color:var(--sap-muted); margin-bottom:4px; }
+  .fiori-field .val{ font-size:0.83rem; color:var(--sap-text); padding:7px 10px; background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; }
+  .fiori-field .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-table td.num{ text-align:right; font-family:'JetBrains Mono',monospace; }
+  .fiori-table tr.total td{ font-weight:700; border-top:1.5px solid var(--sap-border); border-bottom:none; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .fiori-btn.text{ border:none; color:var(--sap-blue); background:none; padding:7px 4px; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.open{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-status.warn{ background:#FDE8E4; color:#B3401E; }
+  .fiori-list-item{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border:1px solid var(--sap-border); border-radius:6px; margin-bottom:8px; }
+  .fiori-list-item .li-title{ font-size:0.85rem; font-weight:600; color:var(--sap-text); }
+  .fiori-list-item .li-sub{ font-size:0.72rem; color:var(--sap-muted); margin-top:2px; }
+  .fiori-pill{ font-size:0.66rem; font-weight:700; padding:3px 9px; border-radius:20px; }
+  .fiori-pill.public{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-pill.private{ background:#F0F0F0; color:#5A5A5A; }
+  .fiori-pill.held{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-pill.warn{ background:#FDE8E4; color:#B3401E; }
+
+  .kpi-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .kpi-tile{ background:white; border:1px solid var(--sap-border); border-radius:8px; padding:18px 16px; }
+  .kpi-tile .kpi-icon{ font-size:19px; margin-bottom:9px; display:block; }
+  .kpi-tile .kpi-val{ font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem; color:var(--sap-text); }
+  .kpi-tile .kpi-trend{ font-size:0.68rem; font-weight:700; margin-left:3px; }
+  .kpi-tile .kpi-trend.up{ color:#1D7A3E; }
+  .kpi-tile .kpi-trend.warn{ color:#8A6A1E; }
+  .kpi-tile .kpi-label{ font-size:0.72rem; color:var(--sap-muted); margin-top:7px; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Checking Commitments</a>
+  <a href="#s2">Cost Center Variance</a>
+  <a href="#s3">Running a Costing Run</a>
+  <a href="#s4">Cost Estimate Components</a>
+  <a href="#s5">Production Order Variance</a>
+  <a href="#s6">MTO Value Flow</a>
+  <a href="#s7">Results Analysis (WIP)</a>
+  <a href="#s8">EBRR Postings</a>
+  <a href="#s9">Margin Analysis</a>
+  <a href="#s10">Real vs. Statistical</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Controlling</span>
+      <span class="pill pill-secondary">Profitability Analysis</span>
+      <span class="pill pill-secondary">Production Planning</span>
+      <span class="pill pill-secondary">Sales &amp; Distribution</span>
+    </div>
+    <h1><span class="accent">Processes</span> in Management Accounting</h1>
+    <h2>Vivido por el Usuario — Fiori</h2>
+    <p class="desc">Los mismos seis procesos de Controlling del Tipo 1 y 2, ahora del lado de la pantalla: cost centers, product costing, cost object controlling, EBRR y margin analysis — un caso concreto a la vez.</p>
+    <div class="protagonist">
+      <div class="avatar">K</div>
+      <div>
+        <div class="p-name">Kevin</div>
+        <div class="p-role">Management Accounting &amp; Controlling · Bike GmbH (DE01) · Controlling Area A000</div>
+        <div class="p-note">Guía principal de este recorrido — cliente recurrente: Velotics (producto y servicio de mantenimiento de flota)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking Commitments Before They Post</span>
+          <span class="sec-title-es">Revisando compromisos antes de que se conviertan en reales</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Cuánto compromiso (Value Type 22) tiene abierto un centro de costo antes de que lleguen las facturas.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes del cierre, Kevin quiere saber cuánto gasto está <strong>ya comprometido</strong> en el Cost Center de la flota — no quiere sorpresas cuando lleguen las facturas de los autos que todavía están en tránsito.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Controlling</div><span class="sep">›</span>
+      <div class="crumb">Cost Centers</div><span class="sep">›</span>
+      <div class="crumb current">Actual Cost Line Items - Cost Centers</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Actual Cost Line Items - Cost Centers</div>
+      <div class="fiori-appbar">
+        <div><h6>Cost Center CC-4000-FLEET</h6><span class="sub">Controlling Area A000 · Period 003 / 2026</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Controlling Area</label><div class="val filled">A000</div></div>
+          <div class="fiori-field"><label>Cost Center</label><div class="val filled">CC-4000-FLEET</div></div>
+          <div class="fiori-field"><label>Fiscal Year / Period</label><div class="val filled">2026 / 003</div></div>
+          <div class="fiori-field"><label>Value Type</label><div class="val filled">Todos (4, 11, 22)</div></div>
+          <div class="fiori-field"><label>Cost Element</label><div class="val">61980000</div></div>
+          <div class="fiori-field"><label>Currency</label><div class="val filled">EUR</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>Value Type</th><th>Documento</th><th>G/L Account</th><th>Amount</th><th>Naturaleza</th></tr></thead>
+          <tbody>
+            <tr><td>4</td><td>4900001234</td><td>61980000 Vehicle Operating Costs</td><td class="num">3.200,00</td><td><span class="fiori-status ok">Real</span></td></tr>
+            <tr><td>11</td><td>WBS-CAR-07</td><td>61980000 Vehicle Operating Costs</td><td class="num">640,00</td><td><span class="fiori-status open">Statistical Actual</span></td></tr>
+            <tr><td>22</td><td>PO 4500009981</td><td>61980000 Vehicle Operating Costs</td><td class="num">1.150,00</td><td><span class="fiori-status warn">Statistical Commitment</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Filter by Value Type</button>
+          <button class="fiori-btn primary">Export</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing Cost Center Variance</span>
+          <span class="sec-title-es">Revisando la varianza del centro de costo</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Comparar el costo meta contra el costo actual del centro de costo de Producción.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La actividad real de <strong>Assembly</strong> en Producción superó a la planificada este mes. Kevin necesita ver si eso está justificado o si hay una varianza que merece atención antes del cierre.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Controlling</div><span class="sep">›</span>
+      <div class="crumb current">Cost Centers - Plan/Actual/Variance</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Cost Centers - Plan/Actual/Variance</div>
+      <div class="fiori-appbar">
+        <div><h6>Cost Center CC-1000-PROD · Activity Type ASSY</h6><span class="sub">Period 003 / 2026 · Controlling Area A000</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="kpi-grid">
+          <div class="kpi-tile"><span class="kpi-icon">📋</span><span class="kpi-val">1.000 h</span><span class="kpi-label">Plan Activity</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">▶️</span><span class="kpi-val">1.150 h<span class="kpi-trend warn">▲ 15%</span></span><span class="kpi-label">Actual Activity</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">🎯</span><span class="kpi-val">34.500 €</span><span class="kpi-label">Target Cost</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">📉</span><span class="kpi-val">+1.200 €<span class="kpi-trend warn">▲</span></span><span class="kpi-label">Total Variance</span></div>
+        </div>
+        <table class="fiori-table" style="margin-top:18px;">
+          <thead><tr><th>Cost Element</th><th>Fixed Plan</th><th>Variable Plan</th><th>Target Cost</th><th>Actual Cost</th><th>Variance</th></tr></thead>
+          <tbody>
+            <tr><td>Wages (Fixed)</td><td class="num">20.000,00</td><td class="num">0,00</td><td class="num">20.000,00</td><td class="num">20.000,00</td><td class="num">0,00</td></tr>
+            <tr><td>Energy (Variable)</td><td class="num">0,00</td><td class="num">12,00 €/h</td><td class="num">13.800,00</td><td class="num">15.000,00</td><td class="num">+1.200,00</td></tr>
+            <tr class="total"><td colspan="3">Total</td><td class="num">33.800,00</td><td class="num">35.000,00</td><td class="num">+1.200,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Variance Categories</button>
+          <button class="fiori-btn primary">Export</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running a Costing Run</span>
+          <span class="sec-title-es">Ejecutando un costing run</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Valuar el material Mountain Bike Trail antes de actualizar su precio estándar.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Es el primer día hábil del mes: Kevin tiene que <strong>recalcular el costo estándar</strong> de los productos terminados antes de que se actualicen los precios en el material master.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Product Cost Planning</div><span class="sep">›</span>
+      <div class="crumb current">Schedule Costing Runs</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Schedule Costing Runs</div>
+      <div class="fiori-appbar">
+        <div><h6>Costing Run CR-2026-03</h6><span class="sub">Costing Variant PPC1 · Plant DE01-1000</span></div>
+        <span class="tag">En proceso</span>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Material</label><div class="val filled">FG-1000 Mountain Bike Trail</div></div>
+          <div class="fiori-field"><label>Plant</label><div class="val filled">DE01-1000</div></div>
+          <div class="fiori-field"><label>Costing Date</label><div class="val filled">01.03.2026</div></div>
+          <div class="fiori-field"><label>Costing Variant</label><div class="val filled">PPC1</div></div>
+          <div class="fiori-field"><label>Quantity Structure</label><div class="val">Seleccionada automáticamente</div></div>
+          <div class="fiori-field"><label>Lot Size</label><div class="val filled">1 EA</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>Paso</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Selection</td><td><span class="fiori-status ok">✓ Completado</span></td></tr>
+            <tr><td>BOM / Routing Explosion</td><td><span class="fiori-status ok">✓ Completado</span></td></tr>
+            <tr><td>Costing</td><td><span class="fiori-status ok">✓ Completado</span></td></tr>
+            <tr><td>Marking</td><td><span class="fiori-status open">Pendiente</span></td></tr>
+            <tr><td>Release</td><td><span class="fiori-status open">Pendiente</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Log</button>
+          <button class="fiori-btn primary">Release Costing Run</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking the Cost Estimate's Components</span>
+          <span class="sec-title-es">Revisando los componentes del cost estimate</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Cuánto del costo total es material, cuánto producción y cuánto overhead.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de liberar el costing run, Kevin quiere confirmar que la <strong>composición del costo</strong> tiene sentido — sobre todo porque el precio del material subió este trimestre.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Schedule Costing Runs</div><span class="sep">›</span>
+      <div class="crumb">FG-1000 Mountain Bike Trail</div><span class="sep">›</span>
+      <div class="crumb current">Display Cost Estimate</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Display Cost Estimate</div>
+      <div class="fiori-appbar">
+        <div><h6>FG-1000 Mountain Bike Trail · 1 EA</h6><span class="sub">Costing Variant PPC1 · Plant DE01-1000</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab">Costing Items</div>
+          <div class="fiori-tab active">Cost Components</div>
+          <div class="fiori-tab">Itemization</div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>Cost Component</th><th>Amount</th><th>%</th></tr></thead>
+          <tbody>
+            <tr><td>Raw Materials</td><td class="num">145,00 €</td><td class="num">46%</td></tr>
+            <tr><td>Production Activity (Routing)</td><td class="num">98,50 €</td><td class="num">31%</td></tr>
+            <tr><td>Production Overhead</td><td class="num">42,00 €</td><td class="num">13%</td></tr>
+            <tr><td>Internal Transportation</td><td class="num">30,50 €</td><td class="num">10%</td></tr>
+            <tr class="total"><td>Total (COGM)</td><td class="num">316,00 €</td><td class="num">100%</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Compare with Previous Run</button>
+          <button class="fiori-btn primary">Back to Costing Run</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Analyzing a Production Order Variance</span>
+          <span class="sec-title-es">Analizando la varianza de una orden de producción</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Separar cuánto de la varianza es cantidad y cuánto es precio, en un lote Make-to-Stock.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se terminó de producir el lote de 50 unidades de Mountain Bike Trail. La Manufacturing Order quedó por encima del costo meta, y Kevin necesita entender <strong>por qué</strong> antes de liquidarla.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Controlling</div><span class="sep">›</span>
+      <div class="crumb">Product Cost by Order</div><span class="sep">›</span>
+      <div class="crumb current">Actual Costs - Production Orders</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Actual Costs - Production Orders</div>
+      <div class="fiori-appbar">
+        <div><h6>Manufacturing Order MO-500213</h6><span class="sub">Material FG-1000 · Cantidad 50 EA</span></div>
+        <span class="tag">TECO</span>
+      </div>
+      <div class="fiori-body">
+        <div class="kpi-grid">
+          <div class="kpi-tile"><span class="kpi-icon">🎯</span><span class="kpi-val">15.800 €</span><span class="kpi-label">Target Cost</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">💶</span><span class="kpi-val">16.640 €</span><span class="kpi-label">Actual Cost</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">📉</span><span class="kpi-val">+840 €<span class="kpi-trend warn">▲</span></span><span class="kpi-label">Total Variance</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">📦</span><span class="kpi-val">50 EA</span><span class="kpi-label">Cantidad Entregada</span></div>
+        </div>
+        <table class="fiori-table" style="margin-top:18px;">
+          <thead><tr><th>Categoría de Varianza</th><th>Monto</th></tr></thead>
+          <tbody>
+            <tr><td>Quantity Variance</td><td class="num">+520,00 €</td></tr>
+            <tr><td>Price Variance</td><td class="num">+320,00 €</td></tr>
+            <tr class="total"><td>Total Variance</td><td class="num">+840,00 €</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Variance Report</button>
+          <button class="fiori-btn primary">Settle Order</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Monitoring a Make-to-Order Value Flow</span>
+          <span class="sec-title-es">Monitoreando el value flow de un Make-to-Order</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Una sales order item con su propia Manufacturing Order debajo, siguiendo el escenario MTO con producción.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Velotics pidió <strong>20 unidades personalizadas</strong> de Mountain Bike Trail. Kevin sigue el estado de ambos cost objects — la Manufacturing Order y la Sales Order Item — desde una sola pantalla.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Controlling</div><span class="sep">›</span>
+      <div class="crumb">Product Cost by Sales Order</div><span class="sep">›</span>
+      <div class="crumb current">Value Flow Monitor</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Value Flow Monitor</div>
+      <div class="fiori-appbar">
+        <div><h6>Sales Order 90045 / Item 10</h6><span class="sub">Customer Velotics · Material FG-1000 · 20 EA</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-list-item">
+          <div><div class="li-title">🏭 Manufacturing Order MO-500311</div><div class="li-sub">Planned Cost 6.200,00 € · Actual Cost 5.980,00 €</div></div>
+          <span class="fiori-pill public">In Process</span>
+        </div>
+        <div class="fiori-list-item">
+          <div><div class="li-title">🧾 Sales Order Item 90045/10</div><div class="li-sub">Actual Cost (desde entrega) — · Actual Revenue (desde facturación) —</div></div>
+          <span class="fiori-pill held">Awaiting Delivery</span>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Manufacturing Order</button>
+          <button class="fiori-btn primary">Display Results Analysis</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing Results Analysis (WIP)</span>
+          <span class="sec-title-es">Revisando el resultado de Results Analysis (WIP)</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Cuánto trabajo en proceso quedó calculado para un servicio ya realizado pero todavía no facturado.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El servicio de <strong>mantenimiento de flota</strong> para Velotics ya se realizó este mes, pero todavía no se facturó. Kevin necesita ver cuánto quedó reflejado como Work in Process antes del cierre.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Controlling</div><span class="sep">›</span>
+      <div class="crumb">Product Cost by Sales Order</div><span class="sep">›</span>
+      <div class="crumb current">Results Analysis - Sales Orders</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Results Analysis - Sales Orders</div>
+      <div class="fiori-appbar">
+        <div><h6>Sales Order 90062 / Item 20</h6><span class="sub">Servicio: Fleet Maintenance · Customer Velotics</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="kpi-grid">
+          <div class="kpi-tile"><span class="kpi-icon">💶</span><span class="kpi-val">4.100 €</span><span class="kpi-label">Actual Costs</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">🧾</span><span class="kpi-val">0 €</span><span class="kpi-label">Actual Revenue</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">🏗️</span><span class="kpi-val">WIP</span><span class="kpi-label">Results Analysis Category</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">📄</span><span class="kpi-val">4.100 €</span><span class="kpi-label">WIP Amount</span></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Cost Line Items</button>
+          <button class="fiori-btn primary">Run Results Analysis</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Work in Process (activo) → Debe:</b> 4.100,00 — refleja el trabajo ya realizado. <b>Change in WIP (P&amp;L) → Haber:</b> 4.100,00 — el asiento espejo que balancea el reconocimiento temporal, hasta que se facture y se revierta.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting Event-Based Revenue Recognition</span>
+          <span class="sec-title-es">Contabilizando el reconocimiento de ingresos por eventos</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">La suscripción anual de Velotics se facturó — Kevin revisa el asiento de devengo que generó EBRR automáticamente.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Llegó la <strong>facturación anual</strong> de la suscripción de mantenimiento de Velotics. Kevin verifica cómo el sistema balanceó el ingreso calculado (POC) contra el ingreso recién facturado.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Controlling</div><span class="sep">›</span>
+      <div class="crumb">Product Cost by Sales Order</div><span class="sep">›</span>
+      <div class="crumb current">Sales Orders - Event-Based Revenue Recognition</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Sales Orders - Event-Based Revenue Recognition</div>
+      <div class="fiori-appbar">
+        <div><h6>Sales Order 90062 / Item 20</h6><span class="sub">POC 60% · Customer Velotics</span></div>
+        <span class="tag">✓ Posted</span>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Descripción</th><th>Monto</th></tr></thead>
+          <tbody>
+            <tr><td>Plan Revenue</td><td class="num">2.000,00 €</td></tr>
+            <tr><td>Percentage of Completion</td><td class="num">60%</td></tr>
+            <tr><td>Calculated Revenue</td><td class="num">1.200,00 €</td></tr>
+            <tr><td>Actual Billed Revenue</td><td class="num">800,00 €</td></tr>
+            <tr class="total"><td>Accrual Posting (automático)</td><td class="num">400,00 €</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Accounting Document</button>
+          <button class="fiori-btn primary">Display POC History</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Accrued Revenue (activo) → Debe:</b> 400,00 — el ingreso calculado que todavía no se facturó. <b>Revenue Adjustment (P&amp;L) → Haber:</b> 400,00. El sistema genera este asiento automáticamente, en el mismo momento de la facturación.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Exploring Margin Analysis</span>
+          <span class="sec-title-es">Explorando el análisis de margen</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Rentabilidad por producto y por cliente, antes de la reunión mensual de dirección.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de la reunión de dirección, Kevin arma un vistazo rápido de <strong>qué segmento de mercado</strong> está dejando más margen — producto, cliente y el servicio de mantenimiento, todos en una sola vista.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Controlling</div><span class="sep">›</span>
+      <div class="crumb">Profitability Analysis</div><span class="sep">›</span>
+      <div class="crumb current">Market Segments - Plan/Actual</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Market Segments - Plan/Actual</div>
+      <div class="fiori-appbar">
+        <div><h6>Operating Concern BIKE-OC</h6><span class="sub">Period 003 / 2026</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Market Segment</th><th>Revenue</th><th>COGS</th><th>Contribution Margin</th></tr></thead>
+          <tbody>
+            <tr><td>FG-1000 Mountain Bike Trail · Velotics</td><td class="num">42.000,00</td><td class="num">28.400,00</td><td class="num">13.600,00</td></tr>
+            <tr><td>FG-2000 City Cruiser · Retail</td><td class="num">31.500,00</td><td class="num">24.100,00</td><td class="num">7.400,00</td></tr>
+            <tr><td>Fleet Maintenance Service · Velotics</td><td class="num">8.000,00</td><td class="num">4.100,00</td><td class="num">3.900,00</td></tr>
+            <tr class="total"><td>Total</td><td class="num">81.500,00</td><td class="num">56.600,00</td><td class="num">24.900,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Add Characteristic</button>
+          <button class="fiori-btn primary">Export</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Verifying Real vs. Statistical Postings</span>
+          <span class="sec-title-es">Verificando imputaciones reales vs. estadísticas</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Confirmar en pantalla lo que el Tipo 1 explicó en teoría: un único objeto real, varios estadísticos.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Kevin cierra el círculo: quiere confirmar que la factura de la flota quedó <strong>real en el Cost Center</strong> y <strong>estadística en cada WBS de auto</strong>, tal como se explicó en el Tipo 1.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Display G/L Account Line Items</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Display G/L Account Line Items</div>
+      <div class="fiori-appbar">
+        <div><h6>G/L Account 61980000 · Vehicle Operating Costs</h6><span class="sub">Company Code DE01 · Period 003 / 2026</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Value Type</th><th>CO Object</th><th>Amount</th><th>Naturaleza</th></tr></thead>
+          <tbody>
+            <tr><td>4</td><td>CC-4000-FLEET</td><td class="num">3.200,00</td><td><span class="fiori-status ok">Real</span></td></tr>
+            <tr><td>11</td><td>WBS-CAR-01</td><td class="num">640,00</td><td><span class="fiori-status open">Statistical</span></td></tr>
+            <tr><td>11</td><td>WBS-CAR-02</td><td class="num">640,00</td><td><span class="fiori-status open">Statistical</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Document</button>
+          <button class="fiori-btn primary">Export</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>61980000 Vehicle Operating Costs → Debe:</b> gasto que aumenta, imputación real al Cost Center. <b>11001000 Main Bank Account (no mostrado acá) → Haber:</b> el banco disminuye. El WBS estadístico no agrega una segunda línea de Debe/Haber — solo etiqueta esa misma partida real para reporting adicional por auto.
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Management Accounting Processes · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Payables Management — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#6B4C8F;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* SAP GUI clasico — colores reales, uso EXCLUSIVO dentro de mockups de pantalla */
+    --gui-bg:#ECECEC;
+    --gui-panel:#F5F4F0;
+    --gui-border:#8E8E8E;
+    --gui-titlebar1:#4A85B8;
+    --gui-titlebar2:#2E5C87;
+    --gui-tab-inactive:#C6C2B6;
+    --gui-tab-active:#F5F4F0;
+    --gui-field-border:#7F9DB9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  /* NAV */
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  /* HERO */
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #211A30 55%, #3D2A54 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:640px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.3rem; flex-shrink:0; }
+  .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(107,76,143,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-area{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(107,76,143,0.1); color:var(--t4-dark); margin-left:8px; vertical-align:middle; }
+
+  .task-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t4-dark); font-weight:700; margin-bottom:10px; }
+
+  /* ARBOL SPRO — listas anidadas HTML/CSS, sin SVG (elimina riesgo de solapamiento) */
+  .spro-box{ background:white; border:1px solid var(--border); border-radius:10px; padding:16px 20px 16px 18px; margin-bottom:26px; box-shadow:0 2px 8px rgba(10,15,28,0.04); }
+  .spro-tree{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; line-height:1.5; }
+  .spro-tree, .spro-tree ul{ list-style:none; margin:0; padding-left:0; }
+  .spro-tree ul{ padding-left:20px; border-left:1.5px dashed #C9BEDD; margin-left:7px; }
+  .spro-tree li{ position:relative; padding:4px 0 4px 18px; color:var(--body); }
+  .spro-tree li::before{ content:''; position:absolute; left:0; top:14px; width:14px; height:1.5px; background:#C9BEDD; }
+  .spro-tree .folder .icon{ margin-right:5px; opacity:.8; }
+  .spro-tree .target{ background:var(--t4-pale); border:1.5px solid var(--t4-dark); border-radius:6px; padding:4px 12px; display:inline-flex; align-items:center; gap:7px; color:var(--t4-dark); font-weight:700; }
+
+  /* GUI SCREEN MOCKUP */
+  .gui-screen{ background:var(--gui-bg); border:1px solid #6E6E6E; border-radius:2px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.14); font-family:Arial,Tahoma,sans-serif; color:#000; }
+  .gui-titlebar{ background:linear-gradient(180deg,var(--gui-titlebar1),var(--gui-titlebar2)); color:white; padding:4px 10px; font-size:11px; display:flex; justify-content:space-between; align-items:center; }
+  .gui-titlebar .gt-icons{ opacity:.85; letter-spacing:3px; font-size:9px; }
+  .gui-menubar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:3px 10px; font-size:10.5px; color:#222; display:flex; gap:14px; }
+  .gui-toolbar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:5px 8px; display:flex; align-items:center; gap:5px; }
+  .gui-toolbar .t-btn{ width:22px; height:19px; background:#DEDEDE; border:1px solid #9A9A9A; border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:10.5px; color:#333; }
+  .gui-crumbbar{ background:#DEDEDE; border-bottom:1px solid #B8B8B8; padding:5px 10px; font-size:11.5px; font-weight:700; color:#111; }
+  .gui-tabs{ display:flex; background:var(--gui-bg); padding:5px 8px 0; gap:2px; flex-wrap:wrap; }
+  .gui-tab{ padding:5px 14px; font-size:10.5px; background:var(--gui-tab-inactive); border:1px solid var(--gui-border); border-bottom:none; color:#333; }
+  .gui-tab.active{ background:var(--gui-tab-active); font-weight:700; color:#000; }
+  .gui-body{ background:var(--gui-panel); padding:18px; border-top:1px solid #fff; }
+  .gui-field-row{ display:grid; grid-template-columns:150px 1fr; gap:8px; align-items:center; margin-bottom:9px; font-size:11.5px; }
+  .gui-field-row label{ text-align:right; color:#000; }
+  .gui-field-row .val{ background:white; border:1px solid var(--gui-field-border); padding:3px 7px; font-family:'Courier New',monospace; font-size:11.5px; max-width:320px; }
+  .gui-field-row .val.grey{ background:#E8E8E8; border-color:#B8B8B8; color:#555; }
+  .gui-field-row .val.check{ font-family:Arial,sans-serif; }
+  .gui-table{ width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+  .gui-table th{ background:var(--gui-tab-inactive); border:1px solid var(--gui-border); padding:5px 9px; text-align:left; font-weight:700; color:#111; }
+  .gui-table td{ border:1px solid #C6C2B6; padding:5px 9px; background:white; font-family:'Courier New',monospace; }
+  .gui-statusbar{ background:var(--gui-bg); border-top:1px solid #B8B8B8; padding:4px 10px; font-size:10px; color:#555; display:flex; justify-content:space-between; }
+  .gui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E; margin-top:12px; display:flex; align-items:center; gap:7px; }
+  .gui-checklist{ display:flex; flex-wrap:wrap; gap:14px; margin:6px 0 8px 158px; font-size:11.5px; }
+  .gui-checklist span{ display:inline-flex; align-items:center; gap:5px; }
+
+  /* DEBE/HABER (fuera del mockup) */
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">BP Grouping</a>
+  <a href="#s2">BP Roles</a>
+  <a href="#s3">Purchasing Org</a>
+  <a href="#s4">Reconciliation Acct</a>
+  <a href="#s5">Document Type KR</a>
+  <a href="#s6">Number Range KR</a>
+  <a href="#s7">Payment Terms</a>
+  <a href="#s8">GR/IR Determination</a>
+  <a href="#s9">Duplicate Check</a>
+  <a href="#s10">Payment Program</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Payables Management</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Sourcing &amp; Procurement</span>
+      <span class="pill pill-secondary">Source-to-Pay</span>
+    </div>
+    <h1><span class="accent">Payables</span> Management</h1>
+    <h2>Gestión de Cuentas por Pagar — Configuración en SPRO</h2>
+    <p class="desc">Las tareas de customizing que dejan lista la base para que José trabaje en Fiori: agrupaciones y roles de Business Partner, cuentas de reconciliación, tipos de documento, GR/IR y el programa de pagos.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Implementación Bike Company · Payables Management</div>
+        <div class="p-note">Cada pantalla de este recorrido arma la base que José usa del otro lado, en Fiori (T3)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Business Partner Grouping</span>
+          <span class="sec-title-es">Definiendo la agrupación del Business Partner</span>
+          <span class="sec-area">Cross-Application Components</span>
+        </div>
+        <div class="sec-desc">El primer paso antes de que exista un solo proveedor: qué rango de numeración va a usar.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de que José pueda crear a Tireless Tires (T3, sección 1), tiene que existir una <strong>Grouping</strong> ya definida, con su rango de numeración. Sin esto, el campo Grouping que se vio en el Tipo 1 no tendría opciones para elegir.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Cross-Application Components
+              <ul>
+                <li class="folder"><span class="icon">📁</span>SAP Business Partner
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Partner
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Basic Settings
+                          <ul>
+                            <li class="folder"><span class="icon">📁</span>Number Ranges and Groupings
+                              <ul>
+                                <li><span class="target">⚙️ Define Groupings and Assign Number Ranges</span></li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "BP Groupings": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">🗑</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div>
+      </div>
+      <div class="gui-crumbbar">Change View "BP Groupings": Overview</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Grouping</th><th>Number Range</th><th>Number Assignment</th></tr></thead>
+          <tbody>
+            <tr><td>BP01</td><td>01</td><td>Internal</td></tr>
+            <tr><td>BP02</td><td>02</td><td>External / Numeric</td></tr>
+            <tr><td>BP03</td><td>03</td><td>External / Alphanumeric</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Estos tres valores son exactamente los que José vio como opciones en el campo Grouping del Tipo 1 — acá es donde se definen.</div>
+      </div>
+      <div class="gui-statusbar"><span>3 entries</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Business Partner Roles</span>
+          <span class="sec-title-es">Definiendo los roles de Business Partner</span>
+          <span class="sec-area">Cross-Application Components</span>
+        </div>
+        <div class="sec-desc">FLVN00 y FLVN01 tampoco existen solos — alguien los tiene que dar de alta acá.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      <strong>FLVN00</strong> y <strong>FLVN01</strong> (T2, sección 2) no existen solos — alguien los tiene que dar de alta acá, con el Business Partner Category que cada uno admite.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Cross-Application Components
+              <ul>
+                <li class="folder"><span class="icon">📁</span>SAP Business Partner
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Partner
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Basic Settings
+                          <ul>
+                            <li class="folder"><span class="icon">📁</span>Business Partner Roles
+                              <ul>
+                                <li><span class="target">⚙️ Define BP Roles</span></li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "BP Roles": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">🗑</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div>
+      </div>
+      <div class="gui-crumbbar">Change View "BP Roles": Overview</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>BP Role</th><th>Description</th><th>Category Allowed</th></tr></thead>
+          <tbody>
+            <tr><td>FLVN00</td><td>Financial Accounting Supplier</td><td>Organization / Person</td></tr>
+            <tr><td>FLVN01</td><td>Supplier</td><td>Organization / Person</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Un Business Partner puede combinar varios roles a la vez — por eso Tireless Tires terminó con FLVN00 y FLVN01 simultáneos, no dos registros separados.</div>
+      </div>
+      <div class="gui-statusbar"><span>2 entries</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning the Purchasing Organization to the Company Code</span>
+          <span class="sec-title-es">Asignando la Organización de Compras a la Sociedad</span>
+          <span class="sec-area">Enterprise Structure</span>
+        </div>
+        <div class="sec-desc">Sin esta asignación, la vista de Purchasing del Tipo 3 no tendría a qué sociedad conectarse.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Para que la Organización de Compras <strong>1010</strong> pueda operar sobre facturas de la sociedad <strong>1010</strong>, primero hay que asignarlas entre sí — la base de la vista de Purchasing que José completó en el Tipo 3.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Enterprise Structure
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Assignment
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Materials Management
+                      <ul>
+                        <li><span class="target">⚙️ Assign Purchasing Organization to Company Code</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Assign Purch. Org. — Company Code": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Assign Purch. Org. — Company Code": Overview</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Purchasing Organization</th><th>Company Code</th></tr></thead>
+          <tbody>
+            <tr><td>1010</td><td>1010</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Es común (aunque no obligatorio) que Purchasing Organization y Company Code compartan el mismo código, como acá.</div>
+      </div>
+      <div class="gui-statusbar"><span>1 entry</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting the Reconciliation Account on the G/L Master</span>
+          <span class="sec-title-es">Configurando la cuenta de reconciliación en el maestro de G/L</span>
+          <span class="sec-area">General Ledger</span>
+        </div>
+        <div class="sec-desc">El campo puntual que convierte una cuenta de mayor cualquiera en el puente hacia Payables Management.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      <strong>21100000</strong> no nace siendo una Reconciliation Account — hay un campo puntual en su maestro que la convierte en el puente hacia Payables Management, igual que se explicó en el Tipo 1 y el Tipo 2.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>Maestro de cuenta de mayor (no es un nodo de SPRO — es la transacción de mantenimiento del Chart of Accounts)
+          <ul>
+            <li><span class="target">⚙️ FS00 — G/L Account Master Record</span></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change G/L Account Centrally</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>G/L Account</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change G/L Account Centrally — T-Code: FS00</div>
+      <div class="gui-tabs">
+        <div class="gui-tab">Type/Description</div>
+        <div class="gui-tab active">Control Data</div>
+        <div class="gui-tab">Create/Bank/Interest</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>G/L Account</label><div class="val">21100000</div></div>
+        <div class="gui-field-row"><label>Short Text</label><div class="val">Payables Domestic</div></div>
+        <div class="gui-field-row"><label>Account Group</label><div class="val">Balance Sheet Accounts</div></div>
+        <div class="gui-field-row"><label>Recon. Acct for Acct Type</label><div class="val grey">K — Vendors</div></div>
+        <div class="gui-field-row"><label>Field Status Group</label><div class="val">G031</div></div>
+        <div class="gui-hint">💡 "K — Vendors" es la única razón por la que esta cuenta puede recibir postings automáticos desde Payables Management — sin este valor sería una cuenta de mayor común y corriente.</div>
+      </div>
+      <div class="gui-statusbar"><span>21100000 Payables Domestic</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Document Type for Supplier Invoices</span>
+          <span class="sec-title-es">Definiendo el tipo de documento para facturas de proveedor</span>
+          <span class="sec-area">Financial Accounting Global Settings</span>
+        </div>
+        <div class="sec-desc">De dónde sale la clasificación que el sistema le puso solo a la factura de José, sin que él eligiera nada.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cada vez que José contabilizó una factura (T3, sección 3), el sistema clasificó el asiento solo. Ese <strong>Journal Entry Type</strong> (T2, sección 7) no aparece de la nada: alguien tiene que definirlo acá, con su propio rango de numeración y qué tipos de cuenta acepta.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Types
+                      <ul>
+                        <li><span class="target">⚙️ Define Document Types for Entry View</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Document Types": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Document Types": Details</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Document Type</label><div class="val">KR</div></div>
+        <div class="gui-field-row"><label>Description</label><div class="val">Vendor Invoice</div></div>
+        <div class="gui-field-row"><label>Number Range</label><div class="val">19</div></div>
+        <div class="gui-field-row"><label>Account types allowed</label><div class="val" style="visibility:hidden;">.</div></div>
+        <div class="gui-checklist">
+          <span>☐ Assets</span><span>☐ Customer</span><span>☑ Vendor</span><span>☑ G/L Account</span><span>☐ Material</span>
+        </div>
+        <div class="gui-field-row"><label>Reverse Document Type</label><div class="val">KA</div></div>
+        <div class="gui-hint">💡 KR es el tipo estándar para factura de proveedor; KA es su reverso para Credit Memo — el mismo par que se vio en el Tipo 2.</div>
+      </div>
+      <div class="gui-statusbar"><span>KR Vendor Invoice</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Number Range for Document Type KR</span>
+          <span class="sec-title-es">Definiendo el rango de numeración para el tipo KR</span>
+          <span class="sec-area">Financial Accounting Global Settings</span>
+        </div>
+        <div class="sec-desc">Sin este rango, José no podría guardar ni una sola factura con el tipo de documento recién definido.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El tipo de documento <strong>KR</strong>, definido en la sección anterior, apunta al rango de numeración <strong>19</strong> — pero ese rango también necesita existir, con su propio intervalo de números y el contador actual.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Number Ranges
+                      <ul>
+                        <li><span class="target">⚙️ Define Document Number Ranges for Entry View</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Maintain FI Document Number Ranges</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Group</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Maintain FI Document Number Ranges — T-Code: FBN1</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Number Range</th><th>From Number</th><th>To Number</th><th>Current Number</th></tr></thead>
+          <tbody>
+            <tr><td>19</td><td>1900000000</td><td>1999999999</td><td>1900000047</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 La próxima factura KR que José contabilice en el Tipo 3 va a tomar el número 1900000048 — uno más que el actual.</div>
+      </div>
+      <div class="gui-statusbar"><span>Company Code 1010</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining Terms of Payment</span>
+          <span class="sec-title-es">Manteniendo los términos de pago</span>
+          <span class="sec-area">Financial Accounting</span>
+        </div>
+        <div class="sec-desc">El campo Payment Terms del Tipo 1 solo acepta valores que existan acá, con sus propios días y descuentos.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El campo <strong>Payment Terms</strong>, opcional en el Business Partner del Tipo 1 (sección 5), tampoco es un campo libre: solo acepta códigos que ya existan acá, cada uno con sus propios días de vencimiento y descuento por pronto pago.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Accounts Receivable and Accounts Payable
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Transactions
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Outgoing Invoices/Credit Memos
+                          <ul>
+                            <li><span class="target">⚙️ Maintain Terms of Payment</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Terms of Payment": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">🗑</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Terms of Payment": Overview — T-Code: OBB8</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Payment Terms</th><th>Description</th><th>Days</th><th>Cash Discount</th></tr></thead>
+          <tbody>
+            <tr><td>0001</td><td>Payable immediately</td><td>0</td><td>—</td></tr>
+            <tr><td>0002</td><td>30 days net</td><td>30</td><td>—</td></tr>
+            <tr><td>0003</td><td>14 days 2%, 30 days net</td><td>14 / 30</td><td>2%</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Si Tireless Tires negoció "30 días neto", a este código (0002) es al que va a apuntar su Business Partner del Tipo 1.</div>
+      </div>
+      <div class="gui-statusbar"><span>3 entries</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring the GR/IR Account Determination</span>
+          <span class="sec-title-es">Configurando la determinación de cuenta GR/IR</span>
+          <span class="sec-area">Materials Management</span>
+        </div>
+        <div class="sec-desc">Dónde se define QUÉ cuenta usa el sistema cada vez que hay que compensar mercadería contra factura.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Nadie elige la cuenta GR/IR a mano — el sistema la determina sola en cada Goods Receipt e Invoice Receipt (T1 sección 9, T2 sección 9). Esa automatización vive acá: la <strong>clave de transacción WRX</strong>, mapeada a una cuenta de mayor concreta.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Materials Management
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Valuation and Account Assignment
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Account Determination
+                      <ul>
+                        <li><span class="target">⚙️ Configure Automatic Postings</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Configure Automatic Postings</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Configure Automatic Postings — T-Code: OBYC</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Transaction Key</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>BSX</td><td>Inventory Posting</td></tr>
+            <tr style="background:#EEE6F5;"><td><b>WRX</b></td><td><b>GR/IR Clearing</b></td></tr>
+            <tr><td>PRD</td><td>Price Differences</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-field-row" style="margin-top:14px;"><label>Chart of Accounts</label><div class="val">BIKE</div></div>
+        <div class="gui-field-row"><label>Valuation Modif.</label><div class="val">0001</div></div>
+        <div class="gui-field-row"><label>G/L Account</label><div class="val">19100000 — GR/IR Clearing Acct</div></div>
+      </div>
+      <div class="gui-statusbar"><span>WRX · BIKE</span><span>INS</span></div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      Cuando entra la mercadería (Goods Receipt), el sistema debita <b>Inventario/Gasto (BSX)</b> y acredita <b>GR/IR (WRX)</b> — todavía no hay factura. Cuando llega la factura (Invoice Receipt), débita <b>GR/IR (WRX)</b> —la cierra— y acredita al proveedor. Todo automático, gracias a esta configuración — el mecanismo que se explicó en el Tipo 2.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Activating the Duplicate Invoice Check</span>
+          <span class="sec-title-es">Activando el chequeo de facturas duplicadas</span>
+          <span class="sec-area">Materials Management</span>
+        </div>
+        <div class="sec-desc">El chequeo automático que ayuda a prevenir el tipo de error que José tuvo que corregir a mano en el Tipo 3.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La <strong>Posting Correction</strong> que José tuvo que hacer en el Tipo 3 (sección 9) es exactamente el tipo de error que este chequeo automático ayuda a prevenir <strong>antes</strong> de que se guarde una factura duplicada o con datos inconsistentes.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Materials Management
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Logistics Invoice Verification
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Incoming Invoice
+                      <ul>
+                        <li><span class="target">⚙️ Set Check for Duplicate Invoices</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Duplicate Invoice Check": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Duplicate Invoice Check": Details</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Company Code</label><div class="val">1010</div></div>
+        <div class="gui-checklist">
+          <span>☑ Reference Document Number</span><span>☑ Invoice Date</span><span>☑ Company Code</span><span>☐ Gross Invoice Amount</span>
+        </div>
+        <div class="gui-hint">💡 Con Reference e Invoice Date marcados, el sistema avisa si alguien intenta cargar la misma factura de Tireless Tires dos veces — antes de que llegue a pagarse dos veces.</div>
+      </div>
+      <div class="gui-statusbar"><span>Company Code 1010</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up the Payment Program</span>
+          <span class="sec-title-es">Configurando el programa de pagos</span>
+          <span class="sec-area">Financial Accounting</span>
+        </div>
+        <div class="sec-desc">Qué sociedades pueden pagar, con qué métodos y desde qué banco — definido de una sola vez para todo Bike Company.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La corrida de pago que José ejecutó en el Tipo 3 (sección 5) no improvisa nada: qué sociedades pueden pagar, con qué métodos y desde qué banco se define acá, de una sola vez, para toda la organización.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Accounts Receivable and Accounts Payable
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Transactions
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Outgoing Payments
+                          <ul>
+                            <li class="folder"><span class="icon">📁</span>Automatic Outgoing Payments
+                              <ul>
+                                <li><span class="target">⚙️ Payment Method/Bank Selection for Payment Program</span></li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Payment Program Configuration</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Payment Program Configuration — T-Code: FBZP</div>
+      <div class="gui-tabs">
+        <div class="gui-tab">All Company Codes</div>
+        <div class="gui-tab active">Paying Company Codes</div>
+        <div class="gui-tab">Payment Methods in Country</div>
+        <div class="gui-tab">Bank Determination</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Company Code</label><div class="val">1010</div></div>
+        <div class="gui-field-row"><label>Paying Company Code</label><div class="val">1010</div></div>
+        <div class="gui-field-row"><label>Min. Amount Outgoing</label><div class="val">0,00</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Payment Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>T</td><td>Bank Transfer</td></tr>
+            <tr><td>C</td><td>Check</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Esta es la pantalla que hace posible que la corrida de pago del Tipo 3 tenga "Bank Transfer" como opción disponible para elegir.</div>
+      </div>
+      <div class="gui-statusbar"><span>1010 · Paying Company Code</span><span>INS</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Payables Management · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

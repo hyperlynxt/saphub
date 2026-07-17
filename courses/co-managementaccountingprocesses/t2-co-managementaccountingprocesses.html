@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Management Accounting Processes — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t2);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #2A1618 55%, #4A1F22 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:640px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(224,133,133,0.14);
+    border-left:4px solid var(--t2);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:640px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t2-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(169,68,68,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .kind-tag{ display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.3px; padding:2px 9px; border-radius:20px; margin-left:2px; }
+  .kind-tag.deep{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .kind-tag.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+
+  .theory-box{
+    background:var(--t2-pale);
+    border-left:4px solid var(--t2-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t2-dark); font-size:9px; top:4px; }
+  .flow-connector{
+    position:absolute; top:20px; right:-21px; width:28px; height:28px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  .cardrow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .cardrow .item{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .formula-box{ background:var(--bg); border-radius:8px; padding:12px 14px; margin-top:14px; font-size:0.8rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:4px; }
+  .formula-box div.frow{ padding:2px 0; color:var(--body); }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:180px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t2-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip p.chip-def{ font-size:0.74rem; color:var(--body); margin:6px 0 0; line-height:1.4; }
+
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-orange{ background:rgba(224,123,57,0.08); border-color:rgba(224,123,57,0.28); }
+  .chip-orange .chip-title{ color:#E07B39; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+  .chip-red{ background:rgba(192,57,43,0.07); border-color:rgba(192,57,43,0.28); }
+  .chip-red .chip-title{ color:#C0392B; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; display:block; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Commitment Postings</a>
+  <a href="#s2">Value Types in Detail</a>
+  <a href="#s3">Profit Center: Always Statistical</a>
+  <a href="#s4">WBS Elements &amp; Sales Order Items</a>
+  <a href="#s5">Quantity vs. Price Variance</a>
+  <a href="#s6">Three Views of a Cost Estimate</a>
+  <a href="#s7">Resource-Related Billing</a>
+  <a href="#s8">WIP &amp; Reserves</a>
+  <a href="#s9">Active vs. Passive Accruals</a>
+  <a href="#s10">The Benefits of EBRR</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Controlling</span>
+      <span class="pill pill-secondary">Profitability Analysis</span>
+      <span class="pill pill-secondary">Production Planning</span>
+      <span class="pill pill-secondary">Sales &amp; Distribution</span>
+    </div>
+    <h1><span class="accent">Deeper</span> into Management Accounting</h1>
+    <h2>Profundización en Procesos de Contabilidad de Gestión</h2>
+    <p class="desc">Segunda capa sobre Processes in Management Accounting: cinco temas adyacentes que el Tipo 1 no cubrió (commitments, WBS de proyecto, resource-related billing, reservas de WIP, la mecánica contable de EBRR) y cinco de los mismos temas del Tipo 1 llevados a más detalle (tipos de valor, Profit Center, varianzas, las tres vistas del cost estimate).</p>
+    <div class="hlbox">Resumen Visual — <b>Processes in Management Accounting</b>, Tipo 2 (Profundización).</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — ADYACENTE: commitment postings -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Commitment Postings</span>
+          <span class="sec-title-es">Imputaciones de Compromiso</span>
+          <span class="kind-tag adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mostró Value Type 4 (real) y 11 (estadística) — falta el tercer tipo de valor mencionado en el curso: el 22, compromiso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El curso menciona que existen <strong>más de 100 tipos de valor</strong> en SAP S/4HANA, y da como tercer ejemplo el <strong>Value Type 22</strong>, que define un <strong>compromiso (commitment)</strong>. Un compromiso registra, de forma estadística, un gasto futuro ya comprometido — por ejemplo al emitir una orden de compra — antes de que exista una imputación real. Esto le da visibilidad al controller sobre el gasto esperado incluso antes de recibir la mercadería o la factura.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#5A6B8C;">
+            <span class="icon">📝</span><span class="title-en">Purchase Order Issued</span><span class="title-es">Orden de compra emitida</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Value Type 22 · Commitment</li>
+            <li>Estadística — visibilidad temprana del gasto, aún no afecta el resultado</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">🧾</span><span class="title-en">Goods Receipt / Invoice</span><span class="title-es">Recepción / factura</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Value Type 4 · Real Actual</li>
+            <li>El compromiso se libera y se reemplaza por la imputación real</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — PROFUNDIZACIÓN: value types -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Value Types in Detail</span>
+          <span class="sec-title-es">Tipos de Valor en detalle</span>
+          <span class="kind-tag deep">Profundización</span>
+        </div>
+        <div class="sec-desc">Los tres tipos de valor que aparecen explícitamente en el curso, uno al lado del otro.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El parámetro <strong>Value Type</strong> es lo que le permite al sistema — y al reporting — distinguir en qué momento y con qué naturaleza está una transacción, sin necesitar objetos distintos para cada estado.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Value Type</th><th>Categoría</th><th>Qué representa</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">4</span></td>
+            <td><span class="badge badge-accent">Real · Actual</span></td>
+            <td>Imputación real de un hecho ya ocurrido — ej. la factura de gastos de la flota de autos.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">11</span></td>
+            <td><span class="badge badge-neutral">Estadística · Actual</span></td>
+            <td>Imputación adicional informativa que no afecta el resultado — ej. el WBS de cada auto.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">22</span></td>
+            <td><span class="badge badge-neutral">Estadística · Compromiso</span></td>
+            <td>Gasto futuro ya comprometido pero aún no real — ej. una orden de compra abierta.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">100+ tipos en total</span></td>
+            <td><span class="badge badge-accent">—</span></td>
+            <td>Cada tipo de valor filtra un momento o naturaleza distinta de la transacción para reporting.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — PROFUNDIZACIÓN: profit center fan-in -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Profit Center: Always Statistical</span>
+          <span class="sec-title-es">Profit Center: siempre estadístico</span>
+          <span class="kind-tag deep">Profundización</span>
+        </div>
+        <div class="sec-desc">Cómo distintos objetos reales terminan, todos, alimentando al mismo Profit Center de forma estadística.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El Profit Center es el único tipo de objeto <strong>siempre estadístico</strong> porque Profit Center Accounting es, por definición, management accounting estadística. En la práctica esto significa que un <strong>Cost Center</strong>, una <strong>Production Order</strong> o un <strong>Sales Order Item</strong> — todos objetos reales — pueden asignarse, además, a un Profit Center: por ejemplo, el Profit Center de una orden de producción se imputa de forma estadística, mientras la orden en sí recibe los valores reales.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+        <line x1="250" y1="85" x2="250" y2="150" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <line x1="650" y1="85" x2="650" y2="150" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <line x1="450" y1="85" x2="450" y2="220" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <line x1="250" y1="150" x2="450" y2="150" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <line x1="650" y1="150" x2="450" y2="150" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <line x1="450" y1="150" x2="450" y2="220" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+
+        <rect x="160" y="15" width="180" height="70" rx="10" fill="#5A6B8C"/>
+        <text x="250" y="45" text-anchor="middle" fill="white" class="box-label">Cost Center</text>
+        <text x="250" y="62" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Real</text>
+
+        <rect x="360" y="15" width="180" height="70" rx="10" fill="#1A6B99"/>
+        <text x="450" y="45" text-anchor="middle" fill="white" class="box-label">Production Order</text>
+        <text x="450" y="62" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Real</text>
+
+        <rect x="560" y="15" width="180" height="70" rx="10" fill="#E07B39"/>
+        <text x="650" y="45" text-anchor="middle" fill="white" class="box-label">Sales Order Item</text>
+        <text x="650" y="62" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Real</text>
+
+        <rect x="350" y="220" width="200" height="75" rx="10" fill="#0A0F1C" stroke="#A94444" stroke-width="2"/>
+        <text x="450" y="250" text-anchor="middle" fill="white" class="box-label">Profit Center</text>
+        <text x="450" y="267" text-anchor="middle" fill="#E8A0A0" class="box-sub">Único objeto siempre estadístico</text>
+        <text x="450" y="282" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">No afecta el resultado en CO-PA</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — ADYACENTE: WBS y sales order item -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">WBS Elements &amp; Sales Order Items</span>
+          <span class="sec-title-es">Elementos PEP y posiciones de pedido</span>
+          <span class="kind-tag adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mostró el WBS estadístico de un auto de flota; en un proyecto, el WBS cumple un rol distinto: agrega valores de la sales order item.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Si una <strong>sales order item</strong> es parte de un proyecto más grande y debe evaluarse en ese contexto, se le puede asignar además el <strong>WBS Element</strong> del proyecto. Con esa asignación, los valores actuales imputados a la sales order item terminan también reflejados en el WBS Element del proyecto.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;">
+            <span class="icon">🧾</span><span class="title-en">Sales Order Item</span><span class="title-es">Posición de pedido</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Cost object real: carga costos y, al facturar, ingresos</li>
+            <li>Se evalúa con Results Analysis</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">🗂️</span><span class="title-en">Project WBS Element</span><span class="title-es">Elemento PEP del proyecto</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Recibe los valores actuales posteados a la sales order item</li>
+            <li>Permite evaluar el ítem en el contexto del proyecto completo</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — PROFUNDIZACIÓN: quantity vs price variance -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Quantity Variance vs. Price Variance</span>
+          <span class="sec-title-es">Varianza de Cantidad vs. de Precio</span>
+          <span class="kind-tag deep">Profundización</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mencionó que la varianza tiene distintas categorías — estas son las dos que el curso nombra explícitamente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La diferencia entre <strong>costo meta</strong> y <strong>costo actual</strong> es la varianza, y se compone de distintas categorías. Analizarlas por separado — en vez de mirar solo el número total — es lo que permite derivar medidas concretas para mejorar la eficiencia del centro de costo.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">📏</span>Quantity Variance <span class="en-tag">· Varianza de Cantidad</span></h4>
+          <p>Parte de la varianza que se explica porque la <strong>cantidad de recurso realmente consumida</strong> difiere de la cantidad esperada para la actividad real.</p>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">💲</span>Price Variance <span class="en-tag">· Varianza de Precio</span></h4>
+          <p>Parte de la varianza que se explica porque el <strong>precio real</strong> pagado por el recurso difiere del precio planificado usado para calcular el costo meta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — PROFUNDIZACIÓN: 3 vistas del cost estimate -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Three Views of a Cost Estimate</span>
+          <span class="sec-title-es">Tres vistas del Cost Estimate</span>
+          <span class="kind-tag deep">Profundización</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mostró de dónde salen las cantidades y precios; esto es cómo se presentan una vez calculados.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El cost estimate con quantity structure representa el costo de un producto de tres maneras distintas, cada una útil para un análisis diferente.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow" style="grid-template-columns:repeat(3,1fr);">
+        <div class="item">
+          <span class="icon">📋</span>
+          <h5>Itemization</h5>
+          <span class="en">Desglose de costos</span>
+          <p>Lista línea por línea cada componente de costo con su origen y monto individual.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🧩</span>
+          <h5>Cost Components</h5>
+          <span class="en">Agrupación por componente</span>
+          <p>Agrupa los costos en categorías (ej. material, producción, overhead) para análisis de estructura.</p>
+        </div>
+        <div class="item">
+          <span class="icon">💰</span>
+          <h5>Valuated Costing Structure</h5>
+          <span class="en">Estructura de costeo valorada</span>
+          <p>La estructura completa ya valorada, base directa del price update al material master.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — ADYACENTE: resource-related billing -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Resource-Related Billing</span>
+          <span class="sec-title-es">Facturación basada en recursos</span>
+          <span class="kind-tag adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mostró el escenario MTO de servicio; esto es específicamente cómo se calcula el monto a facturar en ese escenario.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En un servicio sin producción, los empleados del centro de costo de servicios registran <strong>cantidades de actividad real</strong>, que se asignan a la sales order item — de forma manual o mediante process allocation automática. En <strong>Resource-Related Billing</strong>, esas mismas cantidades reales son la base para calcular el monto de la factura; el ingreso actual del documento de facturación se asigna después a la sales order item.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#5A6B8C;">
+            <span class="icon">⏱️</span><span class="title-en">Actual Activity Quantities</span><span class="title-es">Cantidades reales</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Registradas por los empleados del centro de costo de servicios</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">🔀</span><span class="title-en">Allocation</span><span class="title-es">Asignación</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Manual activity allocation</li>
+            <li>o automatic process allocation</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">🧾</span><span class="title-en">Invoice Amount</span><span class="title-es">Monto facturado</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Resource-Related Billing calcula el monto con esas cantidades</li>
+            <li>El ingreso actual se asigna a la sales order item</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — PROFUNDIZACIÓN: WIP y reservas -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Results Analysis: WIP &amp; Reserves</span>
+          <span class="sec-title-es">Results Analysis: WIP y reservas</span>
+          <span class="kind-tag deep">Profundización</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mencionó Results Analysis como evaluación de la sales order item; esto es lo que puede calcular.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      A diferencia de la orden de producción, para la sales order item se hace <strong>Results Analysis</strong> en vez de análisis de varianzas: se compara la relación costo plan/actual contra la relación ingreso plan/actual. Cuando esa relación no está balanceada, o cuando hay costos incurridos pero aún no facturados, el sistema calcula uno de estos resultados.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">🏗️</span><span class="chip-title">Work in Process (WIP)</span><span class="chip-en">trabajo en proceso</span><p class="chip-def">Costos incurridos por trabajo aún no facturado.</p></div>
+        <div class="chip chip-teal"><span class="chip-icon">📄</span><span class="chip-title">Reserve for Unrealized Costs</span><span class="chip-en">reserva por costos no realizados</span><p class="chip-def">Costos previstos que todavía no ocurrieron.</p></div>
+        <div class="chip chip-red"><span class="chip-icon">⚠️</span><span class="chip-title">Reserve for Imminent Loss</span><span class="chip-en">reserva por pérdida inminente</span><p class="chip-def">Cuando el costo total esperado supera al ingreso esperado.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — ADYACENTE: active vs liability A&D -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Active vs. Passive Accruals</span>
+          <span class="sec-title-es">Devengos activos vs. pasivos</span>
+          <span class="kind-tag adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mostró el resultado numérico de EBRR (1200 − 800 = 400); esto es qué representa contablemente ese número.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      EBRR hace dos balances en paralelo: compensa el <strong>ingreso calculado</strong> contra el <strong>ingreso real</strong> de la facturación, y balancea los <strong>Accruals &amp; Deferrals activos</strong> contra el <strong>A&amp;D pasivo (liability)</strong>. Además de la imputación real, EBRR genera de inmediato una imputación de devengo por el mismo monto que la facturación.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">📈</span>Active A&amp;D <span class="en-tag">· Devengo Activo</span></h4>
+          <p>Representa el ingreso ya <strong>calculado</strong> (vía POC) que todavía no fue facturado — un activo en el balance.</p>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📉</span>Liability A&amp;D <span class="en-tag">· A&amp;D Pasivo</span></h4>
+          <p>Se genera automáticamente al momento de facturar, por el mismo monto que la facturación — un pasivo que balancea el activo previo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — ADYACENTE: beneficios EBRR -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Benefits of EBRR</span>
+          <span class="sec-title-es">Los beneficios de EBRR</span>
+          <span class="kind-tag adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Por qué vale la pena todo el mecanismo de POC y devengo que se vio en el Tipo 1 y en esta sección.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Gracias al devengo inmediato en cada momento, el <strong>balance</strong> y el <strong>estado de resultados</strong> quedan siempre actualizados y reflejan correctamente la situación de ganancias — reduciendo de forma significativa el esfuerzo del cierre de período y cumpliendo con las normas contables.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">⏱️</span><span class="chip-title">Real-Time Reporting</span><span class="chip-en">reporte en tiempo real</span><p class="chip-def">Balance y P&amp;L actualizados en cualquier momento, no solo al facturar.</p></div>
+        <div class="chip chip-teal"><span class="chip-icon">🔗</span><span class="chip-title">No Reconciliation Efforts</span><span class="chip-en">sin esfuerzo de conciliación</span><p class="chip-def">El resultado ya está reconciliado en cada imputación de devengo.</p></div>
+        <div class="chip chip-gold"><span class="chip-icon">🔍</span><span class="chip-title">Full Transparency</span><span class="chip-en">transparencia total</span><p class="chip-def">Se ve en todo momento cuánto del ingreso plan ya se reconoció.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos introducidos en este archivo (Tipo 2 — Profundización). No repite términos del glosario del Tipo 1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Commitment</div><div class="term-es">Compromiso</div><div class="term-def">Gasto futuro registrado de forma estadística (Value Type 22) antes de existir imputación real.</div></div>
+      <div class="gcard"><div class="term-en">Purchase Order</div><div class="term-es">Orden de Compra</div><div class="term-def">Documento que origina un commitment antes de la recepción o factura.</div></div>
+      <div class="gcard"><div class="term-en">Quantity Variance</div><div class="term-es">Varianza de Cantidad</div><div class="term-def">Parte de la varianza explicada por diferencias en la cantidad de recurso consumida.</div></div>
+      <div class="gcard"><div class="term-en">Price Variance</div><div class="term-es">Varianza de Precio</div><div class="term-def">Parte de la varianza explicada por diferencias entre el precio real y el planificado.</div></div>
+      <div class="gcard"><div class="term-en">Itemization</div><div class="term-es">Desglose de Costos</div><div class="term-def">Vista línea por línea de cada componente de costo de un cost estimate.</div></div>
+      <div class="gcard"><div class="term-en">Cost Component</div><div class="term-es">Componente de Costo</div><div class="term-def">Agrupación de costos en categorías dentro del cost estimate.</div></div>
+      <div class="gcard"><div class="term-en">Valuated Costing Structure</div><div class="term-es">Estructura de Costeo Valorada</div><div class="term-def">Vista completa y valorada del cost estimate, base del price update.</div></div>
+      <div class="gcard"><div class="term-en">Resource-Related Billing</div><div class="term-es">Facturación basada en Recursos</div><div class="term-def">Cálculo del monto a facturar a partir de las cantidades reales de actividad.</div></div>
+      <div class="gcard"><div class="term-en">Work in Process (WIP)</div><div class="term-es">Trabajo en Proceso</div><div class="term-def">Costos incurridos en una sales order item por trabajo aún no facturado.</div></div>
+      <div class="gcard"><div class="term-en">Reserve for Unrealized Costs</div><div class="term-es">Reserva por Costos no Realizados</div><div class="term-def">Reserva calculada en Results Analysis para costos previstos que aún no ocurrieron.</div></div>
+      <div class="gcard"><div class="term-en">Reserve for Imminent Loss</div><div class="term-es">Reserva por Pérdida Inminente</div><div class="term-def">Reserva cuando el costo total esperado de la sales order item supera al ingreso esperado.</div></div>
+      <div class="gcard"><div class="term-en">Active Accruals &amp; Deferrals</div><div class="term-es">Devengos y Diferimientos Activos</div><div class="term-def">Ingreso ya calculado por POC que todavía no fue facturado; un activo en el balance.</div></div>
+      <div class="gcard"><div class="term-en">Liability A&amp;D</div><div class="term-es">A&amp;D Pasivo</div><div class="term-def">Devengo generado al facturar, por el mismo monto, que balancea el A&amp;D activo.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Management Accounting Processes · Biblioteca de Guías SAP · Fuente: documento del curso</footer>
+
+</body>
+</html>

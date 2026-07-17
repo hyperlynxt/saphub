@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · G/L Account Master Data — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t2);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:680px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(224,133,133,0.14);
+    border-left:4px solid var(--t2);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:680px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t2-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(169,68,68,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+
+  /* THEORY BOX */
+  .theory-box{
+    background:var(--t2-pale);
+    border-left:4px solid var(--t2-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  /* MINI-FLOW */
+  .mini-flow{ display:flex; align-items:stretch; gap:16px; min-width:640px; }
+  .mini-step{ flex:1; background:white; border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:18px 16px; text-align:center; position:relative; }
+  .mini-step.alert{ border-style:solid; border-color:var(--cat-alert); background:rgba(192,57,43,0.06); }
+  .mini-step .icon{ font-size:24px; display:block; margin-bottom:8px; }
+  .mini-step h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--ink); }
+  .mini-step .en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-bottom:8px; }
+  .mini-step p{ margin:0; font-size:0.78rem; color:var(--body); line-height:1.5; }
+  .flow-connector{
+    position:absolute; top:28px; right:-24px; width:26px; height:26px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* EQUATION */
+  .equation-row{ display:flex; align-items:center; justify-content:center; gap:22px; flex-wrap:wrap; }
+  .eq-box{ flex:1; min-width:230px; background:white; border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 22px; text-align:center; }
+  .eq-box .icon{ font-size:24px; display:block; margin-bottom:8px; }
+  .eq-box h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.92rem; color:var(--ink); }
+  .eq-box p{ margin:0; font-size:0.78rem; color:var(--body); }
+  .eq-symbol{ font-size:2.1rem; font-weight:800; color:var(--t2-dark); flex-shrink:0; }
+  .eq-note{ text-align:center; margin-top:18px; font-size:0.83rem; color:var(--body); }
+  .eq-note b{ color:var(--t2-dark); }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-grid-3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.before{ border-top:4px solid #94A3B8; }
+  .cmp-card.after{ border-top:4px solid var(--t2-dark); }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.02rem; margin:0 0 10px; color:var(--ink); }
+  .cmp-card .mini-box{ background:var(--bg); border-radius:8px; padding:10px 12px; margin-bottom:8px; font-size:0.8rem; color:var(--body); }
+  .cmp-card .mini-box b{ color:var(--ink); }
+  .cmp-card .mini-box.zero{ background:var(--t2-pale); color:var(--t2-dark); font-weight:700; text-align:center; }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card p.plain{ font-size:0.83rem; color:var(--body); line-height:1.6; margin:0; }
+
+  /* CHIPS */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:180px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t2-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip p.chip-desc{ font-size:0.72rem; color:var(--body); margin:6px 0 0; line-height:1.4; }
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(26,107,153,0.08); border-color:rgba(26,107,153,0.28); }
+  .chip-teal .chip-title{ color:#1A6B99; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+  .chip-red{ background:rgba(192,57,43,0.07); border-color:rgba(192,57,43,0.28); }
+  .chip-red .chip-title{ color:#C0392B; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+  .box-mono{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12.5px; }
+
+  @media (max-width:760px){
+    .cmp-grid, .cmp-grid-3{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Account Types</a>
+  <a href="#s2">COA Types</a>
+  <a href="#s3">Account Group</a>
+  <a href="#s4">Fiscal Year</a>
+  <a href="#s5">One Account, Many CCs</a>
+  <a href="#s6">Cost Center</a>
+  <a href="#s7">Block → Anomaly</a>
+  <a href="#s8">Fiori Apps</a>
+  <a href="#s9">Collective Steps</a>
+  <a href="#s10">Segment &amp; IFRS 8</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">General Ledger</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Enterprise Structure</span>
+      <span class="pill pill-secondary">Chart of Accounts</span>
+    </div>
+    <h1>Organizational Structure &amp; <span class="accent">G/L Master Data</span></h1>
+    <h2>Estructura Organizativa y Datos Maestros de Cuentas de Mayor — Profundización</h2>
+    <p class="desc">El mecanismo interno detrás de lo visto en el Tipo 1 — tipos de cuenta, Account Group, y la cadena real entre un bloqueo y una anomalía en Controlling — más los temas que el Tipo 1 no cubrió: los otros Charts of Accounts, Fiscal Year Variant, Cost Center y el porqué regulatorio del Segmento.</p>
+    <div class="hlbox">Resumen Visual — <b>G/L Account Master Data</b>, Tipo 2 (Profundización). 10 secciones — 5 de mayor profundidad sobre lo visto en T1, 5 de temas adyacentes conectados.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — Los cinco tipos de cuenta (PROFUNDIDAD) -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Five G/L Account Types</span>
+          <span class="sec-title-es">Los cinco tipos de Cuenta de Mayor</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El campo G/L Account Type no es una sola cosa — hay cinco variantes con comportamientos distintos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El campo <strong>G/L Account Type</strong> no es una sola cosa — el Plan de Cuentas admite cinco tipos distintos, y cada uno habilita comportamientos diferentes en FI y CO. Las cuentas de tipo <strong>Primary Costs or Revenue</strong> y <strong>Secondary Costs</strong> son las que requieren la vista de Controlling Area (T1 §4).
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-teal">
+          <span class="chip-icon">🏷️</span><span class="chip-title">Primary Costs or Revenue</span><span class="chip-en">Costos/ingresos primarios</span>
+          <p class="chip-desc">Requiere Cost Element Category — habilita la vista Controlling Area.</p>
+        </div>
+        <div class="chip chip-purple">
+          <span class="chip-icon">🔁</span><span class="chip-title">Secondary Costs</span><span class="chip-en">Costos secundarios</span>
+          <p class="chip-desc">Solo para asignaciones internas entre objetos de Controlling.</p>
+        </div>
+        <div class="chip chip-gold">
+          <span class="chip-icon">💵</span><span class="chip-title">Cash Account</span><span class="chip-en">Cuenta de caja</span>
+          <p class="chip-desc">Efectivo y equivalentes de efectivo.</p>
+        </div>
+        <div class="chip chip-navy">
+          <span class="chip-icon">📊</span><span class="chip-title">Balance Sheet</span><span class="chip-en">Cuenta de balance</span>
+          <p class="chip-desc">Activos, pasivos y patrimonio — sin vista de Controlling Area.</p>
+        </div>
+        <div class="chip chip-red">
+          <span class="chip-icon">➖</span><span class="chip-title">Non-operating Income or Expense</span><span class="chip-en">Resultado no operativo</span>
+          <p class="chip-desc">Movimientos ajenos a la actividad principal del negocio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — Operating/Group/Country COA (ADYACENTE) -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Operating, Group &amp; Country Chart of Accounts</span>
+          <span class="sec-title-es">Plan de Cuentas Operativo, de Grupo y País</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El Chart of Accounts que ya conocés no es el único tipo que existe en SAP.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>Operating Chart of Accounts</strong> es el que ya vimos (T1 §1) — obligatorio, usado para las imputaciones diarias. SAP permite además un <strong>Group Chart of Accounts</strong> opcional, para consolidar sociedades con distintos planes, y un <strong>Country Chart of Accounts</strong> opcional, para cumplir requisitos estatutarios locales.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid-3">
+        <div class="cmp-card" style="border-top:4px solid var(--t2-dark);">
+          <h4>✅ Operating COA <span style="font-size:0.72rem;color:var(--muted);font-style:italic;font-weight:400;">· Operativo</span></h4>
+          <p class="plain">Obligatorio. Usado para las imputaciones diarias de la Company Code — el que se vio en T1 §1.</p>
+        </div>
+        <div class="cmp-card" style="border-top:4px solid #1A6B99;">
+          <h4>🌐 Group COA <span style="font-size:0.72rem;color:var(--muted);font-style:italic;font-weight:400;">· De Grupo</span></h4>
+          <p class="plain">Opcional. Consolida sociedades que usan distintos Planes de Cuentas operativos entre sí.</p>
+        </div>
+        <div class="cmp-card" style="border-top:4px solid #7E4FBF;">
+          <h4>🏛️ Country COA <span style="font-size:0.72rem;color:var(--muted);font-style:italic;font-weight:400;">· País</span></h4>
+          <p class="plain">Opcional. Cubre el formato de reporte estatutario exigido en un país puntual.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — Account Group controla la pantalla (PROFUNDIDAD) -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Account Group Controls the Company Code Screen</span>
+          <span class="sec-title-es">El Account Group controla la pantalla de Company Code</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">No es solo una etiqueta organizativa — decide qué campos aparecen.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>Account Group</strong> asignado al crear la cuenta (T1 §3) no es solo una etiqueta organizativa: determina qué campos aparecen, cuáles son obligatorios y cuáles quedan ocultos en la pantalla de <strong>Company Code Data</strong>. Es lo que evita que cada sociedad configure esos campos de forma distinta.
+    </div>
+    <div class="visual-wrap">
+      <div class="mini-flow">
+        <div class="mini-step">
+          <span class="icon">🏷️</span>
+          <h5>Assign Account Group</h5>
+          <span class="en">Asignar al crear la cuenta</span>
+          <p>Se elige un Account Group (ej. cuentas de gastos, cuentas de balance).</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">🖥️</span>
+          <h5>Field Status Applied</h5>
+          <span class="en">Se aplica el status de campo</span>
+          <p>El Account Group determina qué campos son obligatorios, opcionales u ocultos en Company Code Data.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">✅</span>
+          <h5>Consistent Data Entry</h5>
+          <span class="en">Carga consistente</span>
+          <p>Todas las cuentas del mismo grupo piden los mismos datos, en cualquier sociedad.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — Fiscal Year Variant (ADYACENTE) -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Fiscal Year Variant — What Must Match</span>
+          <span class="sec-title-es">Variante de Ejercicio — qué debe coincidir</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Dentro de una misma Controlling Area, no todo puede variar libremente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Dentro de una misma <strong>Controlling Area</strong> (T1 §1), no todo puede variar libremente entre Company Codes. El <strong>Chart of Accounts</strong> y la <strong>Fiscal Year Variant</strong> — que define la cantidad y duración de los períodos contables — deben coincidir; la moneda, en cambio, sí puede ser distinta.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>🔒 Debe Coincidir</h4>
+          <div class="mini-box"><b>Chart of Accounts</b> — mismo Plan de Cuentas para todas las Company Codes de la CA.</div>
+          <div class="mini-box"><b>Fiscal Year Variant</b> — misma cantidad y duración de períodos contables.</div>
+        </div>
+        <div class="cmp-card after">
+          <h4>🔓 Puede Diferir</h4>
+          <div class="mini-box zero">Account Currency</div>
+          <div class="mini-box">Cada Company Code puede llevar su contabilidad en su propia moneda local (T1 §1: DE01 en EUR, US01 en USD).</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — Un segmento COA, varias CC (PROFUNDIDAD) -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">One Chart of Accounts Segment, Many Company Codes</span>
+          <span class="sec-title-es">Un segmento de Plan de Cuentas, varias Company Codes</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">La misma cuenta, extendida con datos propios en cada sociedad.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El segmento a nivel Chart of Accounts (T1 §2) se define <strong>una sola vez</strong>, pero puede extenderse a <strong>varias Company Codes</strong> con datos propios en cada una. La cuenta <strong>21100000</strong> es un ejemplo real: misma definición de Plan de Cuentas, con un segmento de Company Code distinto en DE01 y en US01.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="75" x2="450" y2="92" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="280" y1="92" x2="620" y2="92" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="280" y1="92" x2="280" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="620" y1="92" x2="620" y2="115" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="270" y="15" width="360" height="60" rx="10" fill="#0A0F1C"/>
+        <text x="450" y="41" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13.5">G/L Account 21100000</text>
+        <text x="450" y="58" text-anchor="middle" fill="#7FE3D8" class="box-sub">Chart of Accounts Segment — definido una vez</text>
+
+        <rect x="140" y="115" width="280" height="90" rx="10" fill="#A94444"/>
+        <text x="280" y="141" text-anchor="middle" fill="white" class="box-label">Company Code DE01 (1010)</text>
+        <text x="280" y="159" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">EUR · datos propios de la sociedad</text>
+        <text x="280" y="178" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">Field Status Group, Tax Info propios</text>
+
+        <rect x="480" y="115" width="280" height="90" rx="10" fill="#A94444"/>
+        <text x="620" y="141" text-anchor="middle" fill="white" class="box-label">Company Code US01 (1710)</text>
+        <text x="620" y="159" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">USD · datos propios de la sociedad</text>
+        <text x="620" y="178" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">Field Status Group, Tax Info propios</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — Cost Center (ADYACENTE) -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Cost Center — the CO Assignment Behind an Expense</span>
+          <span class="sec-title-es">Cost Center — la asignación de CO detrás de un gasto</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Qué es concretamente la asignación de CO que T1 §4 mencionó.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando una cuenta exige asignación de CO (T1 §4), el <strong>Cost Center</strong> suele ser esa asignación. Es la unidad de Controlling donde se acumula el costo — captura internamente el gasto que el asiento de FI generó, y desde ahí alimenta los reportes de gestión.
+    </div>
+    <div class="visual-wrap">
+      <div class="mini-flow">
+        <div class="mini-step">
+          <span class="icon">🧾</span>
+          <h5>Expense Posted</h5>
+          <span class="en">Se imputa un gasto</span>
+          <p>La cuenta es de tipo Primary Costs — exige una asignación de CO (T1 §4).</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">🎯</span>
+          <h5>Cost Center Assigned</h5>
+          <span class="en">Se indica el Cost Center</span>
+          <p>El usuario asigna el Cost Center que absorbe ese costo.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">📊</span>
+          <h5>Captured in CO</h5>
+          <span class="en">Queda en Controlling</span>
+          <p>El costo alimenta los reportes de gestión de ese Cost Center.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — De bloqueo a anomalía (PROFUNDIDAD) -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">From a Blocked Account to a Cost Center Anomaly</span>
+          <span class="sec-title-es">De una cuenta bloqueada a una anomalía en el reporte</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Por qué un bloqueo local terminó viéndose en un reporte de otra área.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un bloqueo a nivel Company Code (T1 §5) no se queda aislado en esa sociedad. Si la Company Code bloqueada está asignada a una Controlling Area, los gastos que no se pueden postear tampoco llegan a los reportes de Cost Center de esa Controlling Area — el síntoma aparece varios pasos más arriba de la causa.
+    </div>
+    <div class="visual-wrap">
+      <div class="mini-flow">
+        <div class="mini-step alert">
+          <span class="icon">🚫</span>
+          <h5>Block Set on Company Code</h5>
+          <span class="en">Bloqueo a nivel Company Code</span>
+          <p>Cuenta 65991000 bloqueada para imputación solo en DE01.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#C0392B" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step alert">
+          <span class="icon">📉</span>
+          <h5>No Expense Postings in DE01</h5>
+          <span class="en">Sin gastos imputados</span>
+          <p>Ningún movimiento nuevo entra a esa cuenta en esa sociedad.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#C0392B" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step alert">
+          <span class="icon">🔗</span>
+          <h5>DE01 Reports Into A000</h5>
+          <span class="en">DE01 pertenece a la Controlling Area</span>
+          <p>Los Cost Centers de DE01 se agregan en la Controlling Area A000.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#C0392B" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step alert">
+          <span class="icon">⚠️</span>
+          <h5>Cost Center Report Looks Off</h5>
+          <span class="en">Anomalía en el reporte</span>
+          <p>Los montos actuales de gasto aparecen inusualmente bajos — el síntoma llega hasta acá.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — Apps Fiori (ADYACENTE) -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Fiori Apps Behind G/L Account Maintenance</span>
+          <span class="sec-title-es">Las apps Fiori detrás del mantenimiento de Cuentas de Mayor</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Tres apps distintas cubren tres necesidades distintas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Mantener una Cuenta de Mayor involucra más de una app Fiori. <strong>Manage G/L Account Master Data</strong> crea y edita cuentas; <strong>G/L Account Changes</strong> (T1 §7) audita los cambios; y el procesamiento colectivo (T1 §8) tiene su propia pantalla de selección masiva.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-teal">
+          <span class="chip-icon">🗂️</span><span class="chip-title">Manage G/L Account Master Data</span><span class="chip-en">Crear y extender cuentas</span>
+          <p class="chip-desc">Mantiene la cuenta en sus distintos niveles (COA, Company Code, Controlling Area).</p>
+        </div>
+        <div class="chip chip-navy">
+          <span class="chip-icon">🕵️</span><span class="chip-title">G/L Account Changes</span><span class="chip-en">Auditoría de cambios</span>
+          <p class="chip-desc">Qué cambió, cuándo, y quién lo hizo (T1 §7).</p>
+        </div>
+        <div class="chip chip-purple">
+          <span class="chip-icon">📦</span><span class="chip-title">Mass / Collective Processing</span><span class="chip-en">Cambios masivos</span>
+          <p class="chip-desc">Cambia el mismo campo en muchas cuentas a la vez (T1 §8).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — Procesamiento colectivo, tres vistas (PROFUNDIDAD) -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Collective Processing — the Three Views</span>
+          <span class="sec-title-es">Procesamiento colectivo — las tres vistas</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">La secuencia concreta detrás de un cambio masivo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El procesamiento colectivo (T1 §8) sigue una secuencia concreta. Primero se elige el <strong>rango de cuentas</strong>, después la <strong>vista</strong> a modificar — Chart of Accounts, Company Code o Controlling Area — y recién ahí se seleccionan los campos a cambiar.
+    </div>
+    <div class="visual-wrap">
+      <div class="mini-flow">
+        <div class="mini-step">
+          <span class="icon">📋</span>
+          <h5>Select Account Range</h5>
+          <span class="en">Seleccionar rango</span>
+          <p>Se elige la selección o rango de Cuentas de Mayor a modificar.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">🗂️</span>
+          <h5>Choose the View</h5>
+          <span class="en">Elegir la vista</span>
+          <p>Chart of Accounts, Company Code o Controlling Area.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">✏️</span>
+          <h5>Select Fields to Change</h5>
+          <span class="en">Elegir campos</span>
+          <p>Se marcan los campos puntuales que van a cambiar.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">👁️</span>
+          <h5>Preview &amp; Save</h5>
+          <span class="en">Revisar y guardar</span>
+          <p>Old Value / New Value quedan visibles antes de confirmar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — Segment reporting, por qué existe (ADYACENTE) -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Segment Reporting — Why It Exists</span>
+          <span class="sec-title-es">Reporting por Segmento — por qué existe</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El Segmento (T1 §9) responde a una exigencia regulatoria concreta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El Segmento (T1 §9) no es un capricho interno — existe porque <strong>IFRS 8</strong> exige que las compañías informen resultados por segmento operativo (en EE.UU., el estándar equivalente es <strong>ASC 280</strong>). Por eso el campo no se tipea a mano: se deriva del Profit Center para garantizar consistencia.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>⚖️ Por qué existe</h4>
+          <div class="mini-box"><b>IFRS 8</b> — exige divulgar resultados por segmento operativo.</div>
+          <div class="mini-box"><b>ASC 280</b> — el estándar equivalente bajo US GAAP.</div>
+        </div>
+        <div class="cmp-card after">
+          <h4>⚙️ Cómo se completa</h4>
+          <div class="mini-box zero">Se deriva del Profit Center — no se tipea a mano</div>
+          <div class="mini-box">Garantiza que el reporte de gestión y el reporte por segmento siempre queden alineados.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 2 — Profundización). No repite términos ya glosados en T1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Operating Chart of Accounts</div><div class="term-es">Plan de Cuentas Operativo</div><div class="term-def">Plan de cuentas obligatorio, usado para las imputaciones contables diarias de la Company Code.</div></div>
+      <div class="gcard"><div class="term-en">Group Chart of Accounts</div><div class="term-es">Plan de Cuentas de Grupo</div><div class="term-def">Plan de cuentas opcional que permite consolidar sociedades con distintos planes operativos.</div></div>
+      <div class="gcard"><div class="term-en">Country Chart of Accounts</div><div class="term-es">Plan de Cuentas País</div><div class="term-def">Plan de cuentas opcional que cubre requisitos estatutarios locales de un país específico.</div></div>
+      <div class="gcard"><div class="term-en">Fiscal Year Variant</div><div class="term-es">Variante de Ejercicio</div><div class="term-def">Define la cantidad y duración de los períodos contables; debe coincidir entre Company Codes de una misma Controlling Area.</div></div>
+      <div class="gcard"><div class="term-en">Cost Center</div><div class="term-es">Centro de Costo</div><div class="term-def">Unidad organizativa de Controlling donde se acumulan costos; suele ser la asignación de CO exigida al imputar un gasto.</div></div>
+      <div class="gcard"><div class="term-en">Cash Account</div><div class="term-es">Cuenta de Caja</div><div class="term-def">Tipo de Cuenta de Mayor usado para efectivo y equivalentes de efectivo.</div></div>
+      <div class="gcard"><div class="term-en">Non-operating Income or Expense</div><div class="term-es">Ingreso o Gasto No Operativo</div><div class="term-def">Tipo de Cuenta de Mayor para movimientos ajenos a la actividad principal del negocio.</div></div>
+      <div class="gcard"><div class="term-en">Collective Processing</div><div class="term-es">Procesamiento Colectivo</div><div class="term-def">Cambio masivo de campos sobre un rango de Cuentas de Mayor, con revisión de Old/New Value antes de guardar.</div></div>
+      <div class="gcard"><div class="term-en">Manage G/L Account Master Data</div><div class="term-es">Gestionar Datos Maestros de Cuenta de Mayor</div><div class="term-def">App Fiori usada para crear, extender y mantener Cuentas de Mayor en sus distintos niveles.</div></div>
+      <div class="gcard"><div class="term-en">G/L Account Changes</div><div class="term-es">Cambios en Cuentas de Mayor</div><div class="term-def">App Fiori que reporta el historial de cambios de una Cuenta de Mayor, con Old Value, New Value y usuario responsable.</div></div>
+      <div class="gcard"><div class="term-en">IFRS 8</div><div class="term-es">IFRS 8</div><div class="term-def">Norma internacional que exige a las compañías divulgar resultados financieros por segmento operativo.</div></div>
+      <div class="gcard"><div class="term-en">ASC 280</div><div class="term-es">ASC 280</div><div class="term-def">Norma contable de EE.UU. equivalente a IFRS 8 para reporting por segmento.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — G/L Account Master Data · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

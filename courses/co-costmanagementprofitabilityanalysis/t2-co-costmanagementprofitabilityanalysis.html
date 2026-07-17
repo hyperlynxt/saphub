@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Cost Management &amp; Profitability Analysis — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A1F1F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2rem,4.2vw,3.05rem); margin:0 0 6px; line-height:1.1; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,133,133,0.14); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px; max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-tag{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.4px; text-transform:uppercase; padding:3px 9px; border-radius:5px; margin-bottom:8px; }
+  .sec-tag.adj{ background:rgba(26,107,153,0.1); color:#1A6B99; }
+  .sec-tag.deep{ background:rgba(169,68,68,0.1); color:var(--t2-dark); }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+  .visual-note{ font-size:0.78rem; color:var(--muted); margin-top:14px; line-height:1.5; }
+
+  .g2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+  .g3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .support-card{ background:var(--t2-pale); border:1px solid var(--t2-pale-border); border-radius:10px; padding:16px 18px; }
+  .support-card h5{ margin:0 0 8px; font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--t2-dark); }
+  .support-card ul{ margin:0; padding-left:16px; }
+  .support-card li{ font-size:0.82rem; color:var(--body); line-height:1.6; margin-bottom:3px; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:190px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t2-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-def{ font-size:0.74rem; color:var(--body); display:block; margin-top:6px; line-height:1.4; }
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+  .chip-steel{ background:rgba(90,107,140,0.08); border-color:rgba(90,107,140,0.28); }
+  .chip-steel .chip-title{ color:#5A6B8C; }
+
+  .cardrow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .cardrow.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .cardrow.cols-2{ grid-template-columns:repeat(2,1fr); }
+  .cardrow .item{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:16px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; margin-bottom:4px; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  /* FLOW (seccion 2) */
+  .flow-row{ display:flex; align-items:stretch; gap:12px; min-width:980px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:10px 8px 8px; border-radius:10px 10px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:11.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 10px 10px; padding:9px 8px; flex:1; }
+  .flow-step-body p{ margin:0; font-size:9.6px; color:var(--body); line-height:1.4; }
+  .flow-connector{ position:absolute; top:16px; right:-18px; width:24px; height:24px; background:white; border:2px solid #CBD5E1; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; }
+  .legend-row{ display:flex; justify-content:center; gap:24px; margin-top:16px; font-size:0.76rem; color:var(--muted); }
+  .legend-row .lg-line{ display:inline-block; width:22px; height:3px; border-radius:2px; margin-right:6px; vertical-align:middle; }
+
+  /* WATERFALL (seccion 4) */
+  .waterfall{ display:flex; flex-direction:column; gap:5px; max-width:460px; margin:0 auto; }
+  .wf-band{ border-radius:6px; padding:9px 16px; font-size:0.82rem; color:white; display:flex; justify-content:space-between; }
+  .wf-blue{ background:#1A6B99; }
+  .wf-gold{ background:#C9932E; font-weight:700; }
+
+  /* EQUATION (seccion 8) */
+  .eq-row{ display:flex; align-items:center; justify-content:center; gap:22px; flex-wrap:wrap; }
+  .eq-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:16px 24px; text-align:center; min-width:160px; }
+  .eq-box .eq-num{ font-family:'Syne',sans-serif; font-weight:800; font-size:1.25rem; color:var(--t2-dark); }
+  .eq-box .eq-label{ font-size:0.78rem; color:var(--body); margin-top:4px; }
+  .eq-symbol{ font-family:'Syne',sans-serif; font-weight:800; font-size:1.5rem; color:var(--muted); }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Universal Parallel Accounting</a>
+  <a href="#s2">End-to-End Value Flow</a>
+  <a href="#s3">ACDOCA Fields</a>
+  <a href="#s4">Profit Center Reporting</a>
+  <a href="#s5">Legal vs. Management</a>
+  <a href="#s6">Driver Model</a>
+  <a href="#s7">Cost Elements</a>
+  <a href="#s8">FI → CO Documents</a>
+  <a href="#s9">CO-OM / CO-PC / CO-PA</a>
+  <a href="#s10">Variance &amp; Results Analysis</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Controlling</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Profitability Analysis</span>
+      <span class="pill pill-secondary">Profit Center Accounting</span>
+    </div>
+    <h1><span class="accent">Cost</span> Management &amp; Profitability Analysis</h1>
+    <h2>Gestión de Costos y Análisis de Rentabilidad</h2>
+    <p class="desc">Segunda capa sobre Cost Management &amp; Profitability Analysis: contabilidad paralela universal, la anatomía de campos del Diario Universal, el modelo de drivers en detalle, y el análisis de varianzas y resultados que el Tipo 1 dejó pendiente.</p>
+    <div class="hlbox">Resumen Visual — <b>Cost Management &amp; Profitability Analysis</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 secciones que profundizan el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-titles">
+        <span class="sec-tag adj">Adyacente</span>
+        <div class="sec-title-row">
+          <span class="sec-num">01</span>
+          <span class="sec-title-en">Universal Parallel Accounting (UPA)</span>
+          <span class="sec-title-es">Contabilidad Paralela Universal</span>
+        </div>
+        <div class="sec-desc">Cómo Controlling participa del soporte a múltiples principios contables en simultáneo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En SAP S/4HANA Cloud, public edition (y en los últimos releases de las demás modalidades), <strong>Controlling puede tomar parte del proceso end-to-end de parallel accounting</strong>, soportando múltiples ledgers para distintos principios contables. Esto conecta directamente con lo visto en T1: los mismos objetos de CO (cost center, cost object, profitability segment) ahora se valúan <strong>por ledger</strong>, no de una sola forma.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">🏢</span><span class="chip-title">Single Entities</span><span class="chip-en">Entidades Individuales</span><span class="chip-def">Compañías internacionales siguen normas locales e internacionales que afectan valuación de inventario, WIP y activos.</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">🌐</span><span class="chip-title">Consolidated Views</span><span class="chip-en">Vistas Consolidadas</span><span class="chip-def">Vista de grupo que elimina ganancias intercompañía en tiempo real; vista de unidad de negocio con transfers tratados como venta externa.</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">💱</span><span class="chip-title">Multicurrency</span><span class="chip-en">Multi-Moneda</span><span class="chip-def">Reporting financiero y de gestión disponible en moneda local, de grupo y funcional.</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">📅</span><span class="chip-title">Country Fiscal Year</span><span class="chip-en">Año Fiscal por País</span><span class="chip-def">Variante de año fiscal local, distinta de la usada para el reporting central de grupo.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — flow -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-titles">
+        <span class="sec-tag adj">Adyacente</span>
+        <div class="sec-title-row">
+          <span class="sec-num">02</span>
+          <span class="sec-title-en">End-to-End Value Flow with UPA</span>
+          <span class="sec-title-es">Flujo de Valor de Punta a Punta con UPA</span>
+        </div>
+        <div class="sec-desc">El mismo evento de negocio, valuado en paralelo bajo Group GAAP y Local GAAP.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Con UPA, un mismo flujo — de <strong>elemento PEP</strong> a <strong>activo</strong>, de <strong>cost center</strong> a <strong>orden de producción</strong>, hasta el <strong>profitability segment</strong> — corre <strong>en paralelo bajo dos principios contables</strong>. La capitalización de activos, el actual costing y las reglas de capitalización de inventario pueden diferir por ledger, sin mapeos adicionales.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;"><span class="title-en">WBS Element</span><span class="title-es">Elemento PEP</span></div>
+          <div class="flow-step-body"><p>Recibe activity allocations, consumo de material y costos primarios.</p></div>
+          <div class="flow-connector"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;"><span class="title-en">Asset</span><span class="title-es">Activo</span></div>
+          <div class="flow-step-body"><p>Settlement desde el WBS. Capitalización ahora ocurre <strong>por ledger</strong>.</p></div>
+          <div class="flow-connector"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;"><span class="title-en">Cost Center</span><span class="title-es">Centro de Costo</span></div>
+          <div class="flow-step-body"><p>Depreciación y allocation universal entre cost centers.</p></div>
+          <div class="flow-connector"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;"><span class="title-en">Production Order</span><span class="title-es">Orden de Producción</span></div>
+          <div class="flow-step-body"><p>Activity allocation. Actual costing puede correrse <strong>por ledger</strong>.</p></div>
+          <div class="flow-connector"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;"><span class="title-en">Inventory</span><span class="title-es">Inventario</span></div>
+          <div class="flow-step-body"><p>Goods receipt/issue. Reglas de capitalización pueden diferir entre GAAPs.</p></div>
+          <div class="flow-connector"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#C9932E;"><span class="title-en">Profitability Segment</span><span class="title-es">Segmento de Rentabilidad</span></div>
+          <div class="flow-step-body"><p>El precio de material definido <strong>por ledger</strong> valúa el movimiento de mercadería.</p></div>
+        </div>
+      </div>
+      <div class="legend-row">
+        <span><span class="lg-line" style="background:#1A4B8C;"></span>Group GAAP</span>
+        <span><span class="lg-line" style="background:#E07B39;"></span>Local GAAP</span>
+      </div>
+      <p class="visual-note">Controlling <strong>conoce todos los ledgers</strong>: tanto las tasas de costo real como las varianzas de producción se calculan por ledger — sin configuración ni mapeo adicional.</p>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-titles">
+        <span class="sec-tag adj">Adyacente</span>
+        <div class="sec-title-row">
+          <span class="sec-num">03</span>
+          <span class="sec-title-en">Inside the Universal Journal: ACDOCA Fields</span>
+          <span class="sec-title-es">Adentro del Diario Universal: los Campos de ACDOCA</span>
+        </div>
+        <div class="sec-desc">Un mismo conjunto de campos, leído de forma distinta por cada componente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      T1 mostró que ACDOCA fusiona FI-GL, FI-AA, CO, CO-PA y Material Ledger en una sola tabla. Lo que no se vio ahí es <strong>cómo</strong>: cada componente lee solo el subconjunto de campos de ACDOCA que necesita — <strong>Ledger, Company Code, CO Area, G/L Account, Profit Center, Account Currency 1/2, Market Segment, Fixed Asset</strong>, entre otros — sin duplicar datos.
+    </div>
+    <div class="visual-wrap">
+      <div class="g3">
+        <div class="support-card"><h5>General Ledger</h5><ul><li>Ledger</li><li>Company Code</li><li>CO Area</li><li>G/L Account</li><li>Profit Center</li><li>Account Currency 1 / 2</li></ul></div>
+        <div class="support-card"><h5>Management Accounting</h5><ul><li>CO Area</li><li>Cost Account</li><li>Account Currency 1 / 2</li></ul></div>
+        <div class="support-card"><h5>Material Ledger</h5><ul><li>Material</li><li>Company Code</li><li>Account Currency 1 / 2</li></ul></div>
+        <div class="support-card"><h5>Profitability Analysis</h5><ul><li>Market Segment</li><li>Operating Concern</li></ul></div>
+        <div class="support-card"><h5>Asset Accounting</h5><ul><li>Fixed Asset</li><li>Company Code</li><li>Account Currency 1</li></ul></div>
+        <div class="support-card"><h5>Extension Ledger</h5><ul><li>Predictive Accounting</li></ul></div>
+      </div>
+      <p class="visual-note">Como todos los componentes leen la misma tabla de línea, cualquier característica (ej. profit center o cost center) queda disponible para el resto sin tener que redundarla — de ahí sale el real-time margin analysis visto en T1.</p>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — waterfall -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-titles">
+        <span class="sec-tag adj">Adyacente</span>
+        <div class="sec-title-row">
+          <span class="sec-num">04</span>
+          <span class="sec-title-en">Profit Center Reporting &amp; the Investment Center View</span>
+          <span class="sec-title-es">Reporting de Centro de Beneficio y la Vista de Centro de Inversión</span>
+        </div>
+        <div class="sec-desc">De ingresos por ventas hasta el retorno sobre la inversión, todo al nivel de un solo profit center.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      T1 mostró que un profit center puede tratarse como <strong>investment center</strong>. Acá se ve el camino completo: desde <strong>Sales Revenue</strong> hasta el <strong>Return on Investment (ROI)</strong>, pasando por el capital invertido en activos, cuentas por cobrar y stock.
+    </div>
+    <div class="visual-wrap">
+      <div class="waterfall">
+        <div class="wf-band wf-blue"><span>Sales Revenue · Sales Deductions · Cost of Sales</span></div>
+        <div class="wf-band wf-gold"><span>Operating Profit</span></div>
+        <div class="wf-band wf-blue"><span>Liabilities · Accounts Receivable · Invested Capital in Assets · In Stock</span></div>
+        <div class="wf-band wf-gold"><span>Cost of Capital</span></div>
+        <div class="wf-band wf-gold" style="background:var(--t2-dark);"><span>Return on Investment (ROI)</span></div>
+      </div>
+      <div class="chip-row" style="margin-top:20px;">
+        <div class="chip chip-navy"><span class="chip-icon">🔍</span><span class="chip-title">Economic Profit</span><span class="chip-en">Beneficio Económico</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">🔄</span><span class="chip-title">Equity Turnover</span><span class="chip-en">Rotación de Capital Propio</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">📖</span><span class="chip-title">Profit Sales Ratio</span><span class="chip-en">Ratio Beneficio/Ventas</span></div>
+      </div>
+      <p class="visual-note">Estas tres herramientas de análisis determinan <strong>Profit</strong> e <strong>Invested Capital</strong> — las dos entradas que, combinadas con el detalle de <strong>Asset Account</strong>, permiten calcular el ROI de cada profit center.</p>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-titles">
+        <span class="sec-tag adj">Adyacente</span>
+        <div class="sec-title-row">
+          <span class="sec-num">05</span>
+          <span class="sec-title-en">Legal Structure vs. Management Structure</span>
+          <span class="sec-title-es">Estructura Legal vs. Estructura de Gestión</span>
+        </div>
+        <div class="sec-desc">Por qué la organización de Controlling es más flexible que la estructura legal de la empresa.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La <strong>estructura legal</strong> de una empresa (sociedades, segmentos operativos) es bastante rígida. La <strong>estructura de gestión</strong> permite mucha más flexibilidad, organizándose según aspectos funcionales, de producto o regionales — y es sobre esa estructura flexible que se apoyan las tareas de Management Accounting.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">⚖️</span>Legal Structure <span class="en-tag">Estructura Legal</span></h4>
+          <ul>
+            <li>Definida por sociedades y segmentos operativos</li>
+            <li>Rígida — cambia poco en el tiempo</li>
+            <li>Base del reporting a stakeholders externos</li>
+          </ul>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🧭</span>Management Structure <span class="en-tag">Estructura de Gestión</span></h4>
+          <ul>
+            <li><strong>Funcional:</strong> producción (plantas), ventas, compras, marketing, contabilidad, controlling</li>
+            <li><strong>Producto:</strong> business areas, business units, divisions</li>
+            <li><strong>Regional:</strong> países, territorios</li>
+          </ul>
+        </div>
+      </div>
+      <div class="g2" style="margin-top:20px;">
+        <div class="support-card" style="grid-column:1 / -1;">
+          <h5>Tareas de Management Accounting</h5>
+          <ul>
+            <li>Documentación de transacciones internas de negocio</li>
+            <li>Soporte a la gestión (management support)</li>
+            <li>Control de la eficiencia operativa</li>
+            <li>Toma de decisiones</li>
+            <li>Ejecución de transacciones de negocio, por ejemplo planificación</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-titles">
+        <span class="sec-tag deep">Profundización</span>
+        <div class="sec-title-row">
+          <span class="sec-num">06</span>
+          <span class="sec-title-en">The Driver Model, One Level Deeper</span>
+          <span class="sec-title-es">El Modelo de Drivers, un Nivel Más Profundo</span>
+        </div>
+        <div class="sec-desc">Qué determina el valor monetario que un driver termina generando.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      T1 mostró el driver model como una cadena simple (datos base → procesos → Diario Universal → 3 pilares). La conexión entre un <strong>driver</strong> (el evento logístico real) y su <strong>valor monetario</strong> la determinan <strong>coeficientes</strong>: estándares técnicos, acuerdos legales, condiciones operativas generales, valores empíricos y planificación operativa.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🧾</span>Cost / Revenue Elements <span class="en-tag">Elementos de Costo/Ingreso</span></h4>
+          <ul>
+            <li>Categorización usada <strong>dentro de Controlling</strong></li>
+            <li>Permite asignar el valor a cost center, cost object o profitability segment</li>
+          </ul>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">📄</span>Expense / Revenue Types <span class="en-tag">Tipos de Gasto/Ingreso</span></h4>
+          <ul>
+            <li>Categorización usada en el <strong>Profit &amp; Loss Statement</strong></li>
+            <li>Vista externa, sin account assignment de CO</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cardrow cols-3" style="margin-top:20px;">
+        <div class="item"><span class="icon">🏢</span><h5>Overhead → Cost Centers</h5><span class="en">Vía Transfer Pricing</span><p>Los costos indirectos se determinan por transfer pricing según el routing y se asignan a los cost objects.</p></div>
+        <div class="item"><span class="icon">📋</span><h5>Materials → BOM</h5><span class="en">Vía Lista de Materiales</span><p>El costo de materias primas y semi-elaborados se transfiere al cost object según el Bill of Material.</p></div>
+        <div class="item"><span class="icon">🎯</span><h5>Revenue → Segments</h5><span class="en">Vía Profitability Segment</span><p>Revenue y margen de contribución se diferencian por segmento de mercado.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-titles">
+        <span class="sec-tag deep">Profundización</span>
+        <div class="sec-title-row">
+          <span class="sec-num">07</span>
+          <span class="sec-title-en">Primary vs. Secondary Cost Elements</span>
+          <span class="sec-title-es">Elementos de Costo Primarios vs. Secundarios</span>
+        </div>
+        <div class="sec-desc">Cost Element Accounting, un nivel más profundo que en T1.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En <strong>Cost Element Accounting</strong>, los costos se separan por criterio funcional (material, personal, depreciación) y se gestionan en cost element masters. No todos los cost elements nacen igual: unos vienen de <strong>Financial Accounting</strong>, otros existen <strong>solo dentro de Controlling</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📥</span>Primary Cost Element <span class="en-tag">Elemento de Costo Primario</span></h4>
+          <ul>
+            <li>Corresponde 1:1 a una cuenta de gasto (P&amp;L) en Financial Accounting</li>
+            <li>El costo entra a CO desde una contabilización real en FI</li>
+            <li>Ej. compra de material, sueldo, depreciación</li>
+          </ul>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🔁</span>Secondary Cost Element <span class="en-tag">Elemento de Costo Secundario</span></h4>
+          <ul>
+            <li>Existe <strong>únicamente en CO</strong>, para asignaciones internas (assessment, distribution, settlement)</li>
+            <li>Técnicamente es un tipo especial de cuenta de G/L — pero no una unidad separada dentro de CO</li>
+            <li>Sin contrapartida directa en el P&amp;L</li>
+          </ul>
+        </div>
+      </div>
+      <p class="visual-note">Los costos cross-cost-center pueden gestionarse en proyectos (elementos PEP) y liquidarse (<strong>settlement</strong>) hacia otros cost objects — cost centers, proyectos, o directamente al resultado de la empresa.</p>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — equation style -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-titles">
+        <span class="sec-tag deep">Profundización</span>
+        <div class="sec-title-row">
+          <span class="sec-num">08</span>
+          <span class="sec-title-en">Why One FI Document Becomes Many CO Documents</span>
+          <span class="sec-title-es">Por Qué un Documento FI se Vuelve Varios Documentos CO</span>
+        </div>
+        <div class="sec-desc">La causa concreta del desafío de reconciliación que T1 solo nombró.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      T1 mostró el síntoma: <strong>1 documento FI puede generar N documentos CO</strong>, y 1 línea de documento FI puede generar M líneas de documento CO. La causa es que Controlling <strong>desagrega</strong> el mismo valor según sus propios criterios de asignación.
+    </div>
+    <div class="visual-wrap">
+      <div class="eq-row">
+        <div class="eq-box"><div class="eq-num">1</div><div class="eq-label">Documento FI<br>(ej. factura de proveedor)</div></div>
+        <div class="eq-symbol">→</div>
+        <div class="eq-box"><div class="eq-num">N</div><div class="eq-label">Documentos CO<br>(uno por cada asignación interna)</div></div>
+      </div>
+      <div class="chip-row" style="margin-top:22px;">
+        <div class="chip chip-navy"><span class="chip-icon">✂️</span><span class="chip-title">Split entre Cost Centers</span><span class="chip-def">Un mismo gasto se reparte entre varias áreas de responsabilidad.</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">🔁</span><span class="chip-title">Asignación Secundaria</span><span class="chip-def">Assessment, distribution o settlement generan documentos CO adicionales.</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">➕</span><span class="chip-title">Overhead Surcharge</span><span class="chip-def">El recargo de costos indirectos vía transfer pricing agrega líneas propias.</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">🎯</span><span class="chip-title">Múltiples Segmentos</span><span class="chip-def">Un mismo ingreso puede derivarse hacia más de un profitability segment.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — tabla -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-titles">
+        <span class="sec-tag deep">Profundización</span>
+        <div class="sec-title-row">
+          <span class="sec-num">09</span>
+          <span class="sec-title-en">CO-OM, CO-PC &amp; CO-PA — One Level Deeper</span>
+          <span class="sec-title-es">CO-OM, CO-PC y CO-PA, un Nivel Más Profundo</span>
+        </div>
+        <div class="sec-desc">Los códigos técnicos detrás del hub de componentes que se vio en T1.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cada componente de Management Accounting visto en T1 (el hub de 6 áreas) tiene un <strong>código técnico</strong> propio y se integra con módulos logísticos específicos — esa es la capa que T1 no mostró.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Código</th><th>Componente</th><th>Función</th><th>Se integra con</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">CO-CEL</span></td>
+            <td>Cost Element Accounting</td>
+            <td>Captura costos primarios desde FI y los clasifica funcionalmente.</td>
+            <td><span class="badge badge-neutral">FI (todas las áreas)</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">CO-OM</span></td>
+            <td>Overhead Cost Controlling</td>
+            <td>Planea y distribuye costos indirectos vía cost centers e internal orders.</td>
+            <td><span class="badge badge-neutral">Cost Centers · Internal Orders</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">CO-PC</span></td>
+            <td>Product Cost Controlling</td>
+            <td>Calcula COGM/COGS a partir de BOM y routing.</td>
+            <td><span class="badge badge-accent">PS · PP · MM · SD</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">CO-PA</span></td>
+            <td>Profitability Analysis (Margin Analysis)</td>
+            <td>Compara revenue y costo por segmento de mercado.</td>
+            <td><span class="badge badge-accent">Sales &amp; Distribution (SD)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-titles">
+        <span class="sec-tag deep">Profundización</span>
+        <div class="sec-title-row">
+          <span class="sec-num">10</span>
+          <span class="sec-title-en">Variance Analysis &amp; Results Analysis</span>
+          <span class="sec-title-es">Análisis de Varianzas y Análisis de Resultados</span>
+        </div>
+        <div class="sec-desc">Lo que T1 solo mencionó al pasar sobre WIP, varianzas y reservas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Ejemplo:</strong> una orden interna de "participación en feria comercial" tiene un revenue planeado de €100.000. Si al cierre los costos reales llegan a €120.000, ese exceso de €20.000 dispara una <strong>reserve for imminent loss</strong> — se reconoce la pérdida antes de que el objeto se liquide.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow cols-2">
+        <div class="item"><span class="icon">📦</span><h5>Work in Process (WIP)</h5><span class="en">Trabajo en Curso</span><p>Cálculo del inventario de bienes no terminados, para cost centers y cost objects sin revenue.</p></div>
+        <div class="item"><span class="icon">📉</span><h5>Variance Analysis</h5><span class="en">Análisis de Varianzas</span><p>Categorías: quantity variance (cantidad), price/scrap variance (precio o merma), entre otras.</p></div>
+      </div>
+      <div class="cmp-grid" style="margin-top:20px;">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">💰</span>Reserve for Unrealized Costs <span class="en-tag">Reserva por Costos No Realizados</span></h4>
+          <ul>
+            <li>Aplica a cost objects <strong>con revenue</strong></li>
+            <li>Cubre costos que todavía no se contabilizaron pero ya son atribuibles al período</li>
+          </ul>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">⚠️</span>Reserve for Imminent Loss <span class="en-tag">Reserva por Pérdida Inminente</span></h4>
+          <ul>
+            <li>Se activa cuando <strong>costos reales &gt; revenue planeado</strong></li>
+            <li>Anticipa la pérdida antes del cierre final del objeto</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos introducidos en este archivo (Tipo 2 — Profundización). No repite términos ya cubiertos en el glosario de Tipo 1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Leading Ledger</div><div class="term-es">Ledger Líder</div><div class="term-def">Ledger principal, alineado al GAAP local, base del set completo de estados financieros.</div></div>
+      <div class="gcard"><div class="term-en">Parallel Ledger</div><div class="term-es">Ledger Paralelo</div><div class="term-def">Ledger adicional que registra los mismos hechos según otro principio contable (ej. Group GAAP).</div></div>
+      <div class="gcard"><div class="term-en">Primary Cost Element</div><div class="term-es">Elemento de Costo Primario</div><div class="term-def">Cost element que corresponde 1:1 a una cuenta de gasto de Financial Accounting.</div></div>
+      <div class="gcard"><div class="term-en">Secondary Cost Element</div><div class="term-es">Elemento de Costo Secundario</div><div class="term-def">Cost element que existe solo dentro de Controlling, para asignaciones internas.</div></div>
+      <div class="gcard"><div class="term-en">Settlement</div><div class="term-es">Liquidación</div><div class="term-def">Proceso que transfiere el costo acumulado de un objeto (ej. proyecto) hacia otro objeto de destino.</div></div>
+      <div class="gcard"><div class="term-en">Transfer Price</div><div class="term-es">Precio de Transferencia</div><div class="term-def">Precio interno usado para asignar costos indirectos a un cost object según el routing.</div></div>
+      <div class="gcard"><div class="term-en">Routing</div><div class="term-es">Hoja de Ruta</div><div class="term-def">Documento que define las actividades de cost center requeridas para producir un material.</div></div>
+      <div class="gcard"><div class="term-en">Bill of Material (BOM)</div><div class="term-es">Lista de Materiales</div><div class="term-def">Documento que define los materiales y cantidades requeridas para producir un material.</div></div>
+      <div class="gcard"><div class="term-en">Work in Process (WIP)</div><div class="term-es">Trabajo en Curso</div><div class="term-def">Valuación de bienes o servicios no terminados al cierre de un período.</div></div>
+      <div class="gcard"><div class="term-en">Results Analysis</div><div class="term-es">Análisis de Resultados</div><div class="term-def">Cálculo de reservas para cost objects con revenue: costos no realizados y pérdida inminente.</div></div>
+      <div class="gcard"><div class="term-en">Investment Center</div><div class="term-es">Centro de Inversión</div><div class="term-def">Profit center al que además se le transfieren partidas de balance para calcular ROI.</div></div>
+      <div class="gcard"><div class="term-en">Return on Investment (ROI)</div><div class="term-es">Retorno de la Inversión</div><div class="term-def">Indicador que relaciona el beneficio operativo con el capital invertido de un profit center.</div></div>
+      <div class="gcard"><div class="term-en">Extension Ledger</div><div class="term-es">Ledger de Extensión</div><div class="term-def">Ledger usado para escenarios como Predictive Accounting, sin postear en el ledger base.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Cost Management &amp; Profitability Analysis · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Financial Postings &amp; Documents — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t2);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A1F1F 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:660px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(224,133,133,0.14);
+    border-left:4px solid var(--t2);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:660px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t2-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(169,68,68,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+
+  .theory-box{
+    background:var(--t2-pale);
+    border-left:4px solid var(--t2-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  /* MINI-FLOW */
+  .mini-flow{ display:flex; align-items:stretch; gap:16px; min-width:640px; }
+  .mini-step{ flex:1; background:white; border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:18px 16px; text-align:center; position:relative; }
+  .mini-step.holding{ border-style:dashed; border-color:var(--t2-dark); background:var(--t2-pale); }
+  .mini-step .icon{ font-size:24px; display:block; margin-bottom:8px; }
+  .mini-step h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--ink); }
+  .mini-step .en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-bottom:8px; }
+  .mini-step p{ margin:0; font-size:0.78rem; color:var(--body); line-height:1.5; }
+  .flow-connector{
+    position:absolute; top:28px; right:-24px; width:26px; height:26px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* CARD ROW (hechos no-secuenciales) */
+  .cardrow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .cardrow.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .cardrow .item{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  /* CHIPS */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:190px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t2-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip p{ margin:6px 0 0; font-size:0.74rem; color:var(--body); line-height:1.4; }
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.before{ border-top:4px solid #94A3B8; }
+  .cmp-card.after{ border-top:4px solid var(--t2-dark); }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.02rem; margin:0 0 10px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:0 0 10px; }
+  .cmp-card .mini-box{ background:var(--bg); border-radius:8px; padding:10px 12px; margin-bottom:8px; font-size:0.8rem; color:var(--body); }
+  .cmp-card .mini-box b{ color:var(--ink); }
+  .cmp-card .mini-box.zero{ background:var(--t2-pale); color:var(--t2-dark); font-weight:700; text-align:center; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+  .box-mono{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Journal Entry Type</a>
+  <a href="#s2">Number Range Rollover</a>
+  <a href="#s3">Posting Keys</a>
+  <a href="#s4">Posting Periods</a>
+  <a href="#s5">Manual Posting</a>
+  <a href="#s6">Document Upload</a>
+  <a href="#s7">Change Document</a>
+  <a href="#s8">Reverse Entries</a>
+  <a href="#s9">Hold &amp; Verify</a>
+  <a href="#s10">Manual Clearing</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">General Ledger</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+      <span class="pill pill-secondary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Asset Accounting</span>
+      <span class="pill pill-secondary">Controlling</span>
+    </div>
+    <h1>Financial <span class="accent">Postings</span> &amp; Documents</h1>
+    <h2>Asientos y Documentos Financieros</h2>
+    <p class="desc">Segunda capa sobre los fundamentos de T1: el mecanismo real detrás del tipo de asiento y la numeración, el ciclo de vida completo de un documento — contabilizar, retener, verificar, cambiar, revertir y compensar — y los temas adyacentes que un consultor necesita conocer aunque no estén en el detalle teórico básico.</p>
+    <div class="hlbox">Resumen Visual — <b>Financial Postings &amp; Documents</b>, Tipo 2 (Profundización). 5 secciones de profundidad sobre temas de T1 + 5 secciones de temas adyacentes.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — Journal Entry Type: mecanismo (PROFUNDIDAD) -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Journal Entry Type — Required Fields &amp; Configuration Scope</span>
+          <span class="sec-title-es">Tipo de Asiento — campos obligatorios y alcance de configuración</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Tres cosas que el tipo de asiento controla más allá de clasificar la transacción (T1 §5).</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>Journal Entry Type</strong> no es solo una etiqueta. También determina qué campos de la cabecera son <strong>obligatorios</strong> durante el ingreso (ej. un accrual exige texto explicando el motivo), es <strong>válido para todas las sociedades</strong> aunque el intervalo de números pueda variar entre ellas, y es un <strong>objeto de configuración</strong>: SAP entrega tipos estándar, pero el equipo de proyecto puede copiarlos o modificarlos según cada empresa.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow cols-3">
+        <div class="item">
+          <span class="icon">🧾</span>
+          <h5>Mandatory Fields</h5>
+          <span class="en">Campos Obligatorios</span>
+          <p>El tipo define qué campos de cabecera deben completarse — ej. texto obligatorio para accruals.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🌍</span>
+          <h5>Multi-Company Validity</h5>
+          <span class="en">Validez Multi-Sociedad</span>
+          <p>El mismo tipo es válido en todas las sociedades, pero el intervalo de números puede diferir entre ellas.</p>
+        </div>
+        <div class="item">
+          <span class="icon">⚙️</span>
+          <h5>Configuration Object</h5>
+          <span class="en">Objeto de Configuración</span>
+          <p>SAP entrega tipos estándar; el equipo de proyecto puede copiarlos o modificarlos por empresa.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — Numeración: cierre de año fiscal (PROFUNDIDAD) -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">FI Document Numbering — Fiscal Year-End Behavior</span>
+          <span class="sec-title-es">Numeración de Documentos — comportamiento al cierre del año fiscal</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Qué decide la empresa cuando el intervalo de números cruza a un año fiscal nuevo (T1 §6).</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En la configuración de cada intervalo de números, la empresa decide qué pasa al comenzar un nuevo año fiscal: <strong>continuar</strong> la numeración después del último número usado, o <strong>reiniciar</strong> con el primer número del intervalo. Es una decisión de configuración, no algo que el usuario elige al contabilizar.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>Continue Numbering <span class="en-tag">Continuar</span></h4>
+          <div class="mini-box"><b>2025:</b> ...0000123</div>
+          <div class="mini-box"><b>2026:</b> ...0000124</div>
+          <p>El intervalo sigue después del último número usado el año anterior.</p>
+        </div>
+        <div class="cmp-card after">
+          <h4>Restart Numbering <span class="en-tag">Reiniciar</span></h4>
+          <div class="mini-box"><b>2025:</b> ...0000123</div>
+          <div class="mini-box"><b>2026:</b> ...0000001</div>
+          <p>El intervalo vuelve a comenzar en el primer número configurado.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — Posting Keys: por qué importan (PROFUNDIDAD) -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting Keys — Why They Still Matter</span>
+          <span class="sec-title-es">Claves de Contabilización — por qué siguen importando</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Más allá de debe/haber en G/L (T1 §7): qué representa la clave según el tipo de cuenta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En la mayoría de las apps modernas ya no hace falta ingresar la posting key manualmente. Sin embargo, sigue siendo útil porque permite identificar con más precisión qué <strong>tipo de cuenta</strong> se contabilizó — no solo si es débito o crédito. Para G/L accounts existen únicamente las claves <strong>40</strong> y <strong>50</strong> (T1 §7); para cuentas de proveedor y cliente existen claves adicionales que el sistema asigna automáticamente según el tipo de transacción.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>G/L Accounts <span class="en-tag">Cuentas de Mayor</span></h4>
+          <p>Solo dos posting keys: <b>40</b> para débito, <b>50</b> para crédito. Cubierto en profundidad en T1 §7.</p>
+        </div>
+        <div class="cmp-card after">
+          <h4>Vendor &amp; Customer Accounts <span class="en-tag">Proveedores y Clientes</span></h4>
+          <p>Existen posting keys adicionales asignadas automáticamente; no requieren input manual en la mayoría de las apps Fiori.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — Posting Periods: quién los controla (PROFUNDIDAD) -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting Periods — Who Controls Them, Per Area</span>
+          <span class="sec-title-es">Períodos de Contabilización — quién los controla, por área</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Cada área puede tener su propio calendario de apertura y cierre (T1 §8).</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuánto tiempo permanece abierto un período lo decide el <strong>responsable de contabilidad</strong> y queda almacenado en el sistema. Normalmente solo están abiertos el mes actual y, si es necesario, el anterior o el siguiente. Por diferencias organizativas o de negocio, los períodos pueden abrirse y cerrarse de forma <strong>independiente</strong> para cada área.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy">
+          <span class="chip-icon">📗</span>
+          <span class="chip-title">General Ledger</span>
+          <span class="chip-en">Libro Mayor</span>
+          <p>Su propio calendario de apertura/cierre.</p>
+        </div>
+        <div class="chip chip-teal">
+          <span class="chip-icon">📥</span>
+          <span class="chip-title">Accounts Payable</span>
+          <span class="chip-en">Cuentas por Pagar</span>
+          <p>Puede cerrar antes o después que el GL.</p>
+        </div>
+        <div class="chip chip-purple">
+          <span class="chip-icon">📤</span>
+          <span class="chip-title">Accounts Receivable</span>
+          <span class="chip-en">Cuentas por Cobrar</span>
+          <p>Calendario propio según el proceso de cobranza.</p>
+        </div>
+        <div class="chip chip-gold">
+          <span class="chip-icon">🏗️</span>
+          <span class="chip-title">Asset Accounting</span>
+          <span class="chip-en">Activos Fijos</span>
+          <p>Suele cerrar en un momento distinto por depreciaciones.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — Manual Posting: app + ejemplos reales (PROFUNDIDAD) -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Manual G/L Posting — the App &amp; Two Real Examples</span>
+          <span class="sec-title-es">Contabilización Manual de G/L — la app y dos ejemplos reales</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Cómo la regla debe = haber (T1 §4) se sostiene incluso cuando se agrega una línea de impuesto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Con la app <strong>Post General Journal Entries</strong> se crea y contabiliza un documento G/L manual. Journal Entry Date y Posting Date son obligatorias, el documento se contabiliza a nivel <strong>Company Code</strong>, y las cuentas usadas deben pertenecer al Chart of Accounts asignado. La regla de balanceo de T1 §4 no cambia aunque el asiento tenga más de dos líneas.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>Simple Posting <span class="en-tag">Asiento Simple</span></h4>
+          <div class="mini-box"><b>Dr</b> 89000 — Software Costs — 1.000,00</div>
+          <div class="mini-box"><b>Cr</b> 11000 — Bank — 1.000,00</div>
+          <div class="mini-box zero">Debit = Credit ✓</div>
+        </div>
+        <div class="cmp-card after">
+          <h4>Posting with Tax <span class="en-tag">Asiento con Impuesto</span></h4>
+          <div class="mini-box"><b>Dr</b> 89000 — Software Costs — 1.000,00</div>
+          <div class="mini-box"><b>Dr</b> 15410 — Input Tax — 190,00</div>
+          <div class="mini-box"><b>Cr</b> 11000 — Bank — 1.190,00</div>
+          <div class="mini-box zero">Debit = Credit ✓</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — G/L Document Upload (ADYACENTE) -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">G/L Document Upload</span>
+          <span class="sec-title-es">Carga Masiva de Documentos G/L</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Cuando entrar un asiento a la vez (§5) no alcanza.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para volúmenes altos de asientos, SAP S/4HANA ofrece funcionalidades de <strong>carga masiva de documentos G/L</strong>: se descarga una plantilla, se completan las líneas fuera del sistema y se sube en un solo paso. El sistema valida cada línea contra las mismas reglas que un asiento manual (§5) — cuenta válida, debe = haber — antes de contabilizar.
+    </div>
+    <div class="visual-wrap">
+      <div class="mini-flow">
+        <div class="mini-step">
+          <span class="icon">📥</span>
+          <h5>Descargar Plantilla</h5>
+          <span class="en">Download Template</span>
+          <p>Se obtiene el archivo con la estructura de columnas esperada.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">✍️</span>
+          <h5>Completar y Subir</h5>
+          <span class="en">Fill &amp; Upload</span>
+          <p>Se completan las líneas fuera del sistema y se sube el archivo.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">✅</span>
+          <h5>Validar y Contabilizar</h5>
+          <span class="en">Validate &amp; Post</span>
+          <p>El sistema valida cada línea contra las mismas reglas de un asiento manual.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — Changing a Posted Document (ADYACENTE) -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Changing a Posted Document</span>
+          <span class="sec-title-es">Cambiar un Documento ya Contabilizado</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Los principios contables limitan al mínimo las modificaciones — conecta con el Document Principle (T1 §1).</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los principios contables exigen mantener al mínimo las modificaciones a un journal entry ya contabilizado. Con autorización, los cambios se hacen desde la app <strong>Manage Journal Entries</strong> (botón Edit), que habilita solo los campos permitidos según la configuración de cada empresa. El documento conserva su número original, y SAP S/4HANA registra <strong>todos los cambios</strong> en un historial consultable desde la misma app.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>🔒 Nunca Modificable</h4>
+          <p>Posting key, número de cuenta, posting date e importes — ya actualizaron los saldos de cuenta y no pueden cambiar bajo ninguna circunstancia.</p>
+        </div>
+        <div class="cmp-card after">
+          <h4>✏️ Modificable Según Configuración</h4>
+          <p>Campos seleccionados de cabecera y línea, vía Manage Journal Entries — Edit. Cada cambio queda en el historial.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — Reversing Journal Entries (ADYACENTE) -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reversing Journal Entries — Normal vs. Negative Posting</span>
+          <span class="sec-title-es">Reversión de Asientos — normal vs. negativa</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Si no se puede cambiar (§7), se revierte — y hay dos formas de hacerlo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Eliminar documentos FI está prohibido en SAP S/4HANA. Cuando un asiento se ingresó mal, se revierte con un asiento correctivo y luego se contabiliza el correcto — así se preserva la trazabilidad exigida por los auditores. Ambos métodos son equivalentes desde el punto de vista contable; cuál usar depende de la práctica de cada empresa y de si el país permite reversiones negativas.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>Normal Reversal <span class="en-tag">Reversión Normal</span></h4>
+          <p>Contabiliza el débito incorrecto como crédito y viceversa — genera un <b>aumento</b> en las cifras de saldo de la cuenta.</p>
+        </div>
+        <div class="cmp-card after">
+          <h4>Negative Posting <span class="en-tag">Contabilización Negativa</span></h4>
+          <p>También invierte débito/crédito, pero <b>resta</b> del lado contrario en vez de sumar — deja el saldo como si el error nunca hubiera ocurrido. No todos los países la permiten.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — Hold & Verify (ADYACENTE) -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Holding &amp; Verifying Journal Entries</span>
+          <span class="sec-title-es">Retener y Verificar Asientos</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Dos mecanismos distintos antes de que un asiento quede firme.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Hold Document</strong> guarda datos incompletos temporalmente — no recibe número de documento, solo lo ve quien lo creó, y no dispara ningún workflow de aprobación. Muy distinto es el <strong>Verification Workflow</strong>: un journal entry enviado a validación sí recibe su número final y queda en estado <strong>Submitted – Parked</strong>, sin actualizar saldos, hasta ser aprobado. Cerrar el período requiere confirmar que no queden asientos en ese estado.
+    </div>
+    <div class="visual-wrap">
+      <div class="mini-flow">
+        <div class="mini-step">
+          <span class="icon">🆕</span>
+          <h5>Initial</h5>
+          <span class="en">Creado por el requester</span>
+          <p>El journal entry existe pero aún no se envió.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step holding">
+          <span class="icon">📤</span>
+          <h5>Submitted – Parked</h5>
+          <span class="en">Enviado a validación</span>
+          <p>Tiene número final, pero no actualiza saldos mientras se revisa.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">✅</span>
+          <h5>Posted / Rejected / Failed</h5>
+          <span class="en">Decisión del processor</span>
+          <p>Aprobado → Posted. Rechazado → vuelve al requester. Error → Failed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — Manual Clearing (ADYACENTE) -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Manual Clearing of Open Items</span>
+          <span class="sec-title-es">Compensación Manual de Partidas Abiertas</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Dos caminos distintos para cerrar una partida abierta cuando el proceso automático no alcanza.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Las cuentas de proveedor y cliente se gestionan siempre sobre base de <strong>Open Item Management</strong>: las facturas quedan abiertas hasta compensarse contra un documento coincidente, típicamente un pago. En cuentas G/L, esta opción debe activarse explícitamente en el maestro. Cuando la compensación no puede automatizarse por completo, existen dos formas manuales.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>Account Clearing <span class="en-tag">Compensación de Cuenta</span></h4>
+          <p>Débito y crédito ya están presentes en la cuenta; se emparejan después mediante un nuevo documento de compensación.</p>
+        </div>
+        <div class="cmp-card after">
+          <h4>Posting with Clearing <span class="en-tag">Contabilización con Compensación</span></h4>
+          <p>Al ingresar el documento, el usuario selecciona partidas abiertas existentes. Si los importes coinciden, se compensan; si no, el sistema permite contabilizar la diferencia.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 2 — Profundización). No repite términos ya glosados en T1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Open Item Management</div><div class="term-es">Gestión de Partidas Abiertas</div><div class="term-def">Modo de administrar cuentas de proveedor, cliente o G/L donde cada partida queda abierta hasta compensarse.</div></div>
+      <div class="gcard"><div class="term-en">Account Clearing</div><div class="term-es">Compensación de Cuenta</div><div class="term-def">Emparejar débito y crédito ya presentes en la cuenta mediante un nuevo documento de compensación.</div></div>
+      <div class="gcard"><div class="term-en">Posting with Clearing</div><div class="term-es">Contabilización con Compensación</div><div class="term-def">Ingresar un documento seleccionando partidas abiertas existentes para compensarlas en el mismo paso.</div></div>
+      <div class="gcard"><div class="term-en">Normal Reversal</div><div class="term-es">Reversión Normal</div><div class="term-def">Reversión que invierte débito/crédito aumentando las cifras de saldo de la cuenta.</div></div>
+      <div class="gcard"><div class="term-en">Negative Posting</div><div class="term-es">Contabilización Negativa</div><div class="term-def">Reversión que resta del lado contrario, dejando el saldo como antes del error, sin inflarlo.</div></div>
+      <div class="gcard"><div class="term-en">Manage Journal Entries</div><div class="term-es">Gestionar Asientos Contables</div><div class="term-def">App que permite editar campos autorizados de un documento ya contabilizado y consultar su historial de cambios.</div></div>
+      <div class="gcard"><div class="term-en">Hold Document</div><div class="term-es">Retener Documento</div><div class="term-def">Guardar datos incompletos temporalmente, sin número de documento ni workflow de aprobación.</div></div>
+      <div class="gcard"><div class="term-en">Submitted – Parked</div><div class="term-es">Enviado – Aparcado</div><div class="term-def">Estado de un journal entry enviado a validación: tiene número final pero no actualiza saldos.</div></div>
+      <div class="gcard"><div class="term-en">Verification Workflow</div><div class="term-es">Flujo de Verificación</div><div class="term-def">Proceso de aprobación multinivel configurable antes de que un journal entry se contabilice.</div></div>
+      <div class="gcard"><div class="term-en">Internal Numbering</div><div class="term-es">Numeración Interna</div><div class="term-def">El sistema asigna automáticamente el siguiente número disponible del intervalo.</div></div>
+      <div class="gcard"><div class="term-en">External Numbering</div><div class="term-es">Numeración Externa</div><div class="term-def">El usuario ingresa manualmente el número de documento dentro del intervalo permitido.</div></div>
+      <div class="gcard"><div class="term-en">Input Tax</div><div class="term-es">IVA Crédito Fiscal</div><div class="term-def">Impuesto soportado en una compra, registrado como línea adicional de débito en el asiento.</div></div>
+      <div class="gcard"><div class="term-en">Change Log</div><div class="term-es">Historial de Cambios</div><div class="term-def">Registro de todas las modificaciones autorizadas hechas a un journal entry ya contabilizado.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Financial Postings &amp; Documents · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

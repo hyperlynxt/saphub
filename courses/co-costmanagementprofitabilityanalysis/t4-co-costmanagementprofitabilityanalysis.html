@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Cost Management &amp; Profitability Analysis — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#6B4C8F;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --gui-bg:#ECECEC;
+    --gui-panel:#F5F4F0;
+    --gui-border:#8E8E8E;
+    --gui-titlebar1:#4A85B8;
+    --gui-titlebar2:#2E5C87;
+    --gui-tab-inactive:#C6C2B6;
+    --gui-tab-active:#F5F4F0;
+    --gui-field-border:#7F9DB9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241A2E 55%, #402C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2rem,4.2vw,3.05rem); margin:0 0 6px; line-height:1.1; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4); border-radius:0 10px 10px 0; padding:14px 20px; max-width:680px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(107,76,143,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-area{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(107,76,143,0.1); color:var(--t4-dark); margin-left:8px; vertical-align:middle; }
+
+  .task-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t4-dark); font-weight:700; margin-bottom:10px; }
+
+  .spro-box{ background:white; border:1px solid var(--border); border-radius:10px; padding:16px 20px 16px 18px; margin-bottom:26px; box-shadow:0 2px 8px rgba(10,15,28,0.04); }
+  .spro-tree{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; line-height:1.5; }
+  .spro-tree, .spro-tree ul{ list-style:none; margin:0; padding-left:0; }
+  .spro-tree ul{ padding-left:20px; border-left:1.5px dashed #C9BEDD; margin-left:7px; }
+  .spro-tree li{ position:relative; padding:4px 0 4px 18px; color:var(--body); }
+  .spro-tree li::before{ content:''; position:absolute; left:0; top:14px; width:14px; height:1.5px; background:#C9BEDD; }
+  .spro-tree .folder .icon{ margin-right:5px; opacity:.8; }
+  .spro-tree .target{ background:var(--t4-pale); border:1.5px solid var(--t4-dark); border-radius:6px; padding:4px 12px; display:inline-flex; align-items:center; gap:7px; color:var(--t4-dark); font-weight:700; }
+
+  .gui-screen{ background:var(--gui-bg); border:1px solid #6E6E6E; border-radius:2px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.14); font-family:Arial,Tahoma,sans-serif; color:#000; }
+  .gui-titlebar{ background:linear-gradient(180deg,var(--gui-titlebar1),var(--gui-titlebar2)); color:white; padding:4px 10px; font-size:11px; display:flex; justify-content:space-between; align-items:center; }
+  .gui-titlebar .gt-icons{ opacity:.85; letter-spacing:3px; font-size:9px; }
+  .gui-menubar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:3px 10px; font-size:10.5px; color:#222; display:flex; gap:14px; }
+  .gui-toolbar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:5px 8px; display:flex; align-items:center; gap:5px; }
+  .gui-toolbar .t-btn{ width:22px; height:19px; background:#DEDEDE; border:1px solid #9A9A9A; border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:10.5px; color:#333; }
+  .gui-crumbbar{ background:#DEDEDE; border-bottom:1px solid #B8B8B8; padding:5px 10px; font-size:11.5px; font-weight:700; color:#111; }
+  .gui-tabs{ display:flex; background:var(--gui-bg); padding:5px 8px 0; gap:2px; }
+  .gui-tab{ padding:5px 14px; font-size:10.5px; background:var(--gui-tab-inactive); border:1px solid var(--gui-border); border-bottom:none; color:#333; }
+  .gui-tab.active{ background:var(--gui-tab-active); font-weight:700; color:#000; }
+  .gui-body{ background:var(--gui-panel); padding:18px; border-top:1px solid #fff; }
+  .gui-field-row{ display:grid; grid-template-columns:150px 1fr; gap:8px; align-items:center; margin-bottom:9px; font-size:11.5px; }
+  .gui-field-row label{ text-align:right; color:#000; }
+  .gui-field-row .val{ background:white; border:1px solid var(--gui-field-border); padding:3px 7px; font-family:'Courier New',monospace; font-size:11.5px; max-width:260px; }
+  .gui-field-row .val.grey{ background:#E8E8E8; border-color:#B8B8B8; color:#555; }
+  .gui-field-row .val.check{ font-family:Arial,sans-serif; }
+  .gui-table{ width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+  .gui-table th{ background:var(--gui-tab-inactive); border:1px solid var(--gui-border); padding:5px 9px; text-align:left; font-weight:700; color:#111; }
+  .gui-table td{ border:1px solid #C6C2B6; padding:5px 9px; background:white; font-family:'Courier New',monospace; }
+  .gui-statusbar{ background:var(--gui-bg); border-top:1px solid #B8B8B8; padding:4px 10px; font-size:10px; color:#555; display:flex; justify-content:space-between; }
+  .gui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E; margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  .hier-tree, .hier-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'Courier New',monospace; font-size:11.5px; }
+  .hier-tree ul{ padding-left:18px; border-left:1px dotted #999; margin-left:6px; }
+  .hier-tree li{ position:relative; padding:4px 0 4px 16px; color:#000; }
+  .hier-tree li::before{ content:''; position:absolute; left:0; top:12px; width:12px; height:1px; background:#999; }
+  .hier-tree .grp{ font-weight:700; }
+  .hier-tree .leaf{ color:#1A4B8C; }
+  .hier-tree .leaf .code{ font-weight:700; margin-right:5px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Controlling Area</a>
+  <a href="#s2">Activate Components</a>
+  <a href="#s3">Primary Cost Element</a>
+  <a href="#s4">Secondary Cost Element</a>
+  <a href="#s5">Cost Center</a>
+  <a href="#s6">Internal Order</a>
+  <a href="#s7">CC Categories</a>
+  <a href="#s8">Versions</a>
+  <a href="#s9">Profit Center</a>
+  <a href="#s10">Operating Concern</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Controlling</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Profitability Analysis</span>
+      <span class="pill pill-secondary">Profit Center Accounting</span>
+    </div>
+    <h1><span class="accent">Cost</span> Management &amp; Profitability Analysis</h1>
+    <h2>Gestión de Costos y Análisis de Rentabilidad — Configuración en SPRO</h2>
+    <p class="desc">Las tareas de customizing que dejan lista la base de Controlling: el Controlling Area, sus componentes activos, los elementos de costo, los centros de costo y el Operating Concern de Profitability Analysis.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Implementación Bike Company · Controlling</div>
+        <div class="p-note">Cada pantalla de este recorrido arma la base que Priya usa del otro lado, en Fiori (T3)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining the Controlling Area — Basic Data</span>
+          <span class="sec-title-es">Manteniendo el Controlling Area — Datos Básicos</span>
+          <span class="sec-area">Controlling</span>
+        </div>
+        <div class="sec-desc">El primer paso: definir el área organizativa donde va a vivir toda la gestión de costos.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de crear un solo cost center, tiene que existir <strong>A000 (BIKE-CO)</strong>. El Controlling Area es el nivel organizativo de Management Accounting — y en Bike Company no es 1 a 1 con una sociedad: agrupa a DE01 y US01 al mismo tiempo.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>General Controlling
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Organization
+                      <ul>
+                        <li><span class="target">⚙️ Maintain Controlling Area</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Display Controlling Area: Basic Data</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Controlling Area</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Display Controlling Area: Basic Data — T-Code: OKKP</div>
+      <div class="gui-tabs">
+        <div class="gui-tab active">Basic Data</div>
+        <div class="gui-tab">Activation</div>
+        <div class="gui-tab">Assignment of Company Code(s)</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Controlling Area</label><div class="val">A000</div></div>
+        <div class="gui-field-row"><label>Name</label><div class="val">BIKE-CO</div></div>
+        <div class="gui-field-row"><label>Chart of Accounts</label><div class="val">BIKE</div></div>
+        <div class="gui-field-row"><label>CoCd→CO Area</label><div class="val grey check">☐ Controlling Area = Company Code</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Company Code</th><th>Company Name</th><th>Currency</th></tr></thead>
+          <tbody>
+            <tr><td>DE01</td><td>Bike GmbH</td><td>EUR</td></tr>
+            <tr><td>US01</td><td>Bike Inc</td><td>USD</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 El checkbox sin marcar es la señal clave: este Controlling Area cruza más de una sociedad — así es como después se puede comparar el costo de producir en Alemania junto con la venta en EE.UU.</div>
+      </div>
+      <div class="gui-statusbar"><span>A000 BIKE-CO</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Activating Components in the Controlling Area</span>
+          <span class="sec-title-es">Activando componentes en el Controlling Area</span>
+          <span class="sec-area">Controlling</span>
+        </div>
+        <div class="sec-desc">Sin esto activado, ni Priya ni nadie va a poder usar Profit Center Accounting ni Internal Orders.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Que exista el Controlling Area no alcanza — cada componente (Cost Centers, Órdenes, Profit Center Accounting) hay que <strong>activarlo por año fiscal</strong>. Es la diferencia entre que una app de Fiori simplemente no tenga datos para mostrar, o directamente no exista para el usuario.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>General Controlling
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Organization
+                      <ul>
+                        <li><span class="target">⚙️ Maintain Controlling Area → Activate Components/Control Indicators</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change Controlling Area: Activate Components/Control Indicators</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Controlling Area</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change Controlling Area: Activate Components/Control Indicators — T-Code: OKKP</div>
+      <div class="gui-tabs">
+        <div class="gui-tab">Basic Data</div>
+        <div class="gui-tab active">Activation</div>
+        <div class="gui-tab">Assignment of Company Code(s)</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Fiscal Year</label><div class="val">2026</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Componente</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Cost Centers</td><td>☑ Component Active</td></tr>
+            <tr><td>Order Management</td><td>☑ Component Active</td></tr>
+            <tr><td>Commitment Management</td><td>☑ Component Active</td></tr>
+            <tr><td>Profit Center Accounting</td><td>☑ Component Active</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Activar Profit Center Accounting acá es lo que hace posible que PC-PROD-DE exista más adelante en la sección 9.</div>
+      </div>
+      <div class="gui-statusbar"><span>A000 BIKE-CO — Fiscal Year 2026</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating a Primary Cost Element</span>
+          <span class="sec-title-es">Creando un elemento de costo primario</span>
+          <span class="sec-area">Cost Element Accounting</span>
+        </div>
+        <div class="sec-desc">El puente entre una cuenta de gasto de Financial Accounting y Controlling.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La cuenta de G/L <strong>420100 (Material Costs)</strong> ya existe en Financial Accounting. Para que los gastos contabilizados ahí puedan asignarse a un cost center, hace falta crear el <strong>elemento de costo primario</strong> correspondiente en Controlling — mismo número, distinta vista.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Cost Element Accounting
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Master Data
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Cost Elements
+                          <ul>
+                            <li><span class="target">⚙️ Create Cost Elements (Individual Processing)</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Create Cost Element: Basic Screen</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Cost Element</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Create Cost Element: Basic Screen — T-Code: KA01</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Cost Element</label><div class="val">420100</div></div>
+        <div class="gui-field-row"><label>Valid From</label><div class="val">01.01.2026</div></div>
+        <div class="gui-field-row"><label>Name</label><div class="val">Material Costs</div></div>
+        <div class="gui-field-row"><label>Cost Element Category</label><div class="val">01 Primary costs/cost-reducing revenues</div></div>
+        <div class="gui-hint">💡 La categoría "01" es lo que marca este elemento como <strong>primario</strong>: solo puede recibir valor desde una contabilización real en Financial Accounting, nunca desde una asignación interna de CO.</div>
+      </div>
+      <div class="gui-statusbar"><span>420100 Material Costs</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating a Secondary Cost Element</span>
+          <span class="sec-title-es">Creando un elemento de costo secundario</span>
+          <span class="sec-area">Cost Element Accounting</span>
+        </div>
+        <div class="sec-desc">El elemento que hace posible la asignación mensual que Priya corre en T3.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Para que Priya pueda repartir el costo de Administración hacia otros cost centers, hace falta un elemento de costo que <strong>no existe en Financial Accounting</strong> — solo vive dentro de Controlling. Categoría 42: asignación (assessment).
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Cost Element Accounting
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Master Data
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Cost Elements
+                          <ul>
+                            <li><span class="target">⚙️ Create Secondary Cost Elements</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Create Cost Element: Basic Screen</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Cost Element</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Create Cost Element: Basic Screen — T-Code: KA06</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Cost Element</label><div class="val">9500000</div></div>
+        <div class="gui-field-row"><label>Valid From</label><div class="val">01.01.2026</div></div>
+        <div class="gui-field-row"><label>Name</label><div class="val">Admin Allocation</div></div>
+        <div class="gui-field-row"><label>Cost Element Category</label><div class="val">42 Assessment</div></div>
+        <div class="gui-hint">💡 No hay ninguna cuenta de G/L "9500000" en Financial Accounting — y no la va a haber nunca. Es intencional: un elemento secundario no tiene contrapartida en el P&amp;L.</div>
+      </div>
+      <div class="gui-statusbar"><span>9500000 Admin Allocation</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating a Cost Center</span>
+          <span class="sec-title-es">Creando un centro de costo</span>
+          <span class="sec-area">Cost Center Accounting</span>
+        </div>
+        <div class="sec-desc">El área de responsabilidad donde Priya va a ver caer los costos de Producción.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cada área de responsabilidad necesita su propio cost center. Acá se crea <strong>CC-1000-PROD</strong>, con su jerarquía estándar, su persona responsable y el período de validez.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Cost Center Accounting
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Master Data
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Cost Centers
+                          <ul>
+                            <li><span class="target">⚙️ Create Cost Centers (Individual Processing)</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Create Cost Center: Basic Screen</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Cost Center</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Create Cost Center: Basic Screen — T-Code: KS01</div>
+      <div class="gui-tabs">
+        <div class="gui-tab active">Basic Data</div>
+        <div class="gui-tab">Control</div>
+        <div class="gui-tab">Templates</div>
+        <div class="gui-tab">Address</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Cost Center</label><div class="val">CC-1000-PROD</div></div>
+        <div class="gui-field-row"><label>Valid From</label><div class="val">01.01.2026</div></div>
+        <div class="gui-field-row"><label>Name</label><div class="val">Producción DE01</div></div>
+        <div class="gui-field-row"><label>Person Responsible</label><div class="val">Priya</div></div>
+        <div class="gui-field-row"><label>Cost Center Category</label><div class="val">P Production</div></div>
+        <div class="gui-field-row"><label>Hierarchy Area</label><div class="val">BIKE-CO-STD-HIER</div></div>
+        <div class="gui-field-row"><label>Company Code</label><div class="val">DE01</div></div>
+        <div class="gui-field-row"><label>Profit Center</label><div class="val">PC-PROD-DE</div></div>
+      </div>
+      <div class="gui-statusbar"><span>CC-1000-PROD Producción DE01</span><span>INS</span></div>
+    </div>
+    <div class="step-label" style="margin-top:22px;">Dónde queda dentro de la jerarquía</div>
+    <div class="spro-box">
+      <ul class="hier-tree">
+        <li class="grp">📂 BIKE-CO-STD-HIER
+          <ul>
+            <li class="grp">📂 PRODUCTION
+              <ul>
+                <li class="leaf"><span class="code">CC-1000-PROD</span>Producción DE01</li>
+              </ul>
+            </li>
+            <li class="grp">📂 ADMINISTRATION
+              <ul>
+                <li class="leaf"><span class="code">CC-9000-ADMIN</span>Administración compartida</li>
+              </ul>
+            </li>
+            <li class="grp">📂 SALES
+              <ul>
+                <li class="leaf"><span class="code">CC-2000-SALES</span>Ventas DE01</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating an Internal Order</span>
+          <span class="sec-title-es">Creando una orden interna</span>
+          <span class="sec-area">Internal Orders</span>
+        </div>
+        <div class="sec-desc">El maestro que hace posible que Priya monitoree la feria comercial como un evento con presupuesto propio.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Marketing va a necesitar seguir los costos de la <strong>feria comercial</strong> por separado. En vez de crear un cost center específico para un evento con fecha de inicio y fin, se usa una <strong>orden interna</strong>: más liviana, pensada justamente para esto.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Internal Orders
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Order Master Data
+                      <ul>
+                        <li><span class="target">⚙️ Create Internal Order</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Create Internal Order: Master Data</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Order</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Create Internal Order: Master Data — T-Code: KO01</div>
+      <div class="gui-tabs">
+        <div class="gui-tab active">Assignments</div>
+        <div class="gui-tab">Control Data</div>
+        <div class="gui-tab">Period-End Closing</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Order</label><div class="val">IO-4711</div></div>
+        <div class="gui-field-row"><label>Order Type</label><div class="val">Marketing Event</div></div>
+        <div class="gui-field-row"><label>Description</label><div class="val">Trade Fair Participation Q3</div></div>
+        <div class="gui-field-row"><label>Company Code</label><div class="val">DE01</div></div>
+        <div class="gui-field-row"><label>Controlling Area</label><div class="val">A000</div></div>
+        <div class="gui-field-row"><label>Requesting Cost Center</label><div class="val">CC-2000-SALES</div></div>
+        <div class="gui-hint">💡 El Order Type determina qué campos y qué lógica de Results Analysis aplican — es lo que después permite que se dispare la reserve for imminent loss que Priya vio en T3.</div>
+      </div>
+      <div class="gui-statusbar"><span>IO-4711 Trade Fair Participation Q3</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Cost Center Categories</span>
+          <span class="sec-title-es">Definiendo categorías de centro de costo</span>
+          <span class="sec-area">Cost Center Accounting</span>
+        </div>
+        <div class="sec-desc">Antes de crear CC-1000-PROD como "Production", esa categoría tiene que existir.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La categoría <strong>"P Production"</strong> que se usó en la sección 5 no viene de fábrica gratis en todos los sistemas — se define acá, junto con qué tipo de valores acepta cada categoría (solo costos, o costos y allocation).
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Cost Center Accounting
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Master Data
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Cost Centers
+                          <ul>
+                            <li><span class="target">⚙️ Define Cost Center Categories</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Cost Center Categories": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Cost Center Categories": Overview</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Cat.</th><th>Name</th><th>Actual Primary Costs</th><th>Actual Secondary Costs</th><th>Revenues</th></tr></thead>
+          <tbody>
+            <tr><td>P</td><td>Production</td><td>☑</td><td>☑</td><td>☐</td></tr>
+            <tr><td>A</td><td>Administration</td><td>☑</td><td>☑</td><td>☐</td></tr>
+            <tr><td>V</td><td>Sales</td><td>☑</td><td>☑</td><td>☑</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 La categoría "V Sales" es la única con "Revenues" habilitado — es lo que permite que un cost center de ventas también reciba ingresos, no solo costos.</div>
+      </div>
+      <div class="gui-statusbar"><span>3 entries</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining Versions for Planning</span>
+          <span class="sec-title-es">Manteniendo versiones de planificación</span>
+          <span class="sec-area">General Controlling</span>
+        </div>
+        <div class="sec-desc">La versión "0" que hace posible la comparación plan vs. real que Priya revisa cada mes.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El reporte "Actual/Plan/Variance" que Priya abre en T3 necesita que exista una <strong>versión de planificación</strong> contra la cual comparar lo real. La versión "0" es la que normalmente contiene el plan oficial del año.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>General Controlling
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Organization
+                      <ul>
+                        <li><span class="target">⚙️ Maintain Versions</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Settings for Each Fiscal Year": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Settings for Each Fiscal Year": Overview</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Version</label><div class="val">0</div></div>
+        <div class="gui-field-row"><label>Description</label><div class="val">Plan/Actual Version</div></div>
+        <div class="gui-field-row"><label>Fiscal Year</label><div class="val">2026</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Indicador</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Plan Relevant</td><td>☑</td></tr>
+            <tr><td>Actual Relevant</td><td>☑</td></tr>
+            <tr><td>Integrated Planning</td><td>☑</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Solo una versión puede tener "Actual Relevant" marcado — es la que recibe los datos reales del Diario Universal.</div>
+      </div>
+      <div class="gui-statusbar"><span>Version 0 — Fiscal Year 2026</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating a Profit Center</span>
+          <span class="sec-title-es">Creando un centro de beneficio</span>
+          <span class="sec-area">Profit Center Accounting</span>
+        </div>
+        <div class="sec-desc">La unidad que Priya evalúa como "una compañía dentro de la compañía".</div>
+      </div>
+    </div>
+    <div class="task-box">
+      <strong>PC-PROD-DE</strong> ya se usó como referencia en la sección 5 — ahora se lo crea formalmente, con su propia persona responsable y su ubicación en la jerarquía estándar de profit centers.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Enterprise Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Profit Center Accounting
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Master Data
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Profit Center
+                          <ul>
+                            <li><span class="target">⚙️ Create Profit Center (Individual Processing)</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Create Profit Center: Basic Screen</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Profit Center</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Create Profit Center: Basic Screen — T-Code: KE51</div>
+      <div class="gui-tabs">
+        <div class="gui-tab active">Basic Data</div>
+        <div class="gui-tab">Indicators</div>
+        <div class="gui-tab">Company Codes</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Profit Center</label><div class="val">PC-PROD-DE</div></div>
+        <div class="gui-field-row"><label>Analysis Period</label><div class="val">01.01.2026 – 31.12.9999</div></div>
+        <div class="gui-field-row"><label>Name</label><div class="val">Producción Alemania</div></div>
+        <div class="gui-field-row"><label>Person Responsible</label><div class="val">Priya</div></div>
+        <div class="gui-field-row"><label>Profit Ctr Group</label><div class="val">BIKE-PC-STD-HIER</div></div>
+        <div class="gui-hint">💡 El campo "Analysis Period" es lo que después va a permitir cerrar o reemplazar este profit center sin perder el historial — abierto a "31.12.9999" significa "sin fecha de fin todavía".</div>
+      </div>
+      <div class="gui-statusbar"><span>PC-PROD-DE Producción Alemania</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up the Operating Concern</span>
+          <span class="sec-title-es">Configurando el Operating Concern</span>
+          <span class="sec-area">Profitability Analysis</span>
+        </div>
+        <div class="sec-desc">El último paso: el contenedor donde va a vivir el análisis de márgenes por Mountain Bikes / Sudeste Asiático.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de que Priya pueda abrir Margin Analysis y ver Mountain Bikes en el Sudeste Asiático, tiene que existir un <strong>Operating Concern</strong> — el contenedor de más alto nivel de Profitability Analysis, con sus propios característicos de mercado (producto, región, cliente).
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Profitability Analysis
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Structures
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Define Operating Concern
+                          <ul>
+                            <li><span class="target">⚙️ Maintain Operating Concern</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Maintain Operating Concern</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Operating Concern</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Maintain Operating Concern — Data Structure</div>
+      <div class="gui-tabs">
+        <div class="gui-tab active">Attributes</div>
+        <div class="gui-tab">Data Structure</div>
+        <div class="gui-tab">Environment</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Operating Concern</label><div class="val">BIKE-OC</div></div>
+        <div class="gui-field-row"><label>Type</label><div class="val">Costing-Based</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Característica</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td>WWPRD</td><td>Product (Mountain Bikes, City Bikes...)</td></tr>
+            <tr><td>WWREG</td><td>Region (Southeast Asia, Europe...)</td></tr>
+            <tr><td>WWCUS</td><td>Customer</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Este mismo Operating Concern es el "BIKE-OC" que Priya ve en el header de la app Margin Analysis en T3.</div>
+      </div>
+      <div class="gui-statusbar"><span>BIKE-OC</span><span>INS</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Cost Management &amp; Profitability Analysis · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

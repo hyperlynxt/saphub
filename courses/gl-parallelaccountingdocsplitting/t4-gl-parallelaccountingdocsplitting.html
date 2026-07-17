@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Parallel Accounting &amp; Document Splitting — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#6B4C8F;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* SAP GUI clasico — colores reales, uso EXCLUSIVO dentro de mockups de pantalla */
+    --gui-bg:#ECECEC;
+    --gui-panel:#F5F4F0;
+    --gui-border:#8E8E8E;
+    --gui-titlebar1:#4A85B8;
+    --gui-titlebar2:#2E5C87;
+    --gui-tab-inactive:#C6C2B6;
+    --gui-tab-active:#F5F4F0;
+    --gui-field-border:#7F9DB9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  /* NAV */
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  /* HERO */
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241A2E 55%, #402C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4); border-radius:0 10px 10px 0; padding:14px 20px; max-width:680px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(107,76,143,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-area{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(107,76,143,0.1); color:var(--t4-dark); margin-left:8px; vertical-align:middle; }
+
+  .task-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t4-dark); font-weight:700; margin-bottom:10px; }
+
+  /* ARBOL SPRO — HTML/CSS, sin SVG (elimina riesgo de solapamiento) */
+  .spro-box{ background:white; border:1px solid var(--border); border-radius:10px; padding:16px 20px 16px 18px; margin-bottom:26px; box-shadow:0 2px 8px rgba(10,15,28,0.04); }
+  .spro-tree{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; line-height:1.5; }
+  .spro-tree, .spro-tree ul{ list-style:none; margin:0; padding-left:0; }
+  .spro-tree ul{ padding-left:20px; border-left:1.5px dashed #C9BEDD; margin-left:7px; }
+  .spro-tree li{ position:relative; padding:4px 0 4px 18px; color:var(--body); }
+  .spro-tree li::before{ content:''; position:absolute; left:0; top:14px; width:14px; height:1.5px; background:#C9BEDD; }
+  .spro-tree .folder .icon{ margin-right:5px; opacity:.8; }
+  .spro-tree .target{ background:var(--t4-pale); border:1.5px solid var(--t4-dark); border-radius:6px; padding:4px 12px; display:inline-flex; align-items:center; gap:7px; color:var(--t4-dark); font-weight:700; }
+
+  /* T-CODE DIRECTO (sin arbol SPRO, para transacciones de maestro) */
+  .tcode-box{ display:flex; align-items:center; gap:10px; background:white; border:1px solid var(--border); border-radius:10px; padding:12px 18px; margin-bottom:26px; box-shadow:0 2px 8px rgba(10,15,28,0.04); }
+  .tcode-box .tc{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:0.95rem; background:var(--t4-pale); border:1.5px solid var(--t4-dark); border-radius:6px; padding:4px 12px; color:var(--t4-dark); }
+  .tcode-box .tc-label{ font-size:0.82rem; color:var(--muted); }
+
+  /* GUI SCREEN MOCKUP */
+  .gui-screen{ background:var(--gui-bg); border:1px solid #6E6E6E; border-radius:2px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.14); font-family:Arial,Tahoma,sans-serif; color:#000; }
+  .gui-titlebar{ background:linear-gradient(180deg,var(--gui-titlebar1),var(--gui-titlebar2)); color:white; padding:4px 10px; font-size:11px; display:flex; justify-content:space-between; align-items:center; }
+  .gui-titlebar .gt-icons{ opacity:.85; letter-spacing:3px; font-size:9px; }
+  .gui-menubar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:3px 10px; font-size:10.5px; color:#222; display:flex; gap:14px; }
+  .gui-toolbar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:5px 8px; display:flex; align-items:center; gap:5px; }
+  .gui-toolbar .t-btn{ width:22px; height:19px; background:#DEDEDE; border:1px solid #9A9A9A; border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:10.5px; color:#333; }
+  .gui-crumbbar{ background:#DEDEDE; border-bottom:1px solid #B8B8B8; padding:5px 10px; font-size:11.5px; font-weight:700; color:#111; }
+  .gui-tabs{ display:flex; background:var(--gui-bg); padding:5px 8px 0; gap:2px; }
+  .gui-tab{ padding:5px 14px; font-size:10.5px; background:var(--gui-tab-inactive); border:1px solid var(--gui-border); border-bottom:none; color:#333; }
+  .gui-tab.active{ background:var(--gui-tab-active); font-weight:700; color:#000; }
+  .gui-body{ background:var(--gui-panel); padding:18px; border-top:1px solid #fff; }
+  .gui-field-row{ display:grid; grid-template-columns:150px 1fr; gap:8px; align-items:center; margin-bottom:9px; font-size:11.5px; }
+  .gui-field-row label{ text-align:right; color:#000; }
+  .gui-field-row .val{ background:white; border:1px solid var(--gui-field-border); padding:3px 7px; font-family:'Courier New',monospace; font-size:11.5px; max-width:280px; }
+  .gui-field-row .val.grey{ background:#E8E8E8; border-color:#B8B8B8; color:#555; }
+  .gui-field-row .val.check{ font-family:Arial,sans-serif; }
+  .gui-table{ width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+  .gui-table th{ background:var(--gui-tab-inactive); border:1px solid var(--gui-border); padding:5px 9px; text-align:left; font-weight:700; color:#111; }
+  .gui-table td{ border:1px solid #C6C2B6; padding:5px 9px; background:white; font-family:'Courier New',monospace; }
+  .gui-statusbar{ background:var(--gui-bg); border-top:1px solid #B8B8B8; padding:4px 10px; font-size:10px; color:#555; display:flex; justify-content:space-between; }
+  .gui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E; margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  /* ARBOL DE JERARQUIA dentro de una pantalla GUI (distinto del arbol de navegacion SPRO) */
+  .hier-tree, .hier-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'Courier New',monospace; font-size:11.5px; }
+  .hier-tree ul{ padding-left:18px; border-left:1px dotted #999; margin-left:6px; }
+  .hier-tree li{ position:relative; padding:4px 0 4px 16px; color:#000; }
+  .hier-tree li::before{ content:''; position:absolute; left:0; top:12px; width:12px; height:1px; background:#999; }
+  .hier-tree .grp{ font-weight:700; }
+  .hier-tree .leaf{ color:#1A4B8C; }
+  .hier-tree .leaf .code{ font-weight:700; margin-right:5px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:760px){
+    .gui-field-row{ grid-template-columns:1fr; }
+    .gui-field-row label{ text-align:left; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Define Ledgers</a>
+  <a href="#s2">Accounting Principles</a>
+  <a href="#s3">Controlling Area</a>
+  <a href="#s4">Statement Version</a>
+  <a href="#s5">Activate Splitting</a>
+  <a href="#s6">Splitting Characteristics</a>
+  <a href="#s7">Clearing Account</a>
+  <a href="#s8">Business Transaction Variant</a>
+  <a href="#s9">Profit Center</a>
+  <a href="#s10">Cost of Sales</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+    </div>
+    <h1>Parallel Accounting &amp; <span class="accent">Document</span> Splitting</h1>
+    <h2>Contabilidad Paralela y Segmentación de Documentos — Configuración en SPRO</h2>
+    <p class="desc">Las tareas de customizing que dejan lista la base para todo lo visto en Fiori: ledgers paralelos, la regla de segmentación, la cuenta de compensación, y de dónde salen el Segmento y el Área Funcional que nadie tipea a mano.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Implementación Bike Company · Financial Accounting</div>
+        <div class="p-note">Cada pantalla de este recorrido arma la base que Kevin y José usan del otro lado, en Fiori (T3)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Ledgers for Parallel Accounting</span>
+          <span class="sec-title-es">Definiendo los Ledgers para Contabilidad Paralela</span>
+          <span class="sec-area">Ledgers</span>
+        </div>
+        <div class="sec-desc">Los tres ledgers que van a convivir: uno líder y dos no líderes.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de que Kevin pueda elegir un <strong>Ledger Group</strong> al contabilizar, los tres ledgers tienen que existir en el sistema. Acá se da de alta <strong>0L</strong> como ledger líder, y <strong>2L</strong> y <strong>TX</strong> como no líderes.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Ledgers
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Ledger
+                          <ul>
+                            <li><span class="target">⚙️ Define Ledgers for General Ledger Accounting</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Ledger": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Ledger": Overview</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Ledger</th><th>Ledger Name</th><th>Leading Ledger</th><th>Application</th></tr></thead>
+          <tbody>
+            <tr><td>0L</td><td>Leading Ledger — IFRS</td><td>✓</td><td>FI, CO</td></tr>
+            <tr><td>2L</td><td>Non-Leading Ledger — Local GAAP</td><td>—</td><td>FI, CO</td></tr>
+            <tr><td>TX</td><td>Non-Leading Ledger — Local Tax</td><td>—</td><td>FI</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Al crear un ledger nuevo, el sistema arma automáticamente un Ledger Group con ese único ledger — eso se configura aparte, no acá.</div>
+      </div>
+      <div class="gui-statusbar"><span>Ledger</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning Accounting Principles to Ledger Groups</span>
+          <span class="sec-title-es">Asignando principios contables a los Ledger Groups</span>
+          <span class="sec-area">Ledgers</span>
+        </div>
+        <div class="sec-desc">Qué principio contable representa cada ledger, en un solo lugar.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Los ledgers ya existen, pero todavía no dicen <strong>qué norma contable</strong> siguen. Acá se asigna IFRS a 0L, Local GAAP a 2L y Local Tax a TX — esta tabla es la que después alimenta la Valoración Paralela.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Ledgers
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Parallel Accounting
+                          <ul>
+                            <li><span class="target">⚙️ Assign Accounting Principle to Ledger Groups</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Assign Accounting Principle to Ledger Group"</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">✎</div><div class="t-btn">⟲</div>
+      </div>
+      <div class="gui-crumbbar">Assign Accounting Principle to Ledger Group</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Accounting Principle</th><th>Description</th><th>Ledger Group</th></tr></thead>
+          <tbody>
+            <tr><td>IFRS</td><td>International Financial Reporting Standards</td><td>0L</td></tr>
+            <tr><td>LGAAP</td><td>Local GAAP (Germany)</td><td>2L</td></tr>
+            <tr><td>LTAX</td><td>Local Tax</td><td>TX</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>Assign Acct. Principle</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining the Controlling Area</span>
+          <span class="sec-title-es">Manteniendo el Controlling Area</span>
+          <span class="sec-area">Controlling</span>
+        </div>
+        <div class="sec-desc">La unidad de gestión que agrupa a DE01 y US01 para reporting interno.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Segment, Profit Center y Document Splitting dependen de una estructura de Controlling ya definida. Acá se confirma que <strong>A000 (BIKE-CO)</strong> agrupa a las dos sociedades bajo un mismo plan de cuentas.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="tcode-box">
+      <span class="tc">OKKP</span>
+      <span class="tc-label">Maintain Controlling Area — transacción directa, sin recorrer el árbol de SPRO</span>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Display Controlling Area: Basic Data</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Controlling Area</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Display Controlling Area: Basic Data — T-Code: OKKP</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Controlling Area</label><div class="val">A000</div></div>
+        <div class="gui-field-row"><label>Name</label><div class="val">BIKE-CO</div></div>
+        <div class="gui-field-row"><label>Chart of Accounts</label><div class="val">BIKE</div></div>
+        <div class="gui-field-row"><label>Currency Type</label><div class="val">10 — Company Code Currency</div></div>
+        <div class="gui-field-row"><label>Assigned Company Codes</label><div class="val">DE01, US01</div></div>
+        <div class="gui-hint">💡 Que dos sociedades compartan Controlling Area no las mezcla contablemente — cada una sigue teniendo su propio Company Code y su propia moneda local.</div>
+      </div>
+      <div class="gui-statusbar"><span>A000 BIKE-CO</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Financial Statement Version</span>
+          <span class="sec-title-es">Definiendo la Versión de Estado Financiero</span>
+          <span class="sec-area">General Ledger</span>
+        </div>
+        <div class="sec-desc">La estructura jerárquica de cuentas que después Kevin va a filtrar por ledger.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de que exista el reporte "Financial Statement" que corre Kevin, alguien tiene que definir su <strong>estructura</strong>: qué cuentas van a Balance Sheet, cuáles a P&amp;L, y dónde caen las que no encajan en ninguna.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="tcode-box">
+      <span class="tc">OB58</span>
+      <span class="tc-label">Define Financial Statement Version — transacción directa</span>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change Financial Statement Version: BIKE</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Financial Stmt Version</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">✎</div><div class="t-btn">⟲</div>
+      </div>
+      <div class="gui-crumbbar">Change Financial Statement Version: BIKE — T-Code: OB58</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Fin. Stmt. Version</label><div class="val">BIKE</div></div>
+        <div class="gui-field-row"><label>Chart of Accounts</label><div class="val">BIKE</div></div>
+        <ul class="hier-tree">
+          <li class="grp">BIKE — Financial Statement Version
+            <ul>
+              <li class="leaf"><span class="code">1</span>All Accounts</li>
+              <li class="grp">Balance Sheet
+                <ul>
+                  <li class="leaf"><span class="code">2</span>Assets</li>
+                  <li class="leaf"><span class="code">3</span>Liabilities</li>
+                </ul>
+              </li>
+              <li class="leaf"><span class="code">4</span>Profit &amp; Loss</li>
+              <li class="leaf"><span class="code">5</span>Unassigned Accounts</li>
+              <li class="leaf"><span class="code">6</span>Notes</li>
+            </ul>
+          </li>
+        </ul>
+        <div class="gui-hint">💡 Unassigned Accounts tiene que dar saldo 0 siempre — si una cuenta nueva del plan BIKE no se asigna a ningún nodo, va a parar acá y avisa que algo quedó sin clasificar.</div>
+      </div>
+      <div class="gui-statusbar"><span>BIKE</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Activating Document Splitting</span>
+          <span class="sec-title-es">Activando Document Splitting</span>
+          <span class="sec-area">Document Splitting</span>
+        </div>
+        <div class="sec-desc">El interruptor general — sin esto, la factura de José nunca se hubiera partido sola.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Document Splitting no viene activo por defecto. Acá se prende el interruptor a nivel de sistema, y se le asigna el <strong>Splitting Method</strong> que va a agrupar todas las reglas.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>General Ledger Accounting (New)
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Transactions
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Document Splitting
+                          <ul>
+                            <li><span class="target">⚙️ Activate Document Splitting</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Activate Document Splitting": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Activate Document Splitting": Details</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Document Splitting</label><div class="val check">☑ Active</div></div>
+        <div class="gui-field-row"><label>Method</label><div class="val">0000010001</div></div>
+        <div class="gui-field-row"><label>Inheritance</label><div class="val check">☑ Inheritance No Deferral</div></div>
+        <div class="gui-field-row"><label>Std. Var. for non-assigned</label><div class="val">0001</div></div>
+        <div class="gui-hint">💡 El Splitting Method 0000010001 es el estándar que trae SAP — es el que agrupa todas las reglas de Business Transaction y Variant que se van a usar de acá en adelante.</div>
+      </div>
+      <div class="gui-statusbar"><span>Activate Document Splitting</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Document Splitting Characteristics</span>
+          <span class="sec-title-es">Definiendo las características de Document Splitting</span>
+          <span class="sec-area">Document Splitting</span>
+        </div>
+        <div class="sec-desc">Por qué Segment y Profit Center fuerzan un balance por segmento, y Business Area no.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      No alcanza con decir "segmentar por Profit Center" — hay que decidir si esa dimensión exige <strong>balance cero obligatorio</strong>. Acá se marca esa casilla para Segment y Profit Center.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>General Ledger Accounting (New)
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Transactions
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Document Splitting
+                          <ul>
+                            <li><span class="target">⚙️ Define Document Splitting Characteristics for General Ledger Accounting</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Define Document Splitting Characteristics"</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">✎</div><div class="t-btn">⟲</div>
+      </div>
+      <div class="gui-crumbbar">Define Document Splitting Characteristics for GL Accounting</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Field</th><th>Zero Balance</th><th>Mandatory Field</th></tr></thead>
+          <tbody>
+            <tr><td>PRCTR — Profit Center</td><td>☑</td><td>☑</td></tr>
+            <tr><td>SEGMENT — Segment</td><td>☑</td><td>☐</td></tr>
+            <tr><td>GSBER — Business Area</td><td>☐</td><td>☐</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 "Zero Balance" tildado es lo que genera, por detrás, la línea automática contra la Zero-Balance Clearing Account cuando un segmento no cierra por sí solo.</div>
+      </div>
+      <div class="gui-statusbar"><span>Splitting Characteristics</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating the Zero-Balance Clearing Account</span>
+          <span class="sec-title-es">Creando la Cuenta de Compensación de Balance Cero</span>
+          <span class="sec-area">General Ledger</span>
+        </div>
+        <div class="sec-desc">La cuenta técnica a la que apunta el balance cero marcado en la pantalla anterior.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Marcar "Zero Balance" no alcanza si la cuenta que va a recibir esa línea técnica todavía no existe. Acá se crea el <strong>maestro de la cuenta de compensación</strong> en el plan BIKE.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="tcode-box">
+      <span class="tc">FS00</span>
+      <span class="tc-label">G/L Account Master — transacción directa</span>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Edit G/L Account Centrally</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>G/L Account</span><span>Edit</span><span>Goto</span><span>Extras</span><span>Environment</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">✎</div><div class="t-btn">⟲</div>
+      </div>
+      <div class="gui-crumbbar">Edit G/L Account Centrally — T-Code: FS00</div>
+      <div class="gui-tabs">
+        <div class="gui-tab active">Type/Description</div>
+        <div class="gui-tab">Control Data</div>
+        <div class="gui-tab">Create/bank/interest</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>G/L Account</label><div class="val">19999000</div></div>
+        <div class="gui-field-row"><label>Company Code</label><div class="val">DE01</div></div>
+        <div class="gui-field-row"><label>Account Group</label><div class="val">Technical Clearing</div></div>
+        <div class="gui-field-row"><label>Short Text</label><div class="val">Zero-Bal. Clearing</div></div>
+        <div class="gui-field-row"><label>G/L Acct Long Text</label><div class="val">Zero-Balance Clearing Account — Doc. Splitting</div></div>
+        <div class="gui-hint">💡 Es una cuenta puramente técnica — no debería aparecer en ningún reporte que un usuario de negocio use para tomar decisiones.</div>
+      </div>
+      <div class="gui-statusbar"><span>19999000 DE01</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Classifying Document Types for Document Splitting</span>
+          <span class="sec-title-es">Clasificando Tipos de Documento para Document Splitting</span>
+          <span class="sec-area">Document Splitting</span>
+        </div>
+        <div class="sec-desc">La conexión entre un tipo de documento cotidiano y la regla técnica que le aplica.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cuando José contabiliza una factura de proveedor, el sistema tiene que saber qué <strong>Business Transaction</strong> y <strong>Variant</strong> le corresponden a ese tipo de documento. Esa conexión se define acá.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>General Ledger Accounting (New)
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Transactions
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Document Splitting
+                          <ul>
+                            <li><span class="target">⚙️ Classify Document Types for Document Splitting</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Classify Document Types for Document Splitting"</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">✎</div><div class="t-btn">⟲</div>
+      </div>
+      <div class="gui-crumbbar">Classify Document Types for Document Splitting</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Document Type</th><th>Description</th><th>Transaction</th><th>Variant</th></tr></thead>
+          <tbody>
+            <tr><td>KR</td><td>Vendor Invoice</td><td>0300</td><td>0001</td></tr>
+            <tr><td>KZ</td><td>Vendor Payment</td><td>0300</td><td>0001</td></tr>
+            <tr><td>SA</td><td>G/L Account Document</td><td>0000</td><td>0001</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 KR y KZ comparten la misma Business Transaction (0300) — por eso el pago de José en Fiori hereda la misma lógica de segmentación que la factura original, sin reglas nuevas (Passive Split).</div>
+      </div>
+      <div class="gui-statusbar"><span>Classify Document Types</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining a Profit Center and Assigning Its Segment</span>
+          <span class="sec-title-es">Manteniendo un Profit Center y asignando su Segmento</span>
+          <span class="sec-area">Profit Center Accounting</span>
+        </div>
+        <div class="sec-desc">De acá sale el Segmento que Kevin encontró heredado, sin que nadie lo tipeara.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cada Profit Center necesita su <strong>Segmento</strong> definido una sola vez, en su maestro. Acá se crea <strong>Western Region</strong> y se le asigna el segmento que después va a heredar cada documento que lo use.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="tcode-box">
+      <span class="tc">KE51</span>
+      <span class="tc-label">Create Profit Center — transacción directa</span>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Create Profit Center: Basic Data</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Profit Center</span><span>Edit</span><span>Goto</span><span>Extras</span><span>Environment</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">✎</div><div class="t-btn">⟲</div>
+      </div>
+      <div class="gui-tabs">
+        <div class="gui-tab active">Basic Data</div>
+        <div class="gui-tab">Indicators</div>
+        <div class="gui-tab">Company Codes</div>
+        <div class="gui-tab">Address</div>
+      </div>
+      <div class="gui-crumbbar">Create Profit Center: Basic Data — T-Code: KE51</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Controlling Area</label><div class="val">A000</div></div>
+        <div class="gui-field-row"><label>Profit Center</label><div class="val">Western Region</div></div>
+        <div class="gui-field-row"><label>Name</label><div class="val">Vehicle Fleet — Western Region</div></div>
+        <div class="gui-field-row"><label>Segment</label><div class="val">1000_C</div></div>
+        <div class="gui-field-row"><label>Valid From</label><div class="val">01.01.2020</div></div>
+        <div class="gui-hint">💡 El campo Segment solo aparece disponible acá — junto a Profit Center. No se define de forma independiente, es una característica que va "pegada" a este maestro.</div>
+      </div>
+      <div class="gui-statusbar"><span>Western Region A000</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Activating Cost of Sales Accounting for a Ledger</span>
+          <span class="sec-title-es">Activando Contabilidad por Función para un Ledger</span>
+          <span class="sec-area">Ledgers</span>
+        </div>
+        <div class="sec-desc">El interruptor que hace posible que el reporte de Kevin agrupe por Área Funcional.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Para que el Cost of Sales Report exista, primero hay que activar esa vista <strong>a nivel de ledger y sociedad</strong>, indicando desde qué período empieza a estar disponible.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Ledgers
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Ledger
+                          <ul>
+                            <li><span class="target">⚙️ Define Cost of Sales Accounting for a Ledger and Company Code</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Cost of Sales Accounting"</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">✎</div><div class="t-btn">⟲</div>
+      </div>
+      <div class="gui-crumbbar">Define Cost of Sales Accounting for a Ledger and Company Code</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Ledger</th><th>Company Code</th><th>Cost of Sales Active</th><th>Active From</th></tr></thead>
+          <tbody>
+            <tr><td>0L</td><td>US01</td><td>☑</td><td>01 / 2020</td></tr>
+            <tr><td>0L</td><td>DE01</td><td>☐</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Se activa por sociedad — Bike Inc (US01) usa Cost of Sales para margen por producto; Bike GmbH (DE01) todavía reporta solo por Period Accounting.</div>
+      </div>
+      <div class="gui-statusbar"><span>Cost of Sales Accounting</span><span>INS</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Parallel Accounting &amp; Document Splitting · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

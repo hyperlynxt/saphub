@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · G/L Account Master Data — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t1);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:680px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(127,191,143,0.14);
+    border-left:4px solid var(--t1);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:680px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t1-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(61,122,82,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  /* THEORY BOX */
+  .theory-box{
+    background:var(--t1-pale);
+    border-left:4px solid var(--t1-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  /* EQUATION STYLE (seccion 2) */
+  .eq-row{ display:flex; align-items:stretch; gap:14px; flex-wrap:wrap; }
+  .eq-box{ flex:1; min-width:230px; background:white; border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .eq-box.result{ border:2px solid var(--t1-dark); background:var(--t1-pale); }
+  .eq-box h4{ font-family:'Syne',sans-serif; font-size:0.95rem; margin:0 0 2px; color:var(--ink); }
+  .eq-box .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .eq-box ul{ list-style:none; margin:0; padding:0; }
+  .eq-box li{ font-size:0.8rem; color:var(--body); padding:3px 0 3px 14px; position:relative; line-height:1.45; }
+  .eq-box li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:5px; }
+  .eq-symbol{ display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:1.8rem; color:var(--t1-dark); min-width:36px; }
+  .eq-box.result p{ font-size:0.83rem; color:var(--body); margin:0; line-height:1.55; }
+  .eq-box.result .icon-big{ font-size:1.6rem; display:block; margin-bottom:6px; }
+
+  /* FLOW */
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:900px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{
+    position:absolute; top:20px; right:-21px; width:28px; height:28px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* SEGMENT GRID (seccion 3) */
+  .segment-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .segment-col{ border:1.5px dashed var(--t1-dark); border-radius:12px; padding:18px; }
+  .segment-col h4{ text-align:center; font-family:'Syne',sans-serif; font-size:0.95rem; color:var(--ink); margin:0 0 6px; }
+  .segment-col .sub{ text-align:center; font-size:0.72rem; color:var(--muted); margin-bottom:14px; }
+  .segment-item{ background:var(--t1-pale); border-radius:8px; padding:10px 14px; margin-bottom:8px; font-size:0.83rem; font-weight:600; color:var(--t1-dark); text-align:center; }
+  .segment-item .em{ margin-right:6px; }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+
+  /* CHIPS */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:180px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip p.chip-desc{ font-size:0.72rem; color:var(--body); margin:6px 0 0; line-height:1.4; }
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-orange{ background:rgba(224,123,57,0.08); border-color:rgba(224,123,57,0.28); }
+  .chip-orange .chip-title{ color:#E07B39; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+  .chip-red{ background:rgba(192,57,43,0.07); border-color:rgba(192,57,43,0.28); }
+  .chip-red .chip-title{ color:#C0392B; }
+
+  /* TABLE (seccion 10) */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media (max-width:760px){
+    .cmp-grid, .segment-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Org Structure</a>
+  <a href="#s2">Two Segments</a>
+  <a href="#s3">Field Levels</a>
+  <a href="#s4">Cost Element</a>
+  <a href="#s5">Blocking Rules</a>
+  <a href="#s6">Reconciliation</a>
+  <a href="#s7">Change Reports</a>
+  <a href="#s8">Mass Changes</a>
+  <a href="#s9">Other Elements</a>
+  <a href="#s10">Summary</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">General Ledger</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Enterprise Structure</span>
+      <span class="pill pill-secondary">Chart of Accounts</span>
+    </div>
+    <h1>Organizational Structure &amp; <span class="accent">G/L Master Data</span></h1>
+    <h2>Estructura Organizativa y Datos Maestros de Cuentas de Mayor</h2>
+    <p class="desc">Fundamentos teóricos sobre cómo se relacionan Company Code, Chart of Accounts, General Ledger y Controlling Area, y cómo se estructuran y mantienen los datos maestros de una Cuenta de Mayor (G/L Account) en SAP S/4HANA.</p>
+    <div class="hlbox">Resumen Visual — <b>G/L Account Master Data</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — SVG jerarquia real -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Company Code, Chart of Accounts &amp; Controlling Area</span>
+          <span class="sec-title-es">Sociedad, Plan de Cuentas y Área de Controlling</span>
+        </div>
+        <div class="sec-desc">La estructura organizativa base antes de poder registrar cualquier transacción financiera.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de registrar cualquier transacción financiera, SAP necesita esta estructura base. La <strong>Company Code</strong> es la unidad legal donde se producen los estados financieros; usa un <strong>Chart of Accounts</strong> compartido con otras sociedades, y puede estar asignada a un <strong>Controlling Area</strong> que gestiona costos y resultados a través de varias sociedades.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="68" x2="450" y2="85" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="290" y1="85" x2="610" y2="85" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="290" y1="85" x2="290" y2="110" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="610" y1="85" x2="610" y2="110" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="290" y1="220" x2="290" y2="250" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="330" y="10" width="240" height="58" rx="10" fill="#0A0F1C"/>
+        <text x="450" y="33" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Chart of Accounts</text>
+        <text x="450" y="50" text-anchor="middle" fill="#7FE3D8" class="box-sub">Plan de Cuentas · BIKE</text>
+
+        <rect x="140" y="110" width="300" height="110" rx="10" fill="#1A4B8C"/>
+        <text x="290" y="134" text-anchor="middle" fill="white" class="box-label">Company Code DE01</text>
+        <text x="290" y="151" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Bike GmbH · Alemania</text>
+        <text x="290" y="167" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-style="italic">Moneda: EUR</text>
+        <text x="290" y="190" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">General Ledger: subconjunto de BIKE</text>
+
+        <rect x="460" y="110" width="300" height="110" rx="10" fill="#1A4B8C"/>
+        <text x="610" y="134" text-anchor="middle" fill="white" class="box-label">Company Code US01</text>
+        <text x="610" y="151" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Bike Inc · EE.UU.</text>
+        <text x="610" y="167" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-style="italic">Moneda: USD</text>
+        <text x="610" y="190" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">General Ledger: subconjunto de BIKE</text>
+
+        <rect x="120" y="250" width="340" height="100" rx="10" fill="#1A6B99"/>
+        <text x="290" y="274" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Controlling Area A000 · BIKE-CO</text>
+        <text x="290" y="291" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Gestiona costos y resultados</text>
+        <text x="290" y="308" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">Agrupa 1+ Company Codes con el mismo</text>
+        <text x="290" y="322" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">Plan de Cuentas y Variante de Ejercicio</text>
+        <text x="290" y="336" text-anchor="middle" fill="#C8E8F5" class="box-sub" font-size="9" font-style="italic">Las monedas sí pueden diferir entre sociedades</text>
+
+        <rect x="70" y="375" width="11" height="11" rx="2" fill="#0A0F1C"/>
+        <text x="86" y="384" font-size="10" fill="#64748B">Plan de Cuentas</text>
+        <rect x="205" y="375" width="11" height="11" rx="2" fill="#1A4B8C"/>
+        <text x="221" y="384" font-size="10" fill="#64748B">Company Code</text>
+        <rect x="345" y="375" width="11" height="11" rx="2" fill="#1A6B99"/>
+        <text x="361" y="384" font-size="10" fill="#64748B">Controlling Area</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — equation style -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">A G/L Account Needs Two Segments</span>
+          <span class="sec-title-es">Una Cuenta de Mayor necesita dos segmentos</span>
+        </div>
+        <div class="sec-desc">Para poder imputar en una Cuenta de Mayor, ambos segmentos deben existir.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> ninguna Cuenta de Mayor es utilizable por sí sola. Necesita un <strong>segmento a nivel Chart of Accounts</strong> (válido para todas las sociedades) y un <strong>segmento a nivel Company Code</strong> (específico de cada sociedad) — recién con los dos combinados la cuenta queda lista para imputar.
+    </div>
+    <div class="visual-wrap">
+      <div class="eq-row">
+        <div class="eq-box">
+          <h4>Chart of Accounts Segment</h4>
+          <span class="en">Válido para todas las Company Codes</span>
+          <ul>
+            <li>Account Number</li>
+            <li>Account Description</li>
+            <li>Account Type</li>
+          </ul>
+        </div>
+        <div class="eq-symbol">+</div>
+        <div class="eq-box">
+          <h4>Company Code Segment</h4>
+          <span class="en">Específico de esa sociedad</span>
+          <ul>
+            <li>Currency</li>
+            <li>Tax Code</li>
+            <li>Otros datos locales</li>
+          </ul>
+        </div>
+        <div class="eq-symbol">=</div>
+        <div class="eq-box result">
+          <span class="icon-big">✅</span>
+          <h4>Postable G/L Account</h4>
+          <span class="en">Cuenta lista para imputar</span>
+          <p>Recién cuando ambos segmentos están definidos, la cuenta puede recibir movimientos en esa Company Code.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — segment grid comparativo -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">G/L Account Fields by Level</span>
+          <span class="sec-title-es">Campos de la Cuenta de Mayor por nivel</span>
+        </div>
+        <div class="sec-desc">Qué datos vive en cada segmento de la Cuenta de Mayor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cada nivel de la Cuenta de Mayor guarda datos distintos. El <strong>Chart of Accounts</strong> define lo que es igual para todas las sociedades; la <strong>Company Code</strong> define lo que puede variar entre sociedades.
+    </div>
+    <div class="visual-wrap">
+      <div class="segment-grid">
+        <div class="segment-col">
+          <h4>Chart of Accounts Level</h4>
+          <div class="sub">Vale para todas las Company Codes</div>
+          <div class="segment-item"><span class="em">🔢</span>Account Number</div>
+          <div class="segment-item"><span class="em">🏷️</span>G/L Account Type</div>
+          <div class="segment-item"><span class="em">📁</span>Account Group</div>
+          <div class="segment-item"><span class="em">📝</span>Short &amp; Long Text</div>
+        </div>
+        <div class="segment-col">
+          <h4>Company Code Level</h4>
+          <div class="sub">Específico de cada Company Code</div>
+          <div class="segment-item"><span class="em">💱</span>Account Currency</div>
+          <div class="segment-item"><span class="em">🧾</span>Tax Information</div>
+          <div class="segment-item"><span class="em">📋</span>Field Status Group</div>
+          <div class="segment-item"><span class="em">🔗</span>Reconciliation Account</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — flow row -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Controlling Area Level &amp; the Cost Element Category</span>
+          <span class="sec-title-es">Nivel de Área de Controlling y la Categoría de Elemento de Costo</span>
+        </div>
+        <div class="sec-desc">Solo aplica a cuentas de tipo costo o ingreso — el camino hasta poder imputar en Controlling.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La vista de <strong>Controlling Area</strong> solo aplica a cuentas de tipo <strong>Primary Costs or Revenue</strong> o <strong>Secondary Costs</strong>. Necesitan una <strong>Cost Element Category</strong> (ej. '01' para costos primarios) para habilitar la imputación en Controlling, que además exige una asignación de CO como el Cost Center.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#C9932E;">
+            <span class="icon">🏷️</span><span class="title-en">G/L Account Type</span><span class="title-es">Tipo de cuenta</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Primary Costs or Revenue</li>
+            <li>o Secondary Costs</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">🔢</span><span class="title-en">Cost Element Category</span><span class="title-es">Categoría asignada</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Ej. '01' Primary Costs</li>
+            <li>Requerida en esta vista</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">✅</span><span class="title-en">Posting Enabled</span><span class="title-es">Imputación habilitada</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>El Controlling tab queda activo</li>
+            <li>para recibir transacciones</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#C0392B;">
+            <span class="icon">🎯</span><span class="title-en">CO Assignment Required</span><span class="title-es">Asignación exigida</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Ej. un Cost Center</li>
+            <li>obligatorio al imputar</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — cmp grid bloqueo -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Blocking a G/L Account for Posting</span>
+          <span class="sec-title-es">Bloqueo de una Cuenta de Mayor para imputación</span>
+        </div>
+        <div class="sec-desc">El mismo campo "Blocked for Posting" existe en dos niveles con alcance muy distinto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El bloqueo se puede definir en dos niveles distintos, con alcance muy diferente. Bloquear a nivel <strong>Chart of Accounts</strong> afecta a <strong>todas</strong> las sociedades que lo usan; bloquear a nivel <strong>Company Code</strong> afecta solo a esa sociedad puntual.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🌐</span>Chart of Accounts Level <span class="en-tag">· Nivel Plan de Cuentas</span></h4>
+          <p>Si se bloquea acá, <strong>ningún Company Code</strong> que use ese Plan de Cuentas puede imputar en la cuenta — el bloqueo es global para toda la cuenta.</p>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🏢</span>Company Code Level <span class="en-tag">· Nivel Sociedad</span></h4>
+          <p>Si se bloquea acá, solo <strong>esa Company Code</strong> puntual queda afectada. Ejemplo real: la cuenta de gastos <strong>65991000</strong> quedó bloqueada solo en Company Code DE01 (1010), sin afectar a US01 — pero como DE01 está asignada a la Controlling Area A000, los reportes de Cost Center de esa CA mostraron montos de gastos inusualmente bajos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — hub SVG reconciliation -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reconciliation Accounts</span>
+          <span class="sec-title-es">Cuentas de Enlace (Reconciliation Accounts)</span>
+        </div>
+        <div class="sec-desc">El puente automático entre los sub-libros y el Libro Mayor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El campo <strong>Reconciliation Account</strong> conecta cada sub-libro con el Libro Mayor. Cuando se registra un movimiento en Accounts Receivable, Accounts Payable o Asset Accounting, la cuenta de enlace correspondiente en el <strong>General Ledger</strong> se actualiza automáticamente en tiempo real.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+        <line x1="280" y1="55" x2="510" y2="112" stroke="#E07B39" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="506,108 516,112 508,120" fill="#E07B39"/>
+        <line x1="280" y1="150" x2="510" y2="158" stroke="#7E4FBF" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="506,153 516,158 507,164" fill="#7E4FBF"/>
+        <line x1="280" y1="245" x2="510" y2="205" stroke="#00A896" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="503,203 516,204 509,213" fill="#00A896"/>
+
+        <rect x="40" y="20" width="240" height="70" rx="8" fill="#E07B39"/>
+        <text x="160" y="48" text-anchor="middle" fill="white" class="box-label">Accounts Receivable</text>
+        <text x="160" y="66" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Cliente · Tipo D</text>
+
+        <rect x="40" y="115" width="240" height="70" rx="8" fill="#7E4FBF"/>
+        <text x="160" y="143" text-anchor="middle" fill="white" class="box-label">Accounts Payable</text>
+        <text x="160" y="161" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Proveedor · Tipo K</text>
+
+        <rect x="40" y="210" width="240" height="70" rx="8" fill="#00A896"/>
+        <text x="160" y="238" text-anchor="middle" fill="white" class="box-label">Asset Accounting</text>
+        <text x="160" y="256" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Activo · Tipo A</text>
+
+        <rect x="520" y="90" width="340" height="140" rx="12" fill="#0A0F1C"/>
+        <text x="690" y="118" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Reconciliation Account</text>
+        <text x="690" y="138" text-anchor="middle" fill="#7FE3D8" class="box-sub" font-size="11">Actualiza el Libro Mayor en tiempo real</text>
+        <text x="690" y="158" text-anchor="middle" fill="rgba(255,255,255,0.7)" class="box-sub">Tipos: D-Customers · K-Vendors · A-Assets</text>
+        <text x="690" y="176" text-anchor="middle" fill="rgba(255,255,255,0.55)" class="box-sub" font-size="9">Conecta el sub-libro con el General Ledger</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — flow row reportes -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reporting Changes to G/L Accounts</span>
+          <span class="sec-title-es">Reportes de cambios en Cuentas de Mayor</span>
+        </div>
+        <div class="sec-desc">Cómo rastrear quién cambió un campo, cuándo, y qué valor tenía antes.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando una Cuenta de Mayor cambia — por ejemplo, un bloqueo para imputación — es clave saber quién lo hizo y cuándo. La app <strong>G/L Account Changes</strong> permite filtrar por cuenta, fecha, usuario, Chart of Accounts o Company Code, y hacer drill-down para ver el <strong>Old Value</strong> y <strong>New Value</strong> de cada cambio.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🔍</span><span class="title-en">General Selections</span><span class="title-es">Selección general</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>G/L Accounts (rango)</li>
+            <li>Changed On (fecha)</li>
+            <li>Changed By (usuario)</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">🗂️</span><span class="title-en">Further Selections</span><span class="title-es">Selección adicional</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Chart of Accounts</li>
+            <li>Company Codes</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">▶️</span><span class="title-en">Execute Report</span><span class="title-es">Ejecutar reporte</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Corre la selección</li>
+            <li>Devuelve línea por cambio</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#C9932E;">
+            <span class="icon">📝</span><span class="title-en">Drill Down</span><span class="title-es">Detalle del cambio</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Old Value / New Value</li>
+            <li>Changed By · Fecha y hora</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — cmp grid individual vs colectivo -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Individual vs. Collective Processing</span>
+          <span class="sec-title-es">Procesamiento individual vs. colectivo</span>
+        </div>
+        <div class="sec-desc">Dos formas de cambiar datos maestros de Cuentas de Mayor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Modificar Cuentas de Mayor se puede hacer de dos formas. El <strong>procesamiento individual</strong> cambia una sola cuenta a la vez; el <strong>procesamiento colectivo</strong> permite seleccionar un rango de cuentas y aplicar el mismo cambio a todas, con una revisión de <strong>Old Value / New Value</strong> antes de guardar.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🎯</span>Individual Processing <span class="en-tag">· Procesamiento individual</span></h4>
+          <p>Se abre y modifica <strong>una sola</strong> Cuenta de Mayor a la vez. Útil para corregir un caso puntual, como remover un bloqueo de una cuenta específica.</p>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📦</span>Collective Processing <span class="en-tag">· Procesamiento colectivo</span></h4>
+          <p>Se selecciona un <strong>rango de cuentas</strong> y una vista (Chart of Accounts, Company Code o Controlling Area), se eligen los campos a cambiar, y se revisan <strong>Old Value / New Value</strong> de todos los cambios antes de guardar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — chips otros elementos organizativos -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Other Organizational Elements in FI</span>
+          <span class="sec-title-es">Otros elementos organizativos en FI</span>
+        </div>
+        <div class="sec-desc">Más allá de la Company Code, otras dimensiones que habilitan distintos tipos de reporting.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Más allá de la Company Code, Financial Accounting usa otros elementos organizativos según las necesidades de reporting. El <strong>Profit Center</strong> y el <strong>Segment</strong> permiten un balance y P&amp;L propios; el <strong>Functional Area</strong> clasifica los gastos según su propósito comercial.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy">
+          <span class="chip-icon">🏢</span><span class="chip-title">Company Code</span><span class="chip-en">Sociedad</span>
+          <p class="chip-desc">Menor unidad de FI con set completo de estados financieros para reporting externo.</p>
+        </div>
+        <div class="chip chip-teal">
+          <span class="chip-icon">📍</span><span class="chip-title">Profit Center</span><span class="chip-en">Centro de Beneficio</span>
+          <p class="chip-desc">Balance y P&amp;L internos, por área de responsabilidad — reporting de gestión.</p>
+        </div>
+        <div class="chip chip-purple">
+          <span class="chip-icon">🌍</span><span class="chip-title">Segment</span><span class="chip-en">Segmento</span>
+          <p class="chip-desc">Reporting externo por segmento de negocio, exigido por IFRS 8.</p>
+        </div>
+        <div class="chip chip-orange">
+          <span class="chip-icon">⚙️</span><span class="chip-title">Functional Area</span><span class="chip-en">Área Funcional</span>
+          <p class="chip-desc">Clasifica gastos por función, para Cost of Sales Accounting.</p>
+        </div>
+      </div>
+      <div class="chip-row" style="margin-top:16px;">
+        <div class="chip chip-teal"><span class="chip-icon">🏭</span><span class="chip-title">Production</span><span class="chip-en">Producción</span></div>
+        <div class="chip chip-navy"><span class="chip-icon">📋</span><span class="chip-title">Administration</span><span class="chip-en">Administración</span></div>
+        <div class="chip chip-orange"><span class="chip-icon">🚚</span><span class="chip-title">Sales &amp; Distribution</span><span class="chip-en">Ventas y Distribución</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">📣</span><span class="chip-title">Marketing</span><span class="chip-en">Marketing</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">🔬</span><span class="chip-title">Research &amp; Development</span><span class="chip-en">I+D</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — tabla resumen -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Putting It Together</span>
+          <span class="sec-title-es">Uniendo las piezas</span>
+        </div>
+        <div class="sec-desc">Los cuatro elementos organizativos centrales, lado a lado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los cuatro elementos vistos en este archivo trabajan juntos, pero cada uno cumple una función distinta dentro de la arquitectura financiera de SAP S/4HANA.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Elemento</th><th>Función Principal</th><th>Alcance</th><th>Se conecta con</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">📚 Chart of Accounts</span><span class="mod-en">Plan de Cuentas</span></td>
+            <td>Lista de todas las Cuentas de Mayor disponibles.</td>
+            <td>Compartido por todas las Company Codes que lo tienen asignado.</td>
+            <td><span class="badge badge-accent">Base de toda cuenta</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🏢 Company Code</span><span class="mod-en">Sociedad</span></td>
+            <td>Produce los estados financieros.</td>
+            <td>Unidad legal, la más pequeña de FI con reporting externo propio.</td>
+            <td><span class="badge badge-neutral">Usa un Chart of Accounts</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📒 General Ledger</span><span class="mod-en">Libro Mayor</span></td>
+            <td>Cuentas del Plan de Cuentas usadas para imputar.</td>
+            <td>Subconjunto específico de cada Company Code.</td>
+            <td><span class="badge badge-neutral">Vive dentro de una Company Code</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📊 Controlling Area</span><span class="mod-en">Área de Controlling</span></td>
+            <td>Gestiona costos y resultados.</td>
+            <td>Puede agrupar una o más Company Codes.</td>
+            <td><span class="badge badge-accent">Agrupa Company Codes</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Chart of Accounts</div><div class="term-es">Plan de Cuentas</div><div class="term-def">Lista de todas las Cuentas de Mayor disponibles para las Company Codes que lo tienen asignado.</div></div>
+      <div class="gcard"><div class="term-en">General Ledger</div><div class="term-es">Libro Mayor</div><div class="term-def">Subconjunto de cuentas del Plan de Cuentas que efectivamente se usa para imputar en una Company Code.</div></div>
+      <div class="gcard"><div class="term-en">Company Code</div><div class="term-es">Sociedad</div><div class="term-def">Unidad legal más pequeña de FI para la cual se puede producir un set de estados financieros externos.</div></div>
+      <div class="gcard"><div class="term-en">Controlling Area</div><div class="term-es">Área de Controlling</div><div class="term-def">Objeto organizativo de CO que gestiona costos y resultados, pudiendo agrupar una o más Company Codes.</div></div>
+      <div class="gcard"><div class="term-en">G/L Account Type</div><div class="term-es">Tipo de Cuenta de Mayor</div><div class="term-def">Clasificación de la cuenta (ej. Primary Costs, Balance Sheet, Cash) que determina su uso en FI y CO.</div></div>
+      <div class="gcard"><div class="term-en">Account Group</div><div class="term-es">Grupo de Cuentas</div><div class="term-def">Determina los campos disponibles en la pantalla de datos a nivel Company Code.</div></div>
+      <div class="gcard"><div class="term-en">Field Status Group</div><div class="term-es">Grupo de Status de Campo</div><div class="term-def">Define qué campos son obligatorios, opcionales u ocultos al imputar en la cuenta.</div></div>
+      <div class="gcard"><div class="term-en">Cost Element Category</div><div class="term-es">Categoría de Elemento de Costo</div><div class="term-def">Clasifica el tipo de costo o ingreso en Controlling (ej. '01' Primary Costs).</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Account</div><div class="term-es">Cuenta de Enlace</div><div class="term-def">Cuenta del Libro Mayor que se actualiza automáticamente desde un sub-libro (D-Customers, K-Vendors, A-Assets).</div></div>
+      <div class="gcard"><div class="term-en">Blocked for Posting</div><div class="term-es">Bloqueo para Imputación</div><div class="term-def">Restricción que impide registrar movimientos en una cuenta, definible a nivel Plan de Cuentas o Company Code.</div></div>
+      <div class="gcard"><div class="term-en">Profit Center</div><div class="term-es">Centro de Beneficio</div><div class="term-def">Unidad de gestión interna para la cual se puede armar un balance y P&amp;L propios.</div></div>
+      <div class="gcard"><div class="term-en">Segment</div><div class="term-es">Segmento</div><div class="term-def">Subárea de negocio con ingresos y gastos propios, usada para reporting externo bajo IFRS 8.</div></div>
+      <div class="gcard"><div class="term-en">Functional Area</div><div class="term-es">Área Funcional</div><div class="term-def">Clasifica los gastos por su función (producción, ventas, administración) para Cost of Sales Accounting.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — G/L Account Master Data · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

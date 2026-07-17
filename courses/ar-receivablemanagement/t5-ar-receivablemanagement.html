@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · Receivables Management — Holístico/Ecosistema | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t5:#E0A56F;
+    --t5-dark:#A85F2B;
+    --t5-pale:rgba(224,165,111,0.14);
+    --t5-pale-border:rgba(224,165,111,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t5); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t5); border-bottom-color:var(--t5); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1D14 55%, #4A2E14 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t5); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,165,111,0.14); border-left:4px solid var(--t5); border-radius:0 8px 8px 0; padding:13px 18px; max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t5); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:52px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:18px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t5-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(168,95,43,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .tag-row{ display:flex; align-items:center; gap:8px; margin-top:4px; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .orbit-tag{ display:inline-flex; align-items:center; gap:5px; font-size:9.5px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(168,95,43,0.1); color:var(--t5-dark); vertical-align:middle; }
+  .kind-tag{ display:inline-flex; align-items:center; font-size:9px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; color:white; vertical-align:middle; }
+  .kind-tag.kind-nest{ background:#5A6B8C; }
+  .kind-tag.flow{ background:var(--cat-sales); }
+
+  .theory-box{ background:var(--t5-pale); border-left:4px solid var(--t5-dark); border-radius:0 10px 10px 0; padding:15px 22px; margin-bottom:22px; font-size:0.93rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t5-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:30px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:600px; }
+
+  /* MAMUSHKA - capas anidadas */
+  .nest-stage{ display:flex; justify-content:center; padding:6px 0; }
+  .nest{ border:2px dashed; border-radius:26px; padding:36px 32px 26px; position:relative; display:inline-flex; flex-direction:column; align-items:center; }
+  .nest-label{ position:absolute; top:-11px; left:24px; background:white; padding:0 10px; font-size:10.5px; font-weight:700; letter-spacing:.3px; }
+  .nest-core{ border-radius:14px; padding:18px 30px; color:white; font-family:'Syne',sans-serif; font-weight:800; text-align:center; font-size:1rem; }
+  .nest-core .sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:0.72rem; opacity:.85; margin-top:5px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">Dunning Position</a>
+  <a href="#s2">Invoice Flow</a>
+  <a href="#s3">Order to Cash Split</a>
+  <a href="#s4">Credit Check Flow</a>
+  <a href="#s5">Business Partner Base</a>
+  <a href="#s6">Down Payment Flow</a>
+  <a href="#s7">Credit Mgmt Layer</a>
+  <a href="#s8">Dunning Flow</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Sales &amp; Distribution</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Credit Management</span>
+    </div>
+    <h1><span class="accent">Receivables</span> Management</h1>
+    <h2>Gestión de Cuentas por Cobrar — Ecosistema</h2>
+    <p class="desc">Dónde vive cada pieza de Receivables Management dentro de capas más grandes, y qué entra y sale hacia actividades puntuales de otros módulos — no el panorama completo de siempre, sino la ubicación exacta.</p>
+    <div class="hlbox">Resumen Visual — <b>Receivables Management</b>, Tipo 5 (Holístico). 8 secciones — 4 de posicionamiento, 4 de flujo de entrada/salida con módulos puntuales.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — mamushka -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Dunning Lives</span>
+          <span class="sec-title-es">Dónde vive Dunning</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No es un módulo aparte — es una función, adentro de otra, adentro de otra.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Dunning no vive solo, ni siquiera al lado de Receivables Management — vive <strong>adentro</strong> de ella. Y Receivables Management (Invoice to Cash) es a su vez una pieza de Financial Accounting, dentro del núcleo mayor de SAP S/4HANA Finance.
+    </div>
+    <div class="visual-wrap">
+      <div class="nest-stage">
+        <div class="nest" style="border-color:#94A3B8;">
+          <span class="nest-label" style="color:#64748B;">SAP S/4HANA Finance</span>
+          <div class="nest" style="border-color:#B08A6F;">
+            <span class="nest-label" style="color:#8A6A4E;">Financial Accounting (FI)</span>
+            <div class="nest" style="border-color:#C2843F;">
+              <span class="nest-label" style="color:#A85F2B;">Receivables Management (Invoice to Cash)</span>
+              <div class="nest-core" style="background:var(--t5-dark);">
+                Dunning
+                <div class="sub">reclamo de pago vencido</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — flujo -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds the Customer Invoice, Where It Goes</span>
+          <span class="sec-title-es">Qué alimenta a la factura de cliente, hacia dónde sale</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Sales</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un documento que nace en Ventas y termina en una cuenta puntual del Libro Mayor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La factura no nace en Receivables Management — llega heredada del <strong>Billing Document</strong> de Sales &amp; Distribution (T1 §5). De ahí, Receivables Management la contabiliza y la manda directo a su cuenta de enlace en el Libro Mayor (T1 §9).
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="240" y1="65" x2="330" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a2)"/>
+        <line x1="570" y1="65" x2="660" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a2)"/>
+        <rect x="20" y="35" width="220" height="60" rx="10" fill="#1A6B99"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Billing Document</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Sales &amp; Distribution · T1 §5</text>
+
+        <rect x="330" y="35" width="240" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Post Accounts Receivable</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Receivables Management</text>
+
+        <rect x="660" y="35" width="220" height="60" rx="10" fill="#C9932E"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">General Ledger</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Reconciliation Account · T1 §9</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra heredado</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale hacia la cuenta de enlace</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — árbol de bifurcación -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Order to Cash Splits</span>
+          <span class="sec-title-es">Dónde se bifurca Order to Cash</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Order to Cash</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Dos caminos paralelos, no uno adentro del otro.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Order to Cash</strong> se abre en dos ramas paralelas, no una adentro de la otra: Order to Invoice (venta y logística, T1 §4) e Invoice to Cash — Receivables Management vive específicamente en esta segunda rama.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="65" x2="450" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="630" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="270" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="90" x2="630" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="175" x2="630" y2="205" stroke="#A85F2B" stroke-width="2.5"/>
+
+        <rect x="350" y="10" width="200" height="55" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="42" text-anchor="middle" fill="white" class="box-label">Order to Cash</text>
+
+        <rect x="140" y="115" width="260" height="60" rx="10" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="270" y="141" text-anchor="middle" fill="#5A6B8C" class="box-label">Order to Invoice</text>
+        <text x="270" y="158" text-anchor="middle" fill="#94A3B8" class="box-sub">Sales &amp; Distribution · T1 §4</text>
+
+        <rect x="500" y="115" width="260" height="60" rx="10" fill="#1A6B99"/>
+        <text x="630" y="141" text-anchor="middle" fill="white" class="box-label">Invoice to Cash</text>
+        <text x="630" y="158" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">hacia adentro de Finance</text>
+
+        <rect x="490" y="205" width="280" height="60" rx="10" fill="#A85F2B"/>
+        <text x="630" y="231" text-anchor="middle" fill="white" class="box-label">Receivables Management</text>
+        <text x="630" y="248" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">el terreno de Linda (T3)</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — flujo -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds Credit Management, What It Gates</span>
+          <span class="sec-title-es">Qué alimenta al chequeo de crédito, qué habilita</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Sales</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Dos entradas puntuales que se cruzan antes de dejar pasar un pedido.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El chequeo de crédito no mira solo el pedido nuevo — lo cruza contra las <strong>partidas abiertas</strong> que ya tiene Receivables Management (T2 §3, T2 §7). De ese cruce puntual sale la luz verde — o el bloqueo — hacia Delivery.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="270" y1="75" x2="270" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="75" x2="630" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="95" x2="630" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="95" x2="450" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a4)"/>
+
+        <rect x="130" y="15" width="280" height="60" rx="10" fill="#00A896"/>
+        <text x="270" y="39" text-anchor="middle" fill="white" class="box-label">New Sales Order</text>
+        <text x="270" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Sales &amp; Distribution</text>
+
+        <rect x="490" y="15" width="280" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="630" y="39" text-anchor="middle" fill="white" class="box-label">Open Items</text>
+        <text x="630" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Receivables Management · T2 §7</text>
+
+        <rect x="310" y="125" width="280" height="62" rx="10" fill="#A85F2B"/>
+        <text x="450" y="152" text-anchor="middle" fill="white" class="box-label">Credit Check → Delivery Release</text>
+        <text x="450" y="169" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Sales &amp; Distribution · T2 §3</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — fundación + pilares -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Receivables Management Stands On</span>
+          <span class="sec-title-es">Sobre qué se apoya Receivables Management</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Cross-Módulo (Master Data)</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Cuatro funciones distintas, una misma base debajo de todas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Billing, Credit Management, Dunning y Correspondence no funcionan solos — los cuatro se apoyan en el mismo <strong>Business Partner</strong> (T2 §2): sin datos maestros de cliente, ninguna de estas funciones tiene de dónde partir.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="50" width="180" height="115" rx="8" fill="#E07B39"/>
+        <text x="150" y="100" text-anchor="middle" fill="white" class="box-label">Billing</text>
+        <text x="150" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Sales &amp; Distribution</text>
+
+        <rect x="260" y="50" width="180" height="115" rx="8" fill="#1A6B99"/>
+        <text x="350" y="100" text-anchor="middle" fill="white" class="box-label">Credit Management</text>
+        <text x="350" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">T2 §3</text>
+
+        <rect x="460" y="50" width="180" height="115" rx="8" fill="#C0392B"/>
+        <text x="550" y="100" text-anchor="middle" fill="white" class="box-label">Dunning</text>
+        <text x="550" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">T2 §8</text>
+
+        <rect x="660" y="50" width="180" height="115" rx="8" fill="#7E4FBF"/>
+        <text x="750" y="100" text-anchor="middle" fill="white" class="box-label">Correspondence</text>
+        <text x="750" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">T1 §8</text>
+
+        <rect x="30" y="165" width="840" height="60" rx="8" fill="#A85F2B"/>
+        <text x="450" y="190" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Business Partner</text>
+        <text x="450" y="208" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Customer Master Data — la base que las cuatro comparten (T2 §2)</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — flujo -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds Down Payment Clearing, What It Feeds</span>
+          <span class="sec-title-es">Qué alimenta la compensación del anticipo, qué alimenta</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un anticipo que entra por un lado y sale compensado por otro.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un anticipo no se queda archivado — entra como <strong>Special G/L</strong> (T2 §5, T4 §8), y cuando llega la factura final, Receivables Management lo usa para compensar automáticamente parte de lo que el cliente debe.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a6b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="280" y1="65" x2="320" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6b)"/>
+        <line x1="580" y1="65" x2="620" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6b)"/>
+        <rect x="20" y="35" width="260" height="60" rx="10" fill="#E07B39"/>
+        <text x="150" y="59" text-anchor="middle" fill="white" class="box-label">Down Payment Request</text>
+        <text x="150" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">negociado con el cliente</text>
+
+        <rect x="320" y="35" width="260" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Special G/L Posting</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Receivables Management · T2 §5</text>
+
+        <rect x="620" y="35" width="260" height="60" rx="10" fill="#C9932E"/>
+        <text x="750" y="59" text-anchor="middle" fill="white" class="box-label">Final Invoice Clearing</text>
+        <text x="750" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">compensa el anticipo</text>
+
+        <text x="150" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra desde la negociación comercial</text>
+        <text x="750" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale compensando la factura final</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — stack de capas -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Credit Management Sits</span>
+          <span class="sec-title-es">Dónde se ubica Credit Management</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Sales</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No es una capa más adentro — es la capa que decide si el pedido sigue.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      A diferencia de Dunning (§1 de este archivo), Credit Management no está "adentro" de un núcleo único — se sienta <strong>entre</strong> la creación del pedido y su entrega, como una capa que frena o deja pasar, en tiempo real.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 290" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a7b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="85" x2="450" y2="108" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a7b)"/>
+        <line x1="450" y1="180" x2="450" y2="203" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a7b)"/>
+
+        <rect x="150" y="15" width="600" height="70" rx="10" fill="#1A6B99"/>
+        <text x="450" y="45" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Sales Order Creation</text>
+        <text x="450" y="63" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Sales &amp; Distribution</text>
+
+        <rect x="150" y="110" width="600" height="70" rx="10" fill="#A85F2B"/>
+        <text x="450" y="140" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Credit Management</text>
+        <text x="450" y="158" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">chequeo automático · T2 §3, T4 §6</text>
+
+        <rect x="150" y="205" width="600" height="70" rx="10" fill="#00A896"/>
+        <text x="450" y="235" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Delivery Release</text>
+        <text x="450" y="253" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Logistics — solo si está dentro del límite</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — flujo -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Dunning Sends, Who Receives It</span>
+          <span class="sec-title-es">Qué envía Dunning, quién lo recibe</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Collections &amp; Risk</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">La misma corrida termina en dos destinatarios distintos, no uno solo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El dunning no termina en una sola carta — el mismo run que le avisa al <strong>cliente</strong> (T3 §7) también deja una marca interna hacia <strong>Collections Management</strong> (T2 §9), para priorizar el seguimiento de esa cuenta.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a8b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="75" x2="450" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="100" x2="630" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="100" x2="270" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8b)"/>
+        <line x1="630" y1="100" x2="630" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8b)"/>
+
+        <rect x="310" y="15" width="280" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="39" text-anchor="middle" fill="white" class="box-label">Overdue Open Items</text>
+        <text x="450" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Receivables Management · T2 §8</text>
+
+        <rect x="130" y="125" width="280" height="60" rx="10" fill="#C0392B"/>
+        <text x="270" y="149" text-anchor="middle" fill="white" class="box-label">Customer</text>
+        <text x="270" y="166" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Dunning Letter · T3 §7</text>
+
+        <rect x="490" y="125" width="280" height="60" rx="10" fill="#1A6B99"/>
+        <text x="630" y="149" text-anchor="middle" fill="white" class="box-label">Collections Management</text>
+        <text x="630" y="166" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Risk Flag · T2 §9</text>
+      </svg>
+    </div>
+  </section>
+
+</main>
+
+<footer>T5 · Holístico/Ecosistema — Receivables Management · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

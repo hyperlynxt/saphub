@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Payables Management — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  /* NAV */
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  /* HERO */
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1418 55%, #4A1F24 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:640px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,133,133,0.14); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px; max-width:640px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  /* THEORY BOX */
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  /* CARD GRID */
+  .cardgrid{ display:grid; gap:14px; min-width:700px; }
+  .cardgrid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cardgrid.g4{ grid-template-columns:repeat(4,1fr); }
+  .cardgrid .item{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardgrid .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardgrid .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardgrid .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardgrid .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  /* CHIP ROW (s4) */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:14px; min-width:700px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:16px 18px; flex:1; min-width:220px; }
+  .chip .chip-icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .chip .chip-title{ font-size:0.88rem; font-weight:700; color:var(--t2-dark); display:block; }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin:2px 0 6px; }
+  .chip p{ margin:0; font-size:0.8rem; color:var(--body); line-height:1.5; }
+
+  /* CMP GRID */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.02rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.82rem; color:var(--body); line-height:1.6; }
+
+  /* FLOW (s5) */
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:700px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body p{ font-size:10.3px; color:var(--body); margin:0; line-height:1.5; }
+  .flow-step-body.muted{ opacity:0.6; }
+  .flow-connector{ position:absolute; top:20px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; }
+
+  /* DATA TABLE (s6) */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .rlabel{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+
+  /* RECONCILIATION LINE HIGHLIGHT (s8) */
+  .reconline-wrap{ display:flex; gap:24px; align-items:center; flex-wrap:wrap; }
+  .reconline-wrap .data-table{ flex:1.5; min-width:420px; }
+  .data-table tr.hl td{ background:var(--t2-pale) !important; border-left:3px solid var(--t2-dark); font-weight:600; color:var(--t2-dark); }
+  .recon-arrow{ font-size:24px; color:var(--t2-dark); }
+  .recon-callout{ flex:1; min-width:200px; display:flex; flex-direction:column; gap:10px; }
+  .recon-callout .rc-label{ font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; margin-bottom:2px; }
+  .recon-chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:8px; padding:10px 14px; font-weight:700; color:var(--t2-dark); font-size:0.85rem; }
+
+  /* EQUATION STYLE (s9) */
+  .equation-row{ display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:nowrap; min-width:840px; }
+  .eq-box{ background:white; border:1.5px solid var(--border); border-radius:10px; padding:16px 20px; text-align:center; min-width:190px; }
+  .eq-box h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--ink); }
+  .eq-box .eq-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-bottom:4px; }
+  .eq-box p{ margin:0; font-size:0.78rem; color:var(--body); line-height:1.5; }
+  .eq-symbol{ font-size:1.7rem; font-weight:700; color:var(--t2-dark); }
+  .eq-result{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:16px 22px; text-align:center; min-width:190px; }
+  .eq-result h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--t2-dark); }
+  .eq-result p{ margin:0; font-size:0.78rem; color:var(--t2-dark); }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Team &amp; Roles</a>
+  <a href="#s2">Two Roles, One BP</a>
+  <a href="#s3">Fact Sheet</a>
+  <a href="#s4">Correspondence</a>
+  <a href="#s5">Procure-to-Receipt</a>
+  <a href="#s6">Payment Types</a>
+  <a href="#s7">Entry Types</a>
+  <a href="#s8">Reconciliation Line</a>
+  <a href="#s9">GR/IR Mechanism</a>
+  <a href="#s10">Statement Versions</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Payables Management</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Sourcing &amp; Procurement</span>
+      <span class="pill pill-secondary">Source-to-Pay</span>
+    </div>
+    <h1><span class="accent">Payables</span> Management</h1>
+    <h2>Gestión de Cuentas por Pagar — Profundización</h2>
+    <p class="desc">Los roles que rodean al contador de Cuentas por Pagar, el mecanismo interno detrás del Business Partner y de GR/IR, y los temas que el Tipo 1 no llegó a cubrir: Correspondence, Procure-to-Receipt, tipos de pago y de asiento.</p>
+    <div class="hlbox">Resumen Visual — <b>Payables Management</b>, Tipo 2 (Profundización). 10 secciones — 5 de mayor profundidad sobre lo visto en T1, 5 de temas adyacentes conectados.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — SVG hub -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Team Around Payables Management</span>
+          <span class="sec-title-es">El equipo alrededor de Payables Management</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mostró las tareas del contador de Cuentas por Pagar — acá aparecen los otros roles con los que trabaja codo a codo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El contador de Cuentas por Pagar no trabaja solo: el <strong>Purchaser</strong> negocia lo que se compra, el <strong>Strategic Buyer</strong> define las condiciones marco con cada proveedor, el <strong>Warehouse Clerk</strong> confirma qué mercadería llegó realmente, y el <strong>Cash Manager</strong> decide cuándo sale la plata de tesorería. Cada uno aporta un dato que Payables Management necesita para poder pagar con confianza.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg">
+        <line x1="240" y1="94" x2="352" y2="172" stroke="#7E4FBF" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="348,168 358,172 349,178" fill="#7E4FBF"/>
+        <line x1="240" y1="286" x2="352" y2="220" stroke="#00A896" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="348,224 358,220 349,214" fill="#00A896"/>
+        <line x1="660" y1="94" x2="548" y2="172" stroke="#1A4B8C" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="552,168 542,172 551,178" fill="#1A4B8C"/>
+        <line x1="660" y1="286" x2="548" y2="220" stroke="#1A6B99" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="552,224 542,220 551,214" fill="#1A6B99"/>
+
+        <rect x="355" y="150" width="190" height="90" rx="12" fill="#0A0F1C"/>
+        <text x="450" y="188" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">PAYABLES MGMT</text>
+        <text x="450" y="206" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">ACCOUNTANT</text>
+        <text x="450" y="224" text-anchor="middle" fill="rgba(255,255,255,0.62)" class="box-sub" font-size="9.5">Tipo 1, sección 1</text>
+
+        <rect x="40" y="30" width="200" height="64" rx="8" fill="#7E4FBF"/>
+        <text x="140" y="56" text-anchor="middle" fill="white" class="box-label">Purchaser</text>
+        <text x="140" y="73" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Negocia qué se compra</text>
+
+        <rect x="40" y="286" width="200" height="64" rx="8" fill="#00A896"/>
+        <text x="140" y="312" text-anchor="middle" fill="white" class="box-label">Warehouse Clerk</text>
+        <text x="140" y="329" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Confirma la mercadería recibida</text>
+
+        <rect x="660" y="30" width="200" height="64" rx="8" fill="#1A4B8C"/>
+        <text x="760" y="56" text-anchor="middle" fill="white" class="box-label">Strategic Buyer</text>
+        <text x="760" y="73" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Define condiciones marco</text>
+
+        <rect x="660" y="286" width="200" height="64" rx="8" fill="#1A6B99"/>
+        <text x="760" y="312" text-anchor="middle" fill="white" class="box-label">Cash Manager</text>
+        <text x="760" y="329" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Decide cuándo sale el pago</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Two Roles, One Supplier</span>
+          <span class="sec-title-es">Dos roles, un mismo proveedor</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mostró que un Business Partner necesita al menos un Role — acá se ve por qué un Supplier real necesita, en rigor, dos al mismo tiempo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para que un proveedor como Tireless Tires funcione como Supplier completo, no alcanza con un solo <strong>Role</strong>: el sistema necesita <strong>FLVN00</strong> (Financial Accounting Supplier), que guarda los datos específicos de la sociedad, y <strong>FLVN01</strong> (Supplier), que guarda los datos logísticos de compras. Son dos roles simultáneos sobre el <strong>mismo</strong> Business Partner, no dos Business Partners distintos.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4>FLVN00 <span class="en-tag">Financial Accounting Supplier</span></h4>
+          <p>Guarda los datos específicos de la sociedad (Company Code) — la parte contable del proveedor.</p>
+          <ul>
+            <li>Company Code</li>
+            <li>Reconciliation Account</li>
+            <li>Payment Terms / Payment Method</li>
+          </ul>
+        </div>
+        <div class="cmp-card neutral">
+          <h4>FLVN01 <span class="en-tag">Supplier</span></h4>
+          <p>Guarda los datos específicos de la organización de compras — la parte logística del proveedor.</p>
+          <ul>
+            <li>Purchasing Organization</li>
+            <li>Purchasing Group</li>
+            <li>Incoterms</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — SVG funnel -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Supplier Fact Sheet: Everything in One View</span>
+          <span class="sec-title-es">El Supplier Fact Sheet: todo en una sola vista</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 separó General Data de Role-Specific Data en bloques distintos — el Fact Sheet es donde esos bloques se consolidan para consulta rápida.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>Supplier Fact Sheet</strong> reúne en una sola vista la información financiera y logística de un Business Partner, sin tener que navegar entre General Data, Accounting y Logistics por separado. Es el punto de consulta rápida cuando alguien necesita ver todo lo que el sistema sabe sobre un proveedor puntual.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <line x1="200" y1="80" x2="390" y2="180" stroke="#5A6B8C" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="384,175 394,180 385,187" fill="#5A6B8C"/>
+        <line x1="450" y1="80" x2="450" y2="180" stroke="#A94444" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="445,174 450,184 455,174" fill="#A94444"/>
+        <line x1="700" y1="80" x2="510" y2="180" stroke="#7E4FBF" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="516,175 506,180 515,187" fill="#7E4FBF"/>
+
+        <rect x="90" y="20" width="220" height="60" rx="8" fill="#5A6B8C"/>
+        <text x="200" y="46" text-anchor="middle" fill="white" class="box-label">General Data</text>
+        <text x="200" y="63" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Nombre, dirección, grouping</text>
+
+        <rect x="340" y="20" width="220" height="60" rx="8" fill="#A94444"/>
+        <text x="450" y="46" text-anchor="middle" fill="white" class="box-label">Accounting Data</text>
+        <text x="450" y="63" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Company Code, Reconciliation</text>
+
+        <rect x="590" y="20" width="220" height="60" rx="8" fill="#7E4FBF"/>
+        <text x="700" y="46" text-anchor="middle" fill="white" class="box-label">Logistics Data</text>
+        <text x="700" y="63" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Purchasing Org, Incoterms</text>
+
+        <rect x="320" y="180" width="260" height="80" rx="12" fill="#0A0F1C" stroke="#D4AF37" stroke-width="2.5"/>
+        <text x="450" y="212" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Supplier Fact Sheet</text>
+        <text x="450" y="230" text-anchor="middle" fill="#F0D98C" class="box-sub" font-size="10">Financiero + logístico, consolidado</text>
+        <text x="450" y="246" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">vista de consulta rápida</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Correspondence in Detail</span>
+          <span class="sec-title-es">Correspondence en detalle</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mencionó Correspondence como uno de los cuatro pilares — acá se abren las tres actividades concretas que lo componen.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Dentro del pilar de <strong>Correspondence</strong> hay tres actividades puntuales: gestionar los <strong>avisos de pago</strong> antes de pagar, emitir <strong>confirmaciones de pago</strong> después de pagar, y enviar <strong>confirmaciones de saldo</strong> de forma periódica al proveedor — esta última ya había aparecido como Actividad Periódica en el Tipo 1.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip">
+          <span class="chip-icon">📤</span>
+          <span class="chip-title">Manage Payment Advices</span>
+          <span class="chip-en">Gestión de Avisos de Pago</span>
+          <p>Comunica al proveedor qué facturas están por pagarse, antes de que se ejecute la corrida.</p>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">✅</span>
+          <span class="chip-title">Issue Payment Confirmations</span>
+          <span class="chip-en">Confirmaciones de Pago</span>
+          <p>Confirma al proveedor que un pago ya se ejecutó, una vez cerrada la corrida.</p>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">📋</span>
+          <span class="chip-title">Issue Balance Confirmations</span>
+          <span class="chip-en">Confirmaciones de Saldo</span>
+          <p>Actividad periódica de cierre: valida con el proveedor que el saldo pendiente coincide en ambos lados.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Upstream: Procure-to-Receipt</span>
+          <span class="sec-title-es">Aguas arriba: Procure-to-Receipt</span>
+        </div>
+        <div class="sec-desc">El árbol del Tipo 1 mostró Invoice-to-Pay dentro de Source-to-Pay — esta es la rama vecina que ocurre antes y que hace posible el matching con Orden de Compra.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de que una factura con Orden de Compra pueda pasar el matching que vimos en el Tipo 1, tiene que pasar por <strong>Procure-to-Receipt</strong>: primero <strong>Operational Procurement</strong> genera y gestiona la Orden de Compra, después <strong>Receiving</strong> confirma qué mercadería llegó realmente. Sin ese Goods Receipt, no hay nada contra qué hacer matching.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">🛒</span><span class="title-en">Operational Procurement</span><span class="title-es">Aprovisionamiento Operativo</span>
+          </div>
+          <div class="flow-step-body"><p>Se genera y gestiona la Orden de Compra con el proveedor.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">📦</span><span class="title-en">Receiving</span><span class="title-es">Recepción</span>
+          </div>
+          <div class="flow-step-body"><p>Se confirma qué mercadería llegó realmente: se registra el Goods Receipt.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">🧾</span><span class="title-en">Invoice Matching</span><span class="title-es">Matching de Factura</span>
+          </div>
+          <div class="flow-step-body"><p>Payables Management compara la factura contra la PO y el Goods Receipt (Tipo 1, sección 9).</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Types Beyond the Payment Run</span>
+          <span class="sec-title-es">Tipos de pago más allá de la Corrida de Pago</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mencionó el Payment Run como una de las seis tareas — acá se diferencia de otros dos tipos de pago que aparecen en el mismo proceso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      No todo pago sale de una corrida masiva. El <strong>Down Payment</strong> se emite antes de que llegue la factura, como anticipo. El <strong>Single Outgoing Payment</strong> paga una factura puntual fuera de la corrida general. El <strong>Payment Run</strong>, en cambio, procesa muchas facturas a la vez según lo visto en el Tipo 1.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Tipo</th><th>¿Cuándo se dispara?</th><th>¿Cuántas facturas cubre?</th><th>Relación con la factura</th></tr></thead>
+        <tbody>
+          <tr><td class="rlabel">Down Payment</td><td>Antes de la entrega, según lo negociado</td><td>Ninguna todavía</td><td>Anticipo — la factura llega después</td></tr>
+          <tr><td class="rlabel">Single Outgoing Payment</td><td>Cuando hace falta pagar algo puntual</td><td>Una</td><td>Paga una factura específica, fuera de la corrida general</td></tr>
+          <tr><td class="rlabel">Payment Run</td><td>Según el calendario de pagos definido</td><td>Una o varias a la vez</td><td>Agrupa todas las facturas listas para pagar en ese momento</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Journal Entry Types in Payables Management</span>
+          <span class="sec-title-es">Tipos de Journal Entry en Payables Management</span>
+        </div>
+        <div class="sec-desc">El Header del documento financiero que vimos en el Tipo 1 incluye un Journal Entry Type — acá se ve qué puede clasificar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El campo <strong>Journal Entry Type</strong> del header clasifica de qué transacción se trata. Los dos ejemplos que menciona el material del curso son la <strong>Invoice</strong> —la factura estándar del proveedor— y el <strong>Credit Memo</strong> —un ajuste que reduce lo que se le debe—. Cuando ese ajuste no anula la factura completa, se suele usar un <strong>Subsequent Debit/Credit</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardgrid g3">
+        <div class="item"><span class="icon">🧾</span><h5>Invoice</h5><span class="en">Factura</span><p>La factura estándar del proveedor, tal como se vio en el Tipo 1.</p></div>
+        <div class="item"><span class="icon">↩️</span><h5>Credit Memo</h5><span class="en">Nota de Crédito</span><p>Ajuste que reduce el monto adeudado al proveedor — ej. una devolución.</p></div>
+        <div class="item"><span class="icon">✏️</span><h5>Subsequent Debit/Credit</h5><span class="en">Cargo/Abono Posterior</span><p>Corrige un importe puntual de una factura ya contabilizada, sin anularla.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Data on the Reconciliation Line</span>
+          <span class="sec-title-es">Datos de pago en la línea de reconciliación</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mostró la estructura general del documento financiero — acá se ve que dos campos puntuales solo aplican a una línea específica.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Payment Method</strong> y <strong>Payment Terms</strong> no están disponibles en cualquier línea del documento: aplican específicamente a la posición de <strong>Supplier / Reconciliation Account</strong>, la línea que representa la deuda con el proveedor. El resto de las posiciones —gastos, impuestos— no los necesita.
+    </div>
+    <div class="visual-wrap">
+      <div class="reconline-wrap">
+        <table class="data-table">
+          <thead><tr><th>G/L Account</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>Expense Account</td><td>10.000</td><td>—</td></tr>
+            <tr><td>Tax Account</td><td>1.000</td><td>—</td></tr>
+            <tr class="hl"><td>Supplier / Reconciliation Account</td><td>—</td><td>11.000</td></tr>
+          </tbody>
+        </table>
+        <div class="recon-arrow">→</div>
+        <div class="recon-callout">
+          <span class="rc-label">Para esta línea, además:</span>
+          <div class="recon-chip">Payment Method</div>
+          <div class="recon-chip">Payment Terms</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why GR/IR Exists: The Clearing Mechanism</span>
+          <span class="sec-title-es">Por qué existe GR/IR: el mecanismo de compensación</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mostró que el neto de una factura con Orden de Compra va a GR/IR — acá se explica por qué esa cuenta existe.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El Goods Receipt y el Invoice Receipt casi nunca llegan el mismo día: la mercadería puede llegar antes que la factura, o al revés. La cuenta <strong>GR/IR</strong> existe justamente para sostener esa diferencia temporal — acumula lo que falta compensar hasta que ambos documentos existen, y en ese momento se compensa a cero.
+    </div>
+    <div class="visual-wrap">
+      <div class="equation-row">
+        <div class="eq-box">
+          <h5>Goods Receipt</h5>
+          <span class="eq-en">Credita GR/IR</span>
+          <p>La mercadería llega y se registra primero</p>
+        </div>
+        <span class="eq-symbol">+</span>
+        <div class="eq-box">
+          <h5>Invoice Receipt</h5>
+          <span class="eq-en">Debita GR/IR</span>
+          <p>La factura llega y se registra en otro momento</p>
+        </div>
+        <span class="eq-symbol">=</span>
+        <div class="eq-result">
+          <h5>GR/IR Balance</h5>
+          <p>✓ compensado a cero cuando ambos existen</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — SVG branch -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">One Balance, Many Versions</span>
+          <span class="sec-title-es">Un mismo saldo, varias versiones</span>
+        </div>
+        <div class="sec-desc">El Tipo 1 mostró el balance bajo IFRS — acá se ve por qué el mismo saldo puede presentarse distinto según la versión contable.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El saldo de la cuenta de reconciliación de Cuentas por Pagar no cambia — lo que puede cambiar es cómo se agrupa y cómo se nombra dentro del balance, según la <strong>Financial Statement Version</strong> que se use. Cada principio contable —como el IFRS que vimos en el Tipo 1, u otro principio local— puede definir su propia estructura de presentación sobre los mismos datos.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="80" x2="450" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="280" y1="100" x2="620" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="280" y1="100" x2="280" y2="150" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="620" y1="100" x2="620" y2="150" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="310" y="20" width="280" height="60" rx="10" fill="#A94444"/>
+        <text x="450" y="46" text-anchor="middle" fill="white" class="box-label" font-size="12.5">Reconciliation Account</text>
+        <text x="450" y="63" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">mismo saldo · 33.000</text>
+
+        <rect x="140" y="150" width="280" height="70" rx="10" fill="#1A4B8C"/>
+        <text x="280" y="177" text-anchor="middle" fill="white" class="box-label">Financial Statement Version A</text>
+        <text x="280" y="194" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">ej. IFRS — "Trade and other payables"</text>
+
+        <rect x="480" y="150" width="280" height="70" rx="10" fill="#1A6B99"/>
+        <text x="620" y="177" text-anchor="middle" fill="white" class="box-label">Financial Statement Version B</text>
+        <text x="620" y="194" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">ej. un GAAP local — otra agrupación</text>
+      </svg>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 2 — Profundización). No repite términos ya glosados en T1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">FLVN00</div><div class="term-es">Rol de Contabilidad Financiera</div><div class="term-def">Business Partner Role que guarda los datos específicos de sociedad de un Supplier (Financial Accounting Supplier).</div></div>
+      <div class="gcard"><div class="term-en">FLVN01</div><div class="term-es">Rol de Proveedor (Logística)</div><div class="term-def">Business Partner Role que guarda los datos logísticos de compras de un Supplier.</div></div>
+      <div class="gcard"><div class="term-en">Supplier Fact Sheet</div><div class="term-es">Ficha del Proveedor</div><div class="term-def">Vista consolidada con la información financiera y logística de un Business Partner en un solo lugar.</div></div>
+      <div class="gcard"><div class="term-en">Payment Advice</div><div class="term-es">Aviso de Pago</div><div class="term-def">Comunicación al proveedor sobre qué facturas están por pagarse, antes de ejecutar la corrida.</div></div>
+      <div class="gcard"><div class="term-en">Balance Confirmation</div><div class="term-es">Confirmación de Saldo</div><div class="term-def">Validación periódica con el proveedor de que el saldo pendiente coincide en ambos lados.</div></div>
+      <div class="gcard"><div class="term-en">Operational Procurement</div><div class="term-es">Aprovisionamiento Operativo</div><div class="term-def">Subproceso de Procure-to-Receipt donde se genera y gestiona la Orden de Compra.</div></div>
+      <div class="gcard"><div class="term-en">Goods Receipt</div><div class="term-es">Entrada de Mercancía</div><div class="term-def">Registro que confirma qué mercadería llegó realmente contra una Orden de Compra.</div></div>
+      <div class="gcard"><div class="term-en">Single Outgoing Payment</div><div class="term-es">Pago Individual Saliente</div><div class="term-def">Pago de una factura puntual, ejecutado fuera de la corrida general de pagos.</div></div>
+      <div class="gcard"><div class="term-en">Credit Memo</div><div class="term-es">Nota de Crédito</div><div class="term-def">Journal Entry Type que reduce el monto adeudado a un proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Subsequent Debit/Credit</div><div class="term-es">Cargo/Abono Posterior</div><div class="term-def">Corrección de un importe puntual sobre una factura ya contabilizada, sin anularla.</div></div>
+      <div class="gcard"><div class="term-en">Journal Entry Type</div><div class="term-es">Tipo de Asiento</div><div class="term-def">Campo del header del documento que clasifica la naturaleza de la transacción (factura, nota de crédito, etc.).</div></div>
+      <div class="gcard"><div class="term-en">Financial Statement Version</div><div class="term-es">Versión de Estado Financiero</div><div class="term-def">Definición que determina cómo se agrupan y nombran las cuentas dentro del balance según el principio contable usado.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Payables Management · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

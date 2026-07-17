@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Asset Accounting — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t1);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:660px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(127,191,143,0.14);
+    border-left:4px solid var(--t1);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:660px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t1-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(61,122,82,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  /* THEORY BOX */
+  .theory-box{
+    background:var(--t1-pale);
+    border-left:4px solid var(--t1-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:600px; }
+
+  /* FLOW */
+  .flow-row{ display:flex; align-items:stretch; gap:16px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:14px 12px 12px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:22px; display:block; margin-bottom:4px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:14.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:10.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:14px 13px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:11.5px; color:var(--body); padding:4px 0 4px 14px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:10px; top:5px; }
+  .flow-connector{
+    position:absolute; top:24px; right:-24px; width:30px; height:30px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* GRIDS DE APOYO */
+  .cardrow{ display:grid; gap:14px; }
+  .cardrow .item{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:8px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; }
+  .formula-box{ background:var(--bg); border-radius:8px; padding:14px 16px; margin-top:14px; font-size:0.85rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:6px; }
+  .formula-eq{ font-family:'JetBrains Mono',monospace; font-size:0.95rem; color:var(--t1-dark); font-weight:600; text-align:center; padding:6px 0; }
+
+  /* GRID de 3 columnas (estados financieros) */
+  .g3{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .stmt-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:18px 18px; box-shadow:0 2px 10px rgba(10,15,28,0.05); border-top:4px solid var(--t1-dark); }
+  .stmt-card .stmt-icon{ font-size:20px; display:block; margin-bottom:4px; }
+  .stmt-card h4{ font-family:'Syne',sans-serif; font-size:0.98rem; margin:0 0 2px; color:var(--ink); }
+  .stmt-card .en-tag{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .stmt-card ul{ margin:0; padding-left:16px; }
+  .stmt-card li{ font-size:0.78rem; color:var(--body); line-height:1.6; margin-bottom:2px; }
+  .stmt-card .hl{ font-weight:700; color:var(--t1-dark); }
+
+  /* CHIPS */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:180px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-desc{ font-size:0.72rem; color:var(--body); margin-top:6px; line-height:1.4; }
+
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-orange{ background:rgba(224,123,57,0.08); border-color:rgba(224,123,57,0.28); }
+  .chip-orange .chip-title{ color:#E07B39; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+  .chip-red{ background:rgba(192,57,43,0.07); border-color:rgba(192,57,43,0.28); }
+  .chip-red .chip-title{ color:#C0392B; }
+
+  /* TABLE */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media(max-width:820px){
+    .cmp-grid, .g3{ grid-template-columns:1fr; }
+    .cardrow{ grid-template-columns:1fr !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Life Cycle</a>
+  <a href="#s2">Asset Classes</a>
+  <a href="#s3">Master Record</a>
+  <a href="#s4">Creating an Asset</a>
+  <a href="#s5">Posting Acquisition</a>
+  <a href="#s6">Data Flow to GL</a>
+  <a href="#s7">Capitalization Date</a>
+  <a href="#s8">Financial Statements</a>
+  <a href="#s9">Valuation Views</a>
+  <a href="#s10">History Sheet</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Asset Accounting</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Asset</span> Accounting Processes</h1>
+    <h2>Procesos de Contabilidad de Activos Fijos</h2>
+    <p class="desc">Fundamentos teóricos de Asset Accounting en SAP S/4HANA: el ciclo de vida de un activo fijo, cómo se estructura mediante clases de activo, qué datos sostienen el registro maestro, cómo fluye el valor hacia el Libro Mayor, y cómo se representa bajo distintas normas contables mediante vistas de valoración.</p>
+    <div class="hlbox">Resumen Visual — <b>Asset Accounting</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — FLOW: ciclo de vida (3 etapas) -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Understanding the Fixed Asset and Its Life Cycle</span>
+          <span class="sec-title-es">El activo fijo y su ciclo de vida</span>
+        </div>
+        <div class="sec-desc">Qué es un activo fijo y las tres etapas que atraviesa desde que ingresa hasta que sale de la compañía.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es un activo fijo?</strong> Es un objeto, derecho o bien de la empresa, destinado a uso de largo plazo e identificable individualmente en el <strong>balance</strong>. Cada activo pertenece a una <strong>Company Code</strong>, y todas sus contabilizaciones (adquisición, baja, depreciación) se registran en esa sociedad. <strong>Asset Accounting</strong> administra y supervisa los activos fijos tangibles, aportando información detallada de cada transacción. Durante su vida útil el activo se desgasta — ese desgaste se registra como <strong>depreciación</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row" style="min-width:600px;">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">📥</span><span class="title-en">Acquisition</span><span class="title-es">Adquisición</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Create asset master data</li>
+            <li>Capitalize asset</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">⚙️</span><span class="title-en">Usage</span><span class="title-es">Uso</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Depreciation</li>
+            <li>Value corrections</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">📤</span><span class="title-en">Retirement</span><span class="title-es">Baja</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Scrapping</li>
+            <li>Selling</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — TABLA: clases de activo -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Asset Classes — Structuring Fixed Assets</span>
+          <span class="sec-title-es">Clases de activo — estructurando los activos fijos</span>
+        </div>
+        <div class="sec-desc">El elemento central del registro maestro: cada activo se asigna a una clase que define sus valores por defecto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La clase de activo</strong> es el elemento central de la definición del registro maestro: cada activo fijo debe asignarse a una clase, que define ciertos <strong>parámetros de control</strong> y <strong>valores por defecto</strong> de depreciación y otros datos maestros. Es la forma más importante de estructurar activos fijos para <strong>reporting</strong>, y establece además la conexión entre el registro maestro y las cuentas correspondientes del <strong>Libro Mayor</strong> — varias clases pueden compartir la misma cuenta de enlace.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Asset Class</th><th>Number Range</th><th>Balance Sheet Account</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">1100 · Buildings</span><span class="mod-en">Edificios</span></td>
+            <td>10000000 – 19999999</td>
+            <td><span class="badge badge-neutral">Buildings · 16001000</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">2000 · Machinery</span><span class="mod-en">Maquinaria</span></td>
+            <td>20000000 – 29999999</td>
+            <td><span class="badge badge-accent">Machinery · 16002000</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">3000 · Furniture</span><span class="mod-en">Mobiliario</span></td>
+            <td>30000000 – 39999999</td>
+            <td><span class="badge badge-neutral">Furniture · 16006000</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">4000 · Assets under Construction</span><span class="mod-en">Activos en Construcción</span></td>
+            <td>40000000 – 49999999</td>
+            <td><span class="badge badge-neutral">AuC · 16009000</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">5000 · Low Value Assets</span><span class="mod-en">Activos de Bajo Valor</span></td>
+            <td>50000000 – 59999999</td>
+            <td><span class="badge badge-neutral">LVA · 16020000</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cardrow" style="grid-template-columns:repeat(3,1fr); margin-top:16px;">
+      <div class="item"><span class="icon">🗂️</span><h5>Structuring</h5><span class="en">Estructurar</span><p>La forma más importante de estructurar activos fijos para reporting.</p></div>
+      <div class="item"><span class="icon">🔢</span><h5>Numbering</h5><span class="en">Numerar</span><p>Controla la asignación de números de activo dentro del rango de la clase.</p></div>
+      <div class="item"><span class="icon">🔗</span><h5>Account Determination</h5><span class="en">Determinar Cuentas</span><p>Conecta el registro maestro con el Libro Mayor; varias clases pueden compartir cuenta.</p></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — CMP-GRID: registro maestro (general vs value data) -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Asset Master Record</span>
+          <span class="sec-title-es">El registro maestro del activo</span>
+        </div>
+        <div class="sec-desc">Los dos bloques de datos que permiten gestionar los valores de un activo fijo en Asset Accounting.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué hace falta un registro maestro?</strong> Para poder gestionar los valores de un activo fijo en Asset Accounting es necesario un <strong>asset master record</strong>. Puede crearse desde cero o usando un activo existente como plantilla. Se organiza en dos bloques: <strong>General Master Data</strong> (datos generales de identificación y contabilización) y <strong>Asset Value Data</strong> (los datos que definen cómo se deprecia el activo).
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4><span class="icon-inline">📋</span>General Master Data <span class="en-tag">Datos Maestros Generales</span></h4>
+        <ul>
+          <li><strong>Description*</strong> — descripción del activo</li>
+          <li>Account Assignment → <strong>Cost Center*</strong></li>
+          <li>Posting Information → <strong>Activation Date</strong></li>
+          <li>Physical Inventory Data → <strong>Last Inventory</strong></li>
+          <li>Asset Origin → <strong>Vendor</strong></li>
+        </ul>
+      </div>
+      <div class="cmp-card accent">
+        <h4><span class="icon-inline">📈</span>Asset Value Data <span class="en-tag">Datos de Valoración</span></h4>
+        <ul>
+          <li><strong>Depreciation Keys*</strong> — clave de depreciación</li>
+          <li><strong>Useful Life*</strong> — vida útil</li>
+          <li>Expired Useful Life — vida útil transcurrida</li>
+          <li>Depreciation Start Date</li>
+          <li>Scrap Value — valor residual</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — CMP-GRID: crear activo (clase vs referencia) -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating a New Asset — Class vs. Reference</span>
+          <span class="sec-title-es">Creando un activo nuevo — clase vs. activo de referencia</span>
+        </div>
+        <div class="sec-desc">Dos caminos para heredar valores por defecto al crear el registro maestro de un activo principal.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> al crear un <strong>main asset</strong>, existen dos caminos para adoptar valores por defecto. Usando la <strong>Asset Class</strong>, el activo hereda los valores definidos a nivel de clase. Usando un <strong>Reference Asset</strong>, el activo hereda los valores de un activo existente que se usa como plantilla.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4><span class="icon-inline">🗂️</span>Using Asset Class <span class="en-tag">Usando la Clase de Activo</span></h4>
+        <p>El activo adopta los <strong>default values</strong> definidos a nivel de la clase de activo asignada — depreciación, cuentas, y demás parámetros de control.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4><span class="icon-inline">📄</span>Using Reference Asset <span class="en-tag">Usando un Activo de Referencia</span></h4>
+        <p>El activo adopta los <strong>default values</strong> de un activo ya existente, usado como plantilla — útil cuando hay un activo muy similar ya creado.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — CHIPS: formas de contabilizar la adquisición -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Ways to Post an Acquisition</span>
+          <span class="sec-title-es">Formas de contabilizar una adquisición</span>
+        </div>
+        <div class="sec-desc">Cuatro caminos posibles según con qué otro proceso esté integrada la adquisición del activo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La adquisición de un activo puede contabilizarse de distintas formas según el grado de <strong>integración</strong> con otros procesos: sin integración (usando cuentas de compensación propias), integrada con <strong>Accounts Payable</strong> a partir de la factura del proveedor, integrada con <strong>Procurement</strong>, o mediante la liquidación de un elemento <strong>WBS</strong> de un proyecto.
+    </div>
+    <div class="chip-row">
+      <div class="chip"><span class="chip-icon">🧾</span><span class="chip-title">Non-Integrated Clearing Accounts</span><span class="chip-en">Cuentas de compensación no integradas</span></div>
+      <div class="chip chip-navy"><span class="chip-icon">📥</span><span class="chip-title">Integrated with Accounts Payable</span><span class="chip-en">Integrada con Cuentas por Pagar</span></div>
+      <div class="chip chip-purple"><span class="chip-icon">🛒</span><span class="chip-title">Integrated with Procurement</span><span class="chip-en">Integrada con Compras</span></div>
+      <div class="chip chip-teal"><span class="chip-icon">📊</span><span class="chip-title">WBS Element Settlement</span><span class="chip-en">Liquidación de elemento WBS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — SVG HUB: flujo de datos factura -> AA -> GL -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Data Flow — From Invoice to the General Ledger</span>
+          <span class="sec-title-es">Flujo de datos — de la factura al Libro Mayor</span>
+        </div>
+        <div class="sec-desc">En Asset Accounting cada activo se diferencia individualmente; en el Libro Mayor se agrupan por clase.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando llega la <strong>Supplier Invoice</strong>, esa contabilización se refleja en <strong>Asset Accounting</strong> a nivel de activo individual — cada activo se <strong>diferencia por separado</strong>. En el <strong>General Ledger</strong>, en cambio, los activos se agrupan por clase en las <strong>reconciliation accounts</strong>: todos los activos de una misma clase suman su valor en una sola cuenta del balance.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- lineas y flechas primero -->
+        <line x1="260" y1="66" x2="330" y2="66" stroke="#94A3B8" stroke-width="2"/>
+        <polygon points="326,61 336,66 326,71" fill="#94A3B8"/>
+        <line x1="260" y1="256" x2="330" y2="256" stroke="#94A3B8" stroke-width="2"/>
+        <polygon points="326,251 336,256 326,261" fill="#94A3B8"/>
+        <line x1="560" y1="66" x2="648" y2="150" stroke="#00A896" stroke-width="2" stroke-dasharray="5,3"/>
+        <polygon points="643,144 653,149 646,158" fill="#00A896"/>
+        <line x1="560" y1="256" x2="648" y2="240" stroke="#00A896" stroke-width="2" stroke-dasharray="5,3"/>
+        <polygon points="643,246 653,241 649,251" fill="#00A896"/>
+
+        <!-- columna 1: supplier invoice -->
+        <rect x="30" y="36" width="230" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="145" y="60" text-anchor="middle" fill="white" class="box-label">🧾 Supplier Invoice</text>
+        <text x="145" y="77" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Excavator 1 · Net Price 20,000</text>
+
+        <rect x="30" y="226" width="230" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="145" y="250" text-anchor="middle" fill="white" class="box-label">🧾 Supplier Invoice</text>
+        <text x="145" y="267" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Excavator 2 · Net Price 30,000</text>
+
+        <!-- columna 2: asset accounting -->
+        <rect x="330" y="36" width="230" height="60" rx="10" fill="#00A896"/>
+        <text x="445" y="60" text-anchor="middle" fill="white" class="box-label">🏗️ Excavator 1</text>
+        <text x="445" y="77" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Asset Accounting · 20,000</text>
+
+        <rect x="330" y="226" width="230" height="60" rx="10" fill="#00A896"/>
+        <text x="445" y="250" text-anchor="middle" fill="white" class="box-label">🏗️ Excavator 2</text>
+        <text x="445" y="267" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Asset Accounting · 30,000</text>
+
+        <!-- columna 3: general ledger -->
+        <rect x="650" y="110" width="220" height="180" rx="12" fill="#1A4B8C"/>
+        <text x="760" y="140" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Machinery</text>
+        <text x="760" y="158" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="10">General Ledger · Reconciliation Acct.</text>
+        <line x1="675" y1="172" x2="845" y2="172" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+        <text x="760" y="196" text-anchor="middle" fill="white" class="box-sub" font-size="11">Excavator 1 — 20,000</text>
+        <text x="760" y="214" text-anchor="middle" fill="white" class="box-sub" font-size="11">Excavator 2 — 30,000</text>
+        <line x1="675" y1="226" x2="845" y2="226" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+        <text x="760" y="250" text-anchor="middle" fill="#7FE3D8" font-family="JetBrains Mono" font-weight="600" font-size="13">= 50,000</text>
+        <text x="760" y="270" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">grouped by class</text>
+
+        <text x="145" y="345" text-anchor="middle" fill="#64748B" font-size="11">Payables Management</text>
+        <text x="445" y="345" text-anchor="middle" fill="#64748B" font-size="11">diferenciado por activo</text>
+        <text x="760" y="345" text-anchor="middle" fill="#64748B" font-size="11">agrupado por clase</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — CMP-GRID: fecha de capitalización -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Determining the Capitalization Date</span>
+          <span class="sec-title-es">Determinando la fecha de capitalización</span>
+        </div>
+        <div class="sec-desc">Desde qué momento el activo pertenece oficialmente al inventario de activos de la compañía.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La <strong>Capitalized-on Date</strong> especifica desde qué momento el activo pertenece oficialmente al inventario de la empresa. Puede ingresarse manualmente en el registro maestro; si no, el sistema la determina de forma automática según si las fechas caen en el mismo <strong>ejercicio fiscal</strong> que el <strong>Asset Value Date</strong> — la fecha de valor de la transacción del activo.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4><span class="icon-inline">📅</span>Same Fiscal Year <span class="en-tag">Mismo Ejercicio Fiscal</span></h4>
+        <p>Si el <strong>Posting Date</strong> y el <strong>Document Date</strong> caen en el mismo ejercicio fiscal que el Asset Value Date, el sistema propone la <strong>fecha más temprana</strong> entre ambas.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4><span class="icon-inline">📆</span>Different Fiscal Year <span class="en-tag">Ejercicios Fiscales Distintos</span></h4>
+        <p>Si esas fechas no caen en el mismo ejercicio fiscal, el sistema propone directamente el <strong>Posting Date</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — G3: activos en los estados financieros -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assets in the Financial Statements</span>
+          <span class="sec-title-es">Los activos en los estados financieros</span>
+        </div>
+        <div class="sec-desc">Cómo se refleja el valor de un activo en el Balance Sheet, el P&amp;L y las Notes.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El activo se activa en <strong>Asset Accounting</strong> y su valor de adquisición se refleja en el <strong>Balance Sheet</strong>, bajo el nodo correspondiente (ej. "technical assets and machines"). La <strong>Technical Clearing Account</strong> que recibe la contrapartida de la contabilización se ubica en las <strong>Notes</strong> del estado financiero — no contiene resultados (earnings o losses).
+    </div>
+    <div class="g3">
+      <div class="stmt-card">
+        <span class="stmt-icon">📊</span>
+        <h4>Balance Sheet</h4>
+        <span class="en-tag">Estado de Situación Patrimonial</span>
+        <ul>
+          <li>Intangible Assets</li>
+          <li>Property, Plant &amp; Equipment</li>
+          <li>&nbsp;&nbsp;— Machinery: <span class="hl">20,000</span></li>
+          <li>Investment Property</li>
+          <li>Financial Assets</li>
+        </ul>
+      </div>
+      <div class="stmt-card">
+        <span class="stmt-icon">📉</span>
+        <h4>Profit &amp; Loss</h4>
+        <span class="en-tag">Estado de Resultados</span>
+        <ul>
+          <li>Expenses</li>
+          <li>&nbsp;&nbsp;— Depreciation: <span class="hl">2,000</span></li>
+        </ul>
+      </div>
+      <div class="stmt-card">
+        <span class="stmt-icon">📝</span>
+        <h4>Notes</h4>
+        <span class="en-tag">Notas al Balance</span>
+        <ul>
+          <li>Accounts with zero balance</li>
+          <li>&nbsp;&nbsp;— Tech. Clearing: <span class="hl">20,000</span></li>
+          <li>No earnings or losses</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — SVG jerarquia + tabla: vistas de valoracion -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Valuation Views and Depreciation Areas</span>
+          <span class="sec-title-es">Vistas de valoración y áreas de depreciación</span>
+        </div>
+        <div class="sec-desc">Cómo un mismo activo se valúa de forma distinta según la norma contable, sin duplicar el registro maestro.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Bike Company reporta según normas contables locales y bajo <strong>IFRS</strong>. Las reglas de depreciación pueden diferir entre ambos estándares. Esto se representa mediante <strong>valuation views</strong> y <strong>depreciation areas</strong>: desde la Company Code y la Asset Class fluyen valores por defecto a través de un <strong>Ledger</strong>, un <strong>Accounting Principle</strong> y una <strong>Valuation View</strong>, hasta llegar a las áreas de depreciación concretas.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 430" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="70" x2="450" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="150" x2="450" y2="180" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="230" x2="450" y2="260" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="310" x2="450" y2="340" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="280" y="20" width="340" height="50" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="42" text-anchor="middle" fill="white" class="box-label" font-size="13">Company Code · Asset Class</text>
+        <text x="450" y="58" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">1710 · 2000 (Machinery)</text>
+
+        <rect x="280" y="100" width="340" height="50" rx="10" fill="#1A6B99"/>
+        <text x="450" y="122" text-anchor="middle" fill="white" class="box-label" font-size="13">Ledger</text>
+        <text x="450" y="138" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">0L Local GAAP · 2L IFRS</text>
+
+        <rect x="280" y="180" width="340" height="50" rx="10" fill="#1A4B8C"/>
+        <text x="450" y="202" text-anchor="middle" fill="white" class="box-label" font-size="13">Accounting Principle</text>
+        <text x="450" y="218" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Principio contable asociado al ledger</text>
+
+        <rect x="280" y="260" width="340" height="50" rx="10" fill="#7E4FBF"/>
+        <text x="450" y="282" text-anchor="middle" fill="white" class="box-label" font-size="13">Valuation View</text>
+        <text x="450" y="298" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Agrupa las áreas de depreciación</text>
+
+        <rect x="255" y="340" width="390" height="66" rx="10" fill="#0A0F1C"/>
+        <text x="450" y="365" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Depreciation Areas</text>
+        <text x="450" y="384" text-anchor="middle" fill="#7FE3D8" class="box-sub" font-size="10.5">Book Depr. · Federal Tax · Alt. Tax · Curr./Corp. Earnings</text>
+        <text x="450" y="398" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">valores por defecto según ledger + asset class</text>
+      </svg>
+    </div>
+    <div class="visual-wrap" style="margin-top:16px;">
+      <table class="data-table">
+        <thead>
+          <tr><th>Ledger</th><th>Depreciation Area</th><th>Dep. Key</th><th>Useful Life (Years)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="mod-name">0L</span><span class="mod-en">Local GAAP</span></td><td>Book Depreciation</td><td>SUL1</td><td>10</td></tr>
+          <tr><td><span class="mod-name">0L</span><span class="mod-en">Local GAAP</span></td><td>Federal Tax</td><td>S200</td><td>7</td></tr>
+          <tr><td><span class="mod-name">0L</span><span class="mod-en">Local GAAP</span></td><td>Alt. Tax</td><td>S150</td><td>7</td></tr>
+          <tr><td><span class="mod-name">0L</span><span class="mod-en">Local GAAP</span></td><td>Curr. Earnings</td><td>S150</td><td>7</td></tr>
+          <tr><td><span class="mod-name">0L</span><span class="mod-en">Local GAAP</span></td><td>Corp. Earnings</td><td>SUI5</td><td>10</td></tr>
+          <tr><td><span class="mod-name">2L</span><span class="mod-en">IFRS</span></td><td>IFRS</td><td>LINS</td><td>10</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — formula + chips: history sheet & tipos de retiro -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Asset History Sheet and Types of Retirement</span>
+          <span class="sec-title-es">La hoja histórica del activo y los tipos de baja</span>
+        </div>
+        <div class="sec-desc">Cómo se retrazan los cambios de valor de un activo durante el ejercicio, y cómo se cierra su ciclo de vida.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>Asset History Sheet</strong> muestra los cambios de valor de un activo durante un ejercicio fiscal — permite retrazar los eventos más importantes de su ciclo de vida (adquisición, depreciación, baja), tanto para un activo puntual como para todo el parque de activos de la compañía. Dentro de la <strong>retirement</strong>, existen distintos tipos de contabilización según si genera ingreso o no.
+    </div>
+    <div class="visual-wrap">
+      <div class="formula-box">
+        <span class="flabel">Asset History Sheet — cambios de valor dentro del ejercicio fiscal</span>
+        <div class="formula-eq">Opening Balance&nbsp; + &nbsp;Acquisitions&nbsp; − &nbsp;Retirements&nbsp; − &nbsp;Depreciation&nbsp; = &nbsp;Closing Balance</div>
+      </div>
+    </div>
+    <div class="chip-row" style="margin-top:16px;">
+      <div class="chip"><span class="chip-icon">💰</span><span class="chip-title">Retirement with Revenue</span><span class="chip-en">Baja con ingreso (venta)</span></div>
+      <div class="chip"><span class="chip-icon">🗑️</span><span class="chip-title">Retirement without Revenue</span><span class="chip-en">Baja sin ingreso (scrapping)</span></div>
+      <div class="chip"><span class="chip-icon">🔧</span><span class="chip-title">Miscellaneous Transactions</span><span class="chip-en">Transacciones misceláneas</span></div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Asset Class</div><div class="term-es">Clase de Activo</div><div class="term-def">Objeto que agrupa activos fijos y define parámetros de control y valores por defecto de depreciación.</div></div>
+      <div class="gcard"><div class="term-en">Asset Master Record</div><div class="term-es">Registro Maestro de Activo</div><div class="term-def">Registro necesario para gestionar los valores de un activo fijo en Asset Accounting.</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Account</div><div class="term-es">Cuenta de Enlace</div><div class="term-def">Cuenta del Libro Mayor donde se agrupan por clase los saldos de los activos.</div></div>
+      <div class="gcard"><div class="term-en">Technical Clearing Account</div><div class="term-es">Cuenta Técnica de Compensación</div><div class="term-def">Cuenta que recibe la contrapartida de la activación; se ubica en las Notes y no afecta resultados.</div></div>
+      <div class="gcard"><div class="term-en">Capitalized-on Date</div><div class="term-es">Fecha de Capitalización</div><div class="term-def">Fecha desde la cual el activo pertenece oficialmente al inventario de la empresa.</div></div>
+      <div class="gcard"><div class="term-en">Asset Value Date</div><div class="term-es">Fecha de Valor del Activo</div><div class="term-def">Fecha de valor de una transacción de activo, usada para determinar el ejercicio fiscal.</div></div>
+      <div class="gcard"><div class="term-en">Depreciation Area</div><div class="term-es">Área de Depreciación</div><div class="term-def">Dimensión de valoración de un activo según un principio contable específico.</div></div>
+      <div class="gcard"><div class="term-en">Valuation View</div><div class="term-es">Vista de Valoración</div><div class="term-def">Agrupación de áreas de depreciación bajo un mismo principio contable.</div></div>
+      <div class="gcard"><div class="term-en">Accounting Principle</div><div class="term-es">Principio Contable</div><div class="term-def">Norma contable (ej. Local GAAP, IFRS) que rige la valoración de un activo.</div></div>
+      <div class="gcard"><div class="term-en">Asset History Sheet</div><div class="term-es">Hoja Histórica del Activo</div><div class="term-def">Reporte que muestra los cambios de valor de un activo durante un ejercicio fiscal.</div></div>
+      <div class="gcard"><div class="term-en">Net Book Value</div><div class="term-es">Valor Neto Contable</div><div class="term-def">Valor de un activo luego de descontar la depreciación acumulada.</div></div>
+      <div class="gcard"><div class="term-en">Low Value Assets (LVA)</div><div class="term-es">Activos de Bajo Valor</div><div class="term-def">Clase de activos de valor reducido con tratamiento de depreciación simplificado.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Asset Accounting Processes · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · G/L Account Master Data — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* SAP Fiori — colores reales, uso EXCLUSIVO dentro de mockups de pantalla */
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-blue-dark:#0040A0;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t3);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:680px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  /* protagonista block (reemplaza el hlbox generico en T3/T4) */
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:680px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  /* BREADCRUMB (Como llegaste) */
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  /* FIORI SCREEN MOCKUP */
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-appbar .tag{ background:#FFF3CD; color:#8A6A1E; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-body{ padding:22px 20px; }
+  .fiori-tabs{ display:flex; gap:22px; border-bottom:1px solid #EAEAEA; margin-bottom:18px; }
+  .fiori-tab{ padding:7px 2px; font-size:0.8rem; color:var(--sap-muted); border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px 22px; margin-bottom:6px; }
+  .fiori-field label{ display:block; font-size:0.7rem; color:var(--sap-muted); margin-bottom:4px; }
+  .fiori-field .val{ font-size:0.83rem; color:var(--sap-text); padding:7px 10px; background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; }
+  .fiori-field .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .fiori-field .val.warn{ background:#FFF3CD; border-color:#E0B84A; font-weight:700; color:#8A6A1E; }
+  .fiori-field .val.ok{ background:#E4F5E9; border-color:#8FCBA3; font-weight:700; color:#1D7A3E; }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-table td.num{ text-align:right; font-family:'JetBrains Mono',monospace; }
+  .fiori-table tr.total td{ font-weight:700; border-top:1.5px solid var(--sap-border); border-bottom:none; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .fiori-btn.text{ border:none; color:var(--sap-blue); background:none; padding:7px 4px; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.open{ background:#FFF3CD; color:#8A6A1E; }
+
+  /* DEBE/HABER */
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  /* INSIGHT NOTE (aclaracion breve, no es debe/haber) */
+  .insight-note{ background:var(--t3-pale); border:1px solid var(--t3-pale-border); border-radius:8px; padding:12px 16px; margin-top:16px; font-size:0.82rem; color:var(--ink); line-height:1.6; }
+  .insight-note b{ color:var(--t3-dark); }
+
+  /* TIMELINE (seccion 10 - recap sin pantalla) */
+  .timeline{ display:flex; flex-direction:column; }
+  .tl-item{ display:flex; gap:16px; padding:14px 0 14px 24px; border-left:2px solid var(--t3-pale-border); position:relative; }
+  .tl-item:last-child{ border-left:2px solid transparent; padding-bottom:0; }
+  .tl-dot{ position:absolute; left:-9px; top:16px; width:16px; height:16px; border-radius:50%; background:var(--t3-dark); border:3px solid white; box-shadow:0 0 0 1px var(--t3-pale-border); }
+  .tl-content{ flex:1; }
+  .tl-content h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.92rem; color:var(--ink); }
+  .tl-content .tl-ref{ font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+  .tl-content p{ margin:4px 0 0; font-size:0.82rem; color:var(--body); line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Two Faces</a>
+  <a href="#s2">COA View</a>
+  <a href="#s3">Company Code View</a>
+  <a href="#s4">Controlling View</a>
+  <a href="#s5">Who Blocked It</a>
+  <a href="#s6">Remove Block</a>
+  <a href="#s7">Mass Change</a>
+  <a href="#s8">Post Expense</a>
+  <a href="#s9">Segment &amp; PC</a>
+  <a href="#s10">Day Recap</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">General Ledger</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Enterprise Structure</span>
+      <span class="pill pill-secondary">Chart of Accounts</span>
+    </div>
+    <h1>Organizational Structure &amp; <span class="accent">G/L Master Data</span></h1>
+    <h2>Estructura Organizativa y Datos Maestros de Cuentas de Mayor — Vivido por el Usuario</h2>
+    <p class="desc">Un día de trabajo real con <strong>Manage G/L Account Master Data</strong> y <strong>G/L Account Changes</strong>: investigar un bloqueo, revisar las tres vistas de una cuenta, corregirlo de a una y en bloque, y confirmar que el asiento cae donde corresponde.</p>
+    <div class="protagonist">
+      <div class="avatar">K</div>
+      <div>
+        <div class="p-name">Kevin</div>
+        <div class="p-role">General Ledger Accountant · Bike GmbH (DE01)</div>
+        <div class="p-note">Guía único de este recorrido — el caso completo le pertenece a él.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The G/L Account With Two Faces</span>
+          <span class="sec-title-es">La Cuenta de Mayor con dos caras</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Un contador de DE01 no puede postear un gasto — Kevin abre la cuenta para ver qué pasa.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Un contador de <strong>DE01</strong> avisa que no puede postear a una cuenta de gastos. Kevin abre <strong>Manage G/L Account Master Data</strong> y encuentra algo raro: la vista General dice que la cuenta no está bloqueada, pero la vista de Company Code dice lo contrario.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Manage G/L Account Master Data — cuenta 65991000</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage G/L Account Master Data</div>
+      <div class="fiori-appbar">
+        <div><h6>G/L Account 65991000</h6><span class="sub">Chart of Accounts BIKE · Company Code DE01</span></div>
+        <span class="tag">⚠ Revisar</span>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab">General</div>
+          <div class="fiori-tab active">Company Code Data</div>
+          <div class="fiori-tab">Controlling Area</div>
+        </div>
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Company Code</label><div class="val filled">DE01</div></div>
+          <div class="fiori-field"><label>Account Currency</label><div class="val filled">EUR</div></div>
+          <div class="fiori-field"><label>Field Status Group</label><div class="val filled">G001</div></div>
+          <div class="fiori-field"><label>Blocked for Posting (Company Code)</label><div class="val warn">🚫 Yes</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Changes</button>
+          <button class="fiori-btn primary">Edit</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-note">En la vista <b>General</b> (Chart of Accounts), Blocked for Posting figura en <b>No</b> — el bloqueo que ve el contador de DE01 es específico de esta Company Code, no de la cuenta en general (T1 §5).</div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Chart of Accounts View</span>
+          <span class="sec-title-es">Revisando la vista de Plan de Cuentas</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Antes de tocar nada, Kevin confirma qué datos vienen del nivel compartido.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de cambiar cualquier cosa, Kevin quiere confirmar los datos que la cuenta trae del <strong>Chart of Accounts</strong> — los que valen para todas las Company Codes que la usan (T1 §2).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Manage G/L Account Master Data</div><span class="sep">›</span>
+      <div class="crumb">cuenta 65991000</div><span class="sep">›</span>
+      <div class="crumb current">tab "General"</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage G/L Account Master Data</div>
+      <div class="fiori-appbar">
+        <div><h6>G/L Account 65991000</h6><span class="sub">Vista General — vale para todas las Company Codes</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab active">General</div>
+          <div class="fiori-tab">Company Code Data</div>
+          <div class="fiori-tab">Controlling Area</div>
+        </div>
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Account Number</label><div class="val filled">65991000</div></div>
+          <div class="fiori-field"><label>G/L Account Type</label><div class="val filled">Primary Costs or Revenue</div></div>
+          <div class="fiori-field"><label>Account Group</label><div class="val filled">Expense Accounts (BIKE)</div></div>
+          <div class="fiori-field"><label>Short Text</label><div class="val filled">Office &amp; Admin Exp.</div></div>
+          <div class="fiori-field"><label>Long Text</label><div class="val filled">Office &amp; Administration Expenses</div></div>
+          <div class="fiori-field"><label>Blocked for Posting (Chart of Accounts)</label><div class="val ok">✅ No</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Changes</button>
+          <button class="fiori-btn primary">Edit</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Company Code View</span>
+          <span class="sec-title-es">Revisando la vista de Company Code</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Los datos que solo valen para DE01 — incluido el campo que causa el problema.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Ahora Kevin revisa todo el segmento de <strong>Company Code</strong> de la cuenta — no solo el campo del bloqueo, sino el resto de los datos que son específicos de DE01 (T1 §2, T1 §3).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Manage G/L Account Master Data</div><span class="sep">›</span>
+      <div class="crumb">cuenta 65991000</div><span class="sep">›</span>
+      <div class="crumb current">tab "Company Code Data" — vista completa</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage G/L Account Master Data</div>
+      <div class="fiori-appbar">
+        <div><h6>G/L Account 65991000 — Company Code DE01</h6><span class="sub">Datos específicos de esta sociedad</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab">General</div>
+          <div class="fiori-tab active">Company Code Data</div>
+          <div class="fiori-tab">Controlling Area</div>
+        </div>
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Account Currency</label><div class="val filled">EUR</div></div>
+          <div class="fiori-field"><label>Tax Category</label><div class="val filled">* (todos los tipos de impuesto)</div></div>
+          <div class="fiori-field"><label>Field Status Group</label><div class="val filled">G001</div></div>
+          <div class="fiori-field"><label>Reconciliation Account for Acct Type</label><div class="val filled">—</div></div>
+          <div class="fiori-field"><label>Blocked for Posting (Company Code)</label><div class="val warn">🚫 Yes</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Changes</button>
+          <button class="fiori-btn primary">Edit</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking the Controlling Area View</span>
+          <span class="sec-title-es">Revisando la vista de Área de Controlling</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Por qué esta cuenta tiene un tercer tab que otras no tienen.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Kevin también revisa la vista de <strong>Controlling Area</strong> — existe porque 65991000 es de tipo <strong>Primary Costs or Revenue</strong> (T2 §1), así que necesita una Cost Element Category para poder imputarse en Controlling.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Manage G/L Account Master Data</div><span class="sep">›</span>
+      <div class="crumb">cuenta 65991000</div><span class="sep">›</span>
+      <div class="crumb current">tab "Controlling Area"</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage G/L Account Master Data</div>
+      <div class="fiori-appbar">
+        <div><h6>G/L Account 65991000 — Controlling Area A000</h6><span class="sub">BIKE-CO</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab">General</div>
+          <div class="fiori-tab">Company Code Data</div>
+          <div class="fiori-tab active">Controlling Area</div>
+        </div>
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Controlling Area</label><div class="val filled">A000 (BIKE-CO)</div></div>
+          <div class="fiori-field"><label>Cost Element Category</label><div class="val filled">01 — Primary Costs</div></div>
+          <div class="fiori-field"><label>CO Assignment Required</label><div class="val filled">Cost Center</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Changes</button>
+          <button class="fiori-btn primary">Edit</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-note">Esta vista solo existe porque la cuenta es <b>Primary Costs or Revenue</b>. Una cuenta de tipo <b>Balance Sheet</b> (T2 §1) no tendría este tab.</div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Finding Out Who Blocked It</span>
+          <span class="sec-title-es">Averiguando quién lo bloqueó</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Antes de sacar el bloqueo, Kevin quiere saber cuándo se puso y quién lo hizo.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de tocar nada, Kevin corre <strong>G/L Account Changes</strong> (T1 §7) para confirmar cuándo se activó el bloqueo y quién lo hizo — así evita sacar un control que alguien puso a propósito.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">G/L Account Changes</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> G/L Account Changes</div>
+      <div class="fiori-appbar">
+        <div><h6>Resultado de la selección</h6><span class="sub">G/L Account 65991000 · Company Code DE01 · últimos 30 días</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Field Changed</th><th>Old Value</th><th>New Value</th><th>Changed By</th><th>Date / Time</th></tr></thead>
+          <tbody>
+            <tr><td>Blocked for Posting (Company Code)</td><td>No</td><td>Yes</td><td>MUELLER_S</td><td>01.03.2023 09:14</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Export</button>
+          <button class="fiori-btn primary">Ir a la cuenta</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-note">Con esto Kevin sabe que fue un cambio puntual, no una configuración de base — puede consultar con MUELLER_S si hace falta, y recién ahí decidir si lo saca.</div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Removing the Block</span>
+          <span class="sec-title-es">Sacando el bloqueo</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Confirmado que fue temporal, Kevin lo saca directo desde la vista de Company Code.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      MUELLER_S confirma que el bloqueo fue un control temporal que quedó activo de más. Kevin entra a <strong>Edit</strong> sobre la vista de Company Code y saca el bloqueo (T1 §8 — procesamiento individual).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Manage G/L Account Master Data</div><span class="sep">›</span>
+      <div class="crumb">cuenta 65991000</div><span class="sep">›</span>
+      <div class="crumb current">Company Code DE01 → botón "Edit"</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage G/L Account Master Data — Edit</div>
+      <div class="fiori-appbar">
+        <div><h6>G/L Account 65991000 — Company Code DE01</h6><span class="sub">Modo edición</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Account Currency</label><div class="val filled">EUR</div></div>
+          <div class="fiori-field"><label>Field Status Group</label><div class="val filled">G001</div></div>
+          <div class="fiori-field"><label>Blocked for Posting (Company Code)</label><div class="val ok">✅ No</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Cancel</button>
+          <button class="fiori-btn primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Fixing a Whole Range at Once</span>
+          <span class="sec-title-es">Arreglando un rango completo de una vez</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">MUELLER_S admite que el mismo control quedó activo en más cuentas de las que pensaba.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      MUELLER_S le avisa a Kevin que el mismo control temporal se aplicó a <strong>todo un rango</strong> de cuentas de gastos, no solo a 65991000. En vez de entrar cuenta por cuenta, Kevin corre un cambio colectivo (T1 §8, T2 §9).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Manage G/L Account Master Data (Mass Change)</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage G/L Account Master Data — Mass Change</div>
+      <div class="fiori-appbar">
+        <div><h6>Selección</h6><span class="sub">Chart of Accounts BIKE · Company Code DE01 · vista: Company Code</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Account Range</label><div class="val filled">65900000 – 65999000</div></div>
+          <div class="fiori-field"><label>View to Change</label><div class="val filled">Company Code Data</div></div>
+          <div class="fiori-field"><label>Field to Change</label><div class="val filled">Blocked for Posting</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Old Value</th><th>New Value</th></tr></thead>
+          <tbody>
+            <tr><td>65991000</td><td>Yes</td><td>No</td></tr>
+            <tr><td>65992000</td><td>Yes</td><td>No</td></tr>
+            <tr><td>65995000</td><td>Yes</td><td>No</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Cancel</button>
+          <button class="fiori-btn primary">Save All</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting an Expense — Where Debit and Credit Land</span>
+          <span class="sec-title-es">Contabilizando un gasto — dónde caen Debe y Haber</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Con el bloqueo ya sacado, Kevin confirma que la cuenta funciona posteando un gasto real.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Para confirmar que 65991000 ya funciona, Kevin postea un <strong>gasto real</strong> de oficina, con su Cost Center correspondiente — la contrapartida cae en la cuenta de enlace de Accounts Payable (T1 §6).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Post General Journal Entries</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Post General Journal Entries</div>
+      <div class="fiori-appbar">
+        <div><h6>Nuevo asiento</h6><span class="sub">Company Code DE01 · Posting Date 15.03.2023 · EUR</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Line Items (2)</th><th>G/L Account</th><th>Cost Center</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>65991000 Office &amp; Admin Expenses</td><td>10101305 (Admin)</td><td class="num">480,00</td><td class="num">0,00</td></tr>
+            <tr><td>2</td><td>21100000 Accounts Payable Reconciliation</td><td>—</td><td class="num">0,00</td><td class="num">480,00</td></tr>
+            <tr class="total"><td colspan="3">Total</td><td class="num">480,00</td><td class="num">480,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Simulate</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>65991000 (Office &amp; Admin Expenses) → Debe:</b> es un gasto que aumenta, y ahora puede postearse porque el bloqueo ya se sacó (T3 §6). <b>21100000 (Accounts Payable Reconciliation) → Haber:</b> aumenta la obligación con el proveedor; esta cuenta se actualiza sola porque está vinculada al sub-libro de Accounts Payable (T1 §6).
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Seeing Segment, Profit Center &amp; Functional Area on a Real Line</span>
+          <span class="sec-title-es">Viendo Segmento, Profit Center y Área Funcional en una línea real</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Ninguno de estos tres campos se tipeó a mano.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Kevin abre el documento recién contabilizado para confirmar que quedó bien clasificado — ni el <strong>Segmento</strong> ni el <strong>Área Funcional</strong> se escribieron a mano, quedaron solos apenas indicó Cost Center y Profit Center (T2 §6, T1 §9).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Manage Journal Entries — documento recién contabilizado</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Journal Entries</div>
+      <div class="fiori-appbar">
+        <div><h6>Journal Entry · Company Code DE01</h6><span class="sub">Posting Date 15.03.2023</span></div>
+        <span class="tag">✓ Posted</span>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Segment</th><th>Profit Center</th><th>Functional Area</th><th>Amount</th></tr></thead>
+          <tbody>
+            <tr><td>65991000 Office &amp; Admin Expenses</td><td>1000_A</td><td>YB110 (Product A)</td><td>YB40 (Administration)</td><td class="num">480,00 EUR</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Reverse</button>
+          <button class="fiori-btn primary">Display Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-note">El <b>Área Funcional</b> salió del Cost Center 10101305 (Admin), y el <b>Segmento</b> se heredó del Profit Center YB110 — Kevin solo tuvo que indicar el Cost Center al cargar el asiento (T2 §5, T2 §6).</div>
+  </section>
+
+  <!-- SECCIÓN 10 — sin pantalla, recap del día -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Kevin's Day, Wrapped</span>
+          <span class="sec-title-es">El día de Kevin, resumido</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">De un aviso de un contador a una cuenta funcionando y confirmada.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Todo el recorrido, de punta a punta — de un contador que no podía postear, a una cuenta corregida, verificada y con un asiento real ya clasificado.
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <h5>Investigar la cuenta</h5>
+          <span class="tl-ref">T3 §1</span>
+          <p>Descubre que la cuenta está bloqueada a nivel Company Code, no a nivel Chart of Accounts.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <h5>Revisar las tres vistas</h5>
+          <span class="tl-ref">T3 §2 – §4</span>
+          <p>Chart of Accounts, Company Code y Controlling Area — confirma que el resto de los datos está bien.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <h5>Auditar el cambio</h5>
+          <span class="tl-ref">T3 §5</span>
+          <p>G/L Account Changes le muestra quién bloqueó la cuenta y cuándo.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <h5>Corregir — individual y colectivo</h5>
+          <span class="tl-ref">T3 §6 – §7</span>
+          <p>Saca el bloqueo de la cuenta puntual, y después de todo el rango afectado.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <h5>Confirmar con un asiento real</h5>
+          <span class="tl-ref">T3 §8 – §9</span>
+          <p>Postea un gasto, revisa Debe/Haber, y verifica que Segmento y Área Funcional quedaron bien.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — G/L Account Master Data · Biblioteca de Guías SAP · Fuente: documento del curso + capturas reales de Fiori</footer>
+
+</body>
+</html>

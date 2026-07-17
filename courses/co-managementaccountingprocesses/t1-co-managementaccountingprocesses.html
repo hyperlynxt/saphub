@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Management Accounting Processes — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t1);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:640px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(127,191,143,0.14);
+    border-left:4px solid var(--t1);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:640px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t1-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(61,122,82,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{
+    background:var(--t1-pale);
+    border-left:4px solid var(--t1-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:960px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{
+    position:absolute; top:20px; right:-21px; width:28px; height:28px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  .cardrow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .cardrow .item{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .formula-box{ background:var(--bg); border-radius:8px; padding:12px 14px; margin-top:14px; font-size:0.8rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:4px; }
+  .formula-box div.frow{ padding:2px 0; color:var(--body); }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:180px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-orange{ background:rgba(224,123,57,0.08); border-color:rgba(224,123,57,0.28); }
+  .chip-orange .chip-title{ color:#E07B39; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+  .chip-red{ background:rgba(192,57,43,0.07); border-color:rgba(192,57,43,0.28); }
+  .chip-red .chip-title{ color:#C0392B; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; display:block; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Real &amp; Statistical Objects</a>
+  <a href="#s2">Object Types Compared</a>
+  <a href="#s3">Fixed vs. Variable Costs</a>
+  <a href="#s4">Calculating the Target Cost</a>
+  <a href="#s5">Service vs. Manufactured Product</a>
+  <a href="#s6">Quantity Structure to COGM</a>
+  <a href="#s7">Cost Object Types</a>
+  <a href="#s8">MTS vs. MTO</a>
+  <a href="#s9">Event-Based Revenue Recognition</a>
+  <a href="#s10">Margin Analysis</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Controlling</span>
+      <span class="pill pill-secondary">Profitability Analysis</span>
+      <span class="pill pill-secondary">Production Planning</span>
+      <span class="pill pill-secondary">Sales &amp; Distribution</span>
+    </div>
+    <h1><span class="accent">Processes</span> in Management Accounting</h1>
+    <h2>Procesos en la Contabilidad de Gestión</h2>
+    <p class="desc">Fundamentos de seis procesos centrales de Controlling en SAP S/4HANA: objetos reales y estadísticos, target costing para centros de costo, product cost planning, cost object controlling en Make-to-Stock y Make-to-Order, event-based revenue recognition (EBRR) y margin analysis.</p>
+    <div class="hlbox">Resumen Visual — <b>Processes in Management Accounting</b>, Tipo 1 (Básico).</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — hub: un objeto real + varios estadísticos -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Real &amp; Statistical Objects</span>
+          <span class="sec-title-es">Objetos Reales y Estadísticos</span>
+        </div>
+        <div class="sec-desc">Toda imputación de costos o ingresos necesita exactamente un objeto CO real — y puede además tocar uno o varios objetos estadísticos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Las imputaciones con cuentas de costo (costos primarios o secundarios) deben asignarse a <strong>uno y solo un objeto CO real</strong>. Una imputación es real si, al final, afecta el resultado en CO-PA; si no lo afecta, es <strong>estadística</strong>. El parámetro <strong>Value Type</strong> distingue ambas: el tipo de valor 4 marca una imputación real actual, el 11 una estadística actual — existen más de 100 tipos de valor en SAP S/4HANA (por ejemplo, el 22 identifica un compromiso).
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="70" x2="450" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="180" y1="95" x2="650" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="180" y1="95" x2="180" y2="130" stroke="#3D7A52" stroke-width="2.5"/>
+        <line x1="650" y1="95" x2="650" y2="130" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <line x1="560" y1="130" x2="760" y2="130" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <line x1="560" y1="130" x2="560" y2="155" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <line x1="760" y1="130" x2="760" y2="155" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+
+        <rect x="350" y="15" width="200" height="55" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="38" text-anchor="middle" fill="white" class="box-label">Invoice: Car Fleet Expenses</text>
+        <text x="450" y="55" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">Factura de gastos de la flota</text>
+
+        <rect x="70" y="130" width="220" height="85" rx="10" fill="#3D7A52"/>
+        <text x="180" y="156" text-anchor="middle" fill="white" class="box-label">Cost Center: Car Fleet</text>
+        <text x="180" y="173" text-anchor="middle" fill="rgba(255,255,255,0.88)" class="box-sub">Value Type 4 · Real</text>
+        <text x="180" y="190" text-anchor="middle" fill="rgba(255,255,255,0.7)" class="box-sub" font-size="9">Afecta el resultado (P&amp;L / CO-PA)</text>
+
+        <rect x="475" y="155" width="170" height="85" rx="10" fill="#EEF1F5" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="560" y="181" text-anchor="middle" fill="#16213A" class="box-label">WBS: Car #1</text>
+        <text x="560" y="198" text-anchor="middle" fill="#64748B" class="box-sub">Value Type 11 · Statistical</text>
+        <text x="560" y="215" text-anchor="middle" fill="#94A3B8" class="box-sub" font-size="9">No afecta el resultado</text>
+
+        <rect x="675" y="155" width="170" height="85" rx="10" fill="#EEF1F5" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="760" y="181" text-anchor="middle" fill="#16213A" class="box-label">WBS: Car #2 (+ N)</text>
+        <text x="760" y="198" text-anchor="middle" fill="#64748B" class="box-sub">Value Type 11 · Statistical</text>
+        <text x="760" y="215" text-anchor="middle" fill="#94A3B8" class="box-sub" font-size="9">Uno por cada auto de la flota</text>
+
+        <text x="450" y="268" text-anchor="middle" fill="#64748B" font-size="11">El Cost Center es el único objeto real; cada auto tiene además su propio WBS estadístico.</text>
+
+        <line x1="300" y1="300" x2="330" y2="300" stroke="#3D7A52" stroke-width="2.5"/>
+        <text x="336" y="304" fill="#64748B" font-size="10">Real</text>
+        <line x1="400" y1="300" x2="430" y2="300" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="436" y="304" fill="#64748B" font-size="10">Estadística</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — tabla comparativa -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Which Objects Can Be Statistical</span>
+          <span class="sec-title-es">Qué objetos pueden ser estadísticos</span>
+        </div>
+        <div class="sec-desc">Algunos tipos de objeto están fijados de antemano como reales o como estadísticos; otros pueden ser cualquiera de los dos según el caso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>Profit Center</strong> es el único tipo de objeto que siempre es estadístico — Profit Center Accounting es, por definición, contabilidad de gestión estadística. En el otro extremo, los objetos de costo logísticos (<strong>Production Order</strong>, <strong>Sales Order Item</strong>) nunca pueden crearse como estadísticos: la imputación contable que resulta de un proceso logístico siempre es real, aunque además puede asignarse a un objeto CO estadístico (por ejemplo, el Profit Center de una orden de producción).
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Objeto CO</th><th>¿Real?</th><th>¿Estadístico?</th><th>Nota</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">📊 Profit Center</span><span class="mod-en">Centro de Beneficio</span></td>
+            <td><span class="badge badge-neutral">No</span></td>
+            <td><span class="badge badge-accent">Siempre</span></td>
+            <td>Profit Center Accounting es contabilidad de gestión estadística por definición.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🏭 Production Order</span><span class="mod-en">Orden de Producción</span></td>
+            <td><span class="badge badge-accent">Siempre</span></td>
+            <td><span class="badge badge-neutral">Nunca</span></td>
+            <td>Objeto de costo logístico; se analiza por varianzas (target vs. actual).</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🧾 Sales Order Item</span><span class="mod-en">Posición de Pedido de Venta</span></td>
+            <td><span class="badge badge-accent">Siempre</span></td>
+            <td><span class="badge badge-neutral">Nunca</span></td>
+            <td>Carga costos y, al facturar, ingresos; se evalúa con Results Analysis.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">⚙️ Otros objetos logísticos</span><span class="mod-en">Ord. Mantenimiento / Calidad</span></td>
+            <td><span class="badge badge-accent">Siempre</span></td>
+            <td><span class="badge badge-neutral">Nunca</span></td>
+            <td>No se profundizan en este curso; mismo principio que Production Order.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🔗 Cost Center / WBS Element</span><span class="mod-en">Centro de Costo / Elem. PEP</span></td>
+            <td><span class="badge badge-accent">Sí</span></td>
+            <td><span class="badge badge-accent">Sí</span></td>
+            <td>Pueden ser real o estadístico según el caso — ver ejemplo Car Fleet (sección 01).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — chips + cmp-cards -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Fixed vs. Variable Costs</span>
+          <span class="sec-title-es">Costos Fijos vs. Variables</span>
+        </div>
+        <div class="sec-desc">La base de Target Costing: entender cómo reacciona cada tipo de costo frente a un cambio de actividad.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Comparar costos planificados con costos actuales solo muestra si el plan se excedió — no si el costo actual está <strong>justificado</strong>. Para eso hace falta distinguir el tipo de costo. Un <strong>Activity Type</strong> se asigna a un centro de costo para los recursos que consume: tiempo de empleado, tiempo de máquina, consumo de energía o espacio de edificio, entre otros.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">👤</span><span class="chip-title">Employee Time</span><span class="chip-en">tiempo de empleado</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">⚙️</span><span class="chip-title">Machine Time</span><span class="chip-en">tiempo de máquina</span></div>
+        <div class="chip chip-orange"><span class="chip-icon">⚡</span><span class="chip-title">Energy Consumption</span><span class="chip-en">consumo de energía</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">🏢</span><span class="chip-title">Building Space</span><span class="chip-en">espacio utilizado</span></div>
+      </div>
+    </div>
+    <div class="visual-wrap" style="margin-top:16px;">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🏢</span>Fixed Costs <span class="en-tag">· Costos Fijos</span></h4>
+          <p>No cambian aunque la actividad cambie. Ejemplos del curso: una <strong>sala de reuniones</strong> de uso regular o distintos tipos de <strong>seguro</strong>.</p>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">⚡</span>Variable Costs <span class="en-tag">· Costos Variables</span></h4>
+          <p>Cambian en proporción a la cantidad de actividad. Ejemplos del curso: <strong>energía</strong> y <strong>mantenimiento</strong>, que crecen a medida que el output aumenta.</p>
+        </div>
+      </div>
+      <div class="formula-box">
+        <span class="flabel">Regla base</span>
+        <div class="frow">Costos Fijos + Costos Variables = Costos Totales</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — flow de calculo target cost -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Calculating the Target Cost</span>
+          <span class="sec-title-es">Calculando el Costo Meta</span>
+        </div>
+        <div class="sec-desc">El costo meta es la escala correcta contra la que se mide el costo actual, porque ya incorpora el cambio real de actividad.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Durante la planificación del centro de costo, el sistema determina cuánta actividad se va a realizar en el mes y calcula el <strong>costo planificado</strong>. Cuando la actividad real difiere de la planificada, los <strong>costos fijos no cambian</strong> pero los <strong>costos variables sí</strong>, en proporción. La suma de ambos da el <strong>costo meta</strong> para la actividad real — la diferencia entre costo meta y costo actual es la <strong>varianza</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#5A6B8C;">
+            <span class="icon">📋</span><span class="title-en">Plan Cost &amp; Plan Activity</span><span class="title-es">Costo y actividad planificados</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>El sistema determina la actividad a realizar en el mes</li>
+            <li>De ahí surgen los costos fijos y variables planificados</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">▶️</span><span class="title-en">Actual Activity</span><span class="title-es">Actividad real</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>El centro de costo realiza una cantidad real de actividad</li>
+            <li>Puede diferir de la cantidad planificada</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">🎯</span><span class="title-en">Target Cost</span><span class="title-es">Costo meta</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Fijos del plan (no cambian) + Variables ajustados a la actividad real</li>
+            <li>Escala correcta para medir el costo actual</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">⚖️</span><span class="title-en">Compare to Actual</span><span class="title-es">Comparar con lo actual</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Costo meta vs. costo actual incurrido</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#C0392B;">
+            <span class="icon">📉</span><span class="title-en">Variance</span><span class="title-es">Varianza</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Categorías como varianza de cantidad y de precio</li>
+            <li>Guía medidas para mejorar la eficiencia del centro de costo</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — service vs manufactured -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Costing a Service vs. a Manufactured Product</span>
+          <span class="sec-title-es">Costear un servicio vs. un producto fabricado</span>
+        </div>
+        <div class="sec-desc">El requisito de negocio para calcular el costo cambia según si se trata de un servicio o de un producto que pasa por producción.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un <strong>servicio</strong> lo entrega un centro de costo de servicios y sus activity types, con un precio calculado durante la planificación del centro de costo. Un <strong>producto fabricado</strong>, en cambio, usa una <strong>quantity structure</strong> en la planificación y el costeo de producción.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🛠️</span>Service <span class="en-tag">· Servicio</span></h4>
+          <p>Costeo sin quantity structure: las cantidades de actividad se ingresan en el propio cost estimate. Suele incluir costos adicionales como <strong>viáticos</strong> o uso de <strong>equipo de IT</strong>. Se costea típicamente para el Sales Order Item con el que el cliente pidió el servicio.</p>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🚲</span>Manufactured Product <span class="en-tag">· Producto Fabricado</span></h4>
+          <p>Usa una quantity structure con dos componentes: <strong>Bill of Material (BOM)</strong> — qué materiales se ensamblan (ej. cuadro, asiento, manubrio, dos ruedas) — y <strong>Routing</strong> — qué pasos de trabajo componen la producción.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — flow BOM/Routing -> COGM -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">From Quantity Structure to COGM</span>
+          <span class="sec-title-es">De la estructura de cantidades al COGM</span>
+        </div>
+        <div class="sec-desc">El recorrido completo de un cost estimate con quantity structure, hasta actualizar el valor de inventario.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      SAP S/4HANA toma las cantidades de material del <strong>BOM</strong> y los tiempos de producción requeridos del <strong>Routing</strong> para calcular el <strong>Cost of Goods Manufactured (COGM)</strong>. Cada paso de trabajo se asigna, vía un work center, a un centro de costo y su activity type. El resultado final se transfiere al material master como el <strong>precio estándar</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">📦</span><span class="title-en">Bill of Material</span><span class="title-es">Lista de materiales</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Materiales y cantidades para ensamblar el producto</li>
+            <li>Ej. bici: cuadro, asiento, manubrio, dos ruedas</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">🛤️</span><span class="title-en">Routing</span><span class="title-es">Hoja de ruta</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Pasos de trabajo y tiempos de producción planificados</li>
+            <li>Cada paso se asigna vía work center a un cost center + activity type</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#5A6B8C;">
+            <span class="icon">💲</span><span class="title-en">Valuation</span><span class="title-es">Valuación</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Material con precios de material</li>
+            <li>Activity types con precios de actividad del cost center</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;">
+            <span class="icon">➕</span><span class="title-en">Overhead / Process Costs</span><span class="title-es">Gastos generales</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Overhead scheme o costos de procesos internos</li>
+            <li>Ej. transporte interno: cantidad de operaciones × tarifa</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">🧮</span><span class="title-en">Cost Estimate (COGM)</span><span class="title-es">Cost estimate</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Itemization · Cost Components · Valuated Structure</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">🏬</span><span class="title-en">Inventory Valuation</span><span class="title-es">Valuación de inventario</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Precio estándar actualizado en el material master</li>
+            <li>Stock existente se actualiza en su valor</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — cost object types -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Cost Object Types</span>
+          <span class="sec-title-es">Tipos de objeto de costo</span>
+        </div>
+        <div class="sec-desc">El cost object se deriva del producto, pero se comporta distinto según lo que carga: solo costos, o costos e ingresos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Desde el punto de vista de negocio, el <strong>cost object equivale al producto</strong>. Desde SAP S/4HANA existen distintos tipos según lo que cargan: unos solo cargan costos al producir, otros cargan costos al entregar y también ingresos al facturar.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🏭</span>Manufacturing Order <span class="en-tag">· Orden de Fabricación</span></h4>
+          <p>Carga costos <strong>solo al producir</strong> productos. Las manufacturing orders se analizan por <strong>varianzas</strong> (plan/target vs. actual).</p>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🧾</span>Sales Order Item <span class="en-tag">· Posición de Pedido</span></h4>
+          <p>Carga costos al <strong>entregar</strong> e ingresos al <strong>facturar</strong>. Las sales order items se evalúan con <strong>Results Analysis</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — arbol MTS/MTO -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Make-to-Stock vs. Make-to-Order</span>
+          <span class="sec-title-es">Make-to-Stock vs. Make-to-Order</span>
+        </div>
+        <div class="sec-desc">Los dos tipos de cost object se combinan distinto según el escenario logístico.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En <strong>Make-to-Stock (MTS)</strong> se producen productos estándar en stock: el cost object es la manufacturing order. En <strong>Make-to-Order (MTO)</strong>, ligado a un sales order item, hay dos variantes: si hay producción, la manufacturing order se maneja igual que en MTS y el sales order item se evalúa aparte; si es un servicio sin producción, el sales order item recibe la actividad directamente del centro de costo de servicios.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="68" x2="450" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="190" y1="95" x2="710" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="190" y1="95" x2="190" y2="120" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="95" x2="450" y2="120" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="710" y1="95" x2="710" y2="120" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="330" y="10" width="240" height="58" rx="10" fill="#0A0F1C"/>
+        <text x="450" y="34" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Cost Object Controlling</text>
+        <text x="450" y="51" text-anchor="middle" fill="#7FE3D8" class="box-sub">según el escenario logístico</text>
+
+        <rect x="80" y="120" width="220" height="130" rx="10" fill="#1A6B99"/>
+        <text x="190" y="145" text-anchor="middle" fill="white" class="box-label">Make-to-Stock</text>
+        <text x="190" y="162" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Producto estándar en stock</text>
+        <text x="190" y="185" text-anchor="middle" fill="white" class="box-sub" font-size="10">Cost Object:</text>
+        <text x="190" y="200" text-anchor="middle" fill="#B8E4F0" class="box-sub" font-size="10">Manufacturing Order</text>
+        <text x="190" y="222" text-anchor="middle" fill="white" class="box-sub" font-size="10">Evaluación: Variance Analysis</text>
+
+        <rect x="340" y="120" width="220" height="130" rx="10" fill="#3D7A52"/>
+        <text x="450" y="145" text-anchor="middle" fill="white" class="box-label">MTO — con Producción</text>
+        <text x="450" y="162" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Sales order de un producto</text>
+        <text x="450" y="185" text-anchor="middle" fill="white" class="box-sub" font-size="10">Cost Objects:</text>
+        <text x="450" y="200" text-anchor="middle" fill="#C8E8D0" class="box-sub" font-size="10">Manufacturing Order + Sales Order Item</text>
+        <text x="450" y="222" text-anchor="middle" fill="white" class="box-sub" font-size="10">Evaluación: Varianzas + Results Analysis</text>
+
+        <rect x="600" y="120" width="220" height="130" rx="10" fill="#7E4FBF"/>
+        <text x="710" y="145" text-anchor="middle" fill="white" class="box-label">MTO — Servicio</text>
+        <text x="710" y="162" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Sin producción</text>
+        <text x="710" y="185" text-anchor="middle" fill="white" class="box-sub" font-size="10">Cost Object:</text>
+        <text x="710" y="200" text-anchor="middle" fill="#E4D4F7" class="box-sub" font-size="10">Sales Order Item (solo)</text>
+        <text x="710" y="222" text-anchor="middle" fill="white" class="box-sub" font-size="10">Evaluación: Results Analysis</text>
+
+        <text x="450" y="290" text-anchor="middle" fill="#64748B" font-size="11">En el servicio, la actividad del centro de costo de servicios se asigna al sales order item.</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — EBRR flow con numeros -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Event-Based Revenue Recognition</span>
+          <span class="sec-title-es">Reconocimiento de ingresos basado en eventos</span>
+        </div>
+        <div class="sec-desc">Cómo EBRR captura ingresos y gastos en el momento del cierre de período, no en la facturación, siguiendo el método POC.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Normas contables como <strong>IFRS</strong> y <strong>US-GAAP</strong> exigen mostrar costos e ingresos en el mismo período. Bike Company factura sus grandes órdenes de producción recién en la entrega, y factura su servicio de suscripción de mantenimiento de flota una vez al año — sin EBRR, los libros no reflejan la realidad durante buena parte del año.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">📐</span><span class="title-en">Percentage of Completion</span><span class="title-es">Paso A — POC</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Costo actual = 60% del costo planificado → POC = 60%</li>
+            <li>Ingreso calculado = POC × Ingreso plan</li>
+          </ul>
+          <div class="formula-box"><div class="frow">60% × 2000 = 1200</div></div>
+          </div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;">
+            <span class="icon">🧾</span><span class="title-en">Actual Billing</span><span class="title-es">Paso B — facturación</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>El ingreso actual facturado se compensa contra el ingreso calculado</li>
+            <li>Se ve en todo momento cuánto del ingreso plan ya se reconoció</li>
+          </ul>
+          <div class="formula-box"><div class="frow">Facturado: 800</div></div>
+          </div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">🔒</span><span class="title-en">Accrual Posting</span><span class="title-es">Paso C — devengo</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Se genera automáticamente junto a la imputación actual</li>
+            <li>Balance y P&amp;L reflejan el resultado correctamente en cualquier momento</li>
+          </ul>
+          <div class="formula-box"><div class="frow">1200 − 800 = 400</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — hub margin analysis + chips -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Margin Analysis</span>
+          <span class="sec-title-es">Análisis de Margen</span>
+        </div>
+        <div class="sec-desc">El P&amp;L y el análisis de segmento de mercado salen de la misma fuente: el Diario Universal.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Margin Analysis</strong> permite analizar el margen de contribución por segmento de mercado o por unidad de negocio, clasificando por producto, cliente, orden o cualquier combinación. Toda imputación de ingreso o costo de venta se actualiza bajo la cuenta correspondiente y se asigna a las características correctas de segmento de mercado — siempre 100% reconciliado con el estado de resultados.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="100" x2="450" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="230" y1="130" x2="670" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="230" y1="130" x2="230" y2="155" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="670" y1="130" x2="670" y2="155" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="310" y="30" width="280" height="70" rx="12" fill="#0A0F1C"/>
+        <text x="450" y="60" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Universal Journal</text>
+        <text x="450" y="80" text-anchor="middle" fill="#7FE3D8" class="box-sub" font-size="10">Fuente única de verdad</text>
+
+        <rect x="110" y="155" width="240" height="75" rx="10" fill="#1A4B8C"/>
+        <text x="230" y="184" text-anchor="middle" fill="white" class="box-label">Profit &amp; Loss Statement</text>
+        <text x="230" y="201" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Estado de resultados</text>
+        <text x="230" y="216" text-anchor="middle" fill="#B8CDEF" class="box-sub" font-size="9">100% reconciliado con Margin Analysis</text>
+
+        <rect x="550" y="155" width="240" height="75" rx="10" fill="#3D7A52"/>
+        <text x="670" y="184" text-anchor="middle" fill="white" class="box-label">Margin Analysis</text>
+        <text x="670" y="201" text-anchor="middle" fill="rgba(255,255,255,0.85)" class="box-sub">por Market Segment</text>
+        <text x="670" y="216" text-anchor="middle" fill="#C8E8D0" class="box-sub" font-size="9">producto · cliente · orden</text>
+      </svg>
+    </div>
+    <div class="visual-wrap" style="margin-top:16px;">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">🔗</span><span class="chip-title">Consistent Data</span><span class="chip-en">CO y FI vía Diario Universal</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">🆕</span><span class="chip-title">Innovations Included</span><span class="chip-en">automáticas para Margin Analysis</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">🧩</span><span class="chip-title">Shared Ledgers</span><span class="chip-en">monedas y valoraciones compartidas</span></div>
+        <div class="chip chip-orange"><span class="chip-icon">⏱️</span><span class="chip-title">Real-Time Enrichment</span><span class="chip-en">característica de rentabilidad al imputar</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">🔍</span><span class="chip-title">Flexible Reporting</span><span class="chip-en">consultas CDS</span></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Value Type</div><div class="term-es">Tipo de Valor</div><div class="term-def">Parámetro que distingue si una imputación es real o estadística (ej. VT4 real, VT11 estadística).</div></div>
+      <div class="gcard"><div class="term-en">Real Posting</div><div class="term-es">Imputación Real</div><div class="term-def">Imputación que afecta el resultado en CO-PA; todo objeto de costo requiere una.</div></div>
+      <div class="gcard"><div class="term-en">Statistical Posting</div><div class="term-es">Imputación Estadística</div><div class="term-def">Imputación adicional que no afecta el resultado; solo fines informativos.</div></div>
+      <div class="gcard"><div class="term-en">WBS Element</div><div class="term-es">Elemento PEP</div><div class="term-def">Objeto de un proyecto que puede recibir imputaciones estadísticas, ej. una por cada auto de flota.</div></div>
+      <div class="gcard"><div class="term-en">Target Cost</div><div class="term-es">Costo Meta</div><div class="term-def">Fijos del plan + variables ajustados a la actividad real; escala correcta para medir el costo actual.</div></div>
+      <div class="gcard"><div class="term-en">Fixed Costs</div><div class="term-es">Costos Fijos</div><div class="term-def">No cambian aunque cambie la actividad, ej. seguros o una sala de reuniones.</div></div>
+      <div class="gcard"><div class="term-en">Variable Costs</div><div class="term-es">Costos Variables</div><div class="term-def">Cambian proporcionalmente a la actividad, ej. energía o mantenimiento.</div></div>
+      <div class="gcard"><div class="term-en">Bill of Material (BOM)</div><div class="term-es">Lista de Materiales</div><div class="term-def">Define qué materiales y en qué cantidad se usan para ensamblar un producto.</div></div>
+      <div class="gcard"><div class="term-en">Routing</div><div class="term-es">Hoja de Ruta</div><div class="term-def">Define los pasos de trabajo y tiempos de producción de un producto.</div></div>
+      <div class="gcard"><div class="term-en">Cost of Goods Manufactured (COGM)</div><div class="term-es">Costo de Fabricación</div><div class="term-def">Costo total de producir un bien, calculado a partir del BOM y el Routing.</div></div>
+      <div class="gcard"><div class="term-en">Results Analysis</div><div class="term-es">Análisis de Resultados</div><div class="term-def">Evaluación de un sales order item comparando costos/ingresos plan vs. actuales.</div></div>
+      <div class="gcard"><div class="term-en">Percentage of Completion (POC)</div><div class="term-es">Porcentaje de Avance</div><div class="term-def">Costo actual / costo plan; base del cálculo de ingreso calculado en EBRR.</div></div>
+      <div class="gcard"><div class="term-en">Event-Based Revenue Recognition (EBRR)</div><div class="term-es">Reconocimiento de Ingresos por Eventos</div><div class="term-def">Método que captura ingresos y gastos al cierre de período, no en la facturación.</div></div>
+      <div class="gcard"><div class="term-en">Margin Analysis</div><div class="term-es">Análisis de Margen</div><div class="term-def">Análisis de rentabilidad por segmento de mercado, 100% reconciliado con el P&amp;L.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Management Accounting Processes · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

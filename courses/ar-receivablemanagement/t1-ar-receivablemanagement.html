@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Receivables Management — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* paleta de categoria - de uso libre DENTRO de un diagrama puntual cuando hace falta distinguir 3+ dominios en paralelo */
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t1);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:660px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(127,191,143,0.14);
+    border-left:4px solid var(--t1);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:660px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t1-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(61,122,82,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  /* THEORY BOX — envuelve la explicacion teorica de cada seccion, ancho completo */
+  .theory-box{
+    background:var(--t1-pale);
+    border-left:4px solid var(--t1-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  /* FLOW (secciones 1, 5, 6, 8) */
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:960px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-step-body p{ font-size:10.3px; color:var(--body); line-height:1.5; margin:0; }
+  .flow-connector{
+    position:absolute; top:20px; right:-21px; width:28px; height:28px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+  .flow-step-head.opt::after{
+    content:'si hace falta'; position:absolute; top:-10px; right:8px;
+    background:var(--cat-alert); color:white; font-size:8px; font-weight:700;
+    padding:2px 7px; border-radius:20px; letter-spacing:.3px;
+  }
+
+  /* CARD ROW (seccion 2 — tareas del contador) */
+  .cardrow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .cardrow.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .cardrow .item{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  /* COMPARISON CARDS (seccion 10) */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .formula-box{ background:var(--bg); border-radius:8px; padding:12px 14px; margin-top:14px; font-size:0.8rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:4px; }
+  .formula-box div.frow{ padding:2px 0; color:var(--body); }
+  .formula-box div.frow.hl{ font-weight:700; color:var(--t1-dark); }
+
+  /* CHIPS (secciones 5, 8) */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:180px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+
+  /* CHIP COLOR VARIANTS */
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-orange{ background:rgba(224,123,57,0.08); border-color:rgba(224,123,57,0.28); }
+  .chip-orange .chip-title{ color:#E07B39; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+  .chip-red{ background:rgba(192,57,43,0.07); border-color:rgba(192,57,43,0.28); }
+  .chip-red .chip-title{ color:#C0392B; }
+
+  /* MINI LABEL — encabezado chico para cards de apoyo dentro de una misma seccion */
+  .mini-label{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.78rem; color:var(--t1-dark); margin:22px 0 10px; text-transform:uppercase; letter-spacing:.4px; }
+  .note-text{ font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:12px; line-height:1.5; }
+
+  /* SPLIT GRID (seccion 4 — desglose Order to Invoice / Invoice to Cash) */
+  .split-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:6px; }
+  .split-col{ border:1.5px dashed #94A3B8; border-radius:12px; padding:18px; }
+  .split-col.highlight{ border:1.5px solid var(--t1-dark); background:var(--t1-pale); }
+  .split-col h4{ text-align:center; font-family:'Syne',sans-serif; font-size:0.95rem; color:var(--ink); margin:0 0 2px; }
+  .split-col .sub{ text-align:center; font-size:0.72rem; color:var(--muted); margin-bottom:14px; }
+  .split-item{ background:#F4F6FA; border-radius:8px; padding:9px 14px; margin-bottom:7px; font-size:0.82rem; font-weight:600; color:var(--ink); }
+  .split-col.highlight .split-item{ background:white; color:var(--t1-dark); }
+  .split-item .em{ margin-right:6px; }
+
+  /* TABLE (seccion 7) */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+
+  /* EQUATION STYLE (seccion 9 — conciliacion) */
+  .eq-grid{ display:grid; grid-template-columns:1fr auto 1fr; gap:18px; align-items:center; }
+  .eq-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:0 2px 10px rgba(10,15,28,0.05); border-top:4px solid var(--t1-dark); }
+  .eq-card h4{ font-family:'Syne',sans-serif; font-size:0.95rem; margin:0 0 10px; color:var(--ink); }
+  .eq-card .en-tag{ font-size:0.72rem; color:var(--muted); font-style:italic; font-weight:400; display:block; margin-top:1px; }
+  .eq-row{ display:flex; justify-content:space-between; padding:6px 0; font-size:0.85rem; color:var(--body); border-bottom:1px dashed var(--border); }
+  .eq-row.total{ font-weight:700; color:var(--t1-dark); border-bottom:none; border-top:2px solid var(--t1-dark); margin-top:4px; padding-top:8px; }
+  .eq-symbol{ font-family:'Syne',sans-serif; font-weight:800; font-size:2.2rem; color:var(--t1-dark); text-align:center; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Roles &amp; Sales Cycle</a>
+  <a href="#s2">AR Accountant Tasks</a>
+  <a href="#s3">Functions in SAP</a>
+  <a href="#s4">Lead-to-Cash</a>
+  <a href="#s5">Creating Invoices</a>
+  <a href="#s6">Invoice Lifecycle</a>
+  <a href="#s7">Accountant's Process</a>
+  <a href="#s8">Correspondence</a>
+  <a href="#s9">GL Reconciliation</a>
+  <a href="#s10">Financial Statements</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Sales &amp; Distribution</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Order to Cash</span>
+    </div>
+    <h1><span class="accent">Receivables</span> Management</h1>
+    <h2>Gestión de Cuentas por Cobrar</h2>
+    <p class="desc">Fundamentos teóricos de Receivables Management (Invoice to Cash) en SAP S/4HANA: los roles y tareas del área, su lugar dentro del proceso Lead-to-Cash, cómo se crea y da de baja una factura de cliente, y su integración con el Libro Mayor y los estados financieros.</p>
+    <div class="hlbox">Resumen Visual — <b>Receivables Management</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — FLOW roles alrededor del ciclo de venta -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Roles Around the Sales Cycle</span>
+          <span class="sec-title-es">Roles alrededor del ciclo de venta</span>
+        </div>
+        <div class="sec-desc">Dónde se ubica el contador de AR entre los demás roles involucrados en una venta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Quién hace qué?</strong> Antes de llegar a Receivables Management, la venta pasa por varios roles: el <strong>vendedor</strong> cierra el pedido, el <strong>depósito</strong> despacha la mercadería, y recién ahí la factura llega al <strong>contador de AR</strong>. Del otro lado del cobro, un especialista de <strong>Cash Management</strong> administra el dinero que va ingresando.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🧑‍💼</span><span class="title-en">Salesperson</span><span class="title-es">Vendedor</span>
+          </div>
+          <div class="flow-step-body"><p>Cierra el pedido de venta con el cliente.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">📦</span><span class="title-en">Warehouse Clerk</span><span class="title-es">Depósito</span>
+          </div>
+          <div class="flow-step-body"><p>Despacha la mercadería o entrega el servicio.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">🧾</span><span class="title-en">Receivables Mgmt. Accountant</span><span class="title-es">Contador de AR</span>
+          </div>
+          <div class="flow-step-body"><p>Chequea, factura y cobra — el foco de esta guía.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">💳</span><span class="title-en">Cash Mgmt. Specialist</span><span class="title-es">Cash Management</span>
+          </div>
+          <div class="flow-step-body"><p>Administra la liquidez que va ingresando a la compañía.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — cardrow 6 tareas -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Receivables Management Accountant — Core Tasks</span>
+          <span class="sec-title-es">Tareas centrales del contador de AR</span>
+        </div>
+        <div class="sec-desc">El día a día del rol dentro de la Bike Company.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El día a día del contador de AR.</strong> Una vez que la factura del cliente está en el sistema, el contador de <strong>Receivables Management</strong> se ocupa de cobrarla, corregirla si hace falta, reportarla, reclamarla si está vencida, procesar anticipos y ejecutar actividades periódicas de cierre.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow cols-3">
+        <div class="item">
+          <span class="icon">💰</span>
+          <h5>Payments Collection &amp; Monitoring</h5>
+          <span class="en">Cobro y monitoreo de pagos</span>
+          <p>Chequea la precisión de la factura emitida y gestiona el cobro correspondiente.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🛠️</span>
+          <h5>Posting Correction</h5>
+          <span class="en">Corrección de contabilizaciones</span>
+          <p>Corrige información inexacta cargada en el sistema, como un importe de factura incorrecto.</p>
+        </div>
+        <div class="item">
+          <span class="icon">📊</span>
+          <h5>Invoice Reporting</h5>
+          <span class="en">Reporting de facturas</span>
+          <p>Genera reportes sobre facturas de clientes: monto y antigüedad de partidas abiertas.</p>
+        </div>
+        <div class="item">
+          <span class="icon">✉️</span>
+          <h5>Dunning &amp; Correspondence</h5>
+          <span class="en">Reclamos y correspondencia</span>
+          <p>Envía recordatorios formales de pago y otra comunicación oficial, como extractos de cuenta.</p>
+        </div>
+        <div class="item">
+          <span class="icon">💵</span>
+          <h5>Down Payments Collection</h5>
+          <span class="en">Cobro de anticipos</span>
+          <p>Procesa en el sistema los anticipos negociados antes del envío de la mercadería.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🔁</span>
+          <h5>Periodic Activities</h5>
+          <span class="en">Actividades periódicas</span>
+          <p>En el cierre: confirmaciones de saldo, valuación de moneda extranjera y ajustes de valor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — SVG hub 6 funciones -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Receivables Management Within SAP</span>
+          <span class="sec-title-es">Receivables Management dentro de SAP</span>
+        </div>
+        <div class="sec-desc">Las seis funciones que componen el dominio, también llamado Invoice to Cash.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Receivables Management</strong> (también llamado <strong>Invoice to Cash</strong>) es un dominio propio dentro de SAP que da una vista financiera completa de las operaciones con clientes. Se organiza en <strong>seis funciones</strong> que cubren desde la gestión de datos maestros hasta el análisis del cliente.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 980 320" xmlns="http://www.w3.org/2000/svg">
+        <line x1="490" y1="84" x2="490" y2="110" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="97.5" y1="110" x2="882.5" y2="110" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="97.5" y1="110" x2="97.5" y2="180" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="254.5" y1="110" x2="254.5" y2="180" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="411.5" y1="110" x2="411.5" y2="180" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="568.5" y1="110" x2="568.5" y2="180" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="725.5" y1="110" x2="725.5" y2="180" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="882.5" y1="110" x2="882.5" y2="180" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="390" y="20" width="200" height="64" rx="10" fill="#0A0F1C"/>
+        <text x="490" y="47" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Receivables</text>
+        <text x="490" y="64" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Management</text>
+        <text x="490" y="78" text-anchor="middle" fill="#B8E4C4" class="box-sub" font-size="9">Invoice to Cash</text>
+
+        <rect x="25" y="180" width="145" height="90" rx="10" fill="#1A4B8C"/>
+        <text x="97.5" y="207" text-anchor="middle" fill="white" class="box-label" font-size="11.5">Account</text>
+        <text x="97.5" y="221" text-anchor="middle" fill="white" class="box-label" font-size="11.5">Management</text>
+        <text x="97.5" y="238" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Datos maestros</text>
+        <text x="97.5" y="251" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">de clientes</text>
+
+        <rect x="182" y="180" width="145" height="90" rx="10" fill="#1A6B99"/>
+        <text x="254.5" y="207" text-anchor="middle" fill="white" class="box-label" font-size="11.5">Invoice</text>
+        <text x="254.5" y="221" text-anchor="middle" fill="white" class="box-label" font-size="11.5">Management</text>
+        <text x="254.5" y="238" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Chequeo y</text>
+        <text x="254.5" y="251" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">corrección</text>
+
+        <rect x="339" y="180" width="145" height="90" rx="10" fill="#00A896"/>
+        <text x="411.5" y="207" text-anchor="middle" fill="white" class="box-label" font-size="11.5">Incoming</text>
+        <text x="411.5" y="221" text-anchor="middle" fill="white" class="box-label" font-size="11.5">Payments</text>
+        <text x="411.5" y="238" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Cobro de</text>
+        <text x="411.5" y="251" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">pagos entrantes</text>
+
+        <rect x="496" y="180" width="145" height="90" rx="10" fill="#C0392B"/>
+        <text x="568.5" y="214" text-anchor="middle" fill="white" class="box-label" font-size="11.5">Dunning</text>
+        <text x="568.5" y="231" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Reclamo de</text>
+        <text x="568.5" y="244" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">facturas vencidas</text>
+
+        <rect x="653" y="180" width="145" height="90" rx="10" fill="#E07B39"/>
+        <text x="725.5" y="207" text-anchor="middle" fill="white" class="box-label" font-size="11.5">Correspondence</text>
+        <text x="725.5" y="224" text-anchor="middle" fill="white" class="box-label" font-size="11.5"> </text>
+        <text x="725.5" y="238" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">Comunicación</text>
+        <text x="725.5" y="251" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">formal</text>
+
+        <rect x="810" y="180" width="145" height="90" rx="10" fill="#C9932E"/>
+        <text x="882.5" y="207" text-anchor="middle" fill="white" class="box-label" font-size="11.5">Customer</text>
+        <text x="882.5" y="221" text-anchor="middle" fill="white" class="box-label" font-size="11.5">Analytics</text>
+        <text x="882.5" y="238" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">KPIs y</text>
+        <text x="882.5" y="251" text-anchor="middle" fill="rgba(255,255,255,0.78)" class="box-sub">aging analysis</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — SVG árbol Lead-to-Cash + split grid -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Receivables Management Within Lead-to-Cash</span>
+          <span class="sec-title-es">Receivables Management dentro de Lead-to-Cash</span>
+        </div>
+        <div class="sec-desc">Dónde vive Invoice to Cash dentro del proceso de punta a punta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Dónde vive Receivables Management dentro del proceso mayor?</strong> <strong>Lead-to-Cash</strong> es el proceso de punta a punta, desde encontrar clientes hasta cobrar lo vendido. Dentro de su rama <strong>Order to Cash</strong>, el trabajo se reparte en <strong>Order to Invoice</strong> (venta y logística) e <strong>Invoice to Cash</strong> — este último es el terreno del contador de AR.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 1150 230" xmlns="http://www.w3.org/2000/svg">
+        <line x1="575" y1="72" x2="575" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="115" y1="100" x2="1035" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="115" y1="100" x2="115" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="299" y1="100" x2="299" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="483" y1="100" x2="483" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="667" y1="100" x2="667" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="851" y1="100" x2="851" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="1035" y1="100" x2="1035" y2="130" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="475" y="16" width="200" height="56" rx="10" fill="#16233B"/>
+        <text x="575" y="40" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Lead to Cash</text>
+        <text x="575" y="57" text-anchor="middle" fill="#B8E4C4" class="box-sub" font-size="9.5">proceso de punta a punta</text>
+
+        <rect x="30" y="130" width="170" height="64" rx="8" fill="#94A3B8"/>
+        <text x="115" y="157" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Contact to</text>
+        <text x="115" y="171" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Lead</text>
+
+        <rect x="214" y="130" width="170" height="64" rx="8" fill="#94A3B8"/>
+        <text x="299" y="157" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Lead to</text>
+        <text x="299" y="171" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Opportunity</text>
+
+        <rect x="398" y="130" width="170" height="64" rx="8" fill="#94A3B8"/>
+        <text x="483" y="157" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Opportunity</text>
+        <text x="483" y="171" text-anchor="middle" fill="white" class="box-label" font-size="10.5">to Quote</text>
+
+        <rect x="582" y="130" width="170" height="64" rx="8" fill="#94A3B8"/>
+        <text x="667" y="157" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Quote to</text>
+        <text x="667" y="171" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Order</text>
+
+        <rect x="766" y="130" width="170" height="64" rx="8" fill="#3D7A52" stroke="#D4AF37" stroke-width="2"/>
+        <text x="851" y="157" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Order to</text>
+        <text x="851" y="171" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Cash</text>
+        <text x="851" y="187" text-anchor="middle" fill="#FBE8A8" class="box-sub" font-size="8.5">◆ ver desglose abajo</text>
+
+        <rect x="950" y="130" width="170" height="64" rx="8" fill="#94A3B8"/>
+        <text x="1035" y="157" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Deliver to</text>
+        <text x="1035" y="171" text-anchor="middle" fill="white" class="box-label" font-size="10.5">Invoice</text>
+      </svg>
+    </div>
+    <div class="split-grid">
+      <div class="split-col">
+        <h4>Order to Invoice</h4>
+        <div class="sub">Venta y logística</div>
+        <div class="split-item"><span class="em">📝</span>Create Customer Order</div>
+        <div class="split-item"><span class="em">🔄</span>Orchestrate Fulfillment Process</div>
+        <div class="split-item"><span class="em">🔔</span>Update Order Status</div>
+      </div>
+      <div class="split-col highlight">
+        <h4>Invoice to Cash</h4>
+        <div class="sub">Dominio del contador de AR</div>
+        <div class="split-item"><span class="em">🧾</span>Invoice Customer</div>
+        <div class="split-item"><span class="em">📗</span>Process Accounts Receivable</div>
+        <div class="split-item"><span class="em">💰</span>Manage &amp; Process Collections</div>
+        <div class="split-item"><span class="em">🗂️</span>Account Management</div>
+        <div class="split-item"><span class="em">📊</span>Customer Analytics</div>
+        <div class="split-item"><span class="em">✉️</span>Correspondence</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — chip grid 4 metodos + mini flow -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating the Customer Invoice</span>
+          <span class="sec-title-es">Cómo se crea una factura de cliente</span>
+        </div>
+        <div class="sec-desc">Los cuatro caminos posibles y el flujo cuando parte de un pedido de venta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Cuatro caminos para una misma factura.</strong> Una factura de cliente puede originarse de distintas formas — con o sin pedido de venta, por plan de facturación o por carga masiva. Cuando parte de un pedido de venta, dos pasos la llevan hasta el asiento contable.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">🧾</span><span class="chip-title">With Sales Order</span><span class="chip-en">con pedido y doc. de facturación</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">✍️</span><span class="chip-title">Without Sales Order</span><span class="chip-en">entrada directa de factura</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">📅</span><span class="chip-title">Via Billing Plan</span><span class="chip-en">plan de facturación</span></div>
+        <div class="chip chip-orange"><span class="chip-icon">📤</span><span class="chip-title">Mass Upload</span><span class="chip-en">carga masiva de facturas</span></div>
+      </div>
+      <div class="note-text">Sobre estos cuatro caminos corren flujos automatizados: intercambio de documentos entre áreas (contabilidad, logística, depósito) y un ruteo de aprobación estandarizado que dirige cada factura a la persona correcta.</div>
+      <div class="mini-label">Cuando parte de un pedido de venta</div>
+      <div class="flow-row" style="min-width:520px;">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">📄</span><span class="title-en">Generate Billing</span><span class="title-es">Generar facturación</span>
+          </div>
+          <div class="flow-step-body"><p>Se genera el documento de facturación (Invoice) a partir de la orden de venta.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">📒</span><span class="title-en">Post Billing Document</span><span class="title-es">Contabilizar documento</span>
+          </div>
+          <div class="flow-step-body"><p>Se contabiliza el documento de facturación y se crea el journal entry correspondiente.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — flow row 7 pasos -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Customer Invoice Lifecycle</span>
+          <span class="sec-title-es">El ciclo de vida de una factura de cliente</span>
+        </div>
+        <div class="sec-desc">Las siete etapas desde la creación de la factura hasta la correspondencia final.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El ciclo de vida de una factura de cliente.</strong> Desde que se crea hasta que se cobra y se comunica, una factura atraviesa siete etapas — dos de ellas, la corrección y la diferencia de pago, ocurren solo <strong>si hace falta</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row" style="min-width:1320px;">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🧾</span><span class="title-en">Invoice Creation</span><span class="title-es">Creación</span>
+          </div>
+          <div class="flow-step-body"><p>Se crea desde documentos de facturación o directamente en Receivables Management.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">📒</span><span class="title-en">Post Accounts Receivable</span><span class="title-es">Contabilización</span>
+          </div>
+          <div class="flow-step-body"><p>El monto se contabiliza en la cuenta del cliente y en el Libro Mayor.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head opt" style="background:#C9932E;">
+            <span class="icon">🛠️</span><span class="title-en">Correction</span><span class="title-es">Corrección</span>
+          </div>
+          <div class="flow-step-body"><p>Si hay un error (ej. importe incorrecto), se corrige antes de seguir.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">💳</span><span class="title-en">Collect Payment</span><span class="title-es">Cobro</span>
+          </div>
+          <div class="flow-step-body"><p>Según los términos de pago pactados, se recibe el pago del cliente.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head opt" style="background:#C0392B;">
+            <span class="icon">⚖️</span><span class="title-en">Post Payment Difference</span><span class="title-es">Diferencia de pago</span>
+          </div>
+          <div class="flow-step-body"><p>Si el cliente no pagó el importe completo, la diferencia se documenta y contabiliza.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">✔️</span><span class="title-en">Clear Customer Invoice</span><span class="title-es">Compensación</span>
+          </div>
+          <div class="flow-step-body"><p>Procesado el cobro, la factura abierta queda compensada (cleared).</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;">
+            <span class="icon">✉️</span><span class="title-en">Correspondence</span><span class="title-es">Correspondencia</span>
+          </div>
+          <div class="flow-step-body"><p>Se emiten confirmaciones de pago u otra comunicación formal.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — tabla -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">From Invoice to Close — Process Steps</span>
+          <span class="sec-title-es">De la factura al cierre: los pasos del contador</span>
+        </div>
+        <div class="sec-desc">Los seis frentes de trabajo una vez que la factura ya está en el sistema.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Una vez que la factura está en el sistema.</strong> El contador de AR toma la posta con seis frentes de trabajo simultáneos: facturar, procesar partidas abiertas, gestionar cobros, emitir correspondencia, analizar al cliente y mantener sus datos maestros.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Frente de trabajo</th><th>Qué incluye</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">🧾 Invoice Customer</span><span class="mod-en">Facturar cliente</span></td>
+            <td>Creación y revisión de la factura del cliente.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📗 Process Accounts Receivable</span><span class="mod-en">Procesar cuentas por cobrar</span></td>
+            <td>Compensación (clearing) y monitoreo de partidas abiertas.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">💰 Manage &amp; Process Collections</span><span class="mod-en">Gestionar cobros</span></td>
+            <td>Import de extracto bancario electrónico, pago entrante individual, anticipos, débito directo vía programa de pagos.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">✉️ Correspondence</span><span class="mod-en">Correspondencia</span></td>
+            <td>Gestión de avisos de pago, confirmaciones de pago y de saldo.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📊 Customer Analytics</span><span class="mod-en">Analítica de cliente</span></td>
+            <td>Reporting sobre cuentas por cobrar pendientes.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🗂️ Account Management</span><span class="mod-en">Gestión de cuentas</span></td>
+            <td>Creación y mantenimiento de los datos maestros del cliente.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — flow 3 pasos + chips -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Customer Correspondence</span>
+          <span class="sec-title-es">Correspondencia con el cliente</span>
+        </div>
+        <div class="sec-desc">Comunicación formal entre la compañía y sus clientes.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Comunicación formal con el cliente.</strong> A veces la compañía necesita comunicarse oficialmente con un cliente — para confirmar un saldo, resumir movimientos o reclamar un pago vencido. Estas comunicaciones se conocen como <strong>customer correspondence</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row" style="min-width:640px;">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🏢</span><span class="title-en">Company</span><span class="title-es">Compañía</span>
+          </div>
+          <div class="flow-step-body"><p>Genera la comunicación formal a emitir.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;">
+            <span class="icon">✉️</span><span class="title-en">Correspondence</span><span class="title-es">Correspondencia</span>
+          </div>
+          <div class="flow-step-body"><p>Documento formal, en uno de tres formatos posibles.</p></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">🙂</span><span class="title-en">Customer</span><span class="title-es">Cliente</span>
+          </div>
+          <div class="flow-step-body"><p>Recibe la comunicación oficial de la compañía.</p></div>
+        </div>
+      </div>
+      <div class="mini-label">Tipos de comunicación</div>
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">📋</span><span class="chip-title">Account Statement</span><span class="chip-en">extracto de cuenta</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">🔍</span><span class="chip-title">Balance Confirmation</span><span class="chip-en">confirmación de saldo</span></div>
+        <div class="chip chip-red"><span class="chip-icon">⚠️</span><span class="chip-title">Dunning Letter</span><span class="chip-en">reclamo formal de pago</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — equation style conciliacion -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reconciliation with the General Ledger</span>
+          <span class="sec-title-es">Conciliación con el Libro Mayor</span>
+        </div>
+        <div class="sec-desc">Cómo el saldo del sub-libro de clientes se refleja en el Libro Mayor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Dos libros, un mismo número.</strong> Cada cliente tiene su propia cuenta dentro de Receivables Management, pero esas cuentas también deben verse reflejadas en el <strong>Libro Mayor</strong>. La conexión se hace a través de una <strong>cuenta de enlace</strong> — no se puede contabilizar directamente sobre ella.
+    </div>
+    <div class="visual-wrap">
+      <div class="eq-grid">
+        <div class="eq-card">
+          <h4>Receivables Management <span class="en-tag">Sub-Ledger · por cliente</span></h4>
+          <div class="eq-row"><span>Customer 1 (Cliente 1)</span><span>11.000 EUR</span></div>
+          <div class="eq-row"><span>Customer 2 (Cliente 2)</span><span>22.000 EUR</span></div>
+          <div class="eq-row total"><span>Total saldo clientes</span><span>33.000 EUR</span></div>
+        </div>
+        <div class="eq-symbol">=</div>
+        <div class="eq-card">
+          <h4>General Ledger <span class="en-tag">Reconciliation Account</span></h4>
+          <div class="eq-row"><span>Cuenta de enlace</span><span>Receivables</span></div>
+          <div class="eq-row total"><span>Accounts Receivable</span><span>33.000 EUR</span></div>
+        </div>
+      </div>
+      <div class="mini-label">El resto de la factura no pasa por esta cuenta</div>
+      <div class="chip-row">
+        <div class="chip chip-gold"><span class="chip-icon">🧾</span><span class="chip-title">Output Tax</span><span class="chip-en">viaja directo a su cuenta de IVA débito</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">📈</span><span class="chip-title">Net Amount</span><span class="chip-en">se contabiliza como ingreso (revenue)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — cmp cards estados financieros -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Receivables in the Financial Statements</span>
+          <span class="sec-title-es">Las cuentas por cobrar en los estados financieros</span>
+        </div>
+        <div class="sec-desc">Dónde termina el importe bruto y dónde el importe neto de la factura.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Dónde termina esa factura?</strong> El monto bruto de la factura llega al <strong>Balance Sheet</strong> como cuenta por cobrar; el monto neto llega al <strong>Profit &amp; Loss Statement</strong> como ingreso. La estructura exacta de ambos reportes depende de la <strong>Financial Statement Version</strong> utilizada.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📊</span>Balance Sheet <span class="en-tag">· Estado de Situación Patrimonial</span></h4>
+          <p>El <strong>monto bruto</strong> de la factura (33.000 EUR) se debita a la cuenta de enlace de Receivables, del lado del <strong>activo</strong>.</p>
+          <div class="formula-box">
+            <span class="flabel">Assets</span>
+            <div class="frow">Current Assets</div>
+            <div class="frow">→ Receivables and other assets</div>
+            <div class="frow hl">→ Accounts Receivable: 33.000 EUR</div>
+          </div>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">📈</span>Profit &amp; Loss Statement <span class="en-tag">· Estado de Resultados</span></h4>
+          <p>El <strong>monto neto</strong> de la factura (30.000 EUR) se acredita como ingreso, en la cuenta de revenue que corresponda.</p>
+          <div class="formula-box">
+            <span class="flabel">Operating Income</span>
+            <div class="frow">Revenues</div>
+            <div class="frow hl">→ Revenue domestic: 30.000 EUR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Receivables Management</div><div class="term-es">Gestión de Cuentas por Cobrar</div><div class="term-def">Dominio de SAP que administra las operaciones financieras relacionadas con clientes.</div></div>
+      <div class="gcard"><div class="term-en">Invoice to Cash</div><div class="term-es">De la Factura al Cobro</div><div class="term-def">Otro nombre para Receivables Management dentro del proceso mayor Lead-to-Cash.</div></div>
+      <div class="gcard"><div class="term-en">Lead-to-Cash</div><div class="term-es">Del Lead al Cobro</div><div class="term-def">Proceso de negocio de punta a punta, desde la búsqueda de clientes hasta el cobro final.</div></div>
+      <div class="gcard"><div class="term-en">Order to Cash</div><div class="term-es">De la Orden al Cobro</div><div class="term-def">Sub-proceso de Lead-to-Cash que agrupa Order to Invoice e Invoice to Cash.</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Account</div><div class="term-es">Cuenta de Enlace</div><div class="term-def">Cuenta del Libro Mayor que resume los saldos de un sub-libro; no admite contabilización directa.</div></div>
+      <div class="gcard"><div class="term-en">Open Item</div><div class="term-es">Partida Abierta</div><div class="term-def">Documento de factura o pago que todavía no fue compensado contra su contraparte.</div></div>
+      <div class="gcard"><div class="term-en">Dunning</div><div class="term-es">Reclamo de Pago</div><div class="term-def">Comunicación formal enviada a un cliente para recordarle el pago de facturas vencidas.</div></div>
+      <div class="gcard"><div class="term-en">Down Payment</div><div class="term-es">Anticipo</div><div class="term-def">Pago negociado y recibido antes del envío de la mercadería o la prestación del servicio.</div></div>
+      <div class="gcard"><div class="term-en">Direct Debit</div><div class="term-es">Débito Directo</div><div class="term-def">Función del programa de pagos que cobra automáticamente el monto adeudado de la cuenta del cliente.</div></div>
+      <div class="gcard"><div class="term-en">Payment Difference</div><div class="term-es">Diferencia de Pago</div><div class="term-def">Monto que resulta cuando el cliente paga un importe distinto al facturado.</div></div>
+      <div class="gcard"><div class="term-en">Billing Document</div><div class="term-es">Documento de Facturación</div><div class="term-def">Documento generado en Sales &amp; Distribution que da origen a la factura del cliente.</div></div>
+      <div class="gcard"><div class="term-en">Account Statement</div><div class="term-es">Extracto de Cuenta</div><div class="term-def">Comunicado que resume los movimientos y el saldo de la cuenta de un cliente.</div></div>
+      <div class="gcard"><div class="term-en">Balance Confirmation</div><div class="term-es">Confirmación de Saldo</div><div class="term-def">Documento que valida con el cliente que el saldo registrado en el sistema es correcto.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Receivables Management · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

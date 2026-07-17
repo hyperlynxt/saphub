@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Cost Management &amp; Profitability Analysis — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t1);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2rem,4.2vw,3.05rem);
+    margin:0 0 6px;
+    line-height:1.1;
+  }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:660px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(127,191,143,0.14);
+    border-left:4px solid var(--t1);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:660px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t1-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(61,122,82,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  /* THEORY BOX */
+  .theory-box{
+    background:var(--t1-pale);
+    border-left:4px solid var(--t1-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+  .visual-note{ font-size:0.78rem; color:var(--muted); margin-top:14px; line-height:1.5; }
+
+  /* SUPPORT CARD GRIDS */
+  .g2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+  .g3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px; }
+  .support-card{ background:var(--t1-pale); border:1px solid var(--t1-pale-border); border-radius:10px; padding:16px 18px; }
+  .support-card h5{ margin:0 0 8px; font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--t1-dark); }
+  .support-card ul{ margin:0; padding-left:16px; }
+  .support-card li{ font-size:0.82rem; color:var(--body); line-height:1.6; margin-bottom:3px; }
+
+  /* CHIPS */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:190px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-def{ font-size:0.74rem; color:var(--body); display:block; margin-top:6px; line-height:1.4; }
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+  .chip-orange{ background:rgba(224,123,57,0.08); border-color:rgba(224,123,57,0.28); }
+  .chip-orange .chip-title{ color:#E07B39; }
+
+  /* CARD ROW (grupos de 3-4 items neutrales) */
+  .cardrow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .cardrow.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .cardrow .item{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:16px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; margin-bottom:4px; }
+
+  /* TABLE */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  /* ARCH STACK — fundacion + pilares (seccion 6) */
+  .archstack{ display:flex; flex-direction:column; gap:0; min-width:760px; }
+  .pillars-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:6px; }
+  .pillar-card{ border-radius:10px 10px 4px 4px; padding:14px 14px 12px; color:white; text-align:center; }
+  .pillar-card .p-title{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.88rem; display:block; margin-bottom:4px; }
+  .pillar-card .p-sub{ font-size:0.72rem; color:rgba(255,255,255,0.82); line-height:1.4; display:block; }
+  .pillar-fi{ background:var(--cat-fi); }
+  .pillar-ma{ background:var(--t1-dark); }
+  .pillar-cp{ background:var(--cat-legal); }
+  .arrows-row{ display:grid; grid-template-columns:repeat(3,1fr); text-align:center; color:#94A3B8; font-size:16px; margin-bottom:6px; }
+  .stack-band{ border-radius:8px; padding:12px 18px; margin-bottom:8px; display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .stack-band .b-title{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:white; white-space:nowrap; }
+  .stack-band .b-desc{ font-size:0.76rem; color:rgba(255,255,255,0.85); line-height:1.5; }
+  .band-uj{ background:#1A6B99; }
+  .band-ops{ background:#2E86AB; }
+  .band-data{ background:#4FA8C9; }
+  .stack-arrow-center{ text-align:center; color:#94A3B8; font-size:16px; margin-bottom:6px; }
+
+  /* VFLOW — de postings a objetos CO (seccion 8) */
+  .vflow{ display:flex; flex-direction:column; gap:4px; min-width:760px; }
+  .vflow-row{ display:grid; gap:10px; }
+  .vflow-row.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .vflow-row.cols-5{ grid-template-columns:repeat(5,1fr); }
+  .vflow-row.cols-2{ grid-template-columns:repeat(2,1fr); }
+  .vflow-row.cols-1{ grid-template-columns:1fr; }
+  .vflow-card{ border-radius:8px; padding:10px 8px; text-align:center; color:white; font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif; line-height:1.3; }
+  .vflow-card .vf-sub{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.78); margin-top:2px; }
+  .vflow-arrow{ text-align:center; color:#94A3B8; font-size:15px; margin:2px 0; }
+  .vflow-label{ font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Management Accounting</a>
+  <a href="#s2">Organizational Levels</a>
+  <a href="#s3">FI vs. CO</a>
+  <a href="#s4">Cost Objects</a>
+  <a href="#s5">COGM</a>
+  <a href="#s6">Driver Model</a>
+  <a href="#s7">CO Components</a>
+  <a href="#s8">Postings to CO</a>
+  <a href="#s9">Universal Journal</a>
+  <a href="#s10">Profit Center Accounting</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Controlling</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Profitability Analysis</span>
+      <span class="pill pill-secondary">Profit Center Accounting</span>
+    </div>
+    <h1><span class="accent">Cost</span> Management &amp; Profitability Analysis</h1>
+    <h2>Gestión de Costos y Análisis de Rentabilidad</h2>
+    <p class="desc">Fundamentos teóricos de la Contabilidad de Gestión (Controlling / CO) en SAP S/4HANA: qué la distingue de la Contabilidad Financiera, qué objetos de costo existen, cómo se arquitecturan sus componentes, y por qué el Diario Universal elimina la necesidad de conciliación entre FI y CO.</p>
+    <div class="hlbox">Resumen Visual — <b>Cost Management &amp; Profitability Analysis</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Is Management Accounting?</span>
+          <span class="sec-title-es">¿Qué es la Contabilidad de Gestión?</span>
+        </div>
+        <div class="sec-desc">Para qué existe el Controlling y a qué objetos asigna los datos de las transacciones.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> la Contabilidad de Gestión (Controlling, CO) <strong>asigna los datos de las transacciones de negocio a objetos de CO</strong>, de manera que quede claro quién es responsable de cada gasto operativo o ingreso. Por ejemplo, para mostrar correctamente la ganancia de "Bicicletas de Montaña en el Sudeste Asiático" hace falta conocer el costo directo de producción, los costos auxiliares y los ingresos por oficina de ventas — y eso requiere estos cuatro objetos.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">🎯</span><span class="chip-title">Profitability Segments</span><span class="chip-en">Segmentos de Rentabilidad</span><span class="chip-def">Las áreas de mercado que se quieren analizar y reportar.</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">🏢</span><span class="chip-title">Cost Centers</span><span class="chip-en">Centros de Costo</span><span class="chip-def">Áreas de responsabilidad a las que se asignan costos — equivalen a departamentos.</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">📌</span><span class="chip-title">Projects</span><span class="chip-en">Proyectos</span><span class="chip-def">Eventos con inicio y fin planeado (ej. una feria comercial). Costos e ingresos se acumulan en el proyecto.</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">🗂️</span><span class="chip-title">Internal Orders</span><span class="chip-en">Órdenes Internas</span><span class="chip-def">Disponibles en SAP S/4HANA Cloud, private edition. Como "proyectos" de funcionalidad limitada.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — SVG jerarquia real -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Organizational Levels</span>
+          <span class="sec-title-es">Niveles Organizativos</span>
+        </div>
+        <div class="sec-desc">El marco organizativo que sostiene el reporting financiero y de gestión.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los <strong>niveles organizativos</strong> representan el plan organizativo de la compañía y se mantienen en todos los módulos de SAP. En <strong>Financial Accounting</strong> el nivel es la <strong>Company Code</strong> (sociedad); en <strong>Management Accounting</strong> es el <strong>Controlling Area</strong>. Para poder ver, en un mismo reporte, los costos de producir bicicletas en Alemania junto con la venta en EE.UU., ambas sociedades deben pertenecer al <strong>mismo Controlling Area</strong>.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 330" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="68" x2="450" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="300" y="10" width="300" height="58" rx="10" fill="#1A6B99"/>
+        <text x="450" y="33" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Controlling Area</text>
+        <text x="450" y="50" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">A000 · BIKE-CO — contabilidad gerencial</text>
+
+        <line x1="230" y1="95" x2="670" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="230" y1="95" x2="230" y2="120" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="670" y1="95" x2="670" y2="120" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="90" y="120" width="280" height="84" rx="10" fill="#1A4B8C"/>
+        <text x="230" y="144" text-anchor="middle" fill="white" class="box-label" font-size="13">Company Code DE01</text>
+        <text x="230" y="161" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Bike GmbH · Alemania · EUR</text>
+        <text x="230" y="177" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-style="italic">Producción</text>
+        <text x="230" y="193" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">Sociedad · unidad legal</text>
+
+        <rect x="530" y="120" width="280" height="84" rx="10" fill="#1A4B8C"/>
+        <text x="670" y="144" text-anchor="middle" fill="white" class="box-label" font-size="13">Company Code US01</text>
+        <text x="670" y="161" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Bike Inc · EE.UU. · USD</text>
+        <text x="670" y="177" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-style="italic">Ventas</text>
+        <text x="670" y="193" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">Sociedad · unidad legal</text>
+
+        <line x1="230" y1="204" x2="230" y2="230" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="90" y="230" width="280" height="72" rx="10" fill="#00A896"/>
+        <text x="230" y="256" text-anchor="middle" fill="white" class="box-label">Plant</text>
+        <text x="230" y="273" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Sitio de producción del bien</text>
+        <text x="230" y="290" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-style="italic">Logística — general</text>
+
+        <rect x="620" y="240" width="11" height="11" rx="2" fill="#1A6B99"/>
+        <text x="636" y="249" font-size="10" fill="#64748B">Controlling</text>
+        <rect x="710" y="240" width="11" height="11" rx="2" fill="#1A4B8C"/>
+        <text x="726" y="249" font-size="10" fill="#64748B">Financiero</text>
+        <rect x="620" y="262" width="11" height="11" rx="2" fill="#00A896"/>
+        <text x="636" y="271" font-size="10" fill="#64748B">Logística</text>
+      </svg>
+      <p class="visual-note">Ambas sociedades comparten el mismo Controlling Area — por eso el costo de producir en Alemania puede analizarse junto con la venta en EE.UU. en un único reporte de gestión.</p>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — comparacion -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Financial vs. Management Accounting</span>
+          <span class="sec-title-es">Contabilidad Financiera vs. Contabilidad de Gestión</span>
+        </div>
+        <div class="sec-desc">Dos tareas de la contabilidad, divididas según a quién le sirve la información.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Para quién es la información?</strong> Financial Accounting produce el portafolio estándar de reportes para <strong>stakeholders externos</strong> (autoridades fiscales, auditores, bancos, management) según principios contables como IFRS, US GAAP o HGB. Management Accounting sirve a <strong>management y empleados</strong>: asigna esos mismos costos y revenues a objetos de CO. Financial Accounting es, además, la <strong>interfaz</strong> entre los módulos logísticos/HCM de un lado y Controlling del otro — todo costo y revenue primario contabilizado en FI debe asignarse a un objeto de costo.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📊</span>Financial Accounting <span class="en-tag">Contabilidad Financiera</span></h4>
+          <ul>
+            <li><strong>Audiencia:</strong> autoridades fiscales, auditores externos, bancos, management</li>
+            <li><strong>Reportes:</strong> balance sheet, income statement, statement of cash flows</li>
+            <li><strong>Principios:</strong> IFRS, US GAAP, HGB — soporta parallel accounting en ledgers propios</li>
+            <li><strong>Valúa:</strong> movimientos de mercadería, facturas, stock de almacén, transacciones puramente financieras</li>
+          </ul>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🧮</span>Management Accounting <span class="en-tag">Contabilidad de Gestión</span></h4>
+          <ul>
+            <li><strong>Audiencia:</strong> management, empleados — uso interno</li>
+            <li><strong>Objetivo:</strong> asignar costos/revenues a objetos de CO según responsabilidad</li>
+            <li><strong>Objetos:</strong> cost centers, cost objects, profitability segments</li>
+            <li><strong>Asignación:</strong> fija (cost center, cost object) o flexible (profitability segment)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — tabla -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Cost Objects: With and Without Revenue</span>
+          <span class="sec-title-es">Objetos de Costo: Con y Sin Ingresos</span>
+        </div>
+        <div class="sec-desc">No todos los objetos de CO cargan lo mismo — algunos solo acumulan costo, otros también revenue.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En Management Accounting hay distintos tipos de <strong>cost objects</strong>. Todos pueden cargar costos, pero <strong>solo algunos cargan también ingresos</strong> — esa diferencia determina qué tipo de análisis se puede hacer sobre cada uno.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Objeto</th><th>Grupo</th><th>Qué es</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">🏢 Cost Center</span><span class="mod-en">Centro de Costo</span></td>
+            <td><span class="badge badge-neutral">Solo Costos</span></td>
+            <td>Área de responsabilidad donde se incurren los costos (dónde, en qué unidad organizativa).</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🏭 Manufacturing Order</span><span class="mod-en">Orden de Fabricación</span></td>
+            <td><span class="badge badge-neutral">Solo Costos</span></td>
+            <td>Production orders y process orders.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🔗 Network</span><span class="mod-en">Red</span></td>
+            <td><span class="badge badge-neutral">Solo Costos</span></td>
+            <td>Actividades de red que subdividen elementos PEP (WBS), que a su vez subdividen proyectos.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📌 Project / WBS Element</span><span class="mod-en">Proyecto / Elemento PEP</span></td>
+            <td><span class="badge badge-accent">Costos + Ingresos</span></td>
+            <td>Costos y revenues trazables al proyecto y a sus elementos de estructura de desglose.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🛒 Sales Order</span><span class="mod-en">Orden de Venta</span></td>
+            <td><span class="badge badge-accent">Costos + Ingresos</span></td>
+            <td>Productos y servicios vendidos al cliente.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🔧 Customer Service Order</span><span class="mod-en">Orden de Servicio al Cliente</span></td>
+            <td><span class="badge badge-accent">Costos + Ingresos</span></td>
+            <td>Mantenimiento y reparación de activos del cliente.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🗂️ Internal Order</span><span class="mod-en">Orden Interna</span></td>
+            <td><span class="badge badge-accent">Costos + Ingresos</span></td>
+            <td>No disponible en SAP S/4HANA Cloud, public edition.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Cost of Goods Manufactured (COGM)</span>
+          <span class="sec-title-es">El Costo de Bienes Manufacturados</span>
+        </div>
+        <div class="sec-desc">Otra función de CO: calcular cuánto cuesta realmente fabricar lo que se produce.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el cálculo del <strong>Cost of Goods Manufactured (COGM)</strong> es otra función central de CO. No es un fin en sí mismo — sirve de insumo para tres cosas distintas dentro del ciclo de costeo.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow cols-3">
+        <div class="item"><span class="icon">📦</span><h5>Valuation of Warehouse Stock</h5><span class="en">Valuación de Stock</span><p>Valuación del inventario en almacén de productos de producción propia.</p></div>
+        <div class="item"><span class="icon">🧾</span><h5>Standard COGS</h5><span class="en">Costo Estándar de Ventas</span><p>Base para calcular el costo estándar de los bienes vendidos (Cost of Goods Sold).</p></div>
+        <div class="item"><span class="icon">📉</span><h5>Target Costs</h5><span class="en">Costos Objetivo</span><p>Base para calcular los costos objetivo usados en el análisis de varianzas de las órdenes de producción.</p></div>
+      </div>
+      <p class="visual-note">El mismo análisis de costos por centro de costo y objeto de costo también calcula el <strong>WIP</strong> (work in process — inventario no terminado) y hace <strong>variance analysis</strong> (por cantidad, precio/merma, etc.). Para objetos con revenue se hace además <strong>Results Analysis</strong>: reservas por costos no realizados y reservas por pérdida inminente.</p>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — fundacion + pilares -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Driver Model &amp; Single-Circuit System</span>
+          <span class="sec-title-es">El Modelo de Drivers y el Sistema de Circuito Único</span>
+        </div>
+        <div class="sec-desc">Cómo se conectan los eventos operativos del día a día con los tres pilares de reporting.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>modelo de drivers</strong> mapea relaciones de causa-efecto: los eventos logísticos del mundo real son los <strong>drivers</strong>, y los valores monetarios dependen de ellos. SAP S/4HANA sigue el <strong>single-circuit system</strong>: los valores se mantienen en las cuentas del <strong>libro mayor</strong> y se diferencian por account assignment — cost center, cost object o profitability segment.
+    </div>
+    <div class="visual-wrap">
+      <div class="archstack">
+        <div class="pillars-row">
+          <div class="pillar-card pillar-fi"><span class="p-title">Financial Accounting</span><span class="p-sub">Balance Sheet, P&amp;L, Cash Flow, Subledger Functions</span></div>
+          <div class="pillar-card pillar-ma"><span class="p-title">Management Accounting</span><span class="p-sub">Responsibility &amp; Profitability Accounting, Budgeting</span></div>
+          <div class="pillar-card pillar-cp"><span class="p-title">Cost &amp; Profitability Mgmt</span><span class="p-sub">Overhead Mgmt, Product Costing, Profit Analyzing</span></div>
+        </div>
+        <div class="arrows-row"><span>↑</span><span>↑</span><span>↑</span></div>
+        <div class="stack-band band-uj"><span class="b-title">Universal Journal</span><span class="b-desc">Accounting Documents</span></div>
+        <div class="stack-arrow-center">↑</div>
+        <div class="stack-band band-ops"><span class="b-title">Operational Processes</span><span class="b-desc">Purchase Order · Manufacturing Order · Sales Order · Delivery · Billing · Payment · Enterprise Asset Mgmt</span></div>
+        <div class="stack-arrow-center">↑</div>
+        <div class="stack-band band-data"><span class="b-title">Basic Data — Master Data</span><span class="b-desc">Product · Customer · Employee · Company · Cost Center · Activity Type · Profit Center, etc.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — hub SVG -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Controlling Components</span>
+          <span class="sec-title-es">Componentes de Controlling</span>
+        </div>
+        <div class="sec-desc">Las seis áreas de aplicación que componen la Contabilidad de Gestión en SAP S/4HANA.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Management Accounting no es un bloque único — se divide en <strong>seis componentes</strong> que colaboran entre sí, desde cómo se capturan los costos primarios hasta cómo se comparan revenues y costos por segmento de mercado.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="280" x2="450" y2="95" stroke="#94A3B8" stroke-width="1.6"/>
+        <line x1="450" y1="280" x2="722" y2="150" stroke="#94A3B8" stroke-width="1.6"/>
+        <line x1="450" y1="280" x2="722" y2="410" stroke="#94A3B8" stroke-width="1.6"/>
+        <line x1="450" y1="280" x2="450" y2="465" stroke="#94A3B8" stroke-width="1.6"/>
+        <line x1="450" y1="280" x2="178" y2="410" stroke="#94A3B8" stroke-width="1.6"/>
+        <line x1="450" y1="280" x2="178" y2="150" stroke="#94A3B8" stroke-width="1.6"/>
+
+        <circle cx="450" cy="280" r="72" fill="#0A0F1C"/>
+        <text x="450" y="273" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Management</text>
+        <text x="450" y="291" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Accounting</text>
+
+        <rect x="330" y="20" width="240" height="72" rx="10" fill="#1A4B8C"/>
+        <text x="450" y="46" text-anchor="middle" fill="white" class="box-label">Cost Element Accounting</text>
+        <text x="450" y="63" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-style="italic">Contabilidad por Elemento de Costo</text>
+        <text x="450" y="79" text-anchor="middle" fill="rgba(255,255,255,0.7)" class="box-sub" font-size="9">Asigna costos a cost centers y objects</text>
+
+        <rect x="622" y="115" width="240" height="72" rx="10" fill="#1A6B99"/>
+        <text x="742" y="141" text-anchor="middle" fill="white" class="box-label">Overhead Cost Controlling</text>
+        <text x="742" y="158" text-anchor="middle" fill="#BEE3EF" class="box-sub" font-style="italic">Costos Indirectos por Cost Center</text>
+        <text x="742" y="174" text-anchor="middle" fill="rgba(255,255,255,0.7)" class="box-sub" font-size="9">Distribuye costos indirectos por CC</text>
+
+        <rect x="622" y="374" width="240" height="72" rx="10" fill="#00A896"/>
+        <text x="742" y="400" text-anchor="middle" fill="white" class="box-label">Product Cost Controlling</text>
+        <text x="742" y="417" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-style="italic">Costeo de Producto</text>
+        <text x="742" y="433" text-anchor="middle" fill="rgba(255,255,255,0.7)" class="box-sub" font-size="9">Calcula COGM y COGS a partir de BOM y routings</text>
+
+        <rect x="330" y="429" width="240" height="72" rx="10" fill="#7E4FBF"/>
+        <text x="450" y="455" text-anchor="middle" fill="white" class="box-label">Cost Object Controlling</text>
+        <text x="450" y="472" text-anchor="middle" fill="#E4D4F7" class="box-sub" font-style="italic">Controlling de Objetos de Costo</text>
+        <text x="450" y="488" text-anchor="middle" fill="rgba(255,255,255,0.7)" class="box-sub" font-size="9">Costeo real y plan por objeto</text>
+
+        <rect x="38" y="374" width="240" height="72" rx="10" fill="#E07B39"/>
+        <text x="158" y="400" text-anchor="middle" fill="white" class="box-label">Margin Analysis</text>
+        <text x="158" y="417" text-anchor="middle" fill="#FBE0C8" class="box-sub" font-style="italic">Análisis de Margen</text>
+        <text x="158" y="433" text-anchor="middle" fill="rgba(255,255,255,0.7)" class="box-sub" font-size="9">Compara revenue y costo por segmento</text>
+
+        <rect x="38" y="115" width="240" height="72" rx="10" fill="#C9932E"/>
+        <text x="158" y="141" text-anchor="middle" fill="white" class="box-label">Profit Center Accounting</text>
+        <text x="158" y="158" text-anchor="middle" fill="#F3E3C4" class="box-sub" font-style="italic">Contabilidad por Centro de Beneficio</text>
+        <text x="158" y="174" text-anchor="middle" fill="rgba(255,255,255,0.7)" class="box-sub" font-size="9">Resultados por unidad de negocio</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — vflow -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">From Financial Postings to CO Objects</span>
+          <span class="sec-title-es">De la Contabilización Financiera a los Objetos de CO</span>
+        </div>
+        <div class="sec-desc">El camino que recorre un costo, desde el proceso de negocio hasta Profitability Analysis.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los costos indirectos (overhead) se asignan a áreas de responsabilidad (<strong>cost centers</strong> y <strong>proyectos</strong>); en product costing se calcula el costo por unidad de productos y servicios a través de los <strong>cost objects</strong>; y el revenue y el margen de contribución se diferencian por <strong>profitability segment</strong>. Todo parte de los procesos de negocio reales.
+    </div>
+    <div class="visual-wrap">
+      <div class="vflow">
+        <div class="vflow-label">Procesos de negocio</div>
+        <div class="vflow-row cols-3">
+          <div class="vflow-card" style="background:#5A6B8C;">Purchase to Pay</div>
+          <div class="vflow-card" style="background:#5A6B8C;">Plan to Product</div>
+          <div class="vflow-card" style="background:#5A6B8C;">Order to Cash</div>
+        </div>
+        <div class="vflow-arrow">↓</div>
+        <div class="vflow-label">Financial Accounting</div>
+        <div class="vflow-row cols-5">
+          <div class="vflow-card" style="background:#1A4B8C;">Vendor / AP</div>
+          <div class="vflow-card" style="background:#1A4B8C;">P&amp;L Account</div>
+          <div class="vflow-card" style="background:#1A4B8C;">Balance Sheet Account</div>
+          <div class="vflow-card" style="background:#1A4B8C;">Assets / AA</div>
+          <div class="vflow-card" style="background:#1A4B8C;">Customer / AR</div>
+        </div>
+        <div class="vflow-arrow">↓</div>
+        <div class="vflow-label">Elementos de Enlace</div>
+        <div class="vflow-row cols-2">
+          <div class="vflow-card" style="background:#1A6B99;">Cost Element<span class="vf-sub">costos → cost centers / cost objects</span></div>
+          <div class="vflow-card" style="background:#1A6B99;">Revenue Element<span class="vf-sub">revenue → profitability segments</span></div>
+        </div>
+        <div class="vflow-arrow">↓</div>
+        <div class="vflow-label">Objetos de Controlling (CO-OM / CO-PC)</div>
+        <div class="vflow-row cols-5">
+          <div class="vflow-card" style="background:#00A896;">Cost Centers</div>
+          <div class="vflow-card" style="background:#00A896;">Internal Orders</div>
+          <div class="vflow-card" style="background:#7E4FBF;">Projects <span class="vf-sub">PS</span></div>
+          <div class="vflow-card" style="background:#7E4FBF;">Manufacturing <span class="vf-sub">PP / MM</span></div>
+          <div class="vflow-card" style="background:#7E4FBF;">Sales <span class="vf-sub">SD</span></div>
+        </div>
+        <div class="vflow-arrow">↓</div>
+        <div class="vflow-label">Resultado</div>
+        <div class="vflow-row cols-1">
+          <div class="vflow-card" style="background:#E07B39; padding:12px;">Profitability Analysis (CO-PA) — resultado por segmento de mercado</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — cardrow + chip row -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Universal Journal: One Source, No Reconciliation</span>
+          <span class="sec-title-es">El Diario Universal: Una Sola Fuente, Sin Conciliación</span>
+        </div>
+        <div class="sec-desc">Por qué el cierre de período era costoso antes — y cómo ACDOCA lo resuelve.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El cierre de período exigía un esfuerzo enorme de <strong>conciliación</strong> entre áreas de trabajo de contabilidad y controlling, por distintos niveles de detalle, campos específicos por área, y por tener que fusionar resultados en un data warehouse externo. El <strong>Universal Journal (ACDOCA)</strong> registra los datos reales de FI y CO en <strong>una sola tabla</strong> — la fuente única de verdad — así que ya no hace falta conciliar.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow">
+        <div class="item"><span class="icon">🧱</span><h5>Material Ledger</h5><span class="en">Material Ledger</span><p>No guarda cuenta de G/L ni profit center.</p></div>
+        <div class="item"><span class="icon">🏛️</span><h5>GL Balance Sheet / P&amp;L</h5><span class="en">Libro Mayor</span><p>GL y Profitability Analysis se actualizaban en momentos distintos, con entidades distintas.</p></div>
+        <div class="item"><span class="icon">🧮</span><h5>Controlling</h5><span class="en">Controlling</span><p>Distinto nivel de detalle: 1 documento FI podía generar N documentos CO.</p></div>
+        <div class="item"><span class="icon">🏗️</span><h5>Asset Accounting</h5><span class="en">Activos Fijos</span><p>Sin profit center ni cuenta de G/L en los totales de Asset Accounting.</p></div>
+      </div>
+      <p class="visual-note">Estas diferencias de estructura son justamente lo que ACDOCA elimina: al fusionar los componentes en la misma tabla de línea, ya no hay mapeos que reconciliar.</p>
+      <div class="g2" style="margin-top:22px;">
+        <div class="support-card">
+          <h5>Lo que fusiona ACDOCA</h5>
+          <ul>
+            <li>General Ledger Accounting (FI-GL)</li>
+            <li>Asset Accounting (FI-AA)</li>
+            <li>Controlling (CO)</li>
+            <li>Profitability Analysis (CO-PA)</li>
+            <li>Material Ledger (CO-PC-ACT)</li>
+          </ul>
+        </div>
+        <div class="support-card">
+          <h5>Beneficios del reporting mejorado</h5>
+          <ul>
+            <li>Drill-down flexible del balance sheet hasta el "prima nota"</li>
+            <li>Real-time margin analysis, sin esperar cierres de período</li>
+            <li>Comparabilidad directa entre P&amp;L y reportes de controlling</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — comparacion -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Profit Center Accounting</span>
+          <span class="sec-title-es">Contabilidad por Centro de Beneficio</span>
+        </div>
+        <div class="sec-desc">Cómo ver a cada unidad de la organización como "una compañía dentro de la compañía".</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es un Profit Center?</strong> Es una unidad de negocio responsable de sus propias ganancias y pérdidas, con su propio balance sheet y P&amp;L. Profit Center Accounting (PCA) permite calcular el resultado no solo de toda la compañía, sino de <strong>unidades organizativas individuales</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📈</span>Margin Analysis <span class="en-tag">Análisis de Margen</span></h4>
+          <ul>
+            <li>Información orientada al <strong>mercado</strong> para board, ventas, marketing, planning</li>
+            <li>Segmentos definidos por producto, grupo de producto, cliente o región</li>
+            <li>Combina característica de mercado + unidad organizativa interna (company code, business area)</li>
+          </ul>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🏢</span>Profit Center Accounting <span class="en-tag">PCA</span></h4>
+          <ul>
+            <li>Evalúa <strong>áreas o unidades internas</strong> específicas de la organización</li>
+            <li>Estructura por región, función (producción/ventas) o producto</li>
+            <li>Document splitting en FI habilita balance sheet a nivel de profit center</li>
+          </ul>
+        </div>
+      </div>
+      <p class="visual-note">Un profit center también puede tratarse como <strong>investment center</strong>: además del flujo de bienes y servicios, se le pueden transferir partidas de balance (activos fijos, cuentas por pagar/cobrar, stock, WIP) para calcular indicadores como return on investment.</p>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Controlling Area</div><div class="term-es">Área de Controlling</div><div class="term-def">Nivel organizativo de Management Accounting; puede agrupar varias company codes.</div></div>
+      <div class="gcard"><div class="term-en">Company Code</div><div class="term-es">Sociedad</div><div class="term-def">Unidad legal de Financial Accounting con reporting local propio.</div></div>
+      <div class="gcard"><div class="term-en">Plant</div><div class="term-es">Centro</div><div class="term-def">Sitio de producción; nivel organizativo de logística general.</div></div>
+      <div class="gcard"><div class="term-en">Cost Center</div><div class="term-es">Centro de Costo</div><div class="term-def">Área de responsabilidad a la que se asignan costos indirectos.</div></div>
+      <div class="gcard"><div class="term-en">Profitability Segment</div><div class="term-es">Segmento de Rentabilidad</div><div class="term-def">Combinación de características de mercado (producto, cliente, región) para análisis de margen.</div></div>
+      <div class="gcard"><div class="term-en">Project / WBS Element</div><div class="term-es">Proyecto / Elemento PEP</div><div class="term-def">Evento con fecha de inicio y fin planeado que acumula costos y, en algunos casos, revenues.</div></div>
+      <div class="gcard"><div class="term-en">Internal Order</div><div class="term-es">Orden Interna</div><div class="term-def">Objeto de seguimiento de costos limitado, disponible en SAP S/4HANA Cloud private edition.</div></div>
+      <div class="gcard"><div class="term-en">Cost Element</div><div class="term-es">Elemento de Costo</div><div class="term-def">Clasificación funcional de un costo (material, personal, depreciación) usada para asignarlo a un objeto de CO.</div></div>
+      <div class="gcard"><div class="term-en">Revenue Element</div><div class="term-es">Elemento de Ingreso</div><div class="term-def">Clasificación de un ingreso que lo asigna a un profitability segment.</div></div>
+      <div class="gcard"><div class="term-en">Universal Journal (ACDOCA)</div><div class="term-es">Diario Universal</div><div class="term-def">Tabla única que registra datos reales de FI y CO como fuente de verdad, sin necesidad de conciliación.</div></div>
+      <div class="gcard"><div class="term-en">Cost of Goods Manufactured (COGM)</div><div class="term-es">Costo de Bienes Manufacturados</div><div class="term-def">Costo calculado para valuar stock y como base del costo estándar de ventas.</div></div>
+      <div class="gcard"><div class="term-en">Cost of Goods Sold (COGS)</div><div class="term-es">Costo de Bienes Vendidos</div><div class="term-def">Costo estándar de los productos/servicios efectivamente vendidos.</div></div>
+      <div class="gcard"><div class="term-en">Profit Center</div><div class="term-es">Centro de Beneficio</div><div class="term-def">Unidad de negocio responsable de su propio balance sheet y P&amp;L.</div></div>
+      <div class="gcard"><div class="term-en">Margin Analysis</div><div class="term-es">Análisis de Margen</div><div class="term-def">Herramienta que compara revenue y costo por segmento de mercado para decisiones comerciales.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Cost Management &amp; Profitability Analysis · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

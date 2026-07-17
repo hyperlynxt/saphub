@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Receivables Management — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* paleta de categoria compartida entre los 5 tipos */
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t2);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:660px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(224,133,133,0.14);
+    border-left:4px solid var(--t2);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:660px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t2-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(169,68,68,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+
+  /* THEORY BOX */
+  .theory-box{
+    background:var(--t2-pale);
+    border-left:4px solid var(--t2-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  /* MINI-FLOW (secuencias cortas, una sola cosa, un solo color) */
+  .mini-flow{ display:flex; align-items:stretch; gap:16px; min-width:640px; }
+  .mini-step{ flex:1; background:white; border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:18px 16px; text-align:center; position:relative; }
+  .mini-step.holding{ border-style:dashed; border-color:var(--t2-dark); background:var(--t2-pale); }
+  .mini-step .icon{ font-size:24px; display:block; margin-bottom:8px; }
+  .mini-step h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--ink); }
+  .mini-step .en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-bottom:8px; }
+  .mini-step p{ margin:0; font-size:0.78rem; color:var(--body); line-height:1.5; }
+  .flow-connector{
+    position:absolute; top:28px; right:-24px; width:26px; height:26px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* EQUATION */
+  .equation-row{ display:flex; align-items:center; justify-content:center; gap:18px; flex-wrap:wrap; }
+  .eq-box{ flex:1; min-width:200px; background:white; border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:18px 20px; text-align:center; }
+  .eq-box .icon{ font-size:22px; display:block; margin-bottom:8px; }
+  .eq-box h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .eq-box p{ margin:0; font-size:0.78rem; color:var(--body); }
+  .eq-symbol{ font-size:1.9rem; font-weight:800; color:var(--t2-dark); flex-shrink:0; }
+  .eq-note{ text-align:center; margin-top:18px; font-size:0.83rem; color:var(--body); line-height:1.6; }
+  .eq-note b{ color:var(--t2-dark); }
+
+  /* CARD ROW (parte de un mismo objeto — seccion 2) */
+  .cardrow{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .cardrow .item{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:18px 16px; text-align:center; }
+  .cardrow .item .icon{ font-size:24px; display:block; margin-bottom:8px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-bottom:8px; }
+  .cardrow .item p{ margin:0; font-size:0.79rem; color:var(--body); line-height:1.55; }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.before{ border-top:4px solid #94A3B8; }
+  .cmp-card.after{ border-top:4px solid var(--t2-dark); }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.02rem; margin:0 0 10px; color:var(--ink); }
+  .cmp-card .mini-box{ background:var(--bg); border-radius:8px; padding:10px 12px; margin-bottom:8px; font-size:0.8rem; color:var(--body); }
+  .cmp-card .mini-box b{ color:var(--ink); }
+  .cmp-card .mini-box.zero{ background:var(--t2-pale); color:var(--t2-dark); font-weight:700; text-align:center; }
+
+  /* TABLE */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+
+  /* FORMULA BOX */
+  .formula-box{ background:var(--bg); border-radius:8px; padding:14px 18px; margin-top:18px; font-size:0.85rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:6px; }
+  .formula-box .fmain{ font-family:'JetBrains Mono',monospace; font-size:0.88rem; color:var(--t2-dark); font-weight:600; }
+  .formula-box .fnote{ margin-top:8px; color:var(--body); font-size:0.8rem; }
+
+  /* MINI LABEL */
+  .mini-label{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.78rem; color:var(--t2-dark); margin:22px 0 10px; text-transform:uppercase; letter-spacing:.4px; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+  .box-mono{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Document Flow</a>
+  <a href="#s2">Business Partner</a>
+  <a href="#s3">Credit Management</a>
+  <a href="#s4">Reconciliation Accts</a>
+  <a href="#s5">Special G/L</a>
+  <a href="#s6">Terms of Payment</a>
+  <a href="#s7">Payment Difference</a>
+  <a href="#s8">Dunning Levels</a>
+  <a href="#s9">Collections &amp; Dispute</a>
+  <a href="#s10">Analytics &amp; KPIs</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Credit Management</span>
+      <span class="pill pill-secondary">Dispute Management</span>
+      <span class="pill pill-secondary">General Ledger</span>
+    </div>
+    <h1><span class="accent">Receivables</span> Management</h1>
+    <h2>Gestión de Cuentas por Cobrar — Profundización</h2>
+    <p class="desc">Profundización sobre Receivables Management en SAP S/4HANA: el recorrido completo del documento detrás de una factura, de dónde sale la cuenta de enlace, cómo se resuelven diferencias de pago y los niveles de dunning — más temas adyacentes como datos maestros de Business Partner, gestión de crédito, anticipos vía Special G/L, condiciones de pago y las herramientas de cobro y disputa.</p>
+    <div class="hlbox">Guía de Profundización — <b>Receivables Management</b>, Tipo 2. 10 secciones — 5 de mayor profundidad sobre lo visto en T1, 5 de temas adyacentes conectados.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — Document Flow (PROFUNDIDAD de T1 §5) -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Document Flow — From Sales Order to Clearing</span>
+          <span class="sec-title-es">El recorrido documental completo</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Los seis eslabones que conectan la cotización con la compensación final.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>De la Sales Order a la compensación.</strong> En T1 vimos que una factura con pedido de venta corre en dos pasos (T1 §5): generar la facturación y contabilizarla. Ese camino es en realidad la punta de un recorrido más largo, que arranca en la <strong>Quotation</strong> y termina cuando el pago del cliente compensa (clears) el asiento.
+    </div>
+    <div class="visual-wrap">
+      <div class="mini-flow" style="min-width:1200px;">
+        <div class="mini-step">
+          <span class="icon">📝</span>
+          <h5>Quotation</h5>
+          <span class="en">Cotización</span>
+          <p>Se genera la cotización inicial con los ítems y precios propuestos al cliente.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">🧾</span>
+          <h5>Sales Order</h5>
+          <span class="en">Orden de venta</span>
+          <p>El cliente confirma el pedido; la cotización se convierte en Standard Order.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">📦</span>
+          <h5>Delivery</h5>
+          <span class="en">Entrega</span>
+          <p>Se despacha la mercadería (Outbound Delivery); se genera el primer Journal Entry.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">📄</span>
+          <h5>Billing</h5>
+          <span class="en">Facturación</span>
+          <p>Se crea el Billing Document a partir de la entrega — la factura que recibe el cliente.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">📒</span>
+          <h5>Accounting</h5>
+          <span class="en">Contabilización</span>
+          <p>El Billing Document genera el Journal Entry de Accounts Receivable y Revenue.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">✔️</span>
+          <h5>Clearing</h5>
+          <span class="en">Compensación</span>
+          <p>Cuando el cliente paga, el Journal Entry queda compensado (cleared).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — Business Partner (ADYACENTE, conecta T1 §2) -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Customer Master Data — The Business Partner Behind the Account</span>
+          <span class="sec-title-es">El Business Partner detrás de la cuenta</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Los tres niveles de datos maestros de un cliente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Lo que hay detrás del dato maestro.</strong> T1 nombró <strong>Account Management</strong> como una de las tareas centrales del contador de AR (T1 §2), sin entrar en el detalle. En SAP S/4HANA, cada cliente es un <strong>Business Partner</strong> — un modelo único de datos maestros organizado en tres niveles.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow">
+        <div class="item">
+          <span class="icon">🪪</span>
+          <h5>General Data</h5>
+          <span class="en">Datos generales</span>
+          <p>Nombre, dirección y datos de contacto — válidos para todas las sociedades donde el cliente opera.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🏢</span>
+          <h5>Company Code Data</h5>
+          <span class="en">Datos por sociedad</span>
+          <p>Condiciones de pago, cuenta de enlace y moneda — específicos de cada Company Code (ej. DE01 o US01).</p>
+        </div>
+        <div class="item">
+          <span class="icon">🛒</span>
+          <h5>Sales Area Data</h5>
+          <span class="en">Datos de área de ventas</span>
+          <p>Organización de ventas, canal de distribución y condiciones comerciales del lado de Sales &amp; Distribution.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — Credit Management (ADYACENTE, conecta T1 §4-§5) -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Credit Management — Checking the Customer Before the Invoice</span>
+          <span class="sec-title-es">El chequeo de crédito antes de la factura</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Lo que pasa antes de que la Sales Order llegue a Delivery.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Antes de que exista la factura.</strong> T1 mostró cómo una Sales Order se convierte en factura (T1 §4-§5), pero no qué pasa antes: <strong>Credit Management</strong> chequea automáticamente el pedido más el saldo abierto del cliente contra su <strong>límite de crédito</strong>, definido en su segmento de datos por sociedad (§2 de este archivo).
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>✅ Within Credit Limit <span style="font-weight:400;font-size:0.78rem;color:var(--muted);">· Dentro del límite</span></h4>
+          <div class="mini-box">Pedido + saldo abierto <b>no superan</b> el límite de crédito asignado al cliente.</div>
+          <div class="mini-box zero">La orden sigue su curso automáticamente</div>
+        </div>
+        <div class="cmp-card after">
+          <h4>🚫 Exceeds Credit Limit <span style="font-weight:400;font-size:0.78rem;color:var(--muted);">· Excede el límite</span></h4>
+          <div class="mini-box">Pedido + saldo abierto <b>superan</b> el límite de crédito asignado al cliente.</div>
+          <div class="mini-box zero">Queda bloqueada — un responsable de crédito la libera manualmente</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — Reconciliation Account Determination (PROFUNDIDAD de T1 §9) -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reconciliation Account Determination</span>
+          <span class="sec-title-es">De dónde sale la cuenta de enlace</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Un mismo cliente, dos sociedades, dos cuentas de enlace distintas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿De dónde sale esa cuenta?</strong> T1 mostró la ecuación entre el saldo del sub-libro y la cuenta de enlace en el Libro Mayor (T1 §9) — acá vemos de dónde sale esa cuenta exactamente: del segmento de datos por sociedad del maestro del cliente (§2), no de un valor fijo para toda la compañía.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+        <line x1="350" y1="71" x2="350" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="205" y1="95" x2="495" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="205" y1="95" x2="205" y2="125" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="495" y1="95" x2="495" y2="125" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="250" y="15" width="200" height="56" rx="10" fill="#16233B"/>
+        <text x="350" y="38" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Customer Master Record</text>
+        <text x="350" y="55" text-anchor="middle" fill="#F0C7C7" class="box-sub" font-size="9">segmento por sociedad determina la cuenta</text>
+
+        <rect x="70" y="125" width="270" height="80" rx="10" fill="#A94444"/>
+        <text x="205" y="150" text-anchor="middle" fill="white" class="box-label" font-size="12">Company Code DE01</text>
+        <text x="205" y="167" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Bike GmbH · EUR</text>
+        <text x="205" y="184" text-anchor="middle" fill="rgba(255,255,255,0.65)" class="box-sub" font-size="9">Reconciliation Account:</text>
+        <text x="205" y="198" text-anchor="middle" fill="white" class="box-sub" font-size="10.5" font-weight="700">Trade Receivables EUR</text>
+
+        <rect x="360" y="125" width="270" height="80" rx="10" fill="#A94444"/>
+        <text x="495" y="150" text-anchor="middle" fill="white" class="box-label" font-size="12">Company Code US01</text>
+        <text x="495" y="167" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Bike Inc · USD</text>
+        <text x="495" y="184" text-anchor="middle" fill="rgba(255,255,255,0.65)" class="box-sub" font-size="9">Reconciliation Account:</text>
+        <text x="495" y="198" text-anchor="middle" fill="white" class="box-sub" font-size="10.5" font-weight="700">Trade Receivables USD</text>
+      </svg>
+      <div class="visual-caption">un cliente que opera con las dos sociedades tiene dos segmentos — y dos cuentas de enlace, cada una en su moneda local</div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — Special G/L (ADYACENTE, conecta T1 §2) -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Down Payments via Special G/L</span>
+          <span class="sec-title-es">Anticipos vía Mayor Especial</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Por qué un anticipo no se contabiliza como una factura común.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Un anticipo no es una factura común.</strong> T1 nombró 'Down Payments Collection' como una de las tareas centrales (T1 §2). El mecanismo detrás es <strong>Special G/L</strong>: un indicador que redirige la contabilización a una cuenta de enlace <strong>alternativa</strong>, separada de la cuenta estándar de clientes.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>🧾 Normal Invoice <span style="font-weight:400;font-size:0.78rem;color:var(--muted);">· Factura normal</span></h4>
+          <div class="mini-box">Se contabiliza contra la <b>cuenta de enlace estándar</b> del cliente — la misma que vimos en §4.</div>
+          <div class="mini-box zero">Reconciliation Account: Trade Receivables</div>
+        </div>
+        <div class="cmp-card after">
+          <h4>💵 Down Payment <span style="font-weight:400;font-size:0.78rem;color:var(--muted);">· Special G/L "A"</span></h4>
+          <div class="mini-box">Se contabiliza con un <b>indicador de mayor especial</b>, contra una cuenta de enlace alternativa para anticipos.</div>
+          <div class="mini-box zero">Se compensa después, contra la factura final</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — Terms of Payment (ADYACENTE, conecta T1 §6) -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Terms of Payment — Cash Discount Windows</span>
+          <span class="sec-title-es">Condiciones de pago y ventanas de descuento</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El detalle detrás de "las condiciones de pago pactadas".</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El detalle detrás del cobro.</strong> T1 dijo que el cobro sigue "las condiciones de pago pactadas" (T1 §6), sin entrar en el mecanismo. Una <strong>condición de pago</strong> define una ventana de <strong>descuento por pronto pago</strong> antes de llegar al vencimiento neto.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Término</th><th>Descuento por pronto pago</th><th>Vencimiento neto</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">Z001</span><span class="mod-en">2% 10 Days, Net 30</span></td>
+            <td>2% si se paga dentro de los primeros 10 días</td>
+            <td>30 días desde la fecha base</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Z002</span><span class="mod-en">1% 14 Days, Net 45</span></td>
+            <td>1% si se paga dentro de los primeros 14 días</td>
+            <td>45 días desde la fecha base</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Z003</span><span class="mod-en">Net 60</span></td>
+            <td>Sin descuento por pronto pago</td>
+            <td>60 días desde la fecha base</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="mini-label">Ejemplo aplicando Z001</div>
+      <div class="mini-flow">
+        <div class="mini-step">
+          <span class="icon">📅</span>
+          <h5>Baseline Date</h5>
+          <span class="en">Fecha base</span>
+          <p>Se toma como referencia la fecha del documento de la factura.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">💸</span>
+          <h5>Día 10</h5>
+          <span class="en">Ventana de descuento</span>
+          <p>Si el cliente paga hasta este día, accede al 2% de descuento.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">⏰</span>
+          <h5>Día 30</h5>
+          <span class="en">Vencimiento neto</span>
+          <p>Última fecha para pagar el importe completo, sin descuento.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — Payment Difference (PROFUNDIDAD de T1 §6) -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Difference — Tolerance Groups</span>
+          <span class="sec-title-es">Diferencia de pago y grupos de tolerancia</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Qué decide si una diferencia se ajusta sola o se contabiliza a mano.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Cuando el cliente no paga el importe exacto.</strong> T1 marcó "Post Payment Difference" como un paso condicional del ciclo de vida (T1 §6). Si el cliente paga un importe distinto al facturado, el <strong>Tolerance Group</strong> decide si esa diferencia se ajusta sola o si hace falta una contabilización manual.
+    </div>
+    <div class="visual-wrap">
+      <div class="equation-row">
+        <div class="eq-box">
+          <span class="icon">🧾</span>
+          <h5>Invoice Amount</h5>
+          <p>Importe facturado: 1.200 EUR</p>
+        </div>
+        <div class="eq-symbol">−</div>
+        <div class="eq-box">
+          <span class="icon">💳</span>
+          <h5>Payment Received</h5>
+          <p>Pago recibido: 1.150 EUR</p>
+        </div>
+        <div class="eq-symbol">=</div>
+        <div class="eq-box">
+          <span class="icon">⚖️</span>
+          <h5>Difference</h5>
+          <p>Diferencia: 50 EUR</p>
+        </div>
+      </div>
+      <div class="eq-note"><b>Dentro de tolerancia</b> (ej. grupo con tope de 20 EUR) → se ajusta solo, como gasto o descuento por diferencia de pago. <b>Fuera de tolerancia</b> — como en este caso, 50 EUR — queda como <b>Residual Item</b>: una nueva partida abierta, a resolver manualmente.</div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — Dunning Levels (PROFUNDIDAD, glosario T1 Dunning) -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Dunning Levels — The Escalation Procedure</span>
+          <span class="sec-title-es">Los niveles del procedimiento de dunning</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">De un recordatorio amable a la derivación legal.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Dunning no es un solo aviso.</strong> T1 definió Dunning como el reclamo formal de pago (glosario T1). En la práctica corre como un <strong>Dunning Procedure</strong>: niveles que escalan en tono y consecuencia a medida que la factura sigue vencida.
+    </div>
+    <div class="visual-wrap">
+      <div class="mini-flow">
+        <div class="mini-step">
+          <span class="icon">🔔</span>
+          <h5>Level 1</h5>
+          <span class="en">Nivel 1</span>
+          <p>Recordatorio amistoso — un simple aviso de que la factura sigue abierta.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">✉️</span>
+          <h5>Level 2</h5>
+          <span class="en">Nivel 2</span>
+          <p>Primer reclamo formal — tono más firme, referencia explícita al vencimiento.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step">
+          <span class="icon">⚠️</span>
+          <h5>Level 3</h5>
+          <span class="en">Nivel 3</span>
+          <p>Segundo reclamo — advierte sobre las consecuencias de no regularizar.</p>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#A94444" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mini-step holding">
+          <span class="icon">⚖️</span>
+          <h5>Level 4</h5>
+          <span class="en">Nivel 4</span>
+          <p>Derivación a gestión legal o a una agencia de cobranza externa.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — Collections & Dispute Management (ADYACENTE, conecta T1 §2) -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Collections Management &amp; Dispute Management</span>
+          <span class="sec-title-es">Dos herramientas más allá del cobro básico</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Cómo SAP FSCM organiza el cobro y gestiona los montos cuestionados.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Dos herramientas, un mismo objetivo.</strong> T1 listó "Payments Collection and Monitoring" como tarea base del contador de AR (T1 §2). SAP FSCM la lleva más allá con dos herramientas dedicadas.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card before">
+          <h4>📋 Collections Management</h4>
+          <div class="mini-box">Organiza el trabajo de cobro en un <b>worklist priorizado</b>.</div>
+          <div class="mini-box">Registra <b>promesas de pago</b> y habilita contacto proactivo antes del vencimiento.</div>
+        </div>
+        <div class="cmp-card after">
+          <h4>⚠️ Dispute Management</h4>
+          <div class="mini-box">El cliente cuestiona un monto → se crea un <b>caso con un motivo</b> (reason code).</div>
+          <div class="mini-box zero">Ese importe queda excluido del dunning mientras el caso sigue abierto</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — Customer Analytics & KPIs (PROFUNDIDAD de T1 §3/§7) -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Customer Analytics &amp; KPIs — DSO and Aging</span>
+          <span class="sec-title-es">Con qué se mide Receivables Management</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El KPI central del área y cómo se clasifican las partidas vencidas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Con qué se mide Receivables Management.</strong> T1 nombró Customer Analytics como una de las seis funciones (T1 §3) y como uno de los frentes de trabajo (T1 §7) — acá vemos con qué se mide exactamente: <strong>Days Sales Outstanding</strong> y el <strong>aging</strong> de las partidas abiertas.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Bucket</th><th>Rango</th><th>Qué indica</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">Current</span><span class="mod-en">Al día</span></td>
+            <td>0 días vencidos</td>
+            <td>Factura dentro del plazo pactado — sin acción necesaria.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">1–30 días</span></td>
+            <td>Vencida hace poco</td>
+            <td>Primer seguimiento — todavía sin urgencia.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">31–60 días</span></td>
+            <td>Vencida</td>
+            <td>Candidata a Dunning Nivel 1–2 (§8).</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">61–90 días</span></td>
+            <td>Vencida hace tiempo</td>
+            <td>Candidata a Dunning Nivel 3 (§8).</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">90+ días</span></td>
+            <td>Crítica</td>
+            <td>Candidata a Nivel 4 (§8) — revisión del valor de la cuenta.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="formula-box">
+        <span class="flabel">Days Sales Outstanding (DSO)</span>
+        <div class="fmain">DSO = (Accounts Receivable ÷ Total Credit Sales) × Días del período</div>
+        <div class="fnote">Cuanto más bajo el DSO, más rápido cobra la compañía lo que factura.</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 2 — Profundización). No repite términos ya glosados en T1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Business Partner</div><div class="term-es">Socio de Negocio</div><div class="term-def">Modelo unificado de datos maestros en S/4HANA; el cliente es uno de sus roles.</div></div>
+      <div class="gcard"><div class="term-en">Credit Management</div><div class="term-es">Gestión de Crédito</div><div class="term-def">Control automático del límite de crédito de un cliente antes de liberar una orden de venta.</div></div>
+      <div class="gcard"><div class="term-en">Credit Limit</div><div class="term-es">Límite de Crédito</div><div class="term-def">Monto máximo de exposición que la compañía autoriza para un cliente.</div></div>
+      <div class="gcard"><div class="term-en">Special G/L Indicator</div><div class="term-es">Indicador de Mayor Especial</div><div class="term-def">Código que redirige una contabilización (ej. un anticipo) a una cuenta de enlace alternativa.</div></div>
+      <div class="gcard"><div class="term-en">Terms of Payment</div><div class="term-es">Condiciones de Pago</div><div class="term-def">Reglas que definen el vencimiento neto y la ventana de descuento por pronto pago.</div></div>
+      <div class="gcard"><div class="term-en">Cash Discount</div><div class="term-es">Descuento por Pronto Pago</div><div class="term-def">Reducción del importe a pagar si el cliente cancela dentro del plazo de descuento.</div></div>
+      <div class="gcard"><div class="term-en">Baseline Date</div><div class="term-es">Fecha Base</div><div class="term-def">Fecha desde la que se calculan los plazos de una condición de pago.</div></div>
+      <div class="gcard"><div class="term-en">Tolerance Group</div><div class="term-es">Grupo de Tolerancia</div><div class="term-def">Rango de diferencia de pago que el sistema puede ajustar automáticamente.</div></div>
+      <div class="gcard"><div class="term-en">Residual Item</div><div class="term-es">Partida Residual</div><div class="term-def">Nueva partida abierta que queda tras compensar parcialmente una factura.</div></div>
+      <div class="gcard"><div class="term-en">Dunning Procedure</div><div class="term-es">Procedimiento de Reclamo</div><div class="term-def">Secuencia de niveles de dunning que escalan en tono y consecuencia.</div></div>
+      <div class="gcard"><div class="term-en">Days Sales Outstanding (DSO)</div><div class="term-es">Días de Venta Pendientes de Cobro</div><div class="term-def">KPI que mide el tiempo promedio que tarda un cliente en pagar.</div></div>
+      <div class="gcard"><div class="term-en">Aging Analysis</div><div class="term-es">Análisis de Antigüedad</div><div class="term-def">Clasificación de partidas abiertas según los días transcurridos desde su vencimiento.</div></div>
+      <div class="gcard"><div class="term-en">Dispute Case</div><div class="term-es">Caso de Disputa</div><div class="term-def">Registro que documenta un monto cuestionado por el cliente y su motivo.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Receivables Management · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

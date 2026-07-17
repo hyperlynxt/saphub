@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Parallel Accounting &amp; Document Splitting — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t1);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:660px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(127,191,143,0.14);
+    border-left:4px solid var(--t1);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:660px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t1-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(61,122,82,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  /* THEORY BOX */
+  .theory-box{
+    background:var(--t1-pale);
+    border-left:4px solid var(--t1-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  /* RULE CALLOUT — excepciones puntuales, distinto del theory-box */
+  .rule-callout{
+    background:rgba(212,175,55,0.09);
+    border-left:4px solid var(--gold);
+    border-radius:0 8px 8px 0;
+    padding:12px 18px;
+    margin-top:16px;
+    font-size:0.85rem;
+    color:var(--ink);
+    line-height:1.6;
+  }
+  .rule-callout strong{ color:#8A6D1F; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+  .visual-caption{ text-align:center; color:var(--muted); font-size:0.78rem; font-style:italic; margin-top:14px; }
+
+  /* FLOW */
+  .flow-row{ display:flex; align-items:stretch; gap:14px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 14px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:11px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.5; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:5px; }
+  .flow-connector{
+    position:absolute; top:20px; right:-21px; width:28px; height:28px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* CARD ROW */
+  .cardrow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .cardrow .item{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:18px 16px; text-align:center; }
+  .cardrow .item .icon{ font-size:23px; display:block; margin-bottom:7px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-bottom:7px; }
+  .cardrow .item p{ margin:0; font-size:0.78rem; color:var(--body); line-height:1.55; }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .formula-box{ background:var(--bg); border-radius:8px; padding:12px 14px; margin-top:14px; font-size:0.8rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:4px; }
+  .formula-box div.frow{ padding:2px 0; color:var(--body); }
+
+  /* CHIPS */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:180px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-orange{ background:rgba(224,123,57,0.08); border-color:rgba(224,123,57,0.28); }
+  .chip-orange .chip-title{ color:#E07B39; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+
+  /* TABLE */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+  .badge-warn{ background:rgba(212,175,55,0.15); color:#8A6D1F; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media (max-width:760px){
+    .cardrow{ grid-template-columns:1fr 1fr !important; }
+    .cmp-grid{ grid-template-columns:1fr; }
+    .flow-row{ flex-direction:column; }
+    .flow-connector{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Ledger Approach</a>
+  <a href="#s2">Ledger-Specific Posting</a>
+  <a href="#s3">Parallel Valuation</a>
+  <a href="#s4">Statement Version</a>
+  <a href="#s5">Segment Determination</a>
+  <a href="#s6">Document Splitting</a>
+  <a href="#s7">Splitting Dimensions</a>
+  <a href="#s8">Active vs Passive</a>
+  <a href="#s9">Entry vs GL View</a>
+  <a href="#s10">Cost of Sales</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+    </div>
+    <h1><span class="accent">Parallel</span> Accounting &amp; Document Splitting</h1>
+    <h2>Contabilidad Paralela y Segmentación de Documentos</h2>
+    <p class="desc">Fundamentos teóricos de cómo SAP S/4HANA sostiene múltiples principios contables en simultáneo mediante el Ledger Approach, y cómo Document Splitting reparte los importes de un documento para que cada Segmento, Profit Center o Business Area tenga su propio estado financiero balanceado.</p>
+    <div class="hlbox">Resumen Visual — <b>Parallel Accounting &amp; Document Splitting</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Parallel Accounting Uses Multiple Ledgers</span>
+          <span class="sec-title-es">Por qué la Contabilidad Paralela usa varios Ledgers</span>
+        </div>
+        <div class="sec-desc">El Ledger Approach: un ledger por cada principio contable que la empresa debe o elige reportar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué varios ledgers?</strong> Cuando una empresa debe reportar bajo <strong>múltiples principios contables</strong>, el <strong>Ledger Approach</strong> asigna un ledger a cada uno. En este escenario conviven tres: un ledger líder y dos ledgers no líderes, cada uno con su propio propósito de reporting.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow" style="grid-template-columns:repeat(3,1fr);">
+        <div class="item">
+          <span class="icon">🌍</span>
+          <h5>0L — Leading Ledger</h5>
+          <span class="en">Ledger Líder</span>
+          <p>El principio contable <strong>principal</strong> que la empresa está obligada a reportar (IFRS).</p>
+        </div>
+        <div class="item">
+          <span class="icon">🏛️</span>
+          <h5>2L — Non-Leading Ledger</h5>
+          <span class="en">Ledger No Líder</span>
+          <p>Un principio contable <strong>local (Local GAAP)</strong> adicional, exigido por la jurisdicción del país.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🧾</span>
+          <h5>TX — Non-Leading Ledger</h5>
+          <span class="en">Ledger No Líder</span>
+          <p>Un ledger de <strong>impuesto local</strong> que la empresa elige mantener — no es obligatorio como los anteriores.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Ledger-Specific Posting</span>
+          <span class="sec-title-es">Contabilización específica por Ledger</span>
+        </div>
+        <div class="sec-desc">Qué determina el campo Ledger Group al contabilizar un documento financiero.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El campo Ledger Group.</strong> Al contabilizar un documento, este campo decide qué ledgers se actualizan: si queda <strong>en blanco</strong>, se actualizan todos; si se <strong>especifica</strong>, solo los ledgers de ese grupo. Cada ledger nuevo crea automáticamente su propio grupo de un solo ledger, aunque distintos ledgers sí pueden combinarse manualmente en un grupo.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">📭</span>Ledger Group vacío <span class="en-tag">· campo en blanco</span></h4>
+          <p>El documento actualiza <strong>todos los ledgers</strong> asignados a la sociedad, sin excepción.</p>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🎯</span>Ledger Group especificado <span class="en-tag">· grupo puntual</span></h4>
+          <p>El documento actualiza <strong>solo los ledgers</strong> incluidos en ese grupo — el resto queda intacto.</p>
+        </div>
+      </div>
+      <div class="rule-callout">⚠️ <strong>Excepción — cuentas de cliente/proveedor:</strong> un documento específico de un ledger <strong>no puede</strong> contabilizarse contra una cuenta de cliente o proveedor. Esas cuentas siempre se actualizan en todos los ledgers, por lo que el campo Ledger Group debe quedar vacío.</div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Parallel Valuation — A Period-End Process</span>
+          <span class="sec-title-es">Valoración Paralela — un proceso de fin de período</span>
+        </div>
+        <div class="sec-desc">Cómo un mismo principio contable se asigna tanto a ledgers como a áreas de valoración.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Valoración paralela.</strong> Además de contabilizar en varios ledgers, los ledgers paralelos soportan <strong>procesos de valoración paralela</strong>, típicamente ejecutados al cierre de período. Para configurarlos, cada <strong>principio contable</strong> se asigna tanto a un ledger paralelo como a un área de valoración.
+    </div>
+    <div class="visual-wrap">
+      <div style="text-align:center;">
+        <div class="chip" style="max-width:280px;margin:0 auto 16px;">
+          <span class="chip-icon">📐</span>
+          <span class="chip-title">Accounting Principle</span>
+          <span class="chip-en">Principio Contable</span>
+        </div>
+        <div style="font-size:13px;color:var(--t1-dark);font-weight:600;margin-bottom:16px;">se asigna a ⬇</div>
+        <div class="cmp-grid">
+          <div class="cmp-card accent">
+            <h4><span class="icon-inline">📚</span>Parallel Ledgers <span class="en-tag">· Ledgers Paralelos</span></h4>
+            <p>Determina en qué ledger se refleja este principio contable al contabilizar.</p>
+          </div>
+          <div class="cmp-card accent">
+            <h4><span class="icon-inline">📏</span>Valuation Areas <span class="en-tag">· Áreas de Valoración</span></h4>
+            <p>Determina bajo qué reglas se ejecuta la valoración paralela al cierre de período.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Financial Statement Version</span>
+          <span class="sec-title-es">La Versión de Estado Financiero</span>
+        </div>
+        <div class="sec-desc">Una estructura jerárquica de cuentas de Libro Mayor, organizada en pestañas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es?</strong> Una <strong>Versión de Estado Financiero</strong> es una estructura jerárquica de cuentas de Libro Mayor, definida según normativa legal y necesidades propias. El <strong>Statement Type Normal</strong> acumula montos reales (Actual vs. Actual, o Actual vs. Planeado) y organiza las cuentas en pestañas.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Pestaña</th><th>Contenido</th><th>Nota</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">📋 All Accounts</span><span class="mod-en">Todas las Cuentas</span></td>
+            <td>Vista completa, sin filtrar por tipo.</td>
+            <td><span class="badge badge-neutral">Punto de partida</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">⚖️ Balance Sheet</span><span class="mod-en">Balance General</span></td>
+            <td>Assets and Liabilities — Activos y Pasivos.</td>
+            <td><span class="badge badge-neutral">Posición financiera</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📈 Profit &amp; Loss</span><span class="mod-en">Ganancias y Pérdidas</span></td>
+            <td>Profits and Losses — resultado del período.</td>
+            <td><span class="badge badge-neutral">Resultado</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">❓ Unassigned Accounts</span><span class="mod-en">Cuentas sin Asignar</span></td>
+            <td>Cuentas que no cayeron en Balance ni en P&amp;L.</td>
+            <td><span class="badge badge-warn">Debe dar 0 — si no, el resto está mal</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📝 Notes</span><span class="mod-en">Notas</span></td>
+            <td>Cuentas de Libro Mayor no mostradas en las pestañas anteriores.</td>
+            <td><span class="badge badge-neutral">Información complementaria</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Determines a Segment</span>
+          <span class="sec-title-es">Qué determina un Segmento</span>
+        </div>
+        <div class="sec-desc">El segmento se hereda del Profit Center si no se indica manualmente al contabilizar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Herencia, no obligación.</strong> El <strong>segmento</strong> se ingresa en el registro maestro de un <strong>Profit Center</strong> — solo se libera en combinación con esa característica. Si no se especifica un segmento manualmente al contabilizar, el sistema lo toma del maestro del Profit Center, y queda registrado en la <strong>partida (line item)</strong> del documento.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row" style="max-width:640px;margin:0 auto;">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">🏷️</span><span class="title-en">Profit Center Master Data</span><span class="title-es">Maestro del Profit Center</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>El segmento se define acá, a nivel maestro</li>
+            <li>Solo válido junto a la característica Profit Center</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">📄</span><span class="title-en">Document Line Item</span><span class="title-es">Partida del Documento</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Si no se ingresa segmento manualmente, se hereda del maestro</li>
+            <li>Queda grabado en cada partida al contabilizar</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — HUB SVG, caso numérico real del documento -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Document Splitting — The Vendor Invoice Example</span>
+          <span class="sec-title-es">Segmentación de Documentos — El caso de la factura</span>
+        </div>
+        <div class="sec-desc">Cómo un crédito único a un proveedor se redistribuye por Profit Center para armar un estado financiero balanceado por segmento.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El problema.</strong> Acme Auto Maintenance factura $1.500 por el servicio de la flota: 2 autos de la Región Oeste, 3 de la Región Norte y 5 de la Región Sur, a $150 cada uno. Accounts Payable contabiliza el <strong>débito</strong> de cada región contra su Cost Center — pero el <strong>crédito al proveedor</strong> se contabiliza en una sola línea, por el total. <strong>Document Splitting</strong> analiza el documento y reparte ese crédito único en proporción a los débitos, para que cada Profit Center tenga un estado financiero balanceado. El ajuste ocurre solo en el <strong>Libro Mayor</strong> — el Libro de Proveedores sigue mostrando los $1.500 completos.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- lineas primero -->
+        <line x1="270" y1="190" x2="388" y2="195" stroke="#3D7A52" stroke-width="2" stroke-dasharray="5,3"/>
+        <polygon points="384,190 393,195 384,200" fill="#3D7A52"/>
+
+        <line x1="532" y1="175" x2="648" y2="60" stroke="#00A896" stroke-width="1.6" stroke-dasharray="5,3"/>
+        <polygon points="644,56 654,60 646,68" fill="#00A896"/>
+
+        <line x1="532" y1="195" x2="648" y2="200" stroke="#7E4FBF" stroke-width="1.6" stroke-dasharray="5,3"/>
+        <polygon points="644,195 654,200 644,205" fill="#7E4FBF"/>
+
+        <line x1="532" y1="215" x2="648" y2="335" stroke="#E07B39" stroke-width="1.6" stroke-dasharray="5,3"/>
+        <polygon points="642,327 654,335 645,341" fill="#E07B39"/>
+
+        <!-- caja origen -->
+        <rect x="20" y="70" width="250" height="240" rx="12" fill="#0A0F1C"/>
+        <text x="145" y="100" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Original Posting</text>
+        <text x="145" y="117" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="10">Factura — Acme Auto Maintenance</text>
+        <line x1="40" y1="129" x2="250" y2="129" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        <text x="40" y="152" fill="white" class="box-label" font-size="11">Debit Western — $300</text>
+        <text x="40" y="174" fill="white" class="box-label" font-size="11">Debit Northern — $450</text>
+        <text x="40" y="196" fill="white" class="box-label" font-size="11">Debit Southern — $750</text>
+        <line x1="40" y1="208" x2="250" y2="208" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        <text x="40" y="230" fill="#E8C468" class="box-label" font-size="11">Credit Vendor (total) — $1,500</text>
+        <text x="40" y="250" fill="rgba(255,255,255,0.55)" class="box-sub" font-style="italic" font-size="9">1 sola línea de crédito,</text>
+        <text x="40" y="262" fill="rgba(255,255,255,0.55)" class="box-sub" font-style="italic" font-size="9">sin segmentar por región</text>
+
+        <!-- hub -->
+        <rect x="390" y="150" width="140" height="90" rx="12" fill="#3D7A52"/>
+        <text x="460" y="188" text-anchor="middle" font-size="22">🔀</text>
+        <text x="460" y="211" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Document Splitting</text>
+        <text x="460" y="226" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub" font-size="9.5">Active Split</text>
+
+        <!-- salidas -->
+        <rect x="650" y="20" width="230" height="80" rx="10" fill="#00A896"/>
+        <text x="765" y="48" text-anchor="middle" fill="white" class="box-label">Credit — Western Region</text>
+        <text x="765" y="70" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="16">$300</text>
+        <text x="765" y="86" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Región Oeste</text>
+
+        <rect x="650" y="160" width="230" height="80" rx="10" fill="#7E4FBF"/>
+        <text x="765" y="188" text-anchor="middle" fill="white" class="box-label">Credit — Northern Region</text>
+        <text x="765" y="210" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="16">$450</text>
+        <text x="765" y="226" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Región Norte</text>
+
+        <rect x="650" y="300" width="230" height="80" rx="10" fill="#E07B39"/>
+        <text x="765" y="328" text-anchor="middle" fill="white" class="box-label">Credit — Southern Region</text>
+        <text x="765" y="350" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="16">$750</text>
+        <text x="765" y="366" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Región Sur</text>
+      </svg>
+      <div class="visual-caption">Los tres créditos de salida suman exactamente $1.500 — el mismo total del crédito original al proveedor.</div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — chips de dimensiones -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Splitting Scenarios &amp; Dimensions</span>
+          <span class="sec-title-es">Escenarios y Dimensiones de Segmentación</span>
+        </div>
+        <div class="sec-desc">Las dimensiones que Document Splitting puede usar para construir estados financieros completos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Para qué dimensiones.</strong> Document Splitting permite armar estados financieros completos por varias dimensiones a la vez. El objeto de configuración correspondiente especifica para cuáles se ejecuta la segmentación y para cuáles son posibles los estados financieros resultantes.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">🧩</span><span class="chip-title">Segments</span><span class="chip-en">Segmentos</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">🏢</span><span class="chip-title">Profit Centers</span><span class="chip-en">Centros de Beneficio</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">🗺️</span><span class="chip-title">Business Areas</span><span class="chip-en">Áreas de Negocio</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">☁️</span><span class="chip-title">Customer-Defined Dimension</span><span class="chip-en">Solo en S/4HANA Private Cloud</span></div>
+      </div>
+      <div class="rule-callout">📌 Regla base: los <strong>asientos quedan balanceados a nivel Company Code</strong>. Cuando además se necesita ver el balance a un nivel más granular (por ejemplo, por Segmento), Document Splitting es lo que lo hace posible.</div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — active vs passive -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Active Split vs. Passive Split</span>
+          <span class="sec-title-es">Segmentación Activa vs. Pasiva</span>
+        </div>
+        <div class="sec-desc">Dos formas distintas de generar los datos enriquecidos de un documento.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Dos mecanismos.</strong> El sistema enriquece un documento de dos maneras: aplicando <strong>reglas de segmentación</strong> definidas en el sistema, o —cuando el documento es un <strong>seguimiento</strong> de otro ya segmentado— refiriéndose directamente al documento relacionado para copiar su segmentación.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">⚙️</span>Active Split <span class="en-tag">· Segmentación Activa</span></h4>
+          <p>El sistema crea los datos enriquecidos aplicando un <strong>set de reglas</strong> definido en el sistema. Es el mecanismo de la factura de proveedor de la sección anterior.</p>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🔗</span>Passive Split <span class="en-tag">· Segmentación Pasiva</span></h4>
+          <p>Para un <strong>documento de seguimiento</strong> — ej. el pago de una factura, con o sin descuento por pronto pago — el sistema no aplica reglas: se refiere al <strong>documento relacionado</strong> para heredar la misma segmentación.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — entry view vs GL view, numeros reales de las capturas del curso -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Entry View vs. General Ledger View</span>
+          <span class="sec-title-es">Vista de Entrada vs. Vista de Libro Mayor</span>
+        </div>
+        <div class="sec-desc">Cómo se ve un documento antes y después de que Document Splitting lo enriquezca.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Dos vistas del mismo documento.</strong> Para documentos ingresados manualmente, el sistema puede mostrar la <strong>Entry View</strong> —tal como se cargó originalmente— y la <strong>General Ledger View</strong> —ya enriquecida por Document Splitting—. Para partidas generadas automáticamente por procesos del sistema, los datos ya nacen segmentados: no existe una Entry View para mostrar.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">📝</span>Entry View <span class="en-tag">· Vista de Entrada</span></h4>
+          <p>Tal como se ingresó el documento — visible solo para partidas creadas manualmente.</p>
+          <div class="formula-box">
+            <span class="flabel">Ejemplo — línea única de crédito</span>
+            <div class="frow">Cuenta Proveedor — Crédito $10,000.00</div>
+          </div>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📊</span>General Ledger View <span class="en-tag">· Vista de Libro Mayor</span></h4>
+          <p>El mismo documento, ya <strong>segmentado</strong> por Document Splitting.</p>
+          <div class="formula-box">
+            <span class="flabel">Ejemplo — segmentado por Profit Center</span>
+            <div class="frow">P9000 — Crédito $2,000.00</div>
+            <div class="frow">P9100 — Crédito $3,000.00</div>
+            <div class="frow">P9200 — Crédito $5,000.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Cost of Sales Accounting vs. Period Accounting</span>
+          <span class="sec-title-es">Contabilidad por Función vs. por Naturaleza</span>
+        </div>
+        <div class="sec-desc">Las dos formas de construir el Profit &amp; Loss y el rol del Área Funcional.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Dos formas de armar el P&amp;L.</strong> <strong>Period Accounting</strong> resume el resultado del período agrupando por <strong>tipo de gasto</strong> (naturaleza). <strong>Cost of Sales Accounting</strong> reagrupa esos mismos ingresos y gastos por <strong>Área Funcional</strong> — el propósito comercial del gasto — y es el método óptimo para análisis de margen.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">📅</span>Period Accounting <span class="en-tag">· Contabilidad por Naturaleza</span></h4>
+          <p>Resume el P&amp;L de un período agrupando por <strong>tipo de gasto</strong>. Óptimo para reporting de producción y de Profit Center.</p>
+          <div class="formula-box">
+            <span class="flabel">Incluye</span>
+            <div class="frow">Ingresos y gastos</div>
+            <div class="frow">Valor de stock</div>
+            <div class="frow">Trabajo en proceso</div>
+            <div class="frow">Actividades capitalizadas</div>
+          </div>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🏷️</span>Cost of Sales Accounting <span class="en-tag">· Contabilidad por Función</span></h4>
+          <p>Reagrupa ingresos y gastos por <strong>Área Funcional</strong>. Óptimo para análisis de margen.</p>
+          <div class="formula-box">
+            <span class="flabel">Áreas Funcionales típicas</span>
+            <div class="frow">Producción</div>
+            <div class="frow">Ventas y Distribución</div>
+            <div class="frow">Administración</div>
+            <div class="frow">Investigación y Desarrollo</div>
+          </div>
+        </div>
+      </div>
+      <div class="chip-row" style="margin-top:16px;">
+        <div class="chip chip-teal"><span class="chip-icon">🏭</span><span class="chip-title">Producción</span><span class="chip-en">Production</span></div>
+        <div class="chip chip-orange"><span class="chip-icon">🛒</span><span class="chip-title">Ventas</span><span class="chip-en">Sales</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">📋</span><span class="chip-title">Administración</span><span class="chip-en">Administration</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">🔬</span><span class="chip-title">I+D</span><span class="chip-en">R&amp;D</span></div>
+      </div>
+      <div class="visual-caption">El Área Funcional se determina desde el maestro del objeto de costo (Cost Center o WBS Element) y se graba en cada partida del Diario Universal.</div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Ledger Group</div><div class="term-es">Grupo de Ledgers</div><div class="term-def">Combinación de ledgers estándar que permite aplicarles las funciones y procesos de Contabilidad de Libro Mayor como conjunto.</div></div>
+      <div class="gcard"><div class="term-en">Leading Ledger (0L)</div><div class="term-es">Ledger Líder</div><div class="term-def">El ledger que refleja el principio contable principal que la empresa debe reportar (ej. IFRS).</div></div>
+      <div class="gcard"><div class="term-en">Non-Leading Ledger</div><div class="term-es">Ledger No Líder</div><div class="term-def">Ledger adicional (2L, TX) que registra un principio contable local o impositivo distinto al del ledger líder.</div></div>
+      <div class="gcard"><div class="term-en">Parallel Valuation</div><div class="term-es">Valoración Paralela</div><div class="term-def">Proceso de fin de período que asigna principios contables tanto a ledgers paralelos como a áreas de valoración.</div></div>
+      <div class="gcard"><div class="term-en">Financial Statement Version</div><div class="term-es">Versión de Estado Financiero</div><div class="term-def">Estructura jerárquica de cuentas de Libro Mayor basada en normativa legal y requerimientos propios.</div></div>
+      <div class="gcard"><div class="term-en">Segment</div><div class="term-es">Segmento</div><div class="term-def">Subárea de negocio con datos financieros propios, heredada del Profit Center si no se especifica manualmente.</div></div>
+      <div class="gcard"><div class="term-en">Document Splitting</div><div class="term-es">Segmentación de Documentos</div><div class="term-def">Función que redistribuye montos de un documento según reglas, para producir estados financieros balanceados por dimensión.</div></div>
+      <div class="gcard"><div class="term-en">Active Split</div><div class="term-es">Segmentación Activa</div><div class="term-def">El sistema genera los datos enriquecidos aplicando reglas de segmentación definidas en el sistema.</div></div>
+      <div class="gcard"><div class="term-en">Passive Split</div><div class="term-es">Segmentación Pasiva</div><div class="term-def">Para documentos de seguimiento, el sistema copia la segmentación del documento relacionado en vez de aplicar reglas.</div></div>
+      <div class="gcard"><div class="term-en">Entry View</div><div class="term-es">Vista de Entrada</div><div class="term-def">Cómo se ingresó originalmente el documento, antes de la segmentación; solo existe para documentos manuales.</div></div>
+      <div class="gcard"><div class="term-en">General Ledger View</div><div class="term-es">Vista de Libro Mayor</div><div class="term-def">El documento ya enriquecido por Document Splitting, con las líneas segmentadas por dimensión.</div></div>
+      <div class="gcard"><div class="term-en">Functional Area</div><div class="term-es">Área Funcional</div><div class="term-def">Clasificación de un gasto según su propósito comercial: producción, ventas, administración, I+D.</div></div>
+      <div class="gcard"><div class="term-en">Cost of Sales Accounting</div><div class="term-es">Contabilidad por Función</div><div class="term-def">Método de P&amp;L que agrupa ingresos y gastos por Área Funcional, óptimo para análisis de margen.</div></div>
+      <div class="gcard"><div class="term-en">Period Accounting</div><div class="term-es">Contabilidad por Naturaleza</div><div class="term-def">Método de P&amp;L que resume ingresos y gastos del período por tipo, óptimo para reporting de producción y Profit Center.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Parallel Accounting &amp; Document Splitting · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

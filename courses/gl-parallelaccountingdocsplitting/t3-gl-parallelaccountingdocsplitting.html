@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Parallel Accounting &amp; Document Splitting — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* SAP Fiori — colores reales, uso EXCLUSIVO dentro de mockups de pantalla */
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-blue-dark:#0040A0;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t3);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  /* protagonista block */
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  /* BREADCRUMB */
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  /* FIORI SCREEN MOCKUP */
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-appbar .tag{ background:#FFF3CD; color:#8A6A1E; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-body{ padding:22px 20px; }
+  .fiori-tabs{ display:flex; gap:22px; border-bottom:1px solid #EAEAEA; margin-bottom:18px; }
+  .fiori-tab{ padding:7px 2px; font-size:0.8rem; color:var(--sap-muted); border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px 22px; margin-bottom:6px; }
+  .fiori-field label{ display:block; font-size:0.7rem; color:var(--sap-muted); margin-bottom:4px; }
+  .fiori-field .val{ font-size:0.83rem; color:var(--sap-text); padding:7px 10px; background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; }
+  .fiori-field .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .fiori-field .val.highlight{ background:white; border:2px solid var(--sap-blue); box-shadow:0 0 0 3px rgba(0,112,242,0.15); font-weight:700; color:var(--sap-blue-dark); }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-table td.num{ text-align:right; font-family:'JetBrains Mono',monospace; }
+  .fiori-table tr.total td{ font-weight:700; border-top:1.5px solid var(--sap-border); border-bottom:none; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .fiori-btn.text{ border:none; color:var(--sap-blue); background:none; padding:7px 4px; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.open{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-status.neutral{ background:#F0F0F0; color:#5A5A5A; }
+
+  /* SIMULATION BANNER */
+  .sim-banner{ display:flex; align-items:center; gap:10px; background:#E4F5E9; border:1px solid #B8E0C4; border-radius:8px; padding:12px 16px; margin-bottom:16px; color:#1D7A3E; font-weight:700; font-size:0.85rem; }
+
+  /* DEBE/HABER + notas explicativas */
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:760px){
+    .fiori-field-grid{ grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Ledger-Specific Posting</a>
+  <a href="#s2">Confirm Ledgers</a>
+  <a href="#s3">Post &amp; Simulate</a>
+  <a href="#s4">GL View Split</a>
+  <a href="#s5">Profit Center Segment</a>
+  <a href="#s6">Financial Statement</a>
+  <a href="#s7">Follow-On Payment</a>
+  <a href="#s8">Cost of Sales</a>
+  <a href="#s9">Expert Mode</a>
+  <a href="#s10">Trial Balance</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+    </div>
+    <h1><span class="accent">Parallel Accounting</span> &amp; Document Splitting</h1>
+    <h2>Contabilidad Paralela y Segmentación de Documentos — Vivido por el Usuario</h2>
+    <p class="desc">Cómo se vive esto en Fiori, día a día: contabilizar en un ledger específico, cargar una factura que Document Splitting va a partir sola, y verificar que todo cerró balanceado — pantallas reales, un caso a la vez.</p>
+    <div class="protagonist">
+      <div class="avatar">K</div>
+      <div>
+        <div class="p-name">Kevin</div>
+        <div class="p-role">General Ledger &amp; Asset Accounting · Bike GmbH (DE01)</div>
+        <div class="p-note">Guía principal de este recorrido — José (Accounts Payable) aparece en las secciones 3 y 7, con la factura de Acme Auto Maintenance</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting a Ledger-Specific Local Adjustment</span>
+          <span class="sec-title-es">Contabilizando un ajuste específico de Ledger</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Un asiento que solo debe reflejarse en el ledger de Local GAAP, sin tocar el ledger IFRS.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Kevin necesita registrar una <strong>previsión fiscal local</strong> que exige el Local GAAP alemán, pero que IFRS no reconoce de la misma forma. En vez de dejar el campo <strong>Ledger Group</strong> vacío, lo completa con <strong>2L</strong> — así el ajuste solo actualiza ese ledger, y el 0L (IFRS) queda intacto.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Post General Journal Entries</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Post General Journal Entries</div>
+      <div class="fiori-appbar">
+        <div><h6>Nuevo asiento</h6><span class="sub">Journal Entry Type: SA (G/L Account Document)</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Journal Entry Date</label><div class="val filled">31.03.2023</div></div>
+          <div class="fiori-field"><label>Company Code</label><div class="val filled">DE01</div></div>
+          <div class="fiori-field"><label>Ledger Group</label><div class="val highlight">2L</div></div>
+          <div class="fiori-field"><label>Posting Date</label><div class="val filled">31.03.2023</div></div>
+          <div class="fiori-field"><label>Transaction Currency</label><div class="val filled">EUR</div></div>
+          <div class="fiori-field"><label>Reference</label><div class="val">—</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>65100000 Local Tax Provision Expense</td><td class="num">1.200,00</td><td class="num">0,00</td></tr>
+            <tr><td>21700000 Local Tax Provision Payable</td><td class="num">0,00</td><td class="num">1.200,00</td></tr>
+            <tr class="total"><td>Total</td><td class="num">1.200,00</td><td class="num">1.200,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Hold Journal Entry</button>
+          <button class="fiori-btn">Simulate</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>65100000 (Local Tax Provision Expense) → Debe:</b> un gasto que aumenta, exigido solo por la norma local. <b>21700000 (Local Tax Provision Payable) → Haber:</b> un pasivo nuevo — la obligación fiscal que reconoce el Local GAAP.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Confirming Which Ledgers Were Updated</span>
+          <span class="sec-title-es">Confirmando qué ledgers se actualizaron</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Antes de cerrar el libro local, Kevin verifica que el ajuste no se filtró al ledger IFRS.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de dar por cerrado el mes en el libro local, Kevin quiere estar seguro de que la previsión fiscal <strong>no apareció</strong> en el ledger 0L por error. Filtra las partidas de la cuenta por <strong>Ledger</strong> para comparar los dos de un vistazo.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Display G/L Account Line Items</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Display G/L Account Line Items</div>
+      <div class="fiori-appbar">
+        <div><h6>65100000 — Local Tax Provision Expense</h6><span class="sub">Company Code DE01</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Ledger</th><th>Debit</th><th>Credit</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>2L (Local GAAP)</td><td class="num">1.200,00 EUR</td><td class="num">—</td><td><span class="fiori-status ok">✓ Actualizado</span></td></tr>
+            <tr><td>0L (IFRS)</td><td class="num">—</td><td class="num">—</td><td><span class="fiori-status neutral">— Sin movimiento</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Export</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Qué confirma esta pantalla</span>
+      El ledger <b>2L</b> muestra el movimiento; el <b>0L</b> no tiene nada porque el campo Ledger Group del asiento original lo excluyó a propósito.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Acme Auto Maintenance Invoice &amp; Simulating</span>
+          <span class="sec-title-es">Contabilizando la factura de Acme Auto Maintenance y simulando</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">Antes de tocar Post, José usa Simulate para confirmar que el documento va a cerrar balanceado.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      José recibe la factura de <strong>Acme Auto Maintenance</strong> por el servicio de la flota del mes: $1.500 en total, con gastos de tres regiones distintas. Carga una línea de <strong>débito por cada región</strong> contra su Profit Center, y una sola línea de <strong>crédito al proveedor</strong> por el total — no le corresponde a él partirla, eso lo hace Document Splitting al contabilizar. Antes de confirmar, usa <strong>Simulate</strong>.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Payable</div><span class="sep">›</span>
+      <div class="crumb current">Create Supplier Invoice</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Create Supplier Invoice</div>
+      <div class="fiori-appbar">
+        <div><h6>Nueva factura de proveedor</h6><span class="sub">Vendor: Acme Auto Maintenance</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Invoice Date</label><div class="val filled">28.03.2023</div></div>
+          <div class="fiori-field"><label>Company Code</label><div class="val filled">US01</div></div>
+          <div class="fiori-field"><label>Currency</label><div class="val filled">USD</div></div>
+        </div>
+        <div class="sim-banner">✓ Simulación balanceada — Total Debit = Total Credit ($1,500.00 = $1,500.00)</div>
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Profit Center</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>65003000 Vehicle Costs</td><td>Western Region</td><td class="num">300.00</td><td class="num">0.00</td></tr>
+            <tr><td>65003000 Vehicle Costs</td><td>Northern Region</td><td class="num">450.00</td><td class="num">0.00</td></tr>
+            <tr><td>65003000 Vehicle Costs</td><td>Southern Region</td><td class="num">750.00</td><td class="num">0.00</td></tr>
+            <tr><td>21200000 Accounts Payable</td><td>—</td><td class="num">0.00</td><td class="num">1,500.00</td></tr>
+            <tr class="total"><td colspan="2">Total</td><td class="num">1,500.00</td><td class="num">1,500.00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Simulate</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>65003000 (Vehicle Costs) → Debit:</b> tres líneas de gasto, una por región, cada una con su propio Profit Center. <b>21200000 (Accounts Payable) → Credit:</b> José carga UNA sola línea por el total — Document Splitting es quien la va a partir por región apenas se contabilice.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Viewing the Split Result in the General Ledger View</span>
+          <span class="sec-title-es">Viendo el resultado del split en la General Ledger View</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">El crédito que José cargó como una sola línea aparece ya partido por región.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Después de que José contabiliza, Kevin abre el mismo documento para confirmar que <strong>Document Splitting</strong> hizo su trabajo. En la <strong>Entry View</strong> todavía se ve la línea de crédito original y única; al cambiar a <strong>General Ledger View</strong>, aparece ya partida en tres.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Manage Journal Entries → buscar factura Acme Auto Maintenance</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Journal Entries</div>
+      <div class="fiori-appbar">
+        <div><h6>Journal Entry — Acme Auto Maintenance</h6><span class="sub">Company Code US01</span></div>
+        <span class="tag">✓ Posted</span>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab">Entry View</div>
+          <div class="fiori-tab active">General Ledger View</div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Profit Center</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>21200000 Accounts Payable</td><td>Western Region</td><td class="num">300.00</td></tr>
+            <tr><td>21200000 Accounts Payable</td><td>Northern Region</td><td class="num">450.00</td></tr>
+            <tr><td>21200000 Accounts Payable</td><td>Southern Region</td><td class="num">750.00</td></tr>
+            <tr class="total"><td colspan="2">Total</td><td class="num">1,500.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Qué cambió entre las dos vistas</span>
+      Document Splitting ya hizo el reparto: la única línea de crédito que cargó José se convirtió en tres, cada una contra el Profit Center correcto. El Libro de Proveedores, mientras tanto, sigue mostrando los <b>$1,500.00</b> completos contra Acme Auto Maintenance — el split solo vive en el Libro Mayor.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking the Segment on the Profit Center Master</span>
+          <span class="sec-title-es">Revisando el Segmento en el maestro del Profit Center</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">De dónde salió el Segmento que acompañó cada línea del split, sin que nadie lo tipeara a mano.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Ninguna de las líneas de la factura de Acme Auto Maintenance tenía el Segmento tipeado a mano. Kevin va al maestro del Profit Center <strong>Western Region</strong> para confirmar de dónde lo tomó el sistema.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Manage Profit Centers</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Profit Centers</div>
+      <div class="fiori-appbar">
+        <div><h6>Profit Center — Western Region</h6><span class="sub">Controlling Area A000</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Profit Center</label><div class="val filled">Western Region</div></div>
+          <div class="fiori-field"><label>Company Code</label><div class="val filled">US01</div></div>
+          <div class="fiori-field"><label>Segment</label><div class="val highlight">1000_C (Vehicle Fleet Services)</div></div>
+          <div class="fiori-field"><label>Valid From</label><div class="val filled">01.01.2020</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por eso no hacía falta tipearlo</span>
+      El Segmento vive en el maestro del Profit Center. Si la partida no trae uno manual, el sistema lo hereda de acá — como pasó con las tres líneas de la factura.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running the Financial Statement by Ledger</span>
+          <span class="sec-title-es">Corriendo el Estado Financiero por Ledger</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">El mismo reporte, comparado entre el ledger IFRS y el ledger de Local GAAP.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Kevin quiere ver si la previsión fiscal local de la sección 1 cambia el resultado. Corre <strong>Financial Statement</strong> filtrando por Ledger, para comparar 0L contra 2L lado a lado.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Reporting</div><span class="sep">›</span>
+      <div class="crumb current">Financial Statement</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Financial Statement — Standard</div>
+      <div class="fiori-appbar">
+        <div><h6>Company Code DE01</h6><span class="sub">Periodo 03/2023 · Statement Type: Normal</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid" style="margin-bottom:18px;">
+          <div class="fiori-field"><label>Statement Version</label><div class="val filled">Acc Balance Sheet</div></div>
+          <div class="fiori-field"><label>Comparación</label><div class="val filled">Ledger 0L vs. 2L</div></div>
+          <div class="fiori-field"><label>End Period</label><div class="val filled">03 / 2023</div></div>
+        </div>
+        <div class="fiori-tabs">
+          <div class="fiori-tab active">All Accounts</div>
+          <div class="fiori-tab">Balance Sheet</div>
+          <div class="fiori-tab">Profit &amp; Loss</div>
+          <div class="fiori-tab">Unassigned Accounts</div>
+          <div class="fiori-tab">Notes</div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Descripción</th><th>Ledger 0L</th><th>Ledger 2L</th></tr></thead>
+          <tbody>
+            <tr><td>65100000</td><td>Local Tax Provision Expense</td><td class="num">0,00 EUR</td><td class="num">1.200,00 EUR</td></tr>
+            <tr><td>21700000</td><td>Local Tax Provision Payable</td><td class="num">0,00 EUR</td><td class="num">1.200,00 EUR</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por eso conviene mirar los dos</span>
+      El mismo período cierra distinto según el ledger que se consulte. Ninguno de los dos está "mal" — cada uno refleja el principio contable que le corresponde.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Follow-On Payment — Passive Split</span>
+          <span class="sec-title-es">Contabilizando el pago de seguimiento — Segmentación Pasiva</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">José paga la factura de Acme Auto Maintenance — no vuelve a definir el split, el sistema lo hereda.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Llega la fecha de pago de la factura de Acme Auto Maintenance. José registra el pago desde <strong>Clear Outgoing Payments</strong> — no tiene que volver a indicar cómo repartir nada por región: el sistema toma la segmentación directamente de la <strong>factura original</strong> (Passive Split), sin aplicar reglas de nuevo.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Payable</div><span class="sep">›</span>
+      <div class="crumb current">Clear Outgoing Payments</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Clear Outgoing Payments</div>
+      <div class="fiori-appbar">
+        <div><h6>Vendor: Acme Auto Maintenance</h6><span class="sub">Company Code US01</span></div>
+        <span class="tag">Passive Split</span>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Profit Center</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>21200000 Accounts Payable</td><td>Western Region</td><td class="num">300.00</td><td class="num">0.00</td></tr>
+            <tr><td>21200000 Accounts Payable</td><td>Northern Region</td><td class="num">450.00</td><td class="num">0.00</td></tr>
+            <tr><td>21200000 Accounts Payable</td><td>Southern Region</td><td class="num">750.00</td><td class="num">0.00</td></tr>
+            <tr><td>11001000 Main Bank Account</td><td>—</td><td class="num">0.00</td><td class="num">1,500.00</td></tr>
+            <tr class="total"><td colspan="2">Total</td><td class="num">1,500.00</td><td class="num">1,500.00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Simulate</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>21200000 (Accounts Payable) → Debit:</b> se cancela la deuda, ya segmentada igual que en la factura original — José no volvió a elegir nada por región. <b>11001000 (Main Bank Account) → Credit:</b> sale la plata del banco, por el total.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking the Cost of Sales Report by Functional Area</span>
+          <span class="sec-title-es">Revisando el Reporte de Costo de Ventas por Área Funcional</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">El mismo gasto de Vehicle Costs, ahora agrupado por su propósito comercial.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      A fin de mes, Kevin corre el <strong>Cost of Sales Report</strong>. Los $1.500 que José cargó como Vehicle Costs aparecen agrupados bajo el <strong>Área Funcional</strong> correspondiente, junto con el resto de los gastos que comparten ese mismo propósito comercial.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Reporting</div><span class="sep">›</span>
+      <div class="crumb current">Financial Statement (vista Cost of Sales)</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Financial Statement — Cost of Sales View</div>
+      <div class="fiori-appbar">
+        <div><h6>Company Code US01</h6><span class="sub">Periodo 03/2023</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Functional Area</th><th>Descripción</th><th>Monto</th></tr></thead>
+          <tbody>
+            <tr><td>YB10 Production</td><td>Materiales y mano de obra directa</td><td class="num">82.400,00 USD</td></tr>
+            <tr><td>YB30 Sales &amp; Distribution</td><td>Vehicle Costs, comisiones, fletes</td><td class="num">6.150,00 USD</td></tr>
+            <tr><td>YB50 Administration</td><td>Gastos administrativos generales</td><td class="num">14.200,00 USD</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Dónde quedaron los $1.500 de la factura</span>
+      Están adentro del total de <b>Sales &amp; Distribution</b> — el Área Funcional se heredó del maestro del Cost Center, sin que nadie la tipeara a mano en la factura.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing Expert Mode During Simulation</span>
+          <span class="sec-title-es">Revisando el Modo Experto durante la simulación</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Antes de contabilizar un documento grande, un vistazo a cómo va a quedar el split, línea por línea.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Para un documento más grande y con más partidas, Kevin no se conforma con el banner de "balanceado" — abre <strong>Expert Mode</strong> desde Simulate para ver, línea por línea, qué Base Line usó cada crédito generado.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Simulate</div><span class="sep">›</span>
+      <div class="crumb current">botón "Expert Mode"</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Simulation of Document Splitting: Expert Mode</div>
+      <div class="fiori-appbar">
+        <div><h6>Configuración de Splitting</h6><span class="sub">Company Code US01</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Item</th><th>Cuenta</th><th>Categoría</th><th>Monto</th><th>Profit Center</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>21200000</td><td>Split According to Base Rows</td><td class="num">300.00-</td><td>Western Region</td></tr>
+            <tr><td>2</td><td>65003000</td><td>Base Line</td><td class="num">300.00</td><td>Western Region</td></tr>
+            <tr><td>3</td><td>21200000</td><td>Split According to Base Rows</td><td class="num">450.00-</td><td>Northern Region</td></tr>
+            <tr><td>4</td><td>65003000</td><td>Base Line</td><td class="num">450.00</td><td>Northern Region</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Cancel</button>
+          <button class="fiori-btn primary">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Qué muestra cada línea</span>
+      Cada línea de crédito generada trae escrito de qué <b>Base Line</b> sacó su monto y su Profit Center — no es magia, es una referencia directa a la partida de débito original.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Local GAAP Trial Balance Before Closing</span>
+          <span class="sec-title-es">Revisando el Balance de Comprobación de Local GAAP antes del cierre</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Un corte de saldos del ledger 2L, para asegurarse de que el ajuste local quedó bien antes de cerrar.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de cerrar el mes bajo Local GAAP, Kevin pide el <strong>Trial Balance</strong> filtrado por Ledger 2L. Recorre los saldos buscando algo que no cierre a ojo — en particular, confirma que la previsión fiscal de la sección 1 quedó reflejada.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Trial Balance</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Trial Balance — Ledger 2L</div>
+      <div class="fiori-appbar">
+        <div><h6>Company Code DE01</h6><span class="sub">Periodo 03/2023 · Local GAAP</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Descripción</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>11001000</td><td>Main Bank Account</td><td class="num">245.300,00</td><td class="num">—</td></tr>
+            <tr><td>21700000</td><td>Local Tax Provision Payable</td><td class="num">—</td><td class="num">1.200,00</td></tr>
+            <tr><td>65100000</td><td>Local Tax Provision Expense</td><td class="num">1.200,00</td><td class="num">—</td></tr>
+            <tr class="total"><td colspan="2">Total</td><td class="num">246.500,00</td><td class="num">246.500,00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Parallel Accounting &amp; Document Splitting · Biblioteca de Guías SAP · Fuente: documento del curso + capturas reales de Fiori</footer>
+
+</body>
+</html>

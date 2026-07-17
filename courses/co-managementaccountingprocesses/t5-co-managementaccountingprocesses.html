@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · Management Accounting Processes — Holístico/Ecosistema | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t5:#E0A56F;
+    --t5-dark:#A85F2B;
+    --t5-pale:rgba(224,165,111,0.14);
+    --t5-pale-border:rgba(224,165,111,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t5); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t5); border-bottom-color:var(--t5); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1D14 55%, #4A2E14 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t5); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,165,111,0.14); border-left:4px solid var(--t5); border-radius:0 8px 8px 0; padding:13px 18px; max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t5); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:52px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:18px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t5-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(168,95,43,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .tag-row{ display:flex; align-items:center; gap:8px; margin-top:4px; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .orbit-tag{ display:inline-flex; align-items:center; gap:5px; font-size:9.5px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(168,95,43,0.1); color:var(--t5-dark); vertical-align:middle; }
+  .kind-tag{ display:inline-flex; align-items:center; font-size:9px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; color:white; vertical-align:middle; }
+  .kind-tag.kind-nest{ background:#5A6B8C; }
+  .kind-tag.flow{ background:var(--cat-sales); }
+
+  .theory-box{ background:var(--t5-pale); border-left:4px solid var(--t5-dark); border-radius:0 10px 10px 0; padding:15px 22px; margin-bottom:22px; font-size:0.93rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t5-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:30px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:600px; }
+
+  .nest-stage{ display:flex; justify-content:center; padding:6px 0; }
+  .nest{ border:2px dashed; border-radius:26px; padding:36px 32px 26px; position:relative; display:inline-flex; flex-direction:column; align-items:center; }
+  .nest-label{ position:absolute; top:-11px; left:24px; background:white; padding:0 10px; font-size:10.5px; font-weight:700; letter-spacing:.3px; }
+  .nest-core{ border-radius:14px; padding:18px 30px; color:white; font-family:'Syne',sans-serif; font-weight:800; text-align:center; font-size:1rem; }
+  .nest-core .sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:0.72rem; opacity:.85; margin-top:5px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">Real/Statistical Objects</a>
+  <a href="#s2">Feeds Product Costing</a>
+  <a href="#s3">Planning vs. Object Controlling</a>
+  <a href="#s4">Feeds Cost Object Controlling</a>
+  <a href="#s5">Three Pillars on Controlling</a>
+  <a href="#s6">Feeds EBRR</a>
+  <a href="#s7">EBRR in the Accrual Stack</a>
+  <a href="#s8">Feeds Margin Analysis</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Controlling</span>
+      <span class="pill pill-secondary">Profitability Analysis</span>
+      <span class="pill pill-secondary">Production Planning</span>
+      <span class="pill pill-secondary">Sales &amp; Distribution</span>
+    </div>
+    <h1><span class="accent">Processes</span> in Management Accounting</h1>
+    <h2>Ecosistema</h2>
+    <p class="desc">Dónde vive cada pieza de este curso dentro de capas más grandes, y qué entra y sale hacia actividades puntuales de otros módulos — no el panorama completo de siempre, sino la ubicación exacta.</p>
+    <div class="hlbox">Resumen Visual — <b>Processes in Management Accounting</b>, Tipo 5 (Holístico). 8 secciones — 4 de posicionamiento (mamushka, bifurcación, fundación+pilares, capas apiladas), 4 de flujo de entrada/salida con actividades puntuales.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — mamushka -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Real &amp; Statistical Objects Live</span>
+          <span class="sec-title-es">Dónde vive la distinción real/estadística</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No es una regla aislada — es una lógica que corre adentro de una cadena de capas cada vez más específicas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La distinción entre objeto <strong>real</strong> y <strong>estadístico</strong> no es una configuración suelta — vive adentro de Controlling, que vive adentro de S/4HANA Finance, que a su vez es una pieza de todo S/4HANA. Es una cadena de contención pura, sin ramas.
+    </div>
+    <div class="visual-wrap">
+      <div class="nest-stage">
+        <div class="nest" style="border-color:#94A3B8;">
+          <span class="nest-label" style="color:#64748B;">SAP S/4HANA — Digital Core</span>
+          <div class="nest" style="border-color:#B08A6F;">
+            <span class="nest-label" style="color:#8A6A4E;">S/4HANA Finance</span>
+            <div class="nest" style="border-color:#C2843F;">
+              <span class="nest-label" style="color:#A85F2B;">Controlling (Management Accounting)</span>
+              <div class="nest-core" style="background:var(--t5-dark);">
+                Real vs. Statistical Objects
+                <div class="sub">Value Type 4 / 11 / 22</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — flujo -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds Product Costing, What It Feeds</span>
+          <span class="sec-title-es">Qué alimenta al costeo de producto, hacia dónde sale</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Production Planning</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Dos maestros puntuales de Production Planning, no "Logística" entera, alimentan el cost estimate.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      No es "PP le manda datos a Controlling" en general. Son dos maestros específicos — <strong>Bill of Material</strong> y <strong>Routing</strong> — los que arman la quantity structure, y de ahí el cost estimate sale directo a actualizar el precio estándar del material.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="270" y1="75" x2="270" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="75" x2="630" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="95" x2="630" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="95" x2="450" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a2)"/>
+
+        <rect x="130" y="15" width="280" height="60" rx="10" fill="#00A896"/>
+        <text x="270" y="39" text-anchor="middle" fill="white" class="box-label">Bill of Material</text>
+        <text x="270" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">PP — Material Master</text>
+
+        <rect x="490" y="15" width="280" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="630" y="39" text-anchor="middle" fill="white" class="box-label">Routing</text>
+        <text x="630" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">PP — Work Centers</text>
+
+        <rect x="310" y="125" width="280" height="62" rx="10" fill="#A85F2B"/>
+        <text x="450" y="152" text-anchor="middle" fill="white" class="box-label">Cost Estimate → Material Master</text>
+        <text x="450" y="169" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Standard Price Update</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — bifurcacion -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Product Cost Planning vs. Cost Object Controlling</span>
+          <span class="sec-title-es">Product Cost Planning vs. Cost Object Controlling</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Controlling</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Dos ramas paralelas de Product Cost Controlling, no una adentro de la otra: una mira antes de producir, la otra durante y después.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Product Cost Controlling se abre en <strong>dos caminos paralelos</strong>: Product Cost Planning calcula cuánto <strong>debería</strong> costar antes de producir; Cost Object Controlling registra cuánto costó <strong>realmente</strong> durante y después — con sus propias varianzas y su propio results analysis.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="65" x2="450" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="630" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="270" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="90" x2="630" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="175" x2="630" y2="205" stroke="#A85F2B" stroke-width="2.5"/>
+
+        <rect x="330" y="10" width="240" height="55" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="42" text-anchor="middle" fill="white" class="box-label">Product Cost Controlling</text>
+
+        <rect x="140" y="115" width="260" height="60" rx="10" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="270" y="141" text-anchor="middle" fill="#5A6B8C" class="box-label">Product Cost Planning</text>
+        <text x="270" y="158" text-anchor="middle" fill="#94A3B8" class="box-sub">antes de producir · costo plan</text>
+
+        <rect x="500" y="115" width="260" height="60" rx="10" fill="#1A6B99"/>
+        <text x="630" y="141" text-anchor="middle" fill="white" class="box-label">Cost Object Controlling</text>
+        <text x="630" y="158" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">durante y después · costo actual</text>
+
+        <rect x="490" y="205" width="280" height="60" rx="10" fill="#A85F2B"/>
+        <text x="630" y="231" text-anchor="middle" fill="white" class="box-label">Variance Analysis / Results Analysis</text>
+        <text x="630" y="248" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">según el tipo de cost object</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — flujo -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds Cost Object Controlling, What It Feeds</span>
+          <span class="sec-title-es">Qué alimenta a Cost Object Controlling, hacia dónde sale</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Production Planning &amp; Controlling</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Dos actividades puntuales de ejecución en planta, no "Producción" entera, generan el costo actual.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El costo actual de una Manufacturing Order no aparece solo: nace de <strong>Goods Issue</strong> (consumo real de materiales) y de las <strong>Confirmations</strong> (tiempos reales de trabajo) — ambas actividades de ejecución en Production Planning. De ahí, la orden liquidada actualiza el Material Ledger.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="270" y1="75" x2="270" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="75" x2="630" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="95" x2="630" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="95" x2="450" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a4)"/>
+
+        <rect x="130" y="15" width="280" height="60" rx="10" fill="#00A896"/>
+        <text x="270" y="39" text-anchor="middle" fill="white" class="box-label">Goods Issue</text>
+        <text x="270" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">PP — consumo real de materiales</text>
+
+        <rect x="490" y="15" width="280" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="630" y="39" text-anchor="middle" fill="white" class="box-label">Confirmations</text>
+        <text x="630" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">PP — tiempos reales de trabajo</text>
+
+        <rect x="310" y="125" width="280" height="62" rx="10" fill="#A85F2B"/>
+        <text x="450" y="152" text-anchor="middle" fill="white" class="box-label">Order Settlement → Material Ledger</text>
+        <text x="450" y="169" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Inventory Valuation</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — fundacion+pilares -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Three Pillars on Controlling</span>
+          <span class="sec-title-es">Los tres pilares parados sobre Controlling</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Controlling</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Tres componentes distintos, al mismo nivel, apoyados en la misma base — no uno adentro del otro.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cost Center Accounting, Product Cost Controlling y Profitability Analysis no están uno adentro del otro — los tres son <strong>pilares independientes</strong> que se apoyan sobre la misma base: el Controlling Area y el Cost Element como estructura común.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
+        <rect x="100" y="50" width="220" height="115" rx="8" fill="#1A6B99"/>
+        <text x="210" y="100" text-anchor="middle" fill="white" class="box-label">Cost Center Accounting</text>
+        <text x="210" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">planificación y control por área</text>
+
+        <rect x="340" y="50" width="220" height="115" rx="8" fill="#7E4FBF"/>
+        <text x="450" y="100" text-anchor="middle" fill="white" class="box-label">Product Cost Controlling</text>
+        <text x="450" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">costeo y cost object controlling</text>
+
+        <rect x="580" y="50" width="220" height="115" rx="8" fill="#E07B39"/>
+        <text x="690" y="100" text-anchor="middle" fill="white" class="box-label">Profitability Analysis</text>
+        <text x="690" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">margen por segmento de mercado</text>
+
+        <rect x="60" y="165" width="780" height="60" rx="8" fill="#A85F2B"/>
+        <text x="450" y="190" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Controlling Area · Cost Element Accounting</text>
+        <text x="450" y="208" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">la estructura común que los tres comparten</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — flujo -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds EBRR, What It Feeds</span>
+          <span class="sec-title-es">Qué alimenta a EBRR, hacia dónde sale</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Sales &amp; Distribution</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un evento puntual de facturación, no "Ventas" entera, dispara el cálculo de EBRR.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      EBRR no corre solo: se dispara cuando llega el <strong>Billing Document</strong> real desde Sales &amp; Distribution, cruzado contra el costo actual ya conocido en Cost Object Controlling. De ahí, el asiento de devengo sale directo al Diario Universal.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="270" y1="75" x2="270" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="75" x2="630" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="95" x2="630" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="95" x2="450" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6)"/>
+
+        <rect x="130" y="15" width="280" height="60" rx="10" fill="#E07B39"/>
+        <text x="270" y="39" text-anchor="middle" fill="white" class="box-label">Billing Document</text>
+        <text x="270" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Sales &amp; Distribution</text>
+
+        <rect x="490" y="15" width="280" height="60" rx="10" fill="#1A6B99"/>
+        <text x="630" y="39" text-anchor="middle" fill="white" class="box-label">Actual Costs</text>
+        <text x="630" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Cost Object Controlling</text>
+
+        <rect x="310" y="125" width="280" height="62" rx="10" fill="#A85F2B"/>
+        <text x="450" y="152" text-anchor="middle" fill="white" class="box-label">EBRR → Universal Journal</text>
+        <text x="450" y="169" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Accrued Revenue</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — stack de capas -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">EBRR Inside the Accrual Stack</span>
+          <span class="sec-title-es">EBRR dentro del stack de devengo</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Cuatro niveles apilados, con flujo vertical de uno al siguiente — no una jerarquía de contención.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      EBRR se sienta como una <strong>capa técnica</strong> entre la sales order item y el Diario Universal: traduce el evento de negocio (facturación, POC) en un asiento contable, que a su vez alimenta el balance y el estado de resultados.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="65" x2="450" y2="88" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a7)"/>
+        <line x1="450" y1="148" x2="450" y2="171" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a7)"/>
+        <line x1="450" y1="231" x2="450" y2="254" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a7)"/>
+
+        <rect x="200" y="10" width="500" height="55" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="43" text-anchor="middle" fill="white" class="box-label">Sales Order Item (Servicio de suscripción)</text>
+
+        <rect x="140" y="90" width="620" height="58" rx="10" fill="#E07B39"/>
+        <text x="450" y="115" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Event-Based Revenue Recognition</text>
+        <text x="450" y="133" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">traduce POC + facturación en asiento contable</text>
+
+        <rect x="140" y="173" width="620" height="58" rx="10" fill="#A85F2B"/>
+        <text x="450" y="198" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Universal Journal</text>
+        <text x="450" y="216" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">registra el asiento de devengo</text>
+
+        <rect x="140" y="256" width="620" height="58" rx="10" fill="#0A0F1C"/>
+        <text x="450" y="281" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Balance Sheet &amp; P&amp;L</text>
+        <text x="450" y="299" text-anchor="middle" fill="#E8A56F" class="box-sub">reflejan el resultado en tiempo real</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — flujo -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds Margin Analysis, Where It Goes</span>
+          <span class="sec-title-es">Qué alimenta a Margin Analysis, hacia dónde sale</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Profitability &amp; Sales</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Convergen dos condiciones puntuales de la factura, y de ahí el dato sale hacia varios departamentos distintos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Margin Analysis toma dos condiciones puntuales del documento de facturación — <strong>precio</strong> (PR00) y <strong>costo</strong> (VPRS) — y de ahí el resultado sale hacia varios destinatarios internos distintos, no un solo "reporting" genérico.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="75" x2="450" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="100" x2="750" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="100" x2="150" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+        <line x1="450" y1="100" x2="450" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+        <line x1="750" y1="100" x2="750" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+
+        <rect x="310" y="15" width="280" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="39" text-anchor="middle" fill="white" class="box-label">Margin Analysis</text>
+        <text x="450" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">PR00 Revenue + VPRS COGS</text>
+
+        <rect x="40" y="125" width="220" height="60" rx="10" fill="#E07B39"/>
+        <text x="150" y="149" text-anchor="middle" fill="white" class="box-label">Sales &amp; Marketing</text>
+        <text x="150" y="166" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">performance por segmento</text>
+
+        <rect x="340" y="125" width="220" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="450" y="149" text-anchor="middle" fill="white" class="box-label">Product Management</text>
+        <text x="450" y="166" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">rentabilidad por producto</text>
+
+        <rect x="640" y="125" width="220" height="60" rx="10" fill="#1A6B99"/>
+        <text x="750" y="149" text-anchor="middle" fill="white" class="box-label">Corporate Planning</text>
+        <text x="750" y="166" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">decisiones internas</text>
+      </svg>
+    </div>
+  </section>
+
+</main>
+
+<footer>T5 · Holístico/Ecosistema — Management Accounting Processes · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

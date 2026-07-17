@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Cost Management &amp; Profitability Analysis — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-blue-dark:#0040A0;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2rem,4.2vw,3.05rem); margin:0 0 6px; line-height:1.1; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-appbar .tag{ background:#FFF3CD; color:#8A6A1E; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-body{ padding:22px 20px; }
+  .fiori-tabs{ display:flex; gap:22px; border-bottom:1px solid #EAEAEA; margin-bottom:18px; }
+  .fiori-tab{ padding:7px 2px; font-size:0.8rem; color:var(--sap-muted); border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px 22px; margin-bottom:6px; }
+  .fiori-field label{ display:block; font-size:0.7rem; color:var(--sap-muted); margin-bottom:4px; }
+  .fiori-field .val{ font-size:0.83rem; color:var(--sap-text); padding:7px 10px; background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; }
+  .fiori-field .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-table td.num{ text-align:right; font-family:'JetBrains Mono',monospace; }
+  .fiori-table tr.total td{ font-weight:700; border-top:1.5px solid var(--sap-border); border-bottom:none; }
+  .fiori-table td.neg{ color:#C0392B; }
+  .fiori-table td.pos{ color:#1D7A3E; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .fiori-btn.text{ border:none; color:var(--sap-blue); background:none; padding:7px 4px; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.open{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-status.warn{ background:#FDEAEA; color:#B23A3A; }
+  .fiori-list-item{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border:1px solid var(--sap-border); border-radius:6px; margin-bottom:8px; }
+  .fiori-list-item .li-title{ font-size:0.85rem; font-weight:600; color:var(--sap-text); }
+  .fiori-list-item .li-sub{ font-size:0.72rem; color:var(--sap-muted); margin-top:2px; }
+  .fiori-pill{ font-size:0.66rem; font-weight:700; padding:3px 9px; border-radius:20px; }
+  .fiori-pill.public{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-pill.private{ background:#F0F0F0; color:#5A5A5A; }
+  .fiori-pill.held{ background:#FFF3CD; color:#8A6A1E; }
+
+  .kpi-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .kpi-tile{ background:white; border:1px solid var(--sap-border); border-radius:8px; padding:18px 16px; }
+  .kpi-tile .kpi-icon{ font-size:19px; margin-bottom:9px; display:block; }
+  .kpi-tile .kpi-val{ font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem; color:var(--sap-text); }
+  .kpi-tile .kpi-trend{ font-size:0.68rem; font-weight:700; margin-left:3px; }
+  .kpi-tile .kpi-trend.up{ color:#1D7A3E; }
+  .kpi-tile .kpi-trend.warn{ color:#8A6A1E; }
+  .kpi-tile .kpi-label{ font-size:0.72rem; color:var(--sap-muted); margin-top:7px; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Cost Center Report</a>
+  <a href="#s2">Internal Order</a>
+  <a href="#s3">Actual Assessment</a>
+  <a href="#s4">Cost Estimate</a>
+  <a href="#s5">Journal Entry</a>
+  <a href="#s6">Margin Analysis</a>
+  <a href="#s7">Profit Center P&amp;L</a>
+  <a href="#s8">Project Costs (UPA)</a>
+  <a href="#s9">Order Variances</a>
+  <a href="#s10">Launchpad</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Controlling</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Profitability Analysis</span>
+      <span class="pill pill-secondary">Profit Center Accounting</span>
+    </div>
+    <h1><span class="accent">Cost</span> Management &amp; Profitability Analysis</h1>
+    <h2>Gestión de Costos y Análisis de Rentabilidad — Vivido por el Usuario</h2>
+    <p class="desc">Cómo se vive Controlling desde Fiori, día a día: revisar cost centers, asignar costos indirectos, costear un producto, y analizar márgenes por segmento — pantallas reales, un caso a la vez.</p>
+    <div class="protagonist">
+      <div class="avatar">P</div>
+      <div>
+        <div class="p-name">Priya</div>
+        <div class="p-role">Controlling — Cost &amp; Profitability Management · Bike Company (A000 / BIKE-CO)</div>
+        <div class="p-note">Guía única de este recorrido — todas las pantallas se ven desde su rol de Controller</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Cost Center Report</span>
+          <span class="sec-title-es">Revisando el reporte de centro de costo</span>
+          <span class="sec-actor"><span class="dot">P</span>Priya</span>
+        </div>
+        <div class="sec-desc">Plan vs. real del mes en el centro de costo de Producción, antes de que cierre el período.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Priya necesita confirmar si el centro de costo <strong>CC-1000-PROD (Producción)</strong> se mantuvo dentro de lo planeado este mes. No espera al cierre: revisa <strong>plan vs. real</strong> con unos días de anticipación para poder actuar si algo se disparó.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Controlling</div><span class="sep">›</span>
+      <div class="crumb current">Cost Centers - Actual/Plan/Variance</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Cost Centers - Actual/Plan/Variance</div>
+      <div class="fiori-appbar">
+        <div><h6>CC-1000-PROD · Producción</h6><span class="sub">Controlling Area A000 · Período 7 / 2026 · Company Code DE01</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Cost Element</th><th>Plan</th><th>Actual</th><th>Variance</th><th>%</th></tr></thead>
+          <tbody>
+            <tr><td>420100 Material Costs</td><td class="num">45.000,00</td><td class="num">46.800,00</td><td class="num neg">1.800,00</td><td class="num neg">+4%</td></tr>
+            <tr><td>430200 Personnel Costs</td><td class="num">28.000,00</td><td class="num">27.650,00</td><td class="num pos">-350,00</td><td class="num pos">-1%</td></tr>
+            <tr><td>440500 Depreciation</td><td class="num">6.200,00</td><td class="num">6.200,00</td><td class="num">0,00</td><td class="num">0%</td></tr>
+            <tr class="total"><td>Total Overhead</td><td class="num">79.200,00</td><td class="num">80.650,00</td><td class="num neg">1.450,00</td><td class="num neg">+1,8%</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn text">Export</button>
+          <button class="fiori-btn">Display Line Items</button>
+          <button class="fiori-btn primary">Analyze Variance</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Monitoring an Internal Order</span>
+          <span class="sec-title-es">Monitoreando una orden interna</span>
+          <span class="sec-actor"><span class="dot">P</span>Priya</span>
+        </div>
+        <div class="sec-desc">Un evento con presupuesto propio: la participación de Bike Company en una feria comercial.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Marketing pidió apoyo para la <strong>feria comercial</strong> del trimestre, y Priya la sigue como <strong>orden interna</strong> — con presupuesto propio, fecha de inicio y fin. Ya lleva gastado más de lo esperado y quiere ver el detalle antes de que el evento termine.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Controlling</div><span class="sep">›</span>
+      <div class="crumb current">Manage Internal Orders</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Internal Orders</div>
+      <div class="fiori-appbar">
+        <div><h6>IO-4711 · Trade Fair Participation Q3</h6><span class="sub">Controlling Area A000 · Order Type: Marketing Event</span></div>
+        <span class="fiori-status open">● En curso</span>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Budget</label><div class="val filled">€ 15.000,00</div></div>
+          <div class="fiori-field"><label>Actual Costs</label><div class="val filled">€ 17.200,00</div></div>
+          <div class="fiori-field"><label>Planned Revenue</label><div class="val filled">€ 15.000,00</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>Cost Element</th><th>Actual</th></tr></thead>
+          <tbody>
+            <tr><td>475000 Stand Rental</td><td class="num">9.500,00</td></tr>
+            <tr><td>476000 Travel &amp; Lodging</td><td class="num">5.100,00</td></tr>
+            <tr><td>477000 Promotional Material</td><td class="num">2.600,00</td></tr>
+            <tr class="total"><td>Total Actual</td><td class="num neg">17.200,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Budget</button>
+          <button class="fiori-btn primary">Run Results Analysis</button>
+        </div>
+      </div>
+    </div>
+    <div class="dc-note">
+      <span class="dc-label">Resultado del análisis</span>
+      Los costos reales (<b>€17.200</b>) ya superaron el revenue planeado (<b>€15.000</b>) — eso dispara automáticamente una <b>reserve for imminent loss</b> de €2.200 al correr Results Analysis, antes de liquidar la orden.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running the Monthly Actual Assessment</span>
+          <span class="sec-title-es">Corriendo la asignación mensual de costos indirectos</span>
+          <span class="sec-actor"><span class="dot">P</span>Priya</span>
+        </div>
+        <div class="sec-desc">Repartiendo el costo de Administración entre los centros de costo que realmente lo consumen.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cada fin de mes, Priya <strong>reparte</strong> los costos del centro de costo de Administración (IT, RRHH compartidos) hacia los centros de costo productivos, según una clave de reparto. Es una asignación interna — no nace de una factura nueva.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Controlling</div><span class="sep">›</span>
+      <div class="crumb current">Post Actual Assessment</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Post Actual Assessment</div>
+      <div class="fiori-appbar">
+        <div><h6>Cycle: ADMIN-OVERHEAD</h6><span class="sub">Período 7 / 2026 · Sender: CC-9000-ADMIN</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Receiver</th><th>Secondary Cost Element</th><th>% Reparto</th><th>Debit</th></tr></thead>
+          <tbody>
+            <tr><td>CC-1000-PROD</td><td>9500000 Admin Allocation</td><td>60%</td><td class="num">4.680,00</td></tr>
+            <tr><td>CC-2000-SALES</td><td>9500000 Admin Allocation</td><td>40%</td><td class="num">3.120,00</td></tr>
+            <tr class="total"><td colspan="3">Total asignado</td><td class="num">7.800,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Simulate</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>CC-9000-ADMIN → Haber</b> del secondary cost element 9500000: se descarga el costo del centro emisor. <b>CC-1000-PROD y CC-2000-SALES → Debe</b>: reciben su parte proporcional. No hay contrapartida en el P&amp;L porque 9500000 es un <b>elemento de costo secundario</b> — existe solo dentro de CO.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Displaying the Product Cost Estimate</span>
+          <span class="sec-title-es">Consultando el costeo de producto</span>
+          <span class="sec-actor"><span class="dot">P</span>Priya</span>
+        </div>
+        <div class="sec-desc">De cuánto sale realmente fabricar una Mountain Bike XT-500 — material, mano de obra y overhead.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Ventas pregunta si el precio de la <strong>Mountain Bike XT-500</strong> todavía deja margen. Priya abre el cost estimate del producto para ver el desglose: cuánto viene del BOM, cuánto de las horas de cost center, y cuánto de overhead.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Product Cost Controlling</div><span class="sep">›</span>
+      <div class="crumb current">Display Material Cost Estimate</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Display Material Cost Estimate</div>
+      <div class="fiori-appbar">
+        <div><h6>Mountain Bike XT-500</h6><span class="sub">Plant: DE01-PROD · Costing Variant: PPC1</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Cost Component</th><th>Fuente</th><th>Costo Unitario</th></tr></thead>
+          <tbody>
+            <tr><td>Raw Materials</td><td>Bill of Material (BOM)</td><td class="num">142,30</td></tr>
+            <tr><td>Production Activity</td><td>Routing · Cost Center CC-1000-PROD</td><td class="num">58,10</td></tr>
+            <tr><td>Production Overhead</td><td>Transfer Price s/ Routing</td><td class="num">21,40</td></tr>
+            <tr class="total"><td colspan="2">Cost of Goods Manufactured (COGM)</td><td class="num">221,80</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Cost Component Split</button>
+          <button class="fiori-btn primary">Release Standard Cost</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Drilling Into a Universal Journal Entry</span>
+          <span class="sec-title-es">Explorando un asiento del Diario Universal</span>
+          <span class="sec-actor"><span class="dot">P</span>Priya</span>
+        </div>
+        <div class="sec-desc">FI y CO en el mismo documento — sin tener que ir a buscar dos reportes distintos.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Un asiento de depreciación llegó a la cuenta de Producción. Priya lo abre y ve, en la misma pantalla, tanto la cuenta de G/L como el <strong>cost center</strong>, el <strong>profit center</strong> y el <strong>market segment</strong> — todo en la misma línea, gracias al Diario Universal.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Manage Journal Entries → buscar "100003381"</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Journal Entries</div>
+      <div class="fiori-appbar">
+        <div><h6>Journal Entry (100003381) · Ledger 0L</h6><span class="sub">Posting Period 7 / 2026 · Company Code DE01</span></div>
+        <span class="tag">✓ Posted</span>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Cost Center</th><th>Profit Center</th><th>Market Segment</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>440500 Depreciation</td><td>CC-1000-PROD</td><td>PC-PROD-DE</td><td>Mountain Bikes</td><td class="num">620,00</td><td class="num">0,00</td></tr>
+            <tr><td>16200000 Accum. Depreciation</td><td>—</td><td>PC-PROD-DE</td><td>—</td><td class="num">0,00</td><td class="num">620,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display FI View</button>
+          <button class="fiori-btn primary">Display CO View</button>
+        </div>
+      </div>
+    </div>
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>440500 (Depreciation) → Debe:</b> un gasto que aumenta el costo del cost center. <b>16200000 (Accumulated Depreciation) → Haber:</b> una cuenta de activo contra-partida que reduce el valor en libros del activo fijo.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Analyzing Margin by Market Segment</span>
+          <span class="sec-title-es">Analizando el margen por segmento de mercado</span>
+          <span class="sec-actor"><span class="dot">P</span>Priya</span>
+        </div>
+        <div class="sec-desc">La pregunta original del curso: ¿cuánto deja realmente Mountain Bikes en el Sudeste Asiático?</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El board quiere saber si <strong>Mountain Bikes en el Sudeste Asiático</strong> es un segmento rentable. Priya abre Margin Analysis y compara revenue, costo de ventas y contribución — sin esperar el cierre de período, porque el dato ya está disponible en tiempo real.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Profitability Analysis</div><span class="sep">›</span>
+      <div class="crumb current">Margin Analysis - Actuals</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Margin Analysis - Actuals</div>
+      <div class="fiori-appbar">
+        <div><h6>Product: Mountain Bikes · Region: Southeast Asia</h6><span class="sub">Operating Concern BIKE-OC · Período 7 / 2026</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Métrica</th><th>Monto</th></tr></thead>
+          <tbody>
+            <tr><td>Sales Revenue</td><td class="num pos">184.200,00</td></tr>
+            <tr><td>Sales Deductions</td><td class="num neg">-6.100,00</td></tr>
+            <tr><td>Cost of Goods Sold</td><td class="num neg">-121.400,00</td></tr>
+            <tr class="total"><td>Contribution Margin</td><td class="num pos">56.700,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Drill Down by Sales Office</button>
+          <button class="fiori-btn primary">Export to Excel</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Profit Center P&amp;L</span>
+          <span class="sec-title-es">Revisando el P&amp;L del centro de beneficio</span>
+          <span class="sec-actor"><span class="dot">P</span>Priya</span>
+        </div>
+        <div class="sec-desc">De Operating Profit a ROI, para la unidad de producción de Alemania.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Priya evalúa el desempeño de <strong>PC-PROD-DE (Producción Alemania)</strong> como si fuera "una compañía dentro de la compañía": no solo su P&amp;L, sino también el capital invertido asignado y el ROI resultante.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Profit Center Accounting</div><span class="sep">›</span>
+      <div class="crumb current">Financial Statement - Profit Center</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Financial Statement - Profit Center</div>
+      <div class="fiori-appbar">
+        <div><h6>PC-PROD-DE · Producción Alemania</h6><span class="sub">Controlling Area A000 · YTD 2026</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="kpi-grid">
+          <div class="kpi-tile"><span class="kpi-icon">📈</span><div><span class="kpi-val">€612K</span><span class="kpi-trend up">▲ 6%</span></div><div class="kpi-label">Operating Profit</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">🏗️</span><div><span class="kpi-val">€4,1M</span></div><div class="kpi-label">Invested Capital in Assets</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">💳</span><div><span class="kpi-val">€380K</span></div><div class="kpi-label">Cost of Capital</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">🎯</span><div><span class="kpi-val">14,9%</span><span class="kpi-trend up">▲</span></div><div class="kpi-label">Return on Investment (ROI)</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking Project Costs per Ledger</span>
+          <span class="sec-title-es">Revisando los costos del proyecto por ledger</span>
+          <span class="sec-actor"><span class="dot">P</span>Priya</span>
+        </div>
+        <div class="sec-desc">El mismo elemento PEP, valuado bajo Group GAAP y Local GAAP al mismo tiempo.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El proyecto de implementación de una nueva línea de producción tiene un elemento PEP que todavía no se capitalizó. Priya revisa cómo se ve el costo acumulado <strong>bajo cada ledger</strong> antes de aprobar el settlement hacia el activo.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Project Controlling</div><span class="sep">›</span>
+      <div class="crumb current">Project Actual Cost Line Items</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Project Actual Cost Line Items</div>
+      <div class="fiori-appbar">
+        <div><h6>WBS: NEWLINE-2026.1</h6><span class="sub">Company Code DE01 · Aún no capitalizado</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Ledger</th><th>Principio Contable</th><th>Costo Acumulado</th></tr></thead>
+          <tbody>
+            <tr><td>0L</td><td>Group GAAP</td><td class="num">318.400,00</td></tr>
+            <tr><td>2L</td><td>Local GAAP (HGB)</td><td class="num">305.900,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display WBS Hierarchy</button>
+          <button class="fiori-btn primary">Settle to Asset</button>
+        </div>
+      </div>
+    </div>
+    <div class="dc-note">
+      <span class="dc-label">Por qué difieren los montos</span>
+      Las reglas de capitalización de HGB (Local GAAP) tratan ciertos costos como gasto del período en vez de capitalizarlos — por eso el ledger 2L acumula menos que el 0L para el mismo evento de negocio.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Analyzing Production Order Variances</span>
+          <span class="sec-title-es">Analizando varianzas de la orden de producción</span>
+          <span class="sec-actor"><span class="dot">P</span>Priya</span>
+        </div>
+        <div class="sec-desc">Por qué un lote de Mountain Bike XT-500 costó distinto de lo planeado.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Un lote de producción de <strong>Mountain Bike XT-500</strong> ya se liquidó, y Priya quiere entender <strong>por qué</strong> costó distinto al estándar — ¿fue cantidad de material, precio, o merma?
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Product Cost Controlling</div><span class="sep">›</span>
+      <div class="crumb current">Analyze Order Variances</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Analyze Order Variances</div>
+      <div class="fiori-appbar">
+        <div><h6>Production Order PP-90015 · Mountain Bike XT-500</h6><span class="sub">Lote: 250 unidades · Plant DE01-PROD</span></div>
+        <span class="fiori-status warn">⚠ Varianza detectada</span>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Categoría</th><th>Monto</th></tr></thead>
+          <tbody>
+            <tr><td>Quantity Variance</td><td class="num neg">-820,00</td></tr>
+            <tr><td>Price Variance</td><td class="num neg">-410,00</td></tr>
+            <tr><td>Scrap Variance</td><td class="num neg">-95,00</td></tr>
+            <tr class="total"><td>Total Variance</td><td class="num neg">-1.325,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Cost Component Split</button>
+          <button class="fiori-btn primary">Settle to CO-PA</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Starting the Day With the Controlling Launchpad</span>
+          <span class="sec-title-es">Arrancando el día con el launchpad de Controlling</span>
+          <span class="sec-actor"><span class="dot">P</span>Priya</span>
+        </div>
+        <div class="sec-desc">Un vistazo rápido antes de decidir qué mirar primero, sin esperar el cierre de período.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Todo lo que Priya vio en este recorrido está disponible <strong>en tiempo real</strong> desde su Fiori Launchpad — porque el Diario Universal ya elimina la necesidad de esperar reconciliaciones de cierre para ver los números.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb current">🏠 Fiori Launchpad — página de inicio de Priya</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Fiori Launchpad</div>
+      <div class="fiori-appbar">
+        <div><h6>Buenos días, Priya</h6><span class="sub">jueves 16.07.2026</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="kpi-grid">
+          <div class="kpi-tile"><span class="kpi-icon">📊</span><div><span class="kpi-val">+1,8%</span><span class="kpi-trend warn">revisar</span></div><div class="kpi-label">Cost Center Variance — CC-1000-PROD</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">🎪</span><div><span class="kpi-val">€2.200</span><span class="kpi-trend warn">pérdida</span></div><div class="kpi-label">Internal Order IO-4711 — Reserve</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">💹</span><div><span class="kpi-val">€56,7K</span><span class="kpi-trend up">▲</span></div><div class="kpi-label">Margin — Mountain Bikes SEA</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">🎯</span><div><span class="kpi-val">14,9%</span></div><div class="kpi-label">ROI — PC-PROD-DE</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Cost Management &amp; Profitability Analysis · Biblioteca de Guías SAP · Protagonista: Priya, Controlling</footer>
+
+</body>
+</html>
