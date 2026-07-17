@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Procure to Pay — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t2);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:680px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(224,133,133,0.14);
+    border-left:4px solid var(--t2);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:680px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t2-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(169,68,68,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-tag{ display:inline-block; align-self:flex-start; margin-top:6px; font-size:0.68rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase; padding:3px 10px; border-radius:20px; }
+  .sec-tag.adj{ background:rgba(138,160,196,0.16); color:#5A7099; }
+  .sec-tag.deep{ background:var(--t2-pale); color:var(--t2-dark); }
+
+  .theory-box{
+    background:var(--t2-pale);
+    border-left:4px solid var(--t2-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  /* FLOW */
+  .flow-row{ display:flex; align-items:stretch; gap:12px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:18px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body p{ font-size:10.6px; color:var(--body); margin:0; line-height:1.5; }
+  .flow-connector{
+    position:absolute; top:20px; right:-19px; width:26px; height:26px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* TABLE */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+  .badge-alert{ background:rgba(192,57,43,0.12); color:#C0392B; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Material Master</a>
+  <a href="#s2">Posting the GR</a>
+  <a href="#s3">Inventory Valuation</a>
+  <a href="#s4">Invoice Blocks</a>
+  <a href="#s5">Three-Way Matching</a>
+  <a href="#s6">Supplier Invoice App</a>
+  <a href="#s7">GR/IR Clearing</a>
+  <a href="#s8">Reconciliation Real-Time</a>
+  <a href="#s9">3 Charts of Accounts</a>
+  <a href="#s10">Automatic Payment Run</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Procure-to-Pay</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+    </div>
+    <h1>Procure-to-Pay in <span class="accent">Depth</span></h1>
+    <h2>Profundizando en Compras a Pago</h2>
+    <p class="desc">Diez secciones que amplían el proceso P2P: cinco temas nuevos conectados con lo visto en el Tipo 1 — el dato maestro de material, el pago automático, la cuenta de compensación GR/IR, los tres planes de cuenta — y cinco profundizaciones del mecanismo interno de los procesos ya vistos: cómo se postea la recepción paso a paso, cómo se valúa el inventario, cómo funciona el matching de tres vías y cómo las cuentas de enlace actualizan el Libro Mayor en tiempo real.</p>
+    <div class="hlbox">Resumen Visual — <b>Procure-to-Pay</b>, Tipo 2 (Profundización). 5 temas adyacentes + 5 profundizaciones de temas del Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — ADYACENTE — hub: material master, departamentos y vistas -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Material Master — Departments &amp; Views</span>
+          <span class="sec-title-es">El Registro Maestro de Material — Departamentos y Vistas</span>
+        </div>
+        <div class="sec-desc">Quién crea el material master y por qué es el dato más centralizado del ERP.</div>
+        <span class="sec-tag adj">Tema adyacente</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de poder aprovisionar un material, hace falta un <strong>registro maestro de material</strong> (material master). Es el objeto más centralizado — y más complejo — del entorno ERP, porque lo usan <strong>todos los departamentos</strong>. El desarrollo de un producto nuevo empieza en <strong>Ingeniería</strong>, que crea el registro desde cero y mantiene los <strong>datos básicos</strong> (descripción, tamaño, peso, tipo de material) — datos válidos para toda la compañía y que se mantienen una única vez. A partir de ahí, cada departamento agrega su propia vista o pestaña con la información que necesita.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#A94444"/>
+          </marker>
+        </defs>
+        <line x1="147" y1="104" x2="380" y2="185" stroke="#A94444" stroke-width="2.2" marker-end="url(#a1)"/>
+        <line x1="349" y1="104" x2="420" y2="190" stroke="#A94444" stroke-width="2.2" marker-end="url(#a1)"/>
+        <line x1="551" y1="104" x2="480" y2="190" stroke="#A94444" stroke-width="2.2" marker-end="url(#a1)"/>
+        <line x1="753" y1="104" x2="520" y2="185" stroke="#A94444" stroke-width="2.2" marker-end="url(#a1)"/>
+
+        <rect x="52" y="20" width="190" height="84" rx="10" fill="#1A4B8C"/>
+        <circle cx="232" cy="30" r="11" fill="#D4AF37"/>
+        <text x="232" y="34" text-anchor="middle" fill="#0A0F1C" font-family="JetBrains Mono" font-weight="700" font-size="10">1º</text>
+        <text x="147" y="48" text-anchor="middle" fill="white" class="box-label">Engineering</text>
+        <text x="147" y="64" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Ingeniería · crea el registro</text>
+        <text x="147" y="82" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9">Datos básicos: descripción,</text>
+        <text x="147" y="94" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9">tamaño, peso, tipo de material</text>
+
+        <rect x="254" y="20" width="190" height="84" rx="10" fill="#7E4FBF"/>
+        <text x="349" y="48" text-anchor="middle" fill="white" class="box-label">Purchasing</text>
+        <text x="349" y="64" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Compras</text>
+        <text x="349" y="82" text-anchor="middle" fill="#E4D4F7" class="box-sub" font-size="9">Unidad de pedido,</text>
+        <text x="349" y="94" text-anchor="middle" fill="#E4D4F7" class="box-sub" font-size="9">grupo de compras</text>
+
+        <rect x="456" y="20" width="190" height="84" rx="10" fill="#00A896"/>
+        <text x="551" y="48" text-anchor="middle" fill="white" class="box-label">Accounting</text>
+        <text x="551" y="64" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Contabilidad</text>
+        <text x="551" y="82" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9">Precio, cuenta de</text>
+        <text x="551" y="94" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9">valuación</text>
+
+        <rect x="658" y="20" width="190" height="84" rx="10" fill="#E07B39"/>
+        <text x="753" y="48" text-anchor="middle" fill="white" class="box-label">Warehouse / Plant</text>
+        <text x="753" y="64" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Almacén / Planta</text>
+        <text x="753" y="82" text-anchor="middle" fill="#FBE0C8" class="box-sub" font-size="9">Ubicación,</text>
+        <text x="753" y="94" text-anchor="middle" fill="#FBE0C8" class="box-sub" font-size="9">unidad de almacenamiento</text>
+
+        <rect x="330" y="190" width="240" height="90" rx="12" fill="#A94444"/>
+        <text x="450" y="222" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Material Master Record</text>
+        <text x="450" y="239" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub" font-size="10">Registro Maestro de Material</text>
+        <text x="450" y="258" text-anchor="middle" fill="#F5D8D8" class="box-sub" font-size="9.5">Un objeto, múltiples vistas</text>
+        <text x="450" y="271" text-anchor="middle" fill="#F5D8D8" class="box-sub" font-size="9.5">mantenidas por cada departamento</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — PROFUNDIZACIÓN — flow: pasos de la recepción -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Goods Receipt — Step by Step</span>
+          <span class="sec-title-es">Posteando la Recepción — Paso a Paso</span>
+        </div>
+        <div class="sec-desc">El recorrido completo dentro de la app Post Goods Receipt for Purchasing Document.</div>
+        <span class="sec-tag deep">Profundización de T1 §04</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      En el Tipo 1 vimos <strong>qué</strong> controla el sistema al recibir mercadería. Acá vemos <strong>cómo</strong> se ejecuta ese control dentro de la app: el responsable de depósito ingresa el número de orden de compra (o el proveedor/planta), el sistema propone los documentos que coinciden, se seleccionan las posiciones abiertas, se ajustan cantidades y ubicación si hace falta, y recién entonces se postea.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row" style="min-width:960px;">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🔢</span><span class="title-en">Enter Reference</span><span class="title-es">Ingresa Referencia</span>
+          </div>
+          <div class="flow-step-body"><p>Ingresa el número de la orden de compra, o el nombre del proveedor/planta.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">📋</span><span class="title-en">System Proposes</span><span class="title-es">El Sistema Propone</span>
+          </div>
+          <div class="flow-step-body"><p>Se muestra una lista con todos los documentos de compra que coinciden con la búsqueda.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">📦</span><span class="title-en">Select &amp; Review</span><span class="title-es">Selecciona y Revisa</span>
+          </div>
+          <div class="flow-step-body"><p>Al elegir la orden, se muestran todas sus posiciones abiertas en la lista de ítems.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;">
+            <span class="icon">✏️</span><span class="title-en">Adjust Values</span><span class="title-es">Ajusta Valores</span>
+          </div>
+          <div class="flow-step-body"><p>Corrige la cantidad propuesta si hace falta y define la ubicación de almacenamiento.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">✅</span><span class="title-en">Post</span><span class="title-es">Postea</span>
+          </div>
+          <div class="flow-step-body"><p>Se genera el documento de material y el documento contable en simultáneo.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — PROFUNDIZACIÓN — tabla: mecanismo de valuación del inventario -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Inventory Valuation — Quantity &amp; Value</span>
+          <span class="sec-title-es">Valuación de Inventario — Cantidad y Valor</span>
+        </div>
+        <div class="sec-desc">Las cuatro dimensiones que se actualizan con cada movimiento de mercadería.</div>
+        <span class="sec-tag deep">Profundización de T1 §05</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      En el Tipo 1 dijimos que Inventory Management administra el stock <strong>en cantidad y en valor</strong>. En profundidad, esto significa que un mismo movimiento de mercadería dispara <strong>cuatro actualizaciones simultáneas</strong>: la cantidad física en stock, el valor monetario según el método de valuación vigente, las cuentas de mayor de inventario, y — cuando corresponde — las imputaciones de Controlling.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Dimensión</th><th>Qué ocurre con cada movimiento</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">📦 Quantity</span><span class="mod-en">Cantidad</span></td>
+            <td>El stock disponible aumenta o disminuye exactamente en la cantidad del movimiento registrado.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">💶 Value</span><span class="mod-en">Valor</span></td>
+            <td>El valor del stock se actualiza según el método de valuación vigente para el material.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📒 G/L Accounts</span><span class="mod-en">Cuentas de Mayor</span></td>
+            <td>Las cuentas de inventario en el Libro Mayor reflejan el nuevo valor en tiempo real.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🧮 Cost Assignments</span><span class="mod-en">Imputaciones de Costos</span></td>
+            <td>Si el movimiento lo amerita, se actualizan los objetos de Controlling asociados (por ejemplo un centro de costo).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — ADYACENTE — branch: tipos de bloqueo de factura -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Invoice Blocking Reasons</span>
+          <span class="sec-title-es">Motivos de Bloqueo de Factura</span>
+        </div>
+        <div class="sec-desc">Las dos causas más comunes por las que una factura queda retenida.</div>
+        <span class="sec-tag adj">Tema adyacente</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      En el Tipo 1 vimos que una factura se bloquea cuando hay una desviación fuera de tolerancia. Esa desviación tiene, en general, <strong>dos causas independientes</strong>: una diferencia de <strong>cantidad</strong> (lo facturado no coincide con lo recibido) o una diferencia de <strong>precio</strong> (lo facturado no coincide con lo pactado en la orden o en el registro de información de compras). Cualquiera de las dos, por separado, es suficiente para bloquear la factura.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="80" x2="450" y2="105" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="230" y1="105" x2="670" y2="105" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="230" y1="105" x2="230" y2="125" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="670" y1="105" x2="670" y2="125" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="230" y1="225" x2="230" y2="245" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="670" y1="225" x2="670" y2="245" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="230" y1="245" x2="670" y2="245" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="245" x2="450" y2="260" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="330" y="20" width="240" height="60" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="46" text-anchor="middle" fill="white" class="box-label">Deviation Detected</text>
+        <text x="450" y="63" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">Desvío Detectado en la Verificación</text>
+
+        <rect x="90" y="125" width="280" height="100" rx="10" fill="#1A4B8C"/>
+        <text x="230" y="152" text-anchor="middle" fill="white" class="box-label">Quantity Block</text>
+        <text x="230" y="168" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Bloqueo de Cantidad</text>
+        <text x="230" y="188" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9.5">La cantidad facturada no coincide</text>
+        <text x="230" y="201" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9.5">con la recibida en la Goods Receipt</text>
+
+        <rect x="530" y="125" width="280" height="100" rx="10" fill="#7E4FBF"/>
+        <text x="670" y="152" text-anchor="middle" fill="white" class="box-label">Price Block</text>
+        <text x="670" y="168" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Bloqueo de Precio</text>
+        <text x="670" y="188" text-anchor="middle" fill="#E4D4F7" class="box-sub" font-size="9.5">El precio facturado difiere del pactado</text>
+        <text x="670" y="201" text-anchor="middle" fill="#E4D4F7" class="box-sub" font-size="9.5">en la orden o el info record</text>
+
+        <rect x="300" y="260" width="300" height="40" rx="8" fill="#C0392B"/>
+        <text x="450" y="284" text-anchor="middle" fill="white" class="box-label">🚫 Invoice Blocked for Payment</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — PROFUNDIZACIÓN — tabla comparativa del matching de 3 vías -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Three-Way Matching Mechanism</span>
+          <span class="sec-title-es">El Mecanismo del Matching de Tres Vías</span>
+        </div>
+        <div class="sec-desc">Campo por campo: qué compara el sistema entre orden, recepción y factura.</div>
+        <span class="sec-tag deep">Profundización de T1 §06</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El bloqueo de una factura no es una decisión binaria general: el sistema compara <strong>campo por campo</strong> entre la orden de compra, la recepción de mercadería y la factura. La tolerancia permitida para cada diferencia — llamada <strong>grupo de tolerancia</strong> — se configura por campo, por lo que una pequeña diferencia de precio puede pasar mientras una diferencia de cantidad la misma magnitud no.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Campo</th><th>Purchase Order</th><th>Goods Receipt</th><th>Supplier Invoice</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">Material</span></td>
+            <td>Material pedido</td>
+            <td>Material efectivamente recibido</td>
+            <td>Material facturado</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Cantidad</span></td>
+            <td>Cantidad ordenada</td>
+            <td>Cantidad recibida (puede ser parcial)</td>
+            <td>Cantidad facturada <span class="badge badge-alert">dentro de tolerancia</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Precio</span></td>
+            <td>Precio acordado (info record)</td>
+            <td>— no aplica —</td>
+            <td>Precio facturado <span class="badge badge-alert">dentro de tolerancia</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — PROFUNDIZACIÓN — flow: pantallas de Create Supplier Invoice -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Supplier Invoice App — Screen Flow</span>
+          <span class="sec-title-es">La App de Factura de Proveedor — Recorrido de Pantallas</span>
+        </div>
+        <div class="sec-desc">Los cuatro pasos dentro de Create Supplier Invoice, de la cabecera al posteo.</div>
+        <span class="sec-tag deep">Profundización de T1 §07</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El contador de Cuentas por Pagar usa la app <strong>Create Supplier Invoice</strong> siguiendo un recorrido de cuatro pasos: primero carga los datos básicos de cabecera, después referencia la orden de compra, el sistema propone las posiciones relevantes, y finalmente compara y corrige antes de postear.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row" style="min-width:820px;">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🏢</span><span class="title-en">Basic Data</span><span class="title-es">Datos Básicos</span>
+          </div>
+          <div class="flow-step-body"><p>Selecciona la sociedad, ingresa importe bruto, fecha de factura y número de referencia.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">🔗</span><span class="title-en">PO Reference</span><span class="title-es">Referencia a la OC</span>
+          </div>
+          <div class="flow-step-body"><p>Especifica a qué posiciones de orden de compra corresponde la factura.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">📑</span><span class="title-en">Item Proposal</span><span class="title-es">Propuesta de Ítems</span>
+          </div>
+          <div class="flow-step-body"><p>El sistema propone automáticamente todas las posiciones relevantes de la orden.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">⚖️</span><span class="title-en">Compare &amp; Post</span><span class="title-es">Compara y Postea</span>
+          </div>
+          <div class="flow-step-body"><p>Corrige cantidad, importe y código de impuesto si hace falta, y postea.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — ADYACENTE — tabla: GR/IR clearing account -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">GR/IR Clearing Account</span>
+          <span class="sec-title-es">Cuenta de Compensación GR/IR</span>
+        </div>
+        <div class="sec-desc">La cuenta puente que conecta la recepción de mercadería con la factura del proveedor.</div>
+        <span class="sec-tag adj">Tema adyacente</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Entre el momento en que se recibe la mercadería y el momento en que llega la factura del proveedor, el sistema necesita una cuenta puente: la <strong>GR/IR Clearing Account</strong> (cuenta de compensación mercadería/factura). Al postear la recepción, se debita el stock y se acredita esta cuenta como un pasivo <strong>provisorio</strong>. Al postear la factura, se debita esa misma cuenta — cancelándola — y se acredita la cuenta real del proveedor. Ejemplo: una recepción de mercadería por <strong>€1.000</strong> deja la cuenta GR/IR en €1.000 (haber); cuando llega la factura por el mismo importe, la cuenta vuelve a <strong>€0</strong>.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Documento</th><th>Debe</th><th>Haber</th><th>Efecto</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">📦 Goods Receipt</span><span class="mod-en">Recepción de Mercadería</span></td>
+            <td>Stock (Inventario) — €1.000</td>
+            <td>GR/IR Clearing Account — €1.000</td>
+            <td><span class="badge badge-neutral">Pasivo provisorio</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🧾 Supplier Invoice</span><span class="mod-en">Factura del Proveedor</span></td>
+            <td>GR/IR Clearing Account — €1.000</td>
+            <td>Accounts Payable (Proveedor) — €1.000</td>
+            <td><span class="badge badge-accent">Cuenta compensada a €0</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — PROFUNDIZACIÓN — flow: mecanismo real-time de reconciliation accounts -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reconciliation Accounts — the Real-Time Mechanism</span>
+          <span class="sec-title-es">Cuentas de Enlace — el Mecanismo en Tiempo Real</span>
+        </div>
+        <div class="sec-desc">Por qué no hace falta un proceso por lotes para que el sub-libro llegue al Libro Mayor.</div>
+        <span class="sec-tag deep">Profundización de T1 §08 y §10</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      En el Tipo 1 dijimos que las cuentas de enlace actualizan el Libro Mayor en <strong>tiempo real</strong>. En profundidad: cuando se postea un documento en un sub-libro (por ejemplo una factura de proveedor en Accounts Payable), el sistema genera <strong>simultáneamente</strong> el documento contable correspondiente — no hay un proceso de sincronización por lotes ni demora. Los datos se registran de forma variable en el sub-libro y se transmiten en versión condensada a la Contabilidad General.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row" style="min-width:700px;">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">📥</span><span class="title-en">Subledger Posting</span><span class="title-es">Posteo en Sub-Libro</span>
+          </div>
+          <div class="flow-step-body"><p>Se registra un documento en un sub-libro, por ejemplo una factura en Accounts Payable.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">⚡</span><span class="title-en">Simultaneous FI Document</span><span class="title-es">Documento FI Simultáneo</span>
+          </div>
+          <div class="flow-step-body"><p>El sistema genera el documento contable en el mismo instante, sin proceso por lotes.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">📒</span><span class="title-en">GL Updated</span><span class="title-es">GL Actualizado</span>
+          </div>
+          <div class="flow-step-body"><p>La cuenta de enlace refleja el movimiento en el Libro Mayor de inmediato.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — ADYACENTE — branch: 3 tipos de plan de cuentas -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Three Charts of Accounts per Company Code</span>
+          <span class="sec-title-es">Tres Planes de Cuentas por Sociedad</span>
+        </div>
+        <div class="sec-desc">El operativo es obligatorio; el de grupo y el de país son opcionales pero muy usados.</div>
+        <span class="sec-tag adj">Tema adyacente</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      En el Tipo 1 vimos el <strong>Operating Chart of Accounts</strong> (obligatorio, las cuentas que usan los contadores día a día). Una sociedad puede tener, además, hasta otros dos planes de cuentas <strong>en paralelo</strong> — no anidados, sino ramas independientes desde la misma sociedad: uno de <strong>grupo</strong>, para uniformar cuentas entre distintas sociedades a la hora de consolidar, y uno de <strong>país</strong>, para cumplir requisitos de reporte legal local.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="80" x2="450" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="100" x2="750" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="100" x2="150" y2="120" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="100" x2="450" y2="120" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="750" y1="100" x2="750" y2="120" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="330" y="20" width="240" height="60" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="46" text-anchor="middle" fill="white" class="box-label">Company Code</text>
+        <text x="450" y="63" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">Sociedad</text>
+
+        <rect x="30" y="120" width="240" height="110" rx="10" fill="#A94444"/>
+        <text x="150" y="148" text-anchor="middle" fill="white" class="box-label">Operating COA</text>
+        <text x="150" y="164" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Plan Operativo</text>
+        <text x="150" y="182" text-anchor="middle" fill="#F5D8D8" class="box-sub" font-size="9">Obligatorio · cuentas usadas</text>
+        <text x="150" y="194" text-anchor="middle" fill="#F5D8D8" class="box-sub" font-size="9">al postear documentos</text>
+        <text x="150" y="212" text-anchor="middle" fill="#F5D8D8" class="box-sub" font-size="9">Ej: YCOA</text>
+
+        <rect x="330" y="120" width="240" height="110" rx="10" fill="#1A4B8C"/>
+        <text x="450" y="148" text-anchor="middle" fill="white" class="box-label">Group COA</text>
+        <text x="450" y="164" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Plan de Grupo</text>
+        <text x="450" y="182" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9">Opcional · uniforma cuentas</text>
+        <text x="450" y="194" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9">entre sociedades del grupo</text>
+        <text x="450" y="212" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9">Base para consolidar</text>
+
+        <rect x="630" y="120" width="240" height="110" rx="10" fill="#00A896"/>
+        <text x="750" y="148" text-anchor="middle" fill="white" class="box-label">Country COA</text>
+        <text x="750" y="164" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Plan de País</text>
+        <text x="750" y="182" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9">Opcional · reporte legal</text>
+        <text x="750" y="194" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9">local por país</text>
+        <text x="750" y="212" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9">Ej: HGB en Alemania</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — ADYACENTE — flow: pago automático -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Automatic Payment Run</span>
+          <span class="sec-title-es">La Ejecución Automática de Pagos</span>
+        </div>
+        <div class="sec-desc">Cómo el sistema decide qué pagar, revisa excepciones y emite el medio de pago.</div>
+        <span class="sec-tag adj">Tema adyacente</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      En el Tipo 1 vimos que un pago requiere definir el método, el banco, las posiciones y el importe. Cuando ese pago se ejecuta de forma <strong>automática</strong>, el sistema sigue cuatro pasos: arma una propuesta con las posiciones vencidas, permite revisar excepciones, ejecuta el pago posteando los documentos correspondientes, y finalmente emite el medio de pago para enviarlo al proveedor.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row" style="min-width:820px;">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🗂️</span><span class="title-en">Payment Proposal</span><span class="title-es">Propuesta de Pago</span>
+          </div>
+          <div class="flow-step-body"><p>El sistema selecciona automáticamente las posiciones abiertas próximas a vencer.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">🔍</span><span class="title-en">Review Exceptions</span><span class="title-es">Revisa Excepciones</span>
+          </div>
+          <div class="flow-step-body"><p>Se revisan posiciones que quedaron fuera de la propuesta por algún bloqueo o error.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">▶️</span><span class="title-en">Payment Run</span><span class="title-es">Ejecución de Pago</span>
+          </div>
+          <div class="flow-step-body"><p>Se postea el documento de pago para cada posición aprobada en la propuesta.</p></div>
+          <div class="flow-connector"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">🖨️</span><span class="title-en">Payment Medium</span><span class="title-es">Medio de Pago</span>
+          </div>
+          <div class="flow-step-body"><p>Se genera e imprime, o envía, el medio de pago correspondiente al proveedor.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 2 — Profundización). No repite vocabulario del Tipo 1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Material Type</div><div class="term-es">Tipo de Material</div><div class="term-def">Clasificación del material master que determina qué vistas y campos son relevantes.</div></div>
+      <div class="gcard"><div class="term-en">Basic Data View</div><div class="term-es">Vista de Datos Básicos</div><div class="term-def">Vista del material master mantenida por Ingeniería, válida para todos los departamentos.</div></div>
+      <div class="gcard"><div class="term-en">Invoice Block</div><div class="term-es">Bloqueo de Factura</div><div class="term-def">Retención de una factura para pago hasta resolver una desviación fuera de tolerancia.</div></div>
+      <div class="gcard"><div class="term-en">Quantity Block</div><div class="term-es">Bloqueo de Cantidad</div><div class="term-def">Bloqueo generado cuando la cantidad facturada no coincide con la recibida.</div></div>
+      <div class="gcard"><div class="term-en">Price Block</div><div class="term-es">Bloqueo de Precio</div><div class="term-def">Bloqueo generado cuando el precio facturado difiere del pactado en la orden.</div></div>
+      <div class="gcard"><div class="term-en">Tolerance Group</div><div class="term-es">Grupo de Tolerancia</div><div class="term-def">Configuración que define el margen de diferencia aceptable por campo en la verificación.</div></div>
+      <div class="gcard"><div class="term-en">GR/IR Clearing Account</div><div class="term-es">Cuenta de Compensación GR/IR</div><div class="term-def">Cuenta puente entre la recepción de mercadería y la factura, que se compensa a cero.</div></div>
+      <div class="gcard"><div class="term-en">Collective Posting</div><div class="term-es">Posteo Colectivo</div><div class="term-def">Actualización condensada que un sub-libro transmite a la Contabilidad General.</div></div>
+      <div class="gcard"><div class="term-en">Group Chart of Accounts</div><div class="term-es">Plan de Cuentas de Grupo</div><div class="term-def">Plan de cuentas opcional que uniforma cuentas entre sociedades para consolidar.</div></div>
+      <div class="gcard"><div class="term-en">Country Chart of Accounts</div><div class="term-es">Plan de Cuentas de País</div><div class="term-def">Plan de cuentas opcional que cumple los requisitos legales de reporte de un país.</div></div>
+      <div class="gcard"><div class="term-en">Payment Proposal</div><div class="term-es">Propuesta de Pago</div><div class="term-def">Lista de posiciones abiertas que el sistema selecciona para el próximo pago automático.</div></div>
+      <div class="gcard"><div class="term-en">Payment Medium</div><div class="term-es">Medio de Pago</div><div class="term-def">Documento o archivo generado al final del pago automático para enviar al proveedor.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Procure to Pay · Biblioteca de Guías SAP · Temas adyacentes + profundización del Tipo 1</footer>
+
+</body>
+</html>

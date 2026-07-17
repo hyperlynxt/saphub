@@ -81,6 +81,15 @@ const COURSE_META = {
   },
   "gl-parallelaccountingdocsplitting": {
     desc: "How SAP keeps multiple accounting standards in sync at once, and how document splitting breaks one transaction into balanced, dimension-complete postings."
+  },
+  "o2c-ordertocash": {
+    desc: "The end-to-end sales process: from customer inquiry and sales order through delivery and billing to the incoming payment."
+  },
+  "p2p-procuretopay": {
+    desc: "The end-to-end purchasing process: from purchase requisition and purchase order through goods receipt and invoice verification to vendor payment."
+  },
+  "pp-plantoproduce": {
+    desc: "The end-to-end manufacturing process: from demand and production planning through order execution and confirmation to goods receipt of the finished product."
   }
 };
 

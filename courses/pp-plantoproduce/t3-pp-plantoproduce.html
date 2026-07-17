@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Plan to Produce — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-blue-dark:#0040A0;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+  .sec-actor.julie{ background:rgba(126,79,191,0.1); color:#6B4C8F; }
+  .sec-actor.julie .dot{ background:#6B4C8F; }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-appbar .tag{ background:#FFF3CD; color:#8A6A1E; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-body{ padding:22px 20px; }
+  .fiori-tabs{ display:flex; gap:22px; border-bottom:1px solid #EAEAEA; margin-bottom:18px; }
+  .fiori-tab{ padding:7px 2px; font-size:0.8rem; color:var(--sap-muted); border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px 22px; margin-bottom:6px; }
+  .fiori-field label{ display:block; font-size:0.7rem; color:var(--sap-muted); margin-bottom:4px; }
+  .fiori-field .val{ font-size:0.83rem; color:var(--sap-text); padding:7px 10px; background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; }
+  .fiori-field .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-table td.num{ text-align:right; font-family:'JetBrains Mono',monospace; }
+  .fiori-table tr.total td{ font-weight:700; border-top:1.5px solid var(--sap-border); border-bottom:none; }
+  .fiori-table tr.flag td{ background:#FDEDEC; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .fiori-btn.text{ border:none; color:var(--sap-blue); background:none; padding:7px 4px; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.open{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-status.alert{ background:#FDEDEC; color:#B93A2E; }
+  .fiori-list-item{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border:1px solid var(--sap-border); border-radius:6px; margin-bottom:8px; }
+  .fiori-list-item .li-title{ font-size:0.85rem; font-weight:600; color:var(--sap-text); }
+  .fiori-list-item .li-sub{ font-size:0.72rem; color:var(--sap-muted); margin-top:2px; }
+  .fiori-pill{ font-size:0.66rem; font-weight:700; padding:3px 9px; border-radius:20px; }
+  .fiori-pill.public{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-pill.private{ background:#F0F0F0; color:#5A5A5A; }
+  .fiori-pill.held{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-pill.alert{ background:#FDEDEC; color:#B93A2E; }
+
+  .kpi-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .kpi-tile{ background:white; border:1px solid var(--sap-border); border-radius:8px; padding:18px 16px; }
+  .kpi-tile .kpi-icon{ font-size:19px; margin-bottom:9px; display:block; }
+  .kpi-tile .kpi-val{ font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem; color:var(--sap-text); }
+  .kpi-tile .kpi-trend{ font-size:0.68rem; font-weight:700; margin-left:3px; }
+  .kpi-tile .kpi-trend.up{ color:#1D7A3E; }
+  .kpi-tile .kpi-trend.warn{ color:#8A6A1E; }
+  .kpi-tile .kpi-label{ font-size:0.72rem; color:var(--sap-muted); margin-top:7px; }
+
+  .sim-banner{ display:flex; align-items:center; gap:10px; background:#E4F5E9; border:1px solid #B8E0C4; border-radius:8px; padding:12px 16px; margin-bottom:16px; color:#1D7A3E; font-weight:700; font-size:0.85rem; }
+  .alert-banner{ display:flex; align-items:center; gap:10px; background:#FDEDEC; border:1px solid #F2B8B0; border-radius:8px; padding:12px 16px; margin-bottom:16px; color:#B93A2E; font-weight:700; font-size:0.85rem; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  /* tree list para BOM en fiori (secc.03) */
+  .fiori-tree{ font-size:0.85rem; }
+  .fiori-tree .t-item{ display:flex; align-items:center; gap:10px; padding:9px 10px; border-bottom:1px solid #F0F0F0; }
+  .fiori-tree .t-item .indent1{ margin-left:26px; }
+  .fiori-tree .t-item .indent2{ margin-left:52px; }
+  .fiori-tree .t-item .qty{ margin-left:auto; font-family:'JetBrains Mono',monospace; color:var(--sap-muted); font-size:0.78rem; }
+  .fiori-tree .t-item .lbl{ color:var(--sap-text); }
+  .fiori-tree .t-item.lvl0{ font-weight:700; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:780px){ .fiori-field-grid{ grid-template-columns:1fr 1fr; } .kpi-grid{ grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Schedule MRP</a>
+  <a href="#s2">Stock/Req. List</a>
+  <a href="#s3">BOM Display</a>
+  <a href="#s4">Convert Order</a>
+  <a href="#s5">Release Order</a>
+  <a href="#s6">Goods Issue</a>
+  <a href="#s7">Confirmation</a>
+  <a href="#s8">Goods Receipt</a>
+  <a href="#s9">Order Monitor</a>
+  <a href="#s10">Availability</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Production Planning</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Manufacturing Execution</span>
+    </div>
+    <h1><span class="accent">Plan</span> to Produce</h1>
+    <h2>Del Plan a la Producción — Vivido por el Usuario</h2>
+    <p class="desc">Cómo se vive el proceso Plan-to-Produce desde Fiori, día a día: correr el MRP, revisar faltantes, liberar y confirmar órdenes, contabilizar movimientos de mercadería — pantallas reales, un caso a la vez.</p>
+    <div class="protagonist">
+      <div class="avatar">B</div>
+      <div>
+        <div class="p-name">Billie</div>
+        <div class="p-role">Production Planner · Bike GmbH (Plant 1010)</div>
+        <div class="p-note">Guía principal de este recorrido — Julie (Ejecución de Producción) aparece en las secciones 5 a 8</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Scheduling the MRP Run</span>
+          <span class="sec-title-es">Programando la corrida de MRP</span>
+          <span class="sec-actor"><span class="dot">B</span>Billie</span>
+        </div>
+        <div class="sec-desc">El punto de partida diario: lanzar el cálculo que va a revisar todos los materiales del plant.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Todas las mañanas, Billie corre el <strong>MRP</strong> para el Plant 1010. Antes de lanzarlo, revisa el alcance: qué materiales entran, y si corre en modo <strong>Net Change</strong> (solo lo que cambió) o completo.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Production Planning</div><span class="sep">›</span>
+      <div class="crumb">Material Requirements Planning</div><span class="sep">›</span>
+      <div class="crumb current">Schedule MRP Runs</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Schedule MRP Runs</div>
+      <div class="fiori-appbar">
+        <div><h6>Nueva corrida — Plant 1010</h6><span class="sub">Processing Key: NETCH (Net Change Planning)</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Plant</label><div class="val filled">1010 · Bike GmbH Production</div></div>
+          <div class="fiori-field"><label>MRP Control Parameters</label><div class="val filled">1 · Total Planning Online</div></div>
+          <div class="fiori-field"><label>Processing Key</label><div class="val filled">NETCH</div></div>
+          <div class="fiori-field"><label>Create Purchase Req.</label><div class="val filled">2 · Purchase Requisitions</div></div>
+          <div class="fiori-field"><label>Schedule Lines</label><div class="val filled">3 · Schedule Lines</div></div>
+          <div class="fiori-field"><label>Planning Mode</label><div class="val">1 · Adapt planning data</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Guardar como variante</button>
+          <button class="fiori-btn primary">Schedule</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking the Stock/Requirements List</span>
+          <span class="sec-title-es">Revisando la lista de stock/necesidades</span>
+          <span class="sec-actor"><span class="dot">B</span>Billie</span>
+        </div>
+        <div class="sec-desc">Después de la corrida, Billie verifica qué materiales quedaron con faltante.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Billie abre la <strong>Stock/Requirements List</strong> del material <strong>Chain</strong> (cadena de bicicleta) y confirma lo que el MRP calculó: un faltante de <strong>100 unidades</strong>, con la solicitud de pedido ya generada para cubrirlo.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Production Planning</div><span class="sep">›</span>
+      <div class="crumb">Material Requirements Planning</div><span class="sep">›</span>
+      <div class="crumb current">Stock/Requirements List</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Stock/Requirements List</div>
+      <div class="fiori-appbar">
+        <div><h6>Material: CHAIN-STD · Chain</h6><span class="sub">Plant 1010 · MRP Type: PD</span></div>
+        <span class="tag">Shortage detectado</span>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Fecha</th><th>Elemento MRP</th><th>Cantidad</th><th>Stock disponible</th></tr></thead>
+          <tbody>
+            <tr><td>—</td><td>Stock Actual</td><td class="num">240</td><td class="num">240</td></tr>
+            <tr><td>18.03</td><td>Sales Order 4500123 (req.)</td><td class="num">-340</td><td class="num">-100</td></tr>
+            <tr class="flag"><td>18.03</td><td>⚠ Purchase Requisition (nueva)</td><td class="num">+100</td><td class="num">0</td></tr>
+          </tbody>
+        </table>
+        <div class="alert-banner">⚠ Faltante de 100 unidades detectado — Purchase Requisition creada automáticamente</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Bill of Material</span>
+          <span class="sec-title-es">Revisando la lista de materiales</span>
+          <span class="sec-actor"><span class="dot">B</span>Billie</span>
+        </div>
+        <div class="sec-desc">Antes de convertir la orden, Billie confirma que el BOM del producto terminado esté completo.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Billie abre la <strong>BOM</strong> del producto terminado <strong>Bike Model X</strong> para confirmar que el conjunto <strong>Frame Assembly</strong> y el resto de los componentes directos estén correctamente definidos antes de disparar la producción.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Production Planning</div><span class="sep">›</span>
+      <div class="crumb">Master Data</div><span class="sep">›</span>
+      <div class="crumb current">Display Bill of Material</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Display Bill of Material</div>
+      <div class="fiori-appbar">
+        <div><h6>Material: BIKE-X · Bike Model X</h6><span class="sub">Plant 1010 · BOM Usage: 1 (Production)</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tree">
+          <div class="t-item lvl0"><span class="lbl">🚲 Bike Model X</span><span class="qty">1 EA</span></div>
+          <div class="t-item"><span class="lbl indent1">⚙️ Frame Assembly</span><span class="qty">1 EA</span></div>
+          <div class="t-item"><span class="lbl indent2">Frame (raw)</span><span class="qty">1 EA</span></div>
+          <div class="t-item"><span class="lbl indent2">Welding Kit</span><span class="qty">1 SET</span></div>
+          <div class="t-item"><span class="lbl indent1">⚙️ Wheel Assembly</span><span class="qty">2 EA</span></div>
+          <div class="t-item"><span class="lbl indent2">Rim</span><span class="qty">2 EA</span></div>
+          <div class="t-item"><span class="lbl indent2">Spoke Set</span><span class="qty">2 SET</span></div>
+          <div class="t-item"><span class="lbl indent1">🔗 Chain</span><span class="qty">1 EA</span></div>
+          <div class="t-item"><span class="lbl indent1">🪑 Saddle</span><span class="qty">1 EA</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Converting a Planned Order to a Production Order</span>
+          <span class="sec-title-es">Convirtiendo una orden planificada en orden de producción</span>
+          <span class="sec-actor"><span class="dot">B</span>Billie</span>
+        </div>
+        <div class="sec-desc">La orden planificada del faltante de Frame Assembly ya está firmada — es momento de convertirla.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La orden planificada para reponer <strong>Frame Assembly</strong> ya fue <strong>firmada</strong>. Billie la convierte en una <strong>orden de producción</strong> individual, lista para pasar a manos de Julie en planta.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Production Planning</div><span class="sep">›</span>
+      <div class="crumb">Production Control</div><span class="sep">›</span>
+      <div class="crumb current">Convert Planned Order to Production Order</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Convert Planned Order to Production Order</div>
+      <div class="fiori-appbar">
+        <div><h6>Planned Order 1000482 · Frame Assembly</h6><span class="sub">Plant 1010</span></div>
+        <span class="fiori-status ok">Firmed</span>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Material</label><div class="val filled">FRAME-ASM · Frame Assembly</div></div>
+          <div class="fiori-field"><label>Order Quantity</label><div class="val filled">40 EA</div></div>
+          <div class="fiori-field"><label>Order Type</label><div class="val filled">PP01 · Production Order</div></div>
+          <div class="fiori-field"><label>Basic Start Date</label><div class="val filled">19.03.2026</div></div>
+          <div class="fiori-field"><label>Basic Finish Date</label><div class="val filled">22.03.2026</div></div>
+          <div class="fiori-field"><label>Work Center</label><div class="val filled">ASSY-01</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Cancelar</button>
+          <button class="fiori-btn primary">Convert</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Releasing the Production Order</span>
+          <span class="sec-title-es">Liberando la orden de producción</span>
+          <span class="sec-actor julie"><span class="dot">J</span>Julie</span>
+        </div>
+        <div class="sec-desc">La orden llega creada a planta — Julie la revisa y la libera para poder empezar a trabajarla.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Julie recibe la orden de producción de <strong>Frame Assembly</strong> en estado <strong>Created</strong>. Antes de liberarla, revisa que los componentes estén disponibles — y confirma con <strong>Release</strong>.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Production Planning</div><span class="sep">›</span>
+      <div class="crumb">Production Control</div><span class="sep">›</span>
+      <div class="crumb current">Manage Production Orders</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Production Orders</div>
+      <div class="fiori-appbar">
+        <div><h6>Production Order 60004821 · Frame Assembly</h6><span class="sub">40 EA · Work Center ASSY-01</span></div>
+        <span class="fiori-status open">Created</span>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab active">General</div>
+          <div class="fiori-tab">Components</div>
+          <div class="fiori-tab">Operations</div>
+          <div class="fiori-tab">Costs</div>
+        </div>
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Material</label><div class="val filled">FRAME-ASM · Frame Assembly</div></div>
+          <div class="fiori-field"><label>Order Quantity</label><div class="val filled">40 EA</div></div>
+          <div class="fiori-field"><label>Basic Dates</label><div class="val filled">19.03 – 22.03.2026</div></div>
+        </div>
+        <div class="sim-banner">✓ Material Availability Check: todos los componentes disponibles</div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Guardar</button>
+          <button class="fiori-btn primary">Release</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Goods Issue for Components</span>
+          <span class="sec-title-es">Contabilizando la salida de mercadería de componentes</span>
+          <span class="sec-actor julie"><span class="dot">J</span>Julie</span>
+        </div>
+        <div class="sec-desc">Antes de armar el conjunto, Julie retira del almacén los componentes que la orden necesita.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Con la orden liberada, Julie retira del <strong>almacén central</strong> los componentes necesarios y contabiliza la <strong>salida de mercadería (Goods Issue)</strong> contra la orden de producción.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Production Planning</div><span class="sep">›</span>
+      <div class="crumb">Production Execution</div><span class="sep">›</span>
+      <div class="crumb current">Post Goods Movement</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Post Goods Movement</div>
+      <div class="fiori-appbar">
+        <div><h6>Goods Issue · Order 60004821</h6><span class="sub">Movement Type: 261 (GI for Order)</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Componente</th><th>Cantidad requerida</th><th>Cantidad emitida</th><th>Almacén</th></tr></thead>
+          <tbody>
+            <tr><td>Frame (raw)</td><td class="num">40 EA</td><td class="num">40 EA</td><td>Central WH</td></tr>
+            <tr><td>Welding Kit</td><td class="num">40 SET</td><td class="num">40 SET</td><td>Central WH</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Guardar borrador</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Raw Materials Consumption → Debe</b>, porque es un gasto de producción que aumenta al consumir el componente. <b>Raw Material Inventory → Haber</b>, porque el activo (stock de Frame y Welding Kit) disminuye al salir del almacén hacia la orden.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Confirming the Production Order</span>
+          <span class="sec-title-es">Confirmando la orden de producción</span>
+          <span class="sec-actor julie"><span class="dot">J</span>Julie</span>
+        </div>
+        <div class="sec-desc">Con el armado terminado, Julie registra el avance real de la operación.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Terminada la operación de armado, Julie confirma <strong>38 unidades buenas</strong> y <strong>2 de rechazo (scrap)</strong> — el sistema actualiza el progreso de la orden y trackea la demora si la hay.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Production Planning</div><span class="sep">›</span>
+      <div class="crumb">Production Execution</div><span class="sep">›</span>
+      <div class="crumb current">Confirm Production Order</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Confirm Production Order</div>
+      <div class="fiori-appbar">
+        <div><h6>Order 60004821 · Operation 0020 Assembly</h6><span class="sub">Work Center ASSY-01</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Yield (Good)</label><div class="val filled">38 EA</div></div>
+          <div class="fiori-field"><label>Scrap</label><div class="val filled">2 EA</div></div>
+          <div class="fiori-field"><label>Confirmation Type</label><div class="val filled">Milestone Confirmation</div></div>
+          <div class="fiori-field"><label>Actual Work</label><div class="val filled">6,4 h</div></div>
+          <div class="fiori-field"><label>Personnel Number</label><div class="val filled">Julie · PROD-014</div></div>
+          <div class="fiori-field"><label>Final Confirmation</label><div class="val">☐ No</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Cancelar</button>
+          <button class="fiori-btn primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Goods Receipt</span>
+          <span class="sec-title-es">Contabilizando la entrada de mercadería</span>
+          <span class="sec-actor julie"><span class="dot">J</span>Julie</span>
+        </div>
+        <div class="sec-desc">El último paso: recibir en stock lo que salió bien de la operación.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Con la confirmación registrada, Julie contabiliza la <strong>entrada de mercadería (Goods Receipt)</strong> de las 38 unidades buenas de <strong>Frame Assembly</strong> — el sistema actualiza el stock disponible para la siguiente etapa de armado del Bike Model X.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Production Planning</div><span class="sep">›</span>
+      <div class="crumb">Production Execution</div><span class="sep">›</span>
+      <div class="crumb current">Post Goods Movement</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Post Goods Movement</div>
+      <div class="fiori-appbar">
+        <div><h6>Goods Receipt · Order 60004821</h6><span class="sub">Movement Type: 101 (GR for Order)</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Material</th><th>Cantidad a recibir</th><th>Almacén destino</th><th>Lote</th></tr></thead>
+          <tbody>
+            <tr><td>FRAME-ASM · Frame Assembly</td><td class="num">38 EA</td><td>Semi-Finished WH</td><td>BATCH-0322</td></tr>
+            <tr class="total"><td colspan="3">Total recibido</td><td class="num">38 EA</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Guardar borrador</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Finished/Semi-Finished Goods Inventory → Debe</b>, porque el activo de stock aumenta con las 38 unidades recién producidas. <b>Change in Stock (Semi-Finished) → Haber</b>, la cuenta de compensación que refleja la producción del período frente al costo acumulado en la orden.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Monitoring Open Production Orders</span>
+          <span class="sec-title-es">Monitoreando las órdenes de producción abiertas</span>
+          <span class="sec-actor"><span class="dot">B</span>Billie</span>
+        </div>
+        <div class="sec-desc">Una vista de conjunto para detectar demoras antes de que se conviertan en un problema.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cada tarde, Billie abre el dashboard de <strong>Manage Production Orders</strong> para ver el estado general del Plant 1010: cuántas órdenes están abiertas, liberadas, o vencidas respecto a su fecha básica de fin.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Production Planning</div><span class="sep">›</span>
+      <div class="crumb">Production Control</div><span class="sep">›</span>
+      <div class="crumb current">Manage Production Orders — Overview</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Production Orders</div>
+      <div class="fiori-appbar">
+        <div><h6>Plant 1010 — Vista de hoy</h6><span class="sub">18.03.2026</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="kpi-grid">
+          <div class="kpi-tile"><span class="kpi-icon">📋</span><span class="kpi-val">12</span><span class="kpi-label">Created</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">🔓</span><span class="kpi-val">27</span><span class="kpi-trend up">↑</span><span class="kpi-label">Released</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">✅</span><span class="kpi-val">54</span><span class="kpi-label">Confirmed (mes)</span></div>
+          <div class="kpi-tile"><span class="kpi-icon">⚠️</span><span class="kpi-val">3</span><span class="kpi-trend warn">↑</span><span class="kpi-label">Overdue</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking Material Availability Before Release</span>
+          <span class="sec-title-es">Verificando disponibilidad de material antes de liberar</span>
+          <span class="sec-actor"><span class="dot">B</span>Billie</span>
+        </div>
+        <div class="sec-desc">Para una orden nueva de Wheel Assembly, Billie confirma que ningún componente vaya a frenar la liberación.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de que la orden de <strong>Wheel Assembly</strong> pase a planta, Billie corre el <strong>Availability Check</strong> componente por componente — así detecta a tiempo si algo va a faltar en la fecha de inicio programada.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Production Planning</div><span class="sep">›</span>
+      <div class="crumb">Production Control</div><span class="sep">›</span>
+      <div class="crumb current">Manage Production Orders — Availability</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Production Orders</div>
+      <div class="fiori-appbar">
+        <div><h6>Order 60004830 · Wheel Assembly</h6><span class="sub">60 EA · Componentes</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Componente</th><th>Necesario</th><th>Disponible</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Rim</td><td class="num">120 EA</td><td class="num">120 EA</td><td><span class="fiori-status ok">Disponible</span></td></tr>
+            <tr class="flag"><td>Spoke Set</td><td class="num">60 SET</td><td class="num">35 SET</td><td><span class="fiori-status alert">Faltante</span></td></tr>
+            <tr><td>Hub</td><td class="num">120 EA</td><td class="num">140 EA</td><td><span class="fiori-status ok">Disponible</span></td></tr>
+          </tbody>
+        </table>
+        <div class="alert-banner">⚠ Spoke Set no cubre la necesidad — orden queda en "Missing Parts" hasta reponer</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Plan to Produce · Biblioteca de Guías SAP · Fuente: documento del curso + capturas reales de Fiori</footer>
+
+</body>
+</html>

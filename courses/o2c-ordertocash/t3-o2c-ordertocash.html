@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Order to Cash — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* SAP Fiori — colores reales, uso EXCLUSIVO dentro de mockups de pantalla */
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-blue-dark:#0040A0;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t3);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  /* protagonista block */
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+  .sec-actor .dot.icon{ background:#94A3B8; font-size:10px; }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  /* BREADCRUMB */
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  /* FIORI SCREEN MOCKUP */
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-appbar .tag{ background:#FFF3CD; color:#8A6A1E; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-body{ padding:22px 20px; }
+  .fiori-tabs{ display:flex; gap:22px; border-bottom:1px solid #EAEAEA; margin-bottom:18px; flex-wrap:wrap; }
+  .fiori-tab{ padding:7px 2px; font-size:0.8rem; color:var(--sap-muted); border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px 22px; margin-bottom:6px; }
+  .fiori-field label{ display:block; font-size:0.7rem; color:var(--sap-muted); margin-bottom:4px; }
+  .fiori-field .val{ font-size:0.83rem; color:var(--sap-text); padding:7px 10px; background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; }
+  .fiori-field .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-table td.num{ text-align:right; font-family:'JetBrains Mono',monospace; }
+  .fiori-table tr.total td{ font-weight:700; border-top:1.5px solid var(--sap-border); border-bottom:none; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .fiori-btn.text{ border:none; color:var(--sap-blue); background:none; padding:7px 4px; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.open{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-status.blocked{ background:#FBE4E4; color:#B4232C; }
+  .fiori-list-item{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border:1px solid var(--sap-border); border-radius:6px; margin-bottom:8px; flex-wrap:wrap; gap:8px; }
+  .fiori-list-item .li-title{ font-size:0.85rem; font-weight:600; color:var(--sap-text); }
+  .fiori-list-item .li-sub{ font-size:0.72rem; color:var(--sap-muted); margin-top:2px; }
+  .fiori-pill{ font-size:0.66rem; font-weight:700; padding:3px 9px; border-radius:20px; }
+  .fiori-pill.public{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-pill.private{ background:#F0F0F0; color:#5A5A5A; }
+  .fiori-pill.held{ background:#FFF3CD; color:#8A6A1E; }
+
+  /* DEBE/HABER */
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Create Order</a>
+  <a href="#s2">Confirm ATP</a>
+  <a href="#s3">Outbound Delivery</a>
+  <a href="#s4">Goods Issue</a>
+  <a href="#s5">Billing Document</a>
+  <a href="#s6">Business Partner</a>
+  <a href="#s7">Incoming Payment</a>
+  <a href="#s8">Balance Confirmation</a>
+  <a href="#s9">Dunning</a>
+  <a href="#s10">Document Flow</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Order to Cash</span>
+      <span class="pill pill-secondary">Sales &amp; Distribution</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Accounts Receivable</span>
+    </div>
+    <h1>Order to <span class="accent">Cash</span></h1>
+    <h2>De la Orden al Cobro — Vivido por el Usuario</h2>
+    <p class="desc">Cómo se vive el proceso Order-to-Cash desde Fiori, día a día: un pedido real de Rapid Riders, de punta a punta — pantallas reales, un actor a la vez.</p>
+    <div class="protagonist">
+      <div class="avatar">O</div>
+      <div>
+        <div class="p-name">Otis</div>
+        <div class="p-role">Internal Sales Representative · Bike GmbH (DE01)</div>
+        <div class="p-note">Guía principal de este recorrido — Colette (Shipping) aparece en las secciones 3-4, Greg (Accounts Receivable) desde la sección 6</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — Otis crea la orden de venta -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating the Sales Order</span>
+          <span class="sec-title-es">Creando la orden de venta</span>
+          <span class="sec-actor"><span class="dot">O</span>Otis</span>
+        </div>
+        <div class="sec-desc">Rapid Riders quiere comprar bicicletas — Otis carga el pedido en el sistema.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Rapid Riders informó a Bike Company su intención de compra. Otis, el representante de ventas, crea la <strong>orden de venta</strong> con los datos del cliente, el material pedido y la fecha de entrega solicitada.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Sales</div><span class="sep">›</span>
+      <div class="crumb current">Create Sales Orders</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Create Sales Orders</div>
+      <div class="fiori-appbar">
+        <div><h6>Nueva orden</h6><span class="sub">Order Type: OR (Standard Order)</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab active">Sales</div>
+          <div class="fiori-tab">Items</div>
+          <div class="fiori-tab">Partners</div>
+          <div class="fiori-tab">Shipping</div>
+        </div>
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Sold-to Party</label><div class="val filled">2387 — Rapid Riders</div></div>
+          <div class="fiori-field"><label>Ship-to Party</label><div class="val filled">4976 — Rapid Riders Warehouse</div></div>
+          <div class="fiori-field"><label>Customer Reference</label><div class="val filled">1005</div></div>
+          <div class="fiori-field"><label>Sales Organization</label><div class="val filled">Frankfurt</div></div>
+          <div class="fiori-field"><label>Distribution Channel</label><div class="val filled">Retail Trade</div></div>
+          <div class="fiori-field"><label>Requested Delivery Date</label><div class="val filled">30.04.2024</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>Item</th><th>Material</th><th>Order Qty</th><th>Description</th><th>Net Value</th></tr></thead>
+          <tbody>
+            <tr><td>10</td><td>1400-100</td><td class="num">20 PC</td><td>Racing Bike</td><td class="num">20.000,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn text">Check Pricing</button>
+          <button class="fiori-btn">Save as Draft</button>
+          <button class="fiori-btn primary">Save Order</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — confirmación ATP -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Confirming Availability at Item Level</span>
+          <span class="sec-title-es">Confirmando disponibilidad a nivel ítem</span>
+          <span class="sec-actor"><span class="dot">O</span>Otis</span>
+        </div>
+        <div class="sec-desc">El sistema corre la verificación de disponibilidad y confirma cuánto puede entregarse.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de guardar la orden, Otis revisa la pestaña de <strong>ítems</strong> para confirmar que la cantidad pedida quedó disponible — si no hay stock suficiente, el sistema propone una entrega parcial con una segunda schedule line.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Sales</div><span class="sep">›</span>
+      <div class="crumb">Create Sales Orders</div><span class="sep">›</span>
+      <div class="crumb current">Items — Schedule Lines</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Create Sales Orders</div>
+      <div class="fiori-appbar">
+        <div><h6>Item 10 — Racing Bike</h6><span class="sub">Availability Check ejecutado automáticamente</span></div>
+        <span class="fiori-status ok">✔ Confirmed</span>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Schedule Line</th><th>Order Qty</th><th>Confirmed Qty</th><th>Delivery Date</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="num">20 PC</td><td class="num">20 PC</td><td>30.04.2024</td><td><span class="fiori-status ok">✔ Confirmed</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn text">Re-run ATP</button>
+          <button class="fiori-btn primary">Continue</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — Colette crea la entrega saliente -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating the Outbound Delivery</span>
+          <span class="sec-title-es">Creando la entrega saliente</span>
+          <span class="sec-actor"><span class="dot">C</span>Colette</span>
+        </div>
+        <div class="sec-desc">Colette, la especialista de expedición, convierte la orden confirmada en una entrega.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Con el pedido de Otis confirmado, Colette entra a la lista de <strong>órdenes pendientes de entrega</strong> y genera el documento de <strong>outbound delivery</strong> — el primer paso concreto hacia el depósito.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Logistics Execution</div><span class="sep">›</span>
+      <div class="crumb current">Create Outbound Deliveries</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Create Outbound Deliveries</div>
+      <div class="fiori-appbar">
+        <div><h6>Nueva entrega desde Orden 1005</h6><span class="sub">Sold-to Party: 2387 — Rapid Riders</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Shipping Point</label><div class="val filled">Frankfurt DC</div></div>
+          <div class="fiori-field"><label>Ship-to Party</label><div class="val filled">4976 — Rapid Riders Warehouse</div></div>
+          <div class="fiori-field"><label>Planned Delivery Date</label><div class="val filled">30.04.2024</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>Item</th><th>Material</th><th>Delivery Qty</th><th>Weight</th></tr></thead>
+          <tbody>
+            <tr><td>10</td><td>1400-100 — Racing Bike</td><td class="num">20 PC</td><td class="num">300 KG</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Check Picking</button>
+          <button class="fiori-btn primary">Save Delivery</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — Colette postea el goods issue -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Goods Issue</span>
+          <span class="sec-title-es">Contabilizando la salida de mercancías</span>
+          <span class="sec-actor"><span class="dot">C</span>Colette</span>
+        </div>
+        <div class="sec-desc">El camión ya está cargado — Colette postea la salida y dispara el resto de los documentos automáticos.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Una vez que la mercadería sale físicamente del depósito, Colette postea el <strong>goods issue</strong> desde la misma entrega. Esto genera el Material Document y actualiza stock, contabilidad y la lista de facturación pendiente.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Logistics Execution</div><span class="sep">›</span>
+      <div class="crumb">Change Outbound Delivery</div><span class="sep">›</span>
+      <div class="crumb current">Post Goods Issue</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Change Outbound Delivery</div>
+      <div class="fiori-appbar">
+        <div><h6>Delivery 80001234</h6><span class="sub">Sold-to Party: 2387 — Rapid Riders</span></div>
+        <span class="fiori-status open">Pendiente de Goods Issue</span>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Material</th><th>Qty</th><th>Sales Price</th><th>Cost</th></tr></thead>
+          <tbody>
+            <tr><td>1400-100 — Racing Bike</td><td class="num">20 PC</td><td class="num">1.000 EUR</td><td class="num">600 EUR</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn text">Display Picking</button>
+          <button class="fiori-btn primary">Post Goods Issue</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Cost of Goods Sold → Debe:</b> se reconoce el costo de lo vendido (20 PC × 600 EUR = 12.000 EUR). <b>Inventory / Stock → Haber:</b> el material sale del balance porque ya no está en depósito, valuado al costo — no al precio de venta (1.000 EUR/unidad).
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — Facturación -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating the Billing Document</span>
+          <span class="sec-title-es">Creando el documento de facturación</span>
+          <span class="sec-actor"><span class="dot icon">🧾</span>Sales Admin</span>
+        </div>
+        <div class="sec-desc">El curso no nombra un protagonista puntual para este paso — lo resuelve el mismo equipo de ventas de Otis, desde la lista de facturación pendiente.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La entrega ya posteada quedó en la <strong>billing due list</strong>. Desde ahí se genera el documento de facturación que finalmente le llega a Rapid Riders — este es el paso donde la responsabilidad legal recae en la sales organization.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Sales</div><span class="sep">›</span>
+      <div class="crumb current">Create Billing Documents</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Create Billing Documents</div>
+      <div class="fiori-appbar">
+        <div><h6>Billing Due List</h6><span class="sub">Filtrado por Sales Organization: Frankfurt</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-list-item">
+          <div><div class="li-title">Delivery 80001234 — Rapid Riders</div><div class="li-sub">20 PC · Net Value 20.000,00 EUR</div></div>
+          <span class="fiori-pill public">Ready to Bill</span>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Simulate</button>
+          <button class="fiori-btn primary">Create Billing Document</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — Greg mantiene el Business Partner -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining the Customer Business Partner</span>
+          <span class="sec-title-es">Manteniendo el Business Partner del cliente</span>
+          <span class="sec-actor"><span class="dot">G</span>Greg</span>
+        </div>
+        <div class="sec-desc">Antes de que llegue el primer cobro, Greg se asegura de que los datos financieros de Rapid Riders estén completos.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Greg abre el Business Partner 2387 y asigna el rol <strong>'FI Customer'</strong> si todavía no lo tiene, completando los datos financieros a nivel de sociedad — sin estos datos, Accounts Receivable no puede gestionar el cobro.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb current">Maintain Business Partner</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Maintain Business Partner</div>
+      <div class="fiori-appbar">
+        <div><h6>BP 2387 — Rapid Riders</h6><span class="sub">Roles: Customer · FI Customer</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab">General Data</div>
+          <div class="fiori-tab active">Company Code Data</div>
+          <div class="fiori-tab">Sales Area Data</div>
+        </div>
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Company Code</label><div class="val filled">DE01 — Bike GmbH</div></div>
+          <div class="fiori-field"><label>Reconciliation Account</label><div class="val filled">140000 — Trade Receivables</div></div>
+          <div class="fiori-field"><label>Payment Terms</label><div class="val filled">0002 — 14 días, 2% dto.</div></div>
+          <div class="fiori-field"><label>Dunning Procedure</label><div class="val filled">0001 — Standard</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Cancel</button>
+          <button class="fiori-btn primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — Greg postea el cobro entrante -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Incoming Payment</span>
+          <span class="sec-title-es">Contabilizando el cobro entrante</span>
+          <span class="sec-actor"><span class="dot">G</span>Greg</span>
+        </div>
+        <div class="sec-desc">Rapid Riders pagó la factura — Greg registra el ingreso y lo imputa contra la factura correcta.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Greg confirma que el dinero llegó al banco y registra el <strong>cobro entrante</strong>, imputándolo contra la factura abierta de Rapid Riders para que quede compensada.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Post Incoming Payments</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Post Incoming Payments</div>
+      <div class="fiori-appbar">
+        <div><h6>Nuevo cobro</h6><span class="sub">Company Code: DE01 — Bike GmbH</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Bank Account</label><div class="val filled">11001000 — Main Bank</div></div>
+          <div class="fiori-field"><label>Value Date</label><div class="val filled">05.04.2024</div></div>
+          <div class="fiori-field"><label>Amount</label><div class="val filled">19.600,00 EUR</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>Open Item</th><th>Customer</th><th>Invoice Amount</th><th>Assignment</th></tr></thead>
+          <tbody>
+            <tr><td>Invoice 90005512</td><td>2387 — Rapid Riders</td><td class="num">20.000,00</td><td><span class="fiori-status ok">✔ Matched</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn text">Simulate</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>11001000 (Main Bank) → Debe:</b> el banco (un activo) aumenta porque entró el dinero. <b>140000 (Reconciliation Account — Rapid Riders) → Haber:</b> la cuenta de clientes disminuye porque la deuda ya se saldó. El 2% de descuento por pronto pago explica la diferencia entre el valor de la factura y el importe cobrado.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — Confirmación de saldo -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Sending Customer Balance Confirmations</span>
+          <span class="sec-title-es">Enviando confirmaciones de saldo a clientes</span>
+          <span class="sec-actor"><span class="dot">G</span>Greg</span>
+        </div>
+        <div class="sec-desc">Tarea periódica de Greg — parte de sus responsabilidades habituales dentro de Accounts Receivable.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Como actividad periódica, Greg envía <strong>confirmaciones de saldo</strong> a los clientes con cuenta abierta — una forma de detectar diferencias antes de que se conviertan en un problema de cobranza.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Customer Balance Confirmation</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Customer Balance Confirmation</div>
+      <div class="fiori-appbar">
+        <div><h6>Ciclo Q2 2024</h6><span class="sub">Company Code: DE01 — Bike GmbH</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-list-item">
+          <div><div class="li-title">2387 — Rapid Riders</div><div class="li-sub">Saldo actual: 0,00 EUR</div></div>
+          <span class="fiori-pill public">Enviada</span>
+        </div>
+        <div class="fiori-list-item">
+          <div><div class="li-title">3310 — Velo World GmbH</div><div class="li-sub">Saldo actual: 4.500,00 EUR</div></div>
+          <span class="fiori-pill held">Pendiente</span>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Preview</button>
+          <button class="fiori-btn primary">Send Confirmations</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — Dunning -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running the Dunning Program</span>
+          <span class="sec-title-es">Corriendo el programa de reclamos</span>
+          <span class="sec-actor"><span class="dot">G</span>Greg</span>
+        </div>
+        <div class="sec-desc">Para clientes con facturas vencidas — no es el caso de Rapid Riders, que ya pagó a tiempo.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Greg corre periódicamente el <strong>programa de dunning</strong>, que revisa qué clientes tienen partidas vencidas y genera los avisos de reclamo según el nivel de mora de cada uno.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Dunning</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Dunning</div>
+      <div class="fiori-appbar">
+        <div><h6>Dunning Run — 08.04.2024</h6><span class="sub">Company Code: DE01 — Bike GmbH</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Customer</th><th>Overdue Amount</th><th>Days Overdue</th><th>Dunning Level</th></tr></thead>
+          <tbody>
+            <tr><td>3310 — Velo World GmbH</td><td class="num">4.500,00</td><td class="num">21</td><td><span class="fiori-status open">Level 2</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Display Log</button>
+          <button class="fiori-btn primary">Print Dunning Notices</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — Document Flow, cierre -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Tracking the Order End-to-End</span>
+          <span class="sec-title-es">Siguiendo la orden de punta a punta</span>
+          <span class="sec-actor"><span class="dot">O</span>Otis</span>
+        </div>
+        <div class="sec-desc">El Document Flow conecta lo que hicieron Otis, Colette y Greg en un solo lugar — y el pedido de Rapid Riders ya está completo.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cualquiera de los tres puede abrir el <strong>Document Flow</strong> de la orden original y ver en un vistazo en qué estado quedó cada documento del proceso — de la orden de Otis al cobro que confirmó Greg.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Sales</div><span class="sep">›</span>
+      <div class="crumb current">Display Document Flow</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Display Document Flow</div>
+      <div class="fiori-appbar">
+        <div><h6>Sales Order 1005 — Rapid Riders</h6><span class="sub">Bike GmbH · DE01</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-list-item">
+          <div><div class="li-title">Sales Order 1005</div><div class="li-sub">Otis · 20 PC Racing Bike · 20.000,00 EUR</div></div>
+          <span class="fiori-status ok">✔ Completed</span>
+        </div>
+        <div class="fiori-list-item">
+          <div><div class="li-title">Outbound Delivery 80001234</div><div class="li-sub">Colette · Goods Issue posteado</div></div>
+          <span class="fiori-status ok">✔ Completed</span>
+        </div>
+        <div class="fiori-list-item">
+          <div><div class="li-title">Billing Document 90005512</div><div class="li-sub">20.000,00 EUR facturados</div></div>
+          <span class="fiori-status ok">✔ Completed</span>
+        </div>
+        <div class="fiori-list-item">
+          <div><div class="li-title">Incoming Payment</div><div class="li-sub">Greg · 19.600,00 EUR cobrados (2% pronto pago)</div></div>
+          <span class="fiori-status ok">✔ Cleared</span>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn primary">Display Sales Order</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Order to Cash · Biblioteca de Guías SAP · Fuente: documento del curso</footer>
+
+</body>
+</html>

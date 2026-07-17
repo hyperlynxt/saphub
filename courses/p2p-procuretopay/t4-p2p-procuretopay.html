@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Procure to Pay — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#6B4C8F;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* SAP GUI clasico — colores reales, uso EXCLUSIVO dentro de mockups de pantalla */
+    --gui-bg:#ECECEC;
+    --gui-panel:#F5F4F0;
+    --gui-border:#8E8E8E;
+    --gui-titlebar1:#4A85B8;
+    --gui-titlebar2:#2E5C87;
+    --gui-tab-inactive:#C6C2B6;
+    --gui-tab-active:#F5F4F0;
+    --gui-field-border:#7F9DB9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241A2E 55%, #402C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4); border-radius:0 10px 10px 0; padding:14px 20px; max-width:680px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(107,76,143,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-area{ display:inline-block; align-self:flex-start; font-size:9.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(107,76,143,0.1); color:var(--t4-dark); margin-left:8px; vertical-align:middle; }
+
+  .task-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t4-dark); font-weight:700; margin-bottom:10px; }
+
+  .spro-box{ background:white; border:1px solid var(--border); border-radius:10px; padding:16px 20px 16px 18px; margin-bottom:26px; box-shadow:0 2px 8px rgba(10,15,28,0.04); }
+  .spro-tree{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; line-height:1.5; }
+  .spro-tree, .spro-tree ul{ list-style:none; margin:0; padding-left:0; }
+  .spro-tree ul{ padding-left:20px; border-left:1.5px dashed #C9BEDD; margin-left:7px; }
+  .spro-tree li{ position:relative; padding:4px 0 4px 18px; color:var(--body); }
+  .spro-tree li::before{ content:''; position:absolute; left:0; top:14px; width:14px; height:1.5px; background:#C9BEDD; }
+  .spro-tree .folder .icon{ margin-right:5px; opacity:.8; }
+  .spro-tree .target{ background:var(--t4-pale); border:1.5px solid var(--t4-dark); border-radius:6px; padding:4px 12px; display:inline-flex; align-items:center; gap:7px; color:var(--t4-dark); font-weight:700; }
+
+  .gui-screen{ background:var(--gui-bg); border:1px solid #6E6E6E; border-radius:2px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.14); font-family:Arial,Tahoma,sans-serif; color:#000; }
+  .gui-titlebar{ background:linear-gradient(180deg,var(--gui-titlebar1),var(--gui-titlebar2)); color:white; padding:4px 10px; font-size:11px; display:flex; justify-content:space-between; align-items:center; }
+  .gui-titlebar .gt-icons{ opacity:.85; letter-spacing:3px; font-size:9px; }
+  .gui-menubar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:3px 10px; font-size:10.5px; color:#222; display:flex; gap:14px; }
+  .gui-toolbar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:5px 8px; display:flex; align-items:center; gap:5px; }
+  .gui-toolbar .t-btn{ width:22px; height:19px; background:#DEDEDE; border:1px solid #9A9A9A; border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:10.5px; color:#333; }
+  .gui-crumbbar{ background:#DEDEDE; border-bottom:1px solid #B8B8B8; padding:5px 10px; font-size:11.5px; font-weight:700; color:#111; }
+  .gui-tabs{ display:flex; background:var(--gui-bg); padding:5px 8px 0; gap:2px; }
+  .gui-tab{ padding:5px 14px; font-size:10.5px; background:var(--gui-tab-inactive); border:1px solid var(--gui-border); border-bottom:none; color:#333; }
+  .gui-tab.active{ background:var(--gui-tab-active); font-weight:700; color:#000; }
+  .gui-body{ background:var(--gui-panel); padding:18px; border-top:1px solid #fff; }
+  .gui-field-row{ display:grid; grid-template-columns:150px 1fr; gap:8px; align-items:center; margin-bottom:9px; font-size:11.5px; }
+  .gui-field-row label{ text-align:right; color:#000; }
+  .gui-field-row .val{ background:white; border:1px solid var(--gui-field-border); padding:3px 7px; font-family:'Courier New',monospace; font-size:11.5px; max-width:280px; }
+  .gui-field-row .val.grey{ background:#E8E8E8; border-color:#B8B8B8; color:#555; }
+  .gui-field-row .val.check{ font-family:Arial,sans-serif; }
+  .gui-table{ width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+  .gui-table th{ background:var(--gui-tab-inactive); border:1px solid var(--gui-border); padding:5px 9px; text-align:left; font-weight:700; color:#111; }
+  .gui-table td{ border:1px solid #C6C2B6; padding:5px 9px; background:white; font-family:'Courier New',monospace; }
+  .gui-statusbar{ background:var(--gui-bg); border-top:1px solid #B8B8B8; padding:4px 10px; font-size:10px; color:#555; display:flex; justify-content:space-between; }
+  .gui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E; margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Purchasing Org</a>
+  <a href="#s2">Vendor Acct Group</a>
+  <a href="#s3">Terms of Payment</a>
+  <a href="#s4">PO Document Type</a>
+  <a href="#s5">GR Movement Type</a>
+  <a href="#s6">GR/IR Determination</a>
+  <a href="#s7">Tolerance Limits</a>
+  <a href="#s8">Payment Block</a>
+  <a href="#s9">Payment Program</a>
+  <a href="#s10">AP Recon. Account</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Procure-to-Pay</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+    </div>
+    <h1><span class="accent">Procure</span> to Pay</h1>
+    <h2>Del Pedido al Pago — Configuración en SPRO</h2>
+    <p class="desc">Las tareas de customizing que dejan lista la base para que Nora, Arielle y Axel trabajen en Fiori: organización de compras, cuentas de proveedor, tolerancias de factura y el programa de pagos.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Implementación Bike Company · Procurement &amp; Financial Accounting</div>
+        <div class="p-note">Cada pantalla de este recorrido arma la base que Nora, Arielle y Axel usan del otro lado, en Fiori (T3)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning the Purchasing Organization to the Company Code</span>
+          <span class="sec-title-es">Asignando la organización de compras a la sociedad</span>
+          <span class="sec-area">Enterprise Structure</span>
+        </div>
+        <div class="sec-desc">La base sin la cual "PORG DE01" no aparecería propuesto en ninguna orden.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de que Nora pueda crear una sola orden de compra, tiene que existir una <strong>Purchasing Organization</strong> asignada a DE01. Es la unidad organizativa que negocia con los proveedores y la que después el sistema propone sola en la cabecera de cada PO (T1 §2, T3 §1).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Enterprise Structure
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Assignment
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Materials Management
+                      <ul>
+                        <li><span class="target">⚙️ Assign Purchasing Organization to Company Code</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Assignment Purch. Organization - Company Code": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Assign Purch. Organization — Company Code — T-Code: OX01</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Purch. Organization</th><th>Description</th><th>Company Code</th></tr></thead>
+          <tbody>
+            <tr><td>DE01</td><td>Purchasing Org. — Bike GmbH</td><td>DE01</td></tr>
+            <tr><td>US01</td><td>Purchasing Org. — Bike Inc</td><td>US01</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Sin esta fila, el campo "Purchasing Organization" de una PO nueva quedaría vacío — no tendría de dónde proponer "PORG DE01".</div>
+      </div>
+      <div class="gui-statusbar"><span>DE01 → DE01</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Vendor Account Group</span>
+          <span class="sec-title-es">Definiendo el grupo de cuentas de proveedor</span>
+          <span class="sec-area">Materials Management</span>
+        </div>
+        <div class="sec-desc">Lo que determina qué campos pide el sistema al crear un proveedor como Tireless Tires.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cuando alguien crea el Business Partner de un proveedor nuevo, el sistema no inventa qué campos mostrar — los toma del <strong>Account Group</strong> asignado. Acá también se define la <strong>cuenta de enlace</strong> que ese grupo va a usar por defecto (T1 §10, T3 §7).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Materials Management
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Purchasing
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Vendor Master
+                      <ul>
+                        <li><span class="target">⚙️ Define Account Groups and Field Selection (Vendor)</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Account Groups: Vendor": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Vendor Account Groups — T-Code: OBD3</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Account Group</label><div class="val">KRED</div></div>
+        <div class="gui-field-row"><label>Description</label><div class="val">Vendor — Domestic</div></div>
+        <div class="gui-field-row"><label>Number Range</label><div class="val">01 (100000–199999)</div></div>
+        <div class="gui-field-row"><label>Recon. Account (default)</label><div class="val grey">21100000 — Accounts Payable</div></div>
+        <div class="gui-hint">💡 Este campo es el que, más adelante, deja el 21100000 pre-cargado apenas se crea un proveedor nuevo con este Account Group — Tireless Tires lo usa (T3 §7, §9).</div>
+      </div>
+      <div class="gui-statusbar"><span>KRED — Vendor Domestic</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining Terms of Payment</span>
+          <span class="sec-title-es">Manteniendo las condiciones de pago</span>
+          <span class="sec-area">Financial Accounting</span>
+        </div>
+        <div class="sec-desc">De dónde sale el "NT30" que aparece solo en cada orden y cada factura de Tireless Tires.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El código <strong>NT30</strong> que Nora vio propuesto en la orden de compra (T3 §2) y Axel volvió a ver en el Business Partner (T3 §7) no es texto libre — es una clave definida acá, con sus días de vencimiento y su porcentaje de descuento.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Accounts Receivable and Accounts Payable
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Transactions
+                      <ul>
+                        <li><span class="target">⚙️ Maintain Terms of Payment</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Maintain Terms of Payment</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Terms of Payment</span><span>Edit</span><span>Goto</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Maintain Terms of Payment — T-Code: OBB8</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Payment Terms</label><div class="val">NT30</div></div>
+        <div class="gui-field-row"><label>Description</label><div class="val">Net due in 30 days</div></div>
+        <div class="gui-field-row"><label>Default for Baseline Date</label><div class="val">Document Date</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Term</th><th>Days</th><th>Percentage</th></tr></thead>
+          <tbody>
+            <tr><td>Cash Discount 1</td><td>—</td><td>0,000 %</td></tr>
+            <tr><td>Net Payment</td><td>30</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Sin descuento configurado, "NT30" significa lisa y llanamente: 30 días netos, sin bonificación por pago anticipado.</div>
+      </div>
+      <div class="gui-statusbar"><span>NT30 Net 30 Days</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring the Purchase Order Document Type</span>
+          <span class="sec-title-es">Configurando el tipo de documento de orden de compra</span>
+          <span class="sec-area">Materials Management</span>
+        </div>
+        <div class="sec-desc">Por qué toda PO estándar de Nora empieza con "45".</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cada vez que Nora guarda una orden nueva, el sistema le asigna un número — como el 4500002310 que vimos en Fiori (T3 §1). Ese prefijo no es casualidad: viene del <strong>rango de numeración</strong> ligado al tipo de documento NB (Standard PO).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Materials Management
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Purchasing
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Purchase Order
+                      <ul>
+                        <li><span class="target">⚙️ Define Document Types</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Document Types – Purchase Order": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">🗑</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div>
+      </div>
+      <div class="gui-crumbbar">Define Document Types — Purchase Order</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Doc. Type</th><th>Description</th><th>Number Range</th><th>Field Selection</th></tr></thead>
+          <tbody>
+            <tr style="background:#EEE6F5;"><td><b>NB</b></td><td><b>Standard PO</b></td><td><b>45</b></td><td>NBB</td></tr>
+            <tr><td>FO</td><td>Framework Order</td><td>46</td><td>FOB</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 El rango "45" es justamente el que arrancó el número 4500002310 que Nora vio recién creada en Manage Purchase Orders.</div>
+      </div>
+      <div class="gui-statusbar"><span>NB Standard PO</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting the Goods Receipt Movement Type</span>
+          <span class="sec-title-es">Configurando el tipo de movimiento de la recepción</span>
+          <span class="sec-area">Materials Management</span>
+        </div>
+        <div class="sec-desc">El código de tres dígitos detrás de cada recepción de Arielle.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cuando Arielle postea la recepción de los 200 manubrios (T3 §3), el sistema usa el <strong>Movement Type 101</strong> por detrás — invisible en Fiori, pero es el que decide que la mercadería suma a stock y dispara la contrapartida contable.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Materials Management
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Inventory Management and Physical Inventory
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Movement Types
+                      <ul>
+                        <li><span class="target">⚙️ Copy, Change Movement Types</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Display Movement Type</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Movement Type</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Display Movement Type — T-Code: OMJJ</div>
+      <div class="gui-tabs">
+        <div class="gui-tab active">Movement Type</div>
+        <div class="gui-tab">Account Grouping</div>
+        <div class="gui-tab">Field Selection</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Movement Type</label><div class="val">101</div></div>
+        <div class="gui-field-row"><label>Description</label><div class="val">GR Goods Receipt for Purchase Order</div></div>
+        <div class="gui-field-row"><label>Debit/Credit Ind.</label><div class="val grey">Debit (+ Stock)</div></div>
+        <div class="gui-field-row"><label>Consumption Posting</label><div class="val grey check">☐ (no aplica — es entrada a stock)</div></div>
+        <div class="gui-hint">💡 El "+" de este movimiento es lo que hace que la cantidad de HB-2000 suba en el sistema apenas Arielle postea — sin este movimiento configurado, la app ni siquiera lo ofrecería como opción.</div>
+      </div>
+      <div class="gui-statusbar"><span>101 GR for PO</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring GR/IR Account Determination</span>
+          <span class="sec-title-es">Configurando la determinación de cuenta GR/IR</span>
+          <span class="sec-area">Materials Management</span>
+        </div>
+        <div class="sec-desc">Dónde se define QUÉ cuenta usa el sistema cada vez que Axel revisa GR/IR (T2 §7, T3 §4, §9).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Ni Arielle ni Axel eligen la cuenta GR/IR a mano — el sistema la determina sola en cada Goods Receipt e Invoice Receipt. Esa automatización vive acá: las <strong>claves de transacción BSX y WRX</strong>, cada una mapeada a una cuenta de mayor concreta.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Materials Management
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Valuation and Account Assignment
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Account Determination
+                      <ul>
+                        <li><span class="target">⚙️ Configure Automatic Postings</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Configure Automatic Postings</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Configure Automatic Postings — T-Code: OBYC</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Transaction Key</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>BSX</td><td>Inventory Posting</td></tr>
+            <tr style="background:#EEE6F5;"><td><b>WRX</b></td><td><b>GR/IR Clearing</b></td></tr>
+            <tr><td>PRD</td><td>Price Differences</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-field-row" style="margin-top:14px;"><label>Chart of Accounts</label><div class="val">YCOA</div></div>
+        <div class="gui-field-row"><label>Valuation Modif.</label><div class="val">0001</div></div>
+        <div class="gui-field-row"><label>G/L Account (WRX)</label><div class="val">19100000 — GR/IR Clearing Acct</div></div>
+      </div>
+      <div class="gui-statusbar"><span>WRX · YCOA</span><span>INS</span></div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      Cuando Arielle postea la Goods Receipt, el sistema debita <b>Inventario (BSX)</b> y acredita <b>GR/IR (WRX)</b> — todavía no hay factura. Cuando Axel carga la factura, débita <b>GR/IR (WRX)</b> — la cierra — y acredita <b>Accounts Payable</b>. Todo automático, gracias a esta configuración.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Tolerance Limits for Invoice Verification</span>
+          <span class="sec-title-es">Configurando los límites de tolerancia de la verificación</span>
+          <span class="sec-area">Materials Management</span>
+        </div>
+        <div class="sec-desc">El número exacto que decide si una factura se bloquea sola (T1 §6, T2 §4-5, T3 §6).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La factura 5100004821 quedó bloqueada con 30 unidades de diferencia (T3 §6) porque esa diferencia superó lo que esta pantalla permite. El <strong>grupo de tolerancia</strong> define, clave por clave, cuánta desviación es aceptable antes de bloquear.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Materials Management
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Logistics Invoice Verification
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Invoice Block
+                      <ul>
+                        <li><span class="target">⚙️ Set Tolerance Limits</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Tolerance Limits": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Set Tolerance Limits — T-Code: OMR6</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Company Code</label><div class="val">DE01</div></div>
+        <div class="gui-field-row"><label>Tolerance Key</label><div class="val">BR — Quantity Variance</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Limit</th><th>Tipo</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td>Upper Limit</td><td>Percentage</td><td>10,00 %</td></tr>
+            <tr><td>Upper Limit</td><td>Absolute Qty.</td><td>15 EA</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 30 unidades sobre 120 recibidas es un 25% de desvío — muy por encima del 10% configurado acá. Por eso la factura de la sección T3 §6 se bloqueó sola.</div>
+      </div>
+      <div class="gui-statusbar"><span>BR DE01</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Payment Block Reason</span>
+          <span class="sec-title-es">Definiendo el motivo de bloqueo de pago</span>
+          <span class="sec-area">Financial Accounting</span>
+        </div>
+        <div class="sec-desc">El código que impide que una factura bloqueada se cuele en el próximo pago.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cuando la tolerancia de la sección anterior se supera, el sistema no solo avisa — marca la factura con un <strong>Payment Block Reason</strong> concreto. Ese código es la razón por la que la factura 5100004821 apareció "Excluida" en la propuesta de pago de Axel (T3 §8).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Accounts Receivable and Accounts Payable
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Transactions
+                      <ul>
+                        <li><span class="target">⚙️ Define Payment Block Reasons</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Payment Block Reasons": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">🗑</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div>
+      </div>
+      <div class="gui-crumbbar">Define Payment Block Reasons — T-Code: OB27</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Block</th><th>Description</th><th>Changeable in Payment Run?</th></tr></thead>
+          <tbody>
+            <tr style="background:#EEE6F5;"><td><b>Q</b></td><td><b>Blocked — Quantity Variance</b></td><td>No</td></tr>
+            <tr><td>R</td><td>Invoice Verification (general)</td><td>No</td></tr>
+            <tr><td>A</td><td>Blocked for Payment (manual)</td><td>Yes</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 "Changeable in Payment Run? = No" es lo que impide que alguien libere el bloqueo desde adentro del programa de pagos — hay que resolverlo antes, en Manage Blocked Invoices.</div>
+      </div>
+      <div class="gui-statusbar"><span>Q Quantity Variance</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring the Payment Program</span>
+          <span class="sec-title-es">Configurando el programa de pagos</span>
+          <span class="sec-area">Financial Accounting</span>
+        </div>
+        <div class="sec-desc">El banco y el método que Axel ve ya elegidos al programar la ejecución de pagos.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cuando Axel programó el pago automático (T3 §8), no eligió banco ni método desde cero — ya estaban definidos acá, en el <strong>Payment Program</strong>: qué sociedades pueden pagar, con qué banco y con qué método.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Accounts Receivable and Accounts Payable
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Transactions
+                      <ul>
+                        <li><span class="target">⚙️ Payment Program Configuration (FBZP)</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Payment Program Configuration</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Edit</span><span>Goto</span><span>Environment</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Payment Program Configuration — T-Code: FBZP</div>
+      <div class="gui-tabs">
+        <div class="gui-tab">All Company Codes</div>
+        <div class="gui-tab active">Paying Company Codes</div>
+        <div class="gui-tab">Pmnt Methods in Country</div>
+        <div class="gui-tab">House Banks</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Paying Company Code</label><div class="val">DE01</div></div>
+        <div class="gui-field-row"><label>House Bank</label><div class="val">BIKE1</div></div>
+        <div class="gui-field-row"><label>Bank Account</label><div class="val">11001000</div></div>
+        <div class="gui-field-row"><label>Payment Method</label><div class="val">T — Bank Transfer</div></div>
+        <div class="gui-hint">💡 "House Bank BIKE1 → Bank Account 11001000" es la misma cuenta de banco que después aparece acreditada cuando Axel ejecuta el pago (T3 §8).</div>
+      </div>
+      <div class="gui-statusbar"><span>DE01 BIKE1</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting the Accounts Payable Reconciliation Account</span>
+          <span class="sec-title-es">Configurando la cuenta de enlace de Cuentas por Pagar</span>
+          <span class="sec-area">General Ledger</span>
+        </div>
+        <div class="sec-desc">El campo que convierte una cuenta de mayor cualquiera en el puente hacia el sub-libro de proveedores.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Accounts Payable no se actualiza solo en el GL por magia — hace falta <strong>un campo puntual</strong> en el maestro de la cuenta de mayor. Marcarlo es lo que convierte a 21100000 en la <strong>Reconciliation Account</strong> (T2 glosario) que Steve consulta en su Trial Balance semanal (T3 §9).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>Maestro de cuenta de mayor (no es un nodo de SPRO — es la transacción de mantenimiento del Chart of Accounts)
+          <ul>
+            <li><span class="target">⚙️ FS00 — G/L Account Master Record</span></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Display G/L Account Centrally</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>G/L Account</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Display G/L Account Centrally — T-Code: FS00</div>
+      <div class="gui-tabs">
+        <div class="gui-tab">Type/Description</div>
+        <div class="gui-tab active">Control Data</div>
+        <div class="gui-tab">Create/Bank/Interest</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>G/L Account</label><div class="val">21100000</div></div>
+        <div class="gui-field-row"><label>Short Text</label><div class="val">Accounts Payable</div></div>
+        <div class="gui-field-row"><label>Account Group</label><div class="val">Balance Sheet Accounts</div></div>
+        <div class="gui-field-row"><label>Recon. Acct for Acct Type</label><div class="val grey">K — Vendors</div></div>
+        <div class="gui-field-row"><label>Field Status Group</label><div class="val">G031</div></div>
+        <div class="gui-hint">💡 "K — Vendors" es la única razón por la que este G/L account puede recibir postings automáticos desde Accounts Payable — sin este valor, sería una cuenta de mayor común y corriente.</div>
+      </div>
+      <div class="gui-statusbar"><span>21100000 Accounts Payable</span><span>INS</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Procure to Pay · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

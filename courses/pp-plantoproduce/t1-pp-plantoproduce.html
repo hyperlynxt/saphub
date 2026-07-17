@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Plan to Produce — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:640px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(127,191,143,0.14); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:640px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:960px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:20px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; }
+
+  .cardrow{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; }
+  .cardrow .item{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; }
+  .formula-box{ background:var(--bg); border-radius:8px; padding:12px 14px; margin-top:14px; font-size:0.8rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:4px; }
+  .formula-box div.frow{ padding:2px 0; color:var(--body); }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:170px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-desc{ font-size:0.72rem; color:var(--body); margin-top:6px; line-height:1.4; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+  .badge-alert{ background:rgba(192,57,43,0.1); color:#C0392B; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media (max-width:780px){
+    .cardrow{ grid-template-columns:repeat(2,1fr); }
+    .cmp-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Plan-to-Produce</a>
+  <a href="#s2">MRP Purpose</a>
+  <a href="#s3">BOM Explosion</a>
+  <a href="#s4">Backward Scheduling</a>
+  <a href="#s5">Net Requirements</a>
+  <a href="#s6">Replenishment</a>
+  <a href="#s7">Order Processing</a>
+  <a href="#s8">Order Details</a>
+  <a href="#s9">Material Master</a>
+  <a href="#s10">MTS vs MTO</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Production Planning</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Manufacturing Execution</span>
+      <span class="pill pill-secondary">Demand Planning</span>
+    </div>
+    <h1><span class="accent">Plan</span> to Produce</h1>
+    <h2>Del Plan a la Producción</h2>
+    <p class="desc">Fundamentos teóricos del proceso Plan-to-Produce en SAP S/4HANA: cómo la planificación de requerimientos de materiales (MRP) calcula qué producir y cuándo, cómo una orden de producción ejecuta esa decisión en planta, y qué información del maestro de materiales sostiene todo el proceso.</p>
+    <div class="hlbox">Resumen Visual — <b>Plan to Produce</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — FLOW 4 etapas -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Plan-to-Produce Process</span>
+          <span class="sec-title-es">El proceso de Plan-to-Produce</span>
+        </div>
+        <div class="sec-desc">Las cuatro etapas que transforman una necesidad de producto en bienes disponibles.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El proceso <strong>Plan-to-Produce</strong> comienza con la <strong>Planificación de la Demanda</strong>, sigue con la <strong>Planificación de Requerimientos de Materiales (MRP)</strong> — que calcula qué materiales faltan y cuándo se necesitan —, continúa con el <strong>Aprovisionamiento</strong> de lo que falta y termina en la <strong>Ejecución de la Producción</strong>, donde el bien físico se fabrica.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">📅</span><span class="title-en">Demand Planning</span><span class="title-es">Planificación de Demanda</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Punto de partida del proceso</li>
+            <li>Rol: el planificador de producción</li>
+            <li>Define qué demanda hay que cubrir</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">🔄</span><span class="title-en">Material Req. Planning</span><span class="title-es">Planificación de Materiales</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Calcula qué falta y cuándo</li>
+            <li>Rol: el analista de MRP</li>
+            <li>Genera elementos de reabastecimiento</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">🛒</span><span class="title-en">Procurement</span><span class="title-es">Aprovisionamiento</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Cubre materiales de proveedores externos</li>
+            <li>Procesado por Materials Management</li>
+            <li>Dispara solicitudes de pedido</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;">
+            <span class="icon">🏭</span><span class="title-en">Production Execution</span><span class="title-es">Ejecución de Producción</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Fabricación en planta</li>
+            <li>Rol: el supervisor de producción</li>
+            <li>De la orden a la recepción del producto</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — SVG hub: MRP y sus 3 pasos -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Material Requirements Planning — Purpose &amp; Role</span>
+          <span class="sec-title-es">Planificación de Requerimientos de Materiales — Propósito y Rol</span>
+        </div>
+        <div class="sec-desc">Qué garantiza el MRP y cuáles son sus tres pasos internos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>MRP</strong> asegura que la compañía cuenta con los materiales esenciales — materias primas y conjuntos — <strong>disponibles en el momento y la cantidad correctos</strong> para cumplir con la demanda del cliente. Se dispara a partir de una orden de venta o de un requerimiento independiente, y se ejecuta en tres pasos.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="60" x2="450" y2="85" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="330" y="10" width="240" height="50" rx="10" fill="#0A0F1C"/>
+        <text x="450" y="31" text-anchor="middle" fill="white" class="box-label">Sales Order / Requirement</text>
+        <text x="450" y="47" text-anchor="middle" fill="rgba(255,255,255,0.65)" class="box-sub">orden de venta o requerimiento independiente</text>
+
+        <rect x="330" y="85" width="240" height="70" rx="10" fill="#1A6B99"/>
+        <text x="450" y="112" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="15">MRP</text>
+        <text x="450" y="130" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">materiales a tiempo y en cantidad correcta</text>
+        <text x="450" y="145" text-anchor="middle" fill="rgba(255,255,255,0.55)" class="box-sub" font-style="italic">rol: el analista de MRP</text>
+
+        <line x1="450" y1="155" x2="450" y2="180" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="180" x2="750" y2="180" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="180" x2="150" y2="205" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="180" x2="450" y2="205" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="750" y1="180" x2="750" y2="205" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="40" y="205" width="220" height="75" rx="10" fill="#1A4B8C"/>
+        <text x="150" y="232" text-anchor="middle" fill="white" class="box-label">1. BOM Explosion &amp; Scheduling</text>
+        <text x="150" y="250" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">explota la BOM y calcula fechas</text>
+        <text x="150" y="264" text-anchor="middle" fill="rgba(255,255,255,0.55)" class="box-sub" font-style="italic">ver sección 03</text>
+
+        <rect x="340" y="205" width="220" height="75" rx="10" fill="#7E4FBF"/>
+        <text x="450" y="232" text-anchor="middle" fill="white" class="box-label">2. Net Requirements Calc.</text>
+        <text x="450" y="250" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">compara stock vs. necesidad</text>
+        <text x="450" y="264" text-anchor="middle" fill="rgba(255,255,255,0.55)" class="box-sub" font-style="italic">ver sección 05</text>
+
+        <rect x="640" y="205" width="220" height="75" rx="10" fill="#E07B39"/>
+        <text x="750" y="232" text-anchor="middle" fill="white" class="box-label">3. Creation of Replenishment</text>
+        <text x="750" y="250" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">crea solicitudes u órdenes</text>
+        <text x="750" y="264" text-anchor="middle" fill="rgba(255,255,255,0.55)" class="box-sub" font-style="italic">ver sección 06</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — SVG árbol BOM -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">BOM Explosion — The Structure Behind a Product</span>
+          <span class="sec-title-es">Explosión de BOM — La estructura detrás de un producto</span>
+        </div>
+        <div class="sec-desc">Cómo el sistema analiza la Lista de Materiales para determinar qué componentes hacen falta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un producto terminado normalmente está compuesto por varios <strong>conjuntos</strong> (assemblies), sub-conjuntos, hasta llegar a <strong>materias primas</strong>. Todos los componentes necesarios se definen en la <strong>Bill of Materials (BOM)</strong>. Durante la <strong>explosión de BOM</strong>, el sistema genera la lista completa de componentes y cantidades requeridas — y el proceso se repite en cada conjunto hasta que solo queden materias primas en su BOM individual.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="65" x2="450" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="95" x2="750" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="95" x2="150" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="95" x2="450" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="750" y1="95" x2="750" y2="130" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="340" y="10" width="220" height="55" rx="10" fill="#0A0F1C"/>
+        <text x="450" y="34" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13.5">Finished Product</text>
+        <text x="450" y="51" text-anchor="middle" fill="#B8D4F0" class="box-sub">producto terminado</text>
+
+        <rect x="50" y="130" width="200" height="65" rx="10" fill="#1A4B8C"/>
+        <text x="150" y="157" text-anchor="middle" fill="white" class="box-label">Assembly A</text>
+        <text x="150" y="174" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">conjunto · tiene su propia BOM</text>
+
+        <rect x="350" y="130" width="200" height="65" rx="10" fill="#1A6B99"/>
+        <text x="450" y="157" text-anchor="middle" fill="white" class="box-label">Assembly B</text>
+        <text x="450" y="174" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">conjunto · tiene su propia BOM</text>
+
+        <rect x="650" y="130" width="200" height="65" rx="10" fill="#5A6B8C"/>
+        <text x="750" y="157" text-anchor="middle" fill="white" class="box-label">Raw Material X</text>
+        <text x="750" y="174" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">materia prima directa</text>
+
+        <line x1="150" y1="195" x2="150" y2="230" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="80" y1="230" x2="220" y2="230" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="80" y1="230" x2="80" y2="260" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="220" y1="230" x2="220" y2="260" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="30" y="260" width="100" height="55" rx="8" fill="#94A3B8"/>
+        <text x="80" y="285" text-anchor="middle" fill="white" class="box-sub" font-size="10">Raw Material</text>
+        <text x="80" y="298" text-anchor="middle" fill="white" class="box-sub" font-size="10">(materia prima)</text>
+        <rect x="170" y="260" width="100" height="55" rx="8" fill="#94A3B8"/>
+        <text x="220" y="285" text-anchor="middle" fill="white" class="box-sub" font-size="10">Raw Material</text>
+        <text x="220" y="298" text-anchor="middle" fill="white" class="box-sub" font-size="10">(materia prima)</text>
+
+        <line x1="450" y1="195" x2="450" y2="230" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="380" y1="230" x2="520" y2="230" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="380" y1="230" x2="380" y2="260" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="520" y1="230" x2="520" y2="260" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="330" y="260" width="100" height="55" rx="8" fill="#94A3B8"/>
+        <text x="380" y="285" text-anchor="middle" fill="white" class="box-sub" font-size="10">Raw Material</text>
+        <text x="380" y="298" text-anchor="middle" fill="white" class="box-sub" font-size="10">(materia prima)</text>
+        <rect x="470" y="260" width="100" height="55" rx="8" fill="#94A3B8"/>
+        <text x="520" y="285" text-anchor="middle" fill="white" class="box-sub" font-size="10">Raw Material</text>
+        <text x="520" y="298" text-anchor="middle" fill="white" class="box-sub" font-size="10">(materia prima)</text>
+
+        <text x="450" y="335" text-anchor="middle" fill="#64748B" font-size="10.5" font-style="italic">La explosión se repite en cada conjunto hasta que la BOM solo contiene materias primas.</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — SVG timeline regresiva -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Backward Scheduling — Working Back from the Due Date</span>
+          <span class="sec-title-es">Programación Regresiva — desde la fecha de necesidad hacia atrás</span>
+        </div>
+        <div class="sec-desc">Las tres preguntas que responde el sistema al calcular fechas de producción y aprovisionamiento.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      A partir de la fecha de requerimiento del producto terminado — originada en una orden de venta o un requerimiento independiente — el sistema toma la lista de componentes relevantes y calcula hacia atrás cuándo se necesita cada uno. El objetivo es que el producto esté disponible en la fecha solicitada y que los conjuntos y materias primas permanezcan en stock <strong>el menor tiempo posible</strong>.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 940 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="bwarrow" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M10,0 L0,5 L10,10 z" fill="#C0392B"/>
+          </marker>
+        </defs>
+        <line x1="800" y1="65" x2="150" y2="65" stroke="#C0392B" stroke-width="2.2" marker-end="url(#bwarrow)"/>
+        <text x="475" y="42" text-anchor="middle" fill="#C0392B" font-family="Syne" font-weight="700" font-size="13">Backward Scheduling</text>
+
+        <line x1="140" y1="95" x2="140" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="50" y="115" width="180" height="70" rx="10" fill="#7E4FBF"/>
+        <text x="140" y="145" text-anchor="middle" fill="white" class="box-label">Procurement Begins</text>
+        <text x="140" y="163" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">¿cuándo debe arrancar?</text>
+
+        <line x1="360" y1="95" x2="360" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="270" y="115" width="180" height="70" rx="10" fill="#1A6B99"/>
+        <text x="360" y="145" text-anchor="middle" fill="white" class="box-label">Components Required</text>
+        <text x="360" y="163" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">¿cuándo se necesitan?</text>
+
+        <line x1="580" y1="95" x2="580" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="490" y="115" width="180" height="70" rx="10" fill="#1A4B8C"/>
+        <text x="580" y="145" text-anchor="middle" fill="white" class="box-label">Final Production</text>
+        <text x="580" y="163" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">¿cuándo se produce?</text>
+
+        <line x1="800" y1="95" x2="800" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="710" y="115" width="180" height="70" rx="10" fill="#0A0F1C"/>
+        <text x="800" y="145" text-anchor="middle" fill="white" class="box-label">Product Due Date</text>
+        <text x="800" y="163" text-anchor="middle" fill="#7FE3D8" class="box-sub">orden de venta / requerimiento</text>
+
+        <text x="470" y="225" text-anchor="middle" fill="#64748B" font-size="11">Las materias primas se necesitan antes; los conjuntos, más cerca de la fecha final —</text>
+        <text x="470" y="242" text-anchor="middle" fill="#64748B" font-size="11">minimizando el tiempo que cada componente permanece en stock.</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — formula + escenarios -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Net Requirements Calculation</span>
+          <span class="sec-title-es">Cálculo de Necesidades Netas</span>
+        </div>
+        <div class="sec-desc">Cómo el MRP decide si hay faltantes de conjuntos y/o materias primas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Después de la explosión de BOM y el cálculo de fechas, el MRP ejecuta el <strong>cálculo de necesidades netas</strong>: para cada material, compara la suma de todas las entradas (receipts) contra la suma de todos los requerimientos. En caso de faltante, calcula la cantidad necesaria de ese conjunto o materia prima para resolverlo.
+    </div>
+    <div class="visual-wrap">
+      <div class="formula-box">
+        <span class="flabel">Comparación por material</span>
+        <div class="frow">Σ Receipts (entradas: stock + pedidos abiertos) &nbsp;vs.&nbsp; Σ Requirements (necesidades: demanda + consumo)</div>
+        <div class="frow">Si Requirements &gt; Receipts → hay <strong>faltante (shortage)</strong> → se calcula la cantidad a reponer.</div>
+      </div>
+      <div class="cmp-grid" style="margin-top:20px;">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">⛓️</span>Escenario 1 — Materia Prima <span class="en-tag">Raw Material</span></h4>
+          <p>El cálculo detecta un faltante de <strong>100 cadenas</strong>. El MRP determina la cantidad exacta que el área de ventas/compras debe procurar de uno o más proveedores.</p>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🏗️</span>Escenario 2 — Conjunto <span class="en-tag">Assembly</span></h4>
+          <p>El cálculo detecta un faltante de cuadros (frames). El MRP genera la orden necesaria para disparar el <strong>reabastecimiento del conjunto</strong> mediante fabricación interna.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — SVG bifurcación -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creation of Replenishment Elements</span>
+          <span class="sec-title-es">Creación de Elementos de Reabastecimiento</span>
+        </div>
+        <div class="sec-desc">Dos caminos posibles según el tipo de material en faltante.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Una vez determinadas las cantidades a reponer, el MRP crea <strong>elementos de reabastecimiento</strong>. Las materias primas faltantes suelen procurarse de <strong>proveedores externos</strong>; los conjuntos faltantes se fabrican <strong>internamente</strong>. Para disparar el aprovisionamiento, el MRP crea <strong>solicitudes de pedido</strong> (purchase requisitions) que procesa Materials Management; para disparar la fabricación interna, crea <strong>órdenes planificadas</strong> (planned orders) que se convierten en <strong>órdenes de producción</strong>.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 330" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="60" x2="450" y2="80" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="220" y1="80" x2="680" y2="80" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="220" y1="80" x2="220" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="680" y1="80" x2="680" y2="95" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="330" y="10" width="240" height="50" rx="10" fill="#C0392B"/>
+        <text x="450" y="31" text-anchor="middle" fill="white" class="box-label">Shortage Detected</text>
+        <text x="450" y="47" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">faltante determinado por el MRP</text>
+
+        <rect x="110" y="95" width="220" height="60" rx="10" fill="#5A6B8C"/>
+        <text x="220" y="120" text-anchor="middle" fill="white" class="box-label">Raw Material Shortage</text>
+        <text x="220" y="137" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">materia prima</text>
+
+        <rect x="570" y="95" width="220" height="60" rx="10" fill="#5A6B8C"/>
+        <text x="680" y="120" text-anchor="middle" fill="white" class="box-label">Assembly Shortage</text>
+        <text x="680" y="137" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">conjunto</text>
+
+        <line x1="220" y1="155" x2="220" y2="180" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="680" y1="155" x2="680" y2="180" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="110" y="180" width="220" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="220" y="205" text-anchor="middle" fill="white" class="box-label">Purchase Requisition</text>
+        <text x="220" y="222" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">solicitud de pedido — MM</text>
+
+        <rect x="570" y="180" width="220" height="60" rx="10" fill="#E07B39"/>
+        <text x="680" y="205" text-anchor="middle" fill="white" class="box-label">Planned Order</text>
+        <text x="680" y="222" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">orden planificada</text>
+
+        <line x1="220" y1="240" x2="220" y2="265" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="680" y1="240" x2="680" y2="265" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="110" y="265" width="220" height="55" rx="10" fill="#1A4B8C"/>
+        <text x="220" y="288" text-anchor="middle" fill="white" class="box-label">External Supplier</text>
+        <text x="220" y="304" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">aprovisionamiento externo</text>
+
+        <rect x="570" y="265" width="220" height="55" rx="10" fill="#1A6B99"/>
+        <text x="680" y="288" text-anchor="middle" fill="white" class="box-label">Production Order</text>
+        <text x="680" y="304" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">fabricación in-house</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — FLOW 5 pasos orden de producción -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Processing a Production Order</span>
+          <span class="sec-title-es">Procesamiento de una Orden de Producción</span>
+        </div>
+        <div class="sec-desc">Los cinco pasos que atraviesa una orden, desde su creación hasta la recepción del producto terminado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Durante su ejecución, una orden de producción atraviesa varios pasos — tanto en la manufactura física como en el sistema SAP S/4HANA. Entre la creación y la liberación, el sistema ejecuta chequeos que garantizan que la orden pueda procesarse correctamente, por ejemplo verificando que los componentes estén disponibles en la cantidad y el momento requeridos.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">📋</span><span class="title-en">Order Creation</span><span class="title-es">Creación de Orden</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Se selecciona el ruteo (routing)</li>
+            <li>Se programa la orden</li>
+            <li>Estado: "created"</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">🔓</span><span class="title-en">Order Release</span><span class="title-es">Liberación de Orden</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Queda disponible para producción</li>
+            <li>Estado: "release"</li>
+            <li>Habilita salidas, confirmaciones y entradas</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">📤</span><span class="title-en">Goods Issues</span><span class="title-es">Salidas de Mercadería</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Registra el consumo de material</li>
+            <li>Baja cantidad y valor de stock</li>
+            <li>De los componentes usados</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;">
+            <span class="icon">✅</span><span class="title-en">Confirmation</span><span class="title-es">Confirmación</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Trackea el avance de la orden</li>
+            <li>Monitorea si el proceso corre bien</li>
+            <li>Identifica demoras a tiempo</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#C0392B;">
+            <span class="icon">📥</span><span class="title-en">Goods Receipts</span><span class="title-es">Entrada de Mercadería</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Tras la última operación</li>
+            <li>Actualiza registros de inventario</li>
+            <li>Sube cantidad y valor de stock</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — chip grid -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What a Production Order Defines</span>
+          <span class="sec-title-es">Qué define una Orden de Producción</span>
+        </div>
+        <div class="sec-desc">La información concreta que toda orden de producción especifica.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Una <strong>orden de producción</strong> define qué material se produce, en qué cantidad, tiempo y forma. Es el objeto que inicia y controla la fabricación.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">🚲</span><span class="chip-title">Material</span><span class="chip-en">Which types are produced</span><div class="chip-desc">Qué tipo de producto se fabrica</div></div>
+        <div class="chip chip-teal"><span class="chip-icon">🔢</span><span class="chip-title">Quantity</span><span class="chip-en">Which quantities</span><div class="chip-desc">Cuánto se produce</div></div>
+        <div class="chip chip-purple"><span class="chip-icon">🗓️</span><span class="chip-title">Timing</span><span class="chip-en">When to meet requirement dates</span><div class="chip-desc">Cuándo, para cumplir la fecha</div></div>
+        <div class="chip chip-orange"><span class="chip-icon">🧩</span><span class="chip-title">Components</span><span class="chip-en">Which material components</span><div class="chip-desc">Qué componentes hacen falta</div></div>
+        <div class="chip chip-gold"><span class="chip-icon">⚙️</span><span class="chip-title">Operations</span><span class="chip-en">Which work centers</span><div class="chip-desc">Qué operaciones, en qué puesto</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — comparación vistas maestro de materiales -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Material Master in Production</span>
+          <span class="sec-title-es">El Maestro de Materiales en Producción</span>
+        </div>
+        <div class="sec-desc">Las dos vistas que mantiene el área de producción sobre cada material.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El maestro de materiales contiene toda la información relevante de un material, y cada departamento mantiene sus datos en una vista específica. El área de producción mantiene habitualmente la vista <strong>MRP</strong> y la vista de <strong>Work Scheduling</strong>, ambas con información específica de planta.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📊</span>MRP View <span class="en-tag">Vista MRP</span></h4>
+          <ul>
+            <li>Información específica de planificación</li>
+            <li>Almacén de destino de materiales de proveedor</li>
+            <li>Tiempos típicos de reorden (re-order times)</li>
+            <li>Estrategia: make-to-stock o make-to-order (materiales semi-terminados y terminados)</li>
+          </ul>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🛠️</span>Work Scheduling View <span class="en-tag">Vista de Programación de Trabajo</span></h4>
+          <ul>
+            <li>Datos relevantes para manufactura</li>
+            <li>Responsable de supervisar el proceso productivo</li>
+            <li>Si se fabrica por lotes o números de serie</li>
+            <li>Tiempos típicos de producción — usados por el MRP para calcular el inicio de producción</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — tabla MTS vs MTO -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Make-to-Stock vs. Make-to-Order</span>
+          <span class="sec-title-es">Fabricación contra Stock vs. contra Pedido</span>
+        </div>
+        <div class="sec-desc">Las dos estrategias de planificación de producción y cómo disparan la manufactura.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En <strong>Make to Stock (MTS)</strong>, la producción se dispara por un umbral de inventario o un pronóstico de ventas, y corre <strong>independiente</strong> del ciclo de ventas. En <strong>Make to Order (MTO)</strong>, la producción arranca <strong>únicamente</strong> tras recibir una orden de venta confirmada, que actúa como disparador del MRP.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Criterio</th><th>Make to Stock (MTS)</th><th>Make to Order (MTO)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">🎯 Disparador</span></td>
+            <td>Umbral de inventario o pronóstico de ventas</td>
+            <td>Recepción de una orden de venta confirmada</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🔗 Relación con ventas</span></td>
+            <td>Ciclo de producción <strong>independiente</strong> del ciclo de ventas</td>
+            <td>Ciclo de producción <strong>ligado</strong> al documento de venta</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📦 Enfoque de inventario</span></td>
+            <td>Mantiene suministro continuo de producto terminado</td>
+            <td>Minimiza el volumen de inventario de producto terminado</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">⚠️ Riesgo principal</span></td>
+            <td><span class="badge badge-alert">Exceso u obsolescencia de inventario</span></td>
+            <td><span class="badge badge-alert">Lead time más extenso para el comprador</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">✅ Beneficio principal</span></td>
+            <td><span class="badge badge-accent">Entregas rápidas, corridas de producción optimizadas</span></td>
+            <td><span class="badge badge-accent">Elimina el riesgo de inventario no vendido</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🧭 Mejor para</span></td>
+            <td>Productos estandarizados, ventas de alto volumen y predecibles</td>
+            <td>Productos altamente personalizados, especializados o costosos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Plan-to-Produce</div><div class="term-es">Planificar a Producir</div><div class="term-def">Proceso end-to-end que va de la planificación de demanda a la producción física del bien.</div></div>
+      <div class="gcard"><div class="term-en">Demand Planning</div><div class="term-es">Planificación de Demanda</div><div class="term-def">Primera etapa del proceso; define qué demanda del cliente hay que cubrir.</div></div>
+      <div class="gcard"><div class="term-en">Material Requirements Planning (MRP)</div><div class="term-es">Planificación de Requerimientos de Materiales</div><div class="term-def">Cálculo que asegura materias primas y conjuntos disponibles en el momento y cantidad correctos.</div></div>
+      <div class="gcard"><div class="term-en">Bill of Materials (BOM)</div><div class="term-es">Lista de Materiales</div><div class="term-def">Estructura que define todos los componentes y cantidades necesarios para fabricar un producto.</div></div>
+      <div class="gcard"><div class="term-en">BOM Explosion</div><div class="term-es">Explosión de BOM</div><div class="term-def">Proceso por el cual el sistema genera la lista completa de componentes de un producto terminado.</div></div>
+      <div class="gcard"><div class="term-en">Backward Scheduling</div><div class="term-es">Programación Regresiva</div><div class="term-def">Cálculo de fechas de inicio y fin de cada actividad, partiendo de la fecha de necesidad hacia atrás.</div></div>
+      <div class="gcard"><div class="term-en">Net Requirements Calculation</div><div class="term-es">Cálculo de Necesidades Netas</div><div class="term-def">Comparación entre entradas y requerimientos de un material para detectar faltantes.</div></div>
+      <div class="gcard"><div class="term-en">Replenishment Element</div><div class="term-es">Elemento de Reabastecimiento</div><div class="term-def">Objeto (solicitud de pedido u orden planificada) creado por el MRP para cubrir un faltante.</div></div>
+      <div class="gcard"><div class="term-en">Purchase Requisition</div><div class="term-es">Solicitud de Pedido</div><div class="term-def">Documento que dispara el aprovisionamiento externo, procesado por Materials Management.</div></div>
+      <div class="gcard"><div class="term-en">Planned Order</div><div class="term-es">Orden Planificada</div><div class="term-def">Elemento creado por el MRP para disparar fabricación interna; se convierte en orden de producción.</div></div>
+      <div class="gcard"><div class="term-en">Production Order</div><div class="term-es">Orden de Producción</div><div class="term-def">Objeto que define y controla qué, cuánto, cuándo y cómo se fabrica un material.</div></div>
+      <div class="gcard"><div class="term-en">Routing</div><div class="term-es">Ruteo</div><div class="term-def">Secuencia de operaciones y puestos de trabajo que la orden usa al programarse en su creación.</div></div>
+      <div class="gcard"><div class="term-en">Make-to-Stock (MTS)</div><div class="term-es">Fabricación contra Stock</div><div class="term-def">Estrategia donde la producción se dispara por pronóstico o umbral de inventario, no por orden de venta.</div></div>
+      <div class="gcard"><div class="term-en">Make-to-Order (MTO)</div><div class="term-es">Fabricación contra Pedido</div><div class="term-def">Estrategia donde la producción arranca solo tras recibir una orden de venta confirmada.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Plan to Produce · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Procure to Pay — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t1);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:660px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(127,191,143,0.14);
+    border-left:4px solid var(--t1);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:660px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t1-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(61,122,82,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{
+    background:var(--t1-pale);
+    border-left:4px solid var(--t1-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  /* FLOW */
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:13px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:14px 13px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:11.3px; color:var(--body); padding:4px 0 4px 14px; position:relative; line-height:1.45; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:5px; }
+  .flow-connector{
+    position:absolute; top:20px; right:-21px; width:28px; height:28px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* CARD ROW */
+  .cardrow{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .cardrow .item{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:18px 16px; text-align:center; }
+  .cardrow .item .icon{ font-size:24px; display:block; margin-bottom:8px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:8px; }
+  .cardrow .item p{ margin:0; font-size:0.8rem; color:var(--body); line-height:1.5; }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+
+  /* CHIPS */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:160px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip p.chip-desc{ font-size:0.72rem; color:var(--body); margin:6px 0 0; line-height:1.4; }
+
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+
+  /* TABLE */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">P2P Flow</a>
+  <a href="#s2">Creating the PO</a>
+  <a href="#s3">PO Structure</a>
+  <a href="#s4">Goods Receipt</a>
+  <a href="#s5">Documents &amp; Inventory</a>
+  <a href="#s6">Invoice Verification</a>
+  <a href="#s7">Supplier Invoice Data</a>
+  <a href="#s8">General Ledger</a>
+  <a href="#s9">Chart of Accounts</a>
+  <a href="#s10">Accounts Payable</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Procure-to-Pay</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+    </div>
+    <h1>The <span class="accent">Procure</span>-to-Pay Process</h1>
+    <h2>El proceso de Compras a Pago</h2>
+    <p class="desc">Fundamentos teóricos del flujo Procure-to-Pay en SAP S/4HANA: cómo nace una orden de compra, cómo se registra la recepción de mercadería y la factura del proveedor, y cómo esas transacciones logísticas impactan en tiempo real la Contabilidad Financiera.</p>
+    <div class="hlbox">Resumen Visual — <b>Procure-to-Pay</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — FLOW de 3 pasos -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Procure-to-Pay Flow</span>
+          <span class="sec-title-es">El flujo de Compras a Pago</span>
+        </div>
+        <div class="sec-desc">Los tres pasos del proceso simple de aprovisionamiento externo y las apps Fiori que los soportan.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es Procure-to-Pay?</strong> Es el proceso end-to-end de aprovisionamiento externo en SAP S/4HANA: desde que se emite una <strong>orden de compra</strong> hasta que se recibe y verifica la <strong>factura del proveedor</strong>. En su versión simple consta de tres pasos — orden de compra, recepción de mercadería y recepción de factura — cada uno respaldado por una app Fiori dedicada.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🛒</span><span class="title-en">Purchase Order</span><span class="title-es">Orden de Compra</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Se crea en la app <em>Manage Purchase Orders</em></li>
+            <li>Documento con cabecera y posiciones</li>
+            <li>Puede crearse desde cero o con referencia a otro documento</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">📦</span><span class="title-en">Goods Receipt</span><span class="title-es">Recepción de Mercadería</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Se postea en <em>Post Goods Receipt for Purchasing Document</em></li>
+            <li>Genera documento de material y documento contable</li>
+            <li>Actualiza cantidad y valor de stock</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">🧾</span><span class="title-en">Invoice Receipt</span><span class="title-es">Recepción de Factura</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Se crea en <em>Create Supplier Invoice</em></li>
+            <li>Compara orden, recepción y factura</li>
+            <li>Completa el proceso de aprovisionamiento externo</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — SVG hub: fuentes de valores por defecto para la PO -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating the Purchase Order</span>
+          <span class="sec-title-es">Creando la Orden de Compra</span>
+        </div>
+        <div class="sec-desc">Las dos formas de crear una orden de compra y los datos maestros que le proponen valores por defecto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El sistema permite crear una orden de compra <strong>desde cero</strong> — por ejemplo al pedirle por primera vez a un proveedor nuevo — o <strong>con referencia a otro documento</strong>, como una orden anterior, cuando el stock del material está por agotarse. Sea cual sea el camino, SAP S/4HANA propone valores por defecto tomados de distintos objetos de datos maestros relacionados.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+          </marker>
+        </defs>
+        <line x1="150" y1="98" x2="420" y2="150" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a2)"/>
+        <line x1="450" y1="98" x2="450" y2="150" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a2)"/>
+        <line x1="750" y1="98" x2="480" y2="150" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a2)"/>
+
+        <rect x="30" y="20" width="240" height="78" rx="10" fill="#1A4B8C"/>
+        <text x="150" y="46" text-anchor="middle" fill="white" class="box-label">Business Partner</text>
+        <text x="150" y="61" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">del proveedor</text>
+        <text x="150" y="78" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9.5">Dirección · condiciones de pago · incoterms</text>
+
+        <rect x="330" y="20" width="240" height="78" rx="10" fill="#00A896"/>
+        <text x="450" y="46" text-anchor="middle" fill="white" class="box-label">Material Master</text>
+        <text x="450" y="61" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">registro maestro de material</text>
+        <text x="450" y="78" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9.5">Texto breve · unidad de medida · grupo</text>
+
+        <rect x="630" y="20" width="240" height="78" rx="10" fill="#7E4FBF"/>
+        <text x="750" y="46" text-anchor="middle" fill="white" class="box-label">Purchasing Info Record</text>
+        <text x="750" y="61" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">registro de información de compras</text>
+        <text x="750" y="78" text-anchor="middle" fill="#E4D4F7" class="box-sub" font-size="9.5">Precio negociado con el proveedor</text>
+
+        <rect x="300" y="150" width="300" height="90" rx="12" fill="#3D7A52"/>
+        <text x="450" y="185" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="16">Purchase Order</text>
+        <text x="450" y="203" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub" font-size="10.5">Orden de Compra</text>
+        <text x="450" y="222" text-anchor="middle" fill="#D8F0DE" class="box-sub" font-size="9.5">Valores por defecto propuestos automáticamente</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — Estructura header + items -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Structure of a Purchase Order</span>
+          <span class="sec-title-es">Estructura de una Orden de Compra</span>
+        </div>
+        <div class="sec-desc">Un documento con cabecera única y una o más posiciones.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Como todo documento transaccional en SAP S/4HANA, la orden de compra tiene un <strong>documento de cabecera</strong> y <strong>una o más posiciones</strong>. La cabecera contiene información válida para toda la orden; cada posición corresponde a un material puntual pedido al proveedor. El comprador administra, crea, cambia, muestra y monitorea las órdenes desde la app <strong>Manage Purchase Orders</strong>.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="128" x2="450" y2="150" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="230" y1="150" x2="670" y2="150" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="230" y1="150" x2="230" y2="172" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="670" y1="150" x2="670" y2="172" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="230" y="20" width="440" height="108" rx="12" fill="#1A4B8C"/>
+        <text x="450" y="46" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="15">Document Header</text>
+        <text x="450" y="62" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub" font-size="10.5">Documento de Cabecera</text>
+        <text x="450" y="82" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9.5">Proveedor · organización de compras · moneda</text>
+        <text x="450" y="98" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9.5">Condiciones de pago · fecha de la orden</text>
+        <text x="450" y="114" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9.5">Válida para toda la orden de compra</text>
+
+        <rect x="80" y="172" width="300" height="120" rx="12" fill="#00A896"/>
+        <text x="230" y="198" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="13">Item 1</text>
+        <text x="230" y="214" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub" font-size="10">Posición</text>
+        <text x="230" y="234" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9.5">Número y texto del material</text>
+        <text x="230" y="250" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9.5">Cantidad pedida</text>
+        <text x="230" y="266" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9.5">Fecha de entrega deseada</text>
+        <text x="230" y="282" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9.5">Precio acordado · planta</text>
+
+        <rect x="520" y="172" width="300" height="120" rx="12" fill="#00A896"/>
+        <text x="670" y="198" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="13">Item 2…N</text>
+        <text x="670" y="214" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub" font-size="10">Posición adicional</text>
+        <text x="670" y="234" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9.5">Mismos campos que Item 1</text>
+        <text x="670" y="250" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9.5">Un material distinto por posición</text>
+        <text x="670" y="266" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9.5">Puede tener su propia planta</text>
+        <text x="670" y="282" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9.5">y fecha de entrega</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — cardrow de controles en la recepción -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Processing a Goods Receipt</span>
+          <span class="sec-title-es">Procesando la Recepción de Mercadería</span>
+        </div>
+        <div class="sec-desc">Qué controla el sistema al registrar la llegada de la mercadería.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La recepción de mercadería se registra siempre <strong>con referencia a la orden de compra</strong> correspondiente. Una vez ingresada, el sistema propone todas las posiciones abiertas de esa orden, facilitando tanto la carga como el control de lo que efectivamente llegó. Si el proveedor entrega solo una parte de lo pedido (por ejemplo, por faltantes de su lado), se pueden registrar <strong>varias recepciones parciales</strong> contra la misma posición hasta completar la orden.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow">
+        <div class="item">
+          <span class="icon">✅</span>
+          <h5>Material Correcto</h5>
+          <span class="en">Right Material</span>
+          <p>¿Se entregó el material que efectivamente se pidió en la orden de compra?</p>
+        </div>
+        <div class="item">
+          <span class="icon">⚖️</span>
+          <h5>Cantidad Correcta</h5>
+          <span class="en">Right Quantity</span>
+          <p>¿La cantidad recibida coincide con la pedida? ¿Hay sobre o sub entrega?</p>
+        </div>
+        <div class="item">
+          <span class="icon">⏳</span>
+          <h5>Vida Útil Mínima</h5>
+          <span class="en">Minimum Shelf Life</span>
+          <p>Para mercadería perecedera: ¿está dentro de su vida útil mínima?</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — cmp-grid documentos generados + inventory management -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Generated Documents &amp; Inventory Impact</span>
+          <span class="sec-title-es">Documentos Generados e Impacto en el Inventario</span>
+        </div>
+        <div class="sec-desc">Qué documentos crea el sistema al postear la recepción y cómo actualiza el stock.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Al postear una recepción de mercadería, el sistema genera automáticamente <strong>dos documentos</strong>: uno de material y uno contable. Ambos quedan bajo la gestión de <strong>Inventory Management</strong>, el módulo responsable de administrar el stock tanto en <strong>cantidad</strong> como en <strong>valor</strong>. Con cada movimiento de mercadería, el sistema actualiza en simultáneo las cantidades y valores de stock, las cuentas del Libro Mayor y las imputaciones de Controlling.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📄</span>Material Document <span class="en-tag">Documento de Material</span></h4>
+          <p>Detalle del material entregado, la cantidad recibida, y el <strong>plant</strong> y <strong>storage location</strong> donde queda almacenado.</p>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">💰</span>Accounting Document <span class="en-tag">Documento Contable</span></h4>
+          <p>Actualiza el <strong>valor del stock</strong> en libros: cuentas de mayor de inventario y, si corresponde, imputaciones de costos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — decision flow: verificación de factura / bloqueo -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Invoice Verification</span>
+          <span class="sec-title-es">Verificación de Factura</span>
+        </div>
+        <div class="sec-desc">Cómo el sistema compara orden, recepción y factura, y qué pasa ante una diferencia.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La verificación de factura completa el proceso de aprovisionamiento externo. Si la factura se registra con referencia a una orden de compra, el sistema propone los datos y recepciones asociadas — valores que se pueden sobreescribir si la factura real trae otros datos. Cuando hay <strong>diferencias de precio o cantidad</strong> entre la orden, la recepción y la factura, y esas diferencias superan la tolerancia definida, el sistema <strong>bloquea la factura para pago</strong> hasta que el desvío se resuelva. La verificación de facturas no incluye el pago en sí ni la evaluación de pasivos abiertos — eso es tarea de Contabilidad Financiera.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+          </marker>
+        </defs>
+        <line x1="150" y1="98" x2="420" y2="145" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a6)"/>
+        <line x1="450" y1="98" x2="450" y2="145" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a6)"/>
+        <line x1="750" y1="98" x2="480" y2="145" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a6)"/>
+        <line x1="360" y1="215" x2="230" y2="245" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a6)"/>
+        <line x1="540" y1="215" x2="670" y2="245" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a6)"/>
+
+        <rect x="30" y="20" width="240" height="78" rx="10" fill="#1A4B8C"/>
+        <text x="150" y="52" text-anchor="middle" fill="white" class="box-label">Purchase Order</text>
+        <text x="150" y="70" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Orden de Compra</text>
+
+        <rect x="330" y="20" width="240" height="78" rx="10" fill="#00A896"/>
+        <text x="450" y="52" text-anchor="middle" fill="white" class="box-label">Goods Receipt</text>
+        <text x="450" y="70" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Recepción de Mercadería</text>
+
+        <rect x="630" y="20" width="240" height="78" rx="10" fill="#7E4FBF"/>
+        <text x="750" y="52" text-anchor="middle" fill="white" class="box-label">Supplier Invoice</text>
+        <text x="750" y="70" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Factura del Proveedor</text>
+
+        <rect x="330" y="145" width="240" height="70" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="172" text-anchor="middle" fill="white" class="box-label" font-size="11.5">¿Dentro de tolerancia?</text>
+        <text x="450" y="188" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub" font-size="9.5">Compara precio y cantidad</text>
+
+        <rect x="90" y="245" width="280" height="42" rx="8" fill="#3D7A52"/>
+        <text x="230" y="270" text-anchor="middle" fill="white" class="box-label">✔ Sí — Factura Contabilizada</text>
+
+        <rect x="530" y="245" width="280" height="42" rx="8" fill="#C0392B"/>
+        <text x="670" y="270" text-anchor="middle" fill="white" class="box-label">✕ No — Bloqueada para Pago</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — chips: contenido de la factura del proveedor -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Information in a Supplier Invoice</span>
+          <span class="sec-title-es">Información en la Factura del Proveedor</span>
+        </div>
+        <div class="sec-desc">Los seis bloques de datos que trae toda factura de proveedor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La factura del proveedor trae información genérica: fechas de factura y de entrega, número de factura, datos del proveedor, los <strong>documentos logísticos de referencia</strong> (por ejemplo el número de la orden de compra), y el detalle de los materiales facturados con precio, cantidad, IVA y descripción. Cierra con las <strong>condiciones de pago</strong> (por ejemplo un descuento por pago anticipado) y los <strong>datos bancarios</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">📅</span><span class="chip-title">Fechas</span><span class="chip-en">Invoice &amp; Delivery Dates</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">🏢</span><span class="chip-title">Datos del Proveedor</span><span class="chip-en">Supplier Data</span></div>
+        <div class="chip chip-navy"><span class="chip-icon">🔗</span><span class="chip-title">Documentos de Referencia</span><span class="chip-en">Referenced Documents</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">📋</span><span class="chip-title">Materiales Facturados</span><span class="chip-en">Invoiced Materials</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">💳</span><span class="chip-title">Condiciones de Pago</span><span class="chip-en">Payment Terms</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">🏦</span><span class="chip-title">Datos Bancarios</span><span class="chip-en">Bank Details</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — hub svg: reconciliation accounts hacia el GL -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">General Ledger &amp; Reconciliation Accounts</span>
+          <span class="sec-title-es">Libro Mayor y Cuentas de Enlace</span>
+        </div>
+        <div class="sec-desc">Cómo los sub-libros se conectan al Libro Mayor en tiempo real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El objetivo central de <strong>General Ledger Accounting</strong> es reflejar con precisión la contabilidad externa registrando todas las transacciones de negocio. Una característica clave es la <strong>Reconciliation Account</strong> (cuenta de enlace): cualquier actualización en un sub-libro (ledger menor) se refleja de inmediato en el <strong>Libro Mayor</strong> (ledger principal), garantizando que los datos sean consistentes en todos los libros.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+          </marker>
+        </defs>
+        <line x1="150" y1="150" x2="380" y2="180" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a8)"/>
+        <line x1="450" y1="150" x2="450" y2="180" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a8)"/>
+        <line x1="750" y1="150" x2="520" y2="180" stroke="#3D7A52" stroke-width="2.2" marker-end="url(#a8)"/>
+
+        <rect x="30" y="72" width="240" height="78" rx="10" fill="#1A4B8C"/>
+        <text x="150" y="100" text-anchor="middle" fill="white" class="box-label">Accounts Payable</text>
+        <text x="150" y="117" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Cuentas por Pagar</text>
+        <text x="150" y="135" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-size="9">Facturas y pagos a proveedores</text>
+
+        <rect x="330" y="72" width="240" height="78" rx="10" fill="#00A896"/>
+        <text x="450" y="100" text-anchor="middle" fill="white" class="box-label">Accounts Receivable</text>
+        <text x="450" y="117" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Cuentas por Cobrar</text>
+        <text x="450" y="135" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-size="9">Cobros de clientes</text>
+
+        <rect x="630" y="72" width="240" height="78" rx="10" fill="#7E4FBF"/>
+        <text x="750" y="100" text-anchor="middle" fill="white" class="box-label">Asset Accounting</text>
+        <text x="750" y="117" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Activos Fijos</text>
+        <text x="750" y="135" text-anchor="middle" fill="#E4D4F7" class="box-sub" font-size="9">Adquisición y baja de activos</text>
+
+        <rect x="300" y="180" width="300" height="90" rx="12" fill="#3D7A52"/>
+        <text x="450" y="212" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="15">General Ledger</text>
+        <text x="450" y="229" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub" font-size="10.5">Libro Mayor</text>
+        <text x="450" y="248" text-anchor="middle" fill="#D8F0DE" class="box-sub" font-size="9.5">Actualizado en tiempo real vía</text>
+        <text x="450" y="261" text-anchor="middle" fill="#D8F0DE" class="box-sub" font-size="9.5">Reconciliation Accounts</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — foundation + chips: chart of accounts y FS versions -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Chart of Accounts &amp; Financial Statements</span>
+          <span class="sec-title-es">Plan de Cuentas y Estados Financieros</span>
+        </div>
+        <div class="sec-desc">La cuenta de mayor como dato maestro central y las versiones de reporte que la estructuran.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Dentro de General Ledger Accounting, la <strong>cuenta de mayor</strong> es el dato maestro más importante. Las cuentas se estructuran en un <strong>Chart of Accounts</strong> para garantizar su creación uniforme y permitir el controlling cruzado entre sociedades — su uso es obligatorio en SAP Financials. Crear un <strong>Financial Statement</strong> es la función principal del Libro Mayor, y para eso hace falta saber qué cuentas puede usar cada Company Code y cómo se estructuran esas cuentas en el reporte.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 190" xmlns="http://www.w3.org/2000/svg">
+        <line x1="270" y1="115" x2="270" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="115" x2="630" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="630" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="90" x2="450" y2="65" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="150" y="115" width="240" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="270" y="140" text-anchor="middle" fill="white" class="box-label">Company Code DE01</text>
+        <text x="270" y="157" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Bike GmbH · EUR</text>
+
+        <rect x="510" y="115" width="240" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="630" y="140" text-anchor="middle" fill="white" class="box-label">Company Code US01</text>
+        <text x="630" y="157" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Bike Inc · USD</text>
+
+        <rect x="270" y="10" width="360" height="55" rx="10" fill="#3D7A52"/>
+        <text x="450" y="33" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">YCOA — Operating Chart of Accounts</text>
+        <text x="450" y="50" text-anchor="middle" fill="#D8F0DE" class="box-sub" font-size="9.5">Plan de cuentas asignado en configuración a cada sociedad</text>
+      </svg>
+      <div class="chip-row" style="margin-top:18px;">
+        <div class="chip"><span class="chip-icon">🌍</span><span class="chip-title">IFRS Group Accounting</span><span class="chip-en">Estado según normas internacionales</span></div>
+        <div class="chip"><span class="chip-icon">🇩🇪</span><span class="chip-title">HGB Financial Statement</span><span class="chip-en">Estado según normativa alemana</span></div>
+        <div class="chip"><span class="chip-icon">🇺🇸</span><span class="chip-title">US-GAAP Financial Statement</span><span class="chip-en">Estado según normativa de EE.UU.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — tabla: business partner y accounts payable -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Accounts Payable &amp; Business Partners</span>
+          <span class="sec-title-es">Cuentas por Pagar y Business Partners</span>
+        </div>
+        <div class="sec-desc">Cómo se estructura el dato maestro del proveedor y qué define un pago.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Accounts Payable Accounting (FI-AP) registra todas las transacciones vinculadas a los proveedores y está estrechamente conectada con Materials Management: los datos del proveedor pueden ingresar a Financial Accounting a través de transacciones logísticas como órdenes de compra, recepciones de mercadería y facturas — aunque si una factura no nace en MM, también puede crearse directamente en FI. El dato maestro del proveedor se administra mediante el <strong>Business Partner</strong>, que reúne información general, logística y financiera.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Área de Datos</th><th>Contenido</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">👤 General Data</span><span class="mod-en">Datos Generales</span></td>
+            <td>Identificación básica del proveedor dentro del Business Partner.</td>
+            <td>Nombre, dirección, datos de contacto</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📦 Logistics Data</span><span class="mod-en">Datos de Logística</span></td>
+            <td>Información necesaria para el proceso de compras y entregas.</td>
+            <td>Condiciones de entrega, plantas habilitadas</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">💶 Financial Accounting Data</span><span class="mod-en">Datos de Contabilidad Financiera</span></td>
+            <td>Información contable del proveedor, incluidos los datos bancarios.</td>
+            <td>Cuenta de enlace, condiciones de pago, banco</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">💸 Payment Run</span><span class="mod-en">Pago</span></td>
+            <td>Datos que definen cómo y cuánto se paga, manual o automáticamente.</td>
+            <td>Método de pago, banco propio, importe, posiciones</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Purchase Order</div><div class="term-es">Orden de Compra</div><div class="term-def">Documento con cabecera y posiciones que formaliza el pedido de material a un proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Goods Receipt</div><div class="term-es">Recepción de Mercadería</div><div class="term-def">Registro de la llegada física del material, con referencia a la orden de compra.</div></div>
+      <div class="gcard"><div class="term-en">Material Document</div><div class="term-es">Documento de Material</div><div class="term-def">Documento generado al postear una recepción, con el detalle del material entregado.</div></div>
+      <div class="gcard"><div class="term-en">Accounting Document</div><div class="term-es">Documento Contable</div><div class="term-def">Documento que actualiza el valor de stock en las cuentas del Libro Mayor.</div></div>
+      <div class="gcard"><div class="term-en">Invoice Verification</div><div class="term-es">Verificación de Factura</div><div class="term-def">Proceso que compara la factura del proveedor contra la orden y la recepción de mercadería.</div></div>
+      <div class="gcard"><div class="term-en">Business Partner</div><div class="term-es">Business Partner</div><div class="term-def">Objeto que centraliza el dato maestro de un proveedor: datos generales, logísticos y financieros.</div></div>
+      <div class="gcard"><div class="term-en">Material Master</div><div class="term-es">Registro Maestro de Material</div><div class="term-def">Dato maestro central del producto; cada departamento mantiene su propia vista o pestaña.</div></div>
+      <div class="gcard"><div class="term-en">Purchasing Info Record</div><div class="term-es">Registro de Información de Compras</div><div class="term-def">Objeto que guarda el precio negociado entre un proveedor y un material específico.</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Account</div><div class="term-es">Cuenta de Enlace</div><div class="term-def">Cuenta que actualiza el Libro Mayor en tiempo real ante cambios en un sub-libro.</div></div>
+      <div class="gcard"><div class="term-en">Operating Chart of Accounts</div><div class="term-es">Plan de Cuentas Operativo</div><div class="term-def">Chart of Accounts asignado a cada Company Code; las cuentas que usan los contadores al postear.</div></div>
+      <div class="gcard"><div class="term-en">Financial Statement Version</div><div class="term-es">Versión de Estado Financiero</div><div class="term-def">Estructura de cuentas usada para presentar el Financial Statement según un marco normativo.</div></div>
+      <div class="gcard"><div class="term-en">Inventory Management</div><div class="term-es">Gestión de Inventario</div><div class="term-def">Área que administra el stock de materiales por cantidad y por valor.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Procure to Pay · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

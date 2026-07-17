@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · Plan to Produce — Holístico/Ecosistema | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t5:#E0A56F;
+    --t5-dark:#A85F2B;
+    --t5-pale:rgba(224,165,111,0.14);
+    --t5-pale-border:rgba(224,165,111,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t5); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t5); border-bottom-color:var(--t5); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1D14 55%, #4A2E14 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t5); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,165,111,0.14); border-left:4px solid var(--t5); border-radius:0 8px 8px 0; padding:13px 18px; max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t5); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:52px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:18px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t5-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(168,95,43,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .tag-row{ display:flex; align-items:center; gap:8px; margin-top:4px; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .orbit-tag{ display:inline-flex; align-items:center; gap:5px; font-size:9.5px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(168,95,43,0.1); color:var(--t5-dark); vertical-align:middle; }
+  .kind-tag{ display:inline-flex; align-items:center; font-size:9px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; color:white; vertical-align:middle; }
+  .kind-tag.kind-nest{ background:#5A6B8C; }
+  .kind-tag.flow{ background:var(--cat-sales); }
+
+  .theory-box{ background:var(--t5-pale); border-left:4px solid var(--t5-dark); border-radius:0 10px 10px 0; padding:15px 22px; margin-bottom:22px; font-size:0.93rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t5-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:30px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:600px; }
+
+  .nest-stage{ display:flex; justify-content:center; padding:6px 0; }
+  .nest{ border:2px dashed; border-radius:26px; padding:36px 32px 26px; position:relative; display:inline-flex; flex-direction:column; align-items:center; }
+  .nest-label{ position:absolute; top:-11px; left:24px; background:white; padding:0 10px; font-size:10.5px; font-weight:700; letter-spacing:.3px; }
+  .nest-core{ border-radius:14px; padding:18px 30px; color:white; font-family:'Syne',sans-serif; font-weight:800; text-align:center; font-size:1rem; }
+  .nest-core .sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:0.72rem; opacity:.85; margin-top:5px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">Where MRP Lives</a>
+  <a href="#s2">MRP Run Flow</a>
+  <a href="#s3">PP vs. MM Split</a>
+  <a href="#s4">Goods Issue Flow</a>
+  <a href="#s5">Material Master</a>
+  <a href="#s6">Confirmation Flow</a>
+  <a href="#s7">Landscape Stack</a>
+  <a href="#s8">Subcontracting Flow</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Production Planning</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Quality Management</span>
+    </div>
+    <h1><span class="accent">Plan</span> to Produce</h1>
+    <h2>Del Plan a la Producción — Ecosistema</h2>
+    <p class="desc">Dónde vive cada pieza de Plan-to-Produce dentro de capas más grandes, y qué entra y sale hacia actividades puntuales de otros módulos — no el panorama completo de siempre, sino la ubicación exacta.</p>
+    <div class="hlbox">Resumen Visual — <b>Plan to Produce</b>, Tipo 5 (Holístico). 8 secciones — 4 de posicionamiento, 4 de flujo de entrada/salida con módulos puntuales.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — mamushka -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where MRP Lives</span>
+          <span class="sec-title-es">Dónde vive el MRP</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Production Planning</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No es un sistema aparte — es una función, adentro de otra, adentro de otra.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>MRP</strong> no compite con Production Planning — <strong>vive adentro</strong> de él, como su función de cálculo central. Y Production Planning, a su vez, es una pieza de la suite de Logística, que corre sobre el núcleo de S/4HANA.
+    </div>
+    <div class="visual-wrap">
+      <div class="nest-stage">
+        <div class="nest" style="border-color:#94A3B8;">
+          <span class="nest-label" style="color:#64748B;">SAP S/4HANA — Digital Core</span>
+          <div class="nest" style="border-color:#B08A6F;">
+            <span class="nest-label" style="color:#8A6A4E;">Logistics</span>
+            <div class="nest" style="border-color:#C2843F;">
+              <span class="nest-label" style="color:#A85F2B;">Production Planning (PP)</span>
+              <div class="nest-core" style="background:var(--t5-dark);">
+                Material Requirements Planning
+                <div class="sub">cálculo central de qué y cuándo producir</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — flujo -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds the MRP Run, What It Triggers</span>
+          <span class="sec-title-es">Qué alimenta la corrida de MRP, qué dispara</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Sales &amp; Procurement</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un requerimiento que nace en Ventas y termina en una actividad puntual de Compras.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El MRP no arranca solo — se dispara por una actividad concreta de <strong>Sales &amp; Distribution</strong>: la creación de la orden de venta. De ahí sale en una sola dirección hacia el <strong>procesamiento de solicitudes de pedido</strong> en Materials Management — no hacia "Compras" en general.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="240" y1="65" x2="330" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a2)"/>
+        <line x1="570" y1="65" x2="660" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a2)"/>
+        <rect x="20" y="35" width="220" height="60" rx="10" fill="#E07B39"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Sales Order Creation</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Sales &amp; Distribution</text>
+
+        <rect x="330" y="35" width="240" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">MRP Run</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Production Planning</text>
+
+        <rect x="660" y="35" width="220" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">Purchase Req. Processing</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Materials Management</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra como requerimiento</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale hacia una actividad puntual de MM</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — fork tree -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Logistics Splits: Planning vs. Materials</span>
+          <span class="sec-title-es">Dónde se bifurca Logística: planificación vs. materiales</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Production Planning &amp; Materials Management</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Dos ramas paralelas desde un mismo origen — ninguna vive adentro de la otra.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Dentro de Logística, <strong>Production Planning</strong> y <strong>Materials Management</strong> no están uno adentro del otro — son dos ramas <strong>paralelas</strong> desde el mismo origen. MRP vive del lado de Production Planning, aunque dispare actividades (como las solicitudes de pedido de §2) del lado de MM.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="65" x2="450" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="630" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="270" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="90" x2="630" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="175" x2="270" y2="205" stroke="#A85F2B" stroke-width="2.5"/>
+
+        <rect x="350" y="10" width="200" height="55" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="42" text-anchor="middle" fill="white" class="box-label">Logistics</text>
+
+        <rect x="140" y="115" width="260" height="60" rx="10" fill="#1A6B99"/>
+        <text x="270" y="141" text-anchor="middle" fill="white" class="box-label">Production Planning (PP)</text>
+        <text x="270" y="158" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">planificación · hacia adentro (MRP)</text>
+
+        <rect x="500" y="115" width="260" height="60" rx="10" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="630" y="141" text-anchor="middle" fill="#5A6B8C" class="box-label">Materials Management (MM)</text>
+        <text x="630" y="158" text-anchor="middle" fill="#94A3B8" class="box-sub">materiales · recibe desde PP (ver §2)</text>
+
+        <rect x="140" y="205" width="260" height="60" rx="10" fill="#A85F2B"/>
+        <text x="270" y="231" text-anchor="middle" fill="white" class="box-label">Material Requirements Planning</text>
+        <text x="270" y="248" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">función central, vista en §1</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — flujo -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds Goods Issue, What It Updates</span>
+          <span class="sec-title-es">Qué alimenta la salida de mercadería, qué actualiza</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Production &amp; Finance</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un movimiento físico en planta que se convierte en dos actualizaciones puntuales, no una.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La liberación de una orden de producción habilita la salida de mercadería — y esa salida no queda solo en Logística: actualiza puntualmente la <strong>valuación de inventario</strong> en Finance y el <strong>objeto de costos</strong> de la orden en Controlling, vía la determinación de cuentas (T4 §6).
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="75" x2="450" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="100" x2="630" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="100" x2="270" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a4)"/>
+        <line x1="630" y1="100" x2="630" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a4)"/>
+
+        <rect x="310" y="15" width="280" height="60" rx="10" fill="#00A896"/>
+        <text x="450" y="39" text-anchor="middle" fill="white" class="box-label">Goods Issue Posting</text>
+        <text x="450" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Production Execution</text>
+
+        <rect x="130" y="125" width="280" height="62" rx="10" fill="#1A4B8C"/>
+        <text x="270" y="152" text-anchor="middle" fill="white" class="box-label">Inventory Valuation</text>
+        <text x="270" y="169" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Finance · General Ledger</text>
+
+        <rect x="490" y="125" width="280" height="62" rx="10" fill="#A85F2B"/>
+        <text x="630" y="152" text-anchor="middle" fill="white" class="box-label">Order Cost Object</text>
+        <text x="630" y="169" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Controlling</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — fundación + pilares -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where the Material Master Lives</span>
+          <span class="sec-title-es">Dónde vive el maestro de materiales</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Fundación Cross-Módulo</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No es de Production Planning. Es de todos, y PP solo la usa como los demás.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>material master</strong> — con su vista MRP, su vista de Work Scheduling (T1 §9), y muchas otras — no le pertenece a Production Planning. Es la <strong>fundación compartida</strong> sobre la que se paran MRP, Ejecución de Producción, Compras y Ventas por igual, cada uno leyendo su propia vista.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="50" width="180" height="115" rx="8" fill="#1A6B99"/>
+        <text x="150" y="100" text-anchor="middle" fill="white" class="box-label">MRP</text>
+        <text x="150" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">lee vista MRP</text>
+
+        <rect x="260" y="50" width="180" height="115" rx="8" fill="#00A896"/>
+        <text x="350" y="100" text-anchor="middle" fill="white" class="box-label">Production Execution</text>
+        <text x="350" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">lee Work Scheduling</text>
+
+        <rect x="460" y="50" width="180" height="115" rx="8" fill="#7E4FBF"/>
+        <text x="550" y="100" text-anchor="middle" fill="white" class="box-label">Purchasing</text>
+        <text x="550" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">lee vista de Compras</text>
+
+        <rect x="660" y="50" width="180" height="115" rx="8" fill="#E07B39"/>
+        <text x="750" y="100" text-anchor="middle" fill="white" class="box-label">Sales</text>
+        <text x="750" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">lee vista de Ventas</text>
+
+        <rect x="30" y="165" width="840" height="60" rx="8" fill="#A85F2B"/>
+        <text x="450" y="190" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Material Master</text>
+        <text x="450" y="208" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">un registro, una vista distinta por área — la base que todos comparten</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — flujo -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Confirmation Sends Downstream</span>
+          <span class="sec-title-es">Qué envía la confirmación aguas abajo</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Quality &amp; Controlling</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un solo evento en planta que dispara dos actividades puntuales en dos módulos distintos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando se confirma una operación (T2 §9), no pasa una sola cosa. Si el material lo requiere, se genera automáticamente un <strong>lote de inspección</strong> en Quality Management; y en paralelo, las horas y cantidades confirmadas se acumulan como <strong>costo real</strong> en la orden, en Controlling.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a6b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="75" x2="450" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="100" x2="630" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="100" x2="270" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6b)"/>
+        <line x1="630" y1="100" x2="630" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6b)"/>
+
+        <rect x="310" y="15" width="280" height="60" rx="10" fill="#00A896"/>
+        <text x="450" y="39" text-anchor="middle" fill="white" class="box-label">Operation Confirmation</text>
+        <text x="450" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Production Execution</text>
+
+        <rect x="130" y="125" width="280" height="62" rx="10" fill="#C9932E"/>
+        <text x="270" y="152" text-anchor="middle" fill="white" class="box-label">Inspection Lot Creation</text>
+        <text x="270" y="169" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Quality Management</text>
+
+        <rect x="490" y="125" width="280" height="62" rx="10" fill="#A85F2B"/>
+        <text x="630" y="152" text-anchor="middle" fill="white" class="box-label">Actual Cost Accumulation</text>
+        <text x="630" y="169" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Controlling · rumbo a Settlement (T2 §10)</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — stack de capas -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Advanced Planning Sits in the Landscape</span>
+          <span class="sec-title-es">Dónde se ubica la planificación avanzada en el landscape</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Tecnología &amp; Landscape</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No es una capa más adentro — es una capa optativa que se apoya arriba del núcleo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El MRP que viste en T1-T4 corre nativo dentro del núcleo de <strong>S/4HANA</strong>. Cuando la complejidad de planificación lo justifica, una capa de <strong>optimización avanzada</strong> (como PP/DS o un add-on de planificación de demanda) se sienta <strong>arriba</strong> de ese núcleo — no adentro, no en paralelo — leyendo y devolviendo datos en tiempo real.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="95" x2="450" y2="118" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a7)"/>
+        <line x1="450" y1="190" x2="450" y2="213" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a7)"/>
+
+        <rect x="60" y="15" width="780" height="80" rx="10" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="450" y="32" text-anchor="middle" fill="#5A6B8C" class="box-label">Capa de optimización avanzada</text>
+        <rect x="90" y="40" width="220" height="42" rx="8" fill="#5A6B8C"/>
+        <text x="200" y="66" text-anchor="middle" fill="white" class="box-sub" font-size="11">PP/DS</text>
+        <rect x="340" y="40" width="220" height="42" rx="8" fill="#5A6B8C"/>
+        <text x="450" y="66" text-anchor="middle" fill="white" class="box-sub" font-size="11">Demand Planning add-on</text>
+        <rect x="590" y="40" width="220" height="42" rx="8" fill="#5A6B8C"/>
+        <text x="700" y="66" text-anchor="middle" fill="white" class="box-sub" font-size="11">Capacity Optimizer</text>
+
+        <rect x="60" y="120" width="780" height="70" rx="10" fill="#A85F2B"/>
+        <text x="450" y="150" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">MRP nativo (T1–T4)</text>
+        <text x="450" y="168" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">motor estándar de planificación</text>
+
+        <rect x="60" y="215" width="780" height="70" rx="10" fill="#1A4B8C"/>
+        <text x="450" y="245" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">S/4HANA Digital Core</text>
+        <text x="450" y="263" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">único destino consolidado de datos</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — flujo -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Subcontracting Sends and Receives</span>
+          <span class="sec-title-es">Qué envía y recibe el aprovisionamiento a fasón</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Procurement &amp; Production</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un ciclo cerrado entre tres actividades puntuales de dos módulos, no un simple "afuera y adentro".</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El subcontracting (T2 §6) no es una compra simple. La compañía primero <strong>provee componentes</strong> desde su propio inventario, el proveedor los recibe vía una <strong>orden de compra de procesamiento externo</strong>, y el ciclo cierra cuando el conjunto fabricado <strong>reingresa</strong> directo a la orden de producción que lo necesitaba.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="240" y1="65" x2="330" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+        <line x1="570" y1="65" x2="660" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+        <rect x="20" y="35" width="220" height="60" rx="10" fill="#00A896"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Component Provision</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Inventory Management (MM)</text>
+
+        <rect x="330" y="35" width="240" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">External Processing PO</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Purchasing</text>
+
+        <rect x="660" y="35" width="220" height="60" rx="10" fill="#A85F2B"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">Semi-Finished Receipt</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">de vuelta a la Production Order</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale hacia el proveedor</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra de vuelta, cerrando el ciclo</text>
+      </svg>
+    </div>
+  </section>
+
+</main>
+
+<footer>T5 · Holístico/Ecosistema — Plan to Produce · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

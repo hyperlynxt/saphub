@@ -50,5 +50,23 @@
   { "curso":"Posting Scenarios (Parallel Accounting / Doc Splitting)","cursoSlug":"gl-parallelaccountingdocsplitting","megaCurso":"Record to Report","modulo":"GL","tipo":"T2","volumen":1,"archivo":"courses/gl-parallelaccountingdocsplitting/t2-gl-parallelaccountingdocsplitting.html","fecha":"2026-07-16" },
   { "curso":"Posting Scenarios (Parallel Accounting / Doc Splitting)","cursoSlug":"gl-parallelaccountingdocsplitting","megaCurso":"Record to Report","modulo":"GL","tipo":"T3","volumen":1,"archivo":"courses/gl-parallelaccountingdocsplitting/t3-gl-parallelaccountingdocsplitting.html","fecha":"2026-07-16" },
   { "curso":"Posting Scenarios (Parallel Accounting / Doc Splitting)","cursoSlug":"gl-parallelaccountingdocsplitting","megaCurso":"Record to Report","modulo":"GL","tipo":"T4","volumen":1,"archivo":"courses/gl-parallelaccountingdocsplitting/t4-gl-parallelaccountingdocsplitting.html","fecha":"2026-07-16" },
-  { "curso":"Posting Scenarios (Parallel Accounting / Doc Splitting)","cursoSlug":"gl-parallelaccountingdocsplitting","megaCurso":"Record to Report","modulo":"GL","tipo":"T5","volumen":1,"archivo":"courses/gl-parallelaccountingdocsplitting/t5-gl-parallelaccountingdocsplitting.html","fecha":"2026-07-16" }
+  { "curso":"Posting Scenarios (Parallel Accounting / Doc Splitting)","cursoSlug":"gl-parallelaccountingdocsplitting","megaCurso":"Record to Report","modulo":"GL","tipo":"T5","volumen":1,"archivo":"courses/gl-parallelaccountingdocsplitting/t5-gl-parallelaccountingdocsplitting.html","fecha":"2026-07-16" },
+
+  { "curso":"Order to Cash","cursoSlug":"o2c-ordertocash","megaCurso":"Executing Basic ERP Processes","modulo":"O2C","tipo":"T1","volumen":1,"archivo":"courses/o2c-ordertocash/t1-o2c-ordertocash.html","fecha":"2026-07-17" },
+  { "curso":"Order to Cash","cursoSlug":"o2c-ordertocash","megaCurso":"Executing Basic ERP Processes","modulo":"O2C","tipo":"T2","volumen":1,"archivo":"courses/o2c-ordertocash/t2-o2c-ordertocash.html","fecha":"2026-07-17" },
+  { "curso":"Order to Cash","cursoSlug":"o2c-ordertocash","megaCurso":"Executing Basic ERP Processes","modulo":"O2C","tipo":"T3","volumen":1,"archivo":"courses/o2c-ordertocash/t3-o2c-ordertocash.html","fecha":"2026-07-17" },
+  { "curso":"Order to Cash","cursoSlug":"o2c-ordertocash","megaCurso":"Executing Basic ERP Processes","modulo":"O2C","tipo":"T4","volumen":1,"archivo":"courses/o2c-ordertocash/t4-o2c-ordertocash.html","fecha":"2026-07-17" },
+  { "curso":"Order to Cash","cursoSlug":"o2c-ordertocash","megaCurso":"Executing Basic ERP Processes","modulo":"O2C","tipo":"T5","volumen":1,"archivo":"courses/o2c-ordertocash/t5-o2c-ordertocash.html","fecha":"2026-07-17" },
+
+  { "curso":"Procure to Pay","cursoSlug":"p2p-procuretopay","megaCurso":"Executing Basic ERP Processes","modulo":"P2P","tipo":"T1","volumen":1,"archivo":"courses/p2p-procuretopay/t1-p2p-procuretopay.html","fecha":"2026-07-17" },
+  { "curso":"Procure to Pay","cursoSlug":"p2p-procuretopay","megaCurso":"Executing Basic ERP Processes","modulo":"P2P","tipo":"T2","volumen":1,"archivo":"courses/p2p-procuretopay/t2-p2p-procuretopay.html","fecha":"2026-07-17" },
+  { "curso":"Procure to Pay","cursoSlug":"p2p-procuretopay","megaCurso":"Executing Basic ERP Processes","modulo":"P2P","tipo":"T3","volumen":1,"archivo":"courses/p2p-procuretopay/t3-p2p-procuretopay.html","fecha":"2026-07-17" },
+  { "curso":"Procure to Pay","cursoSlug":"p2p-procuretopay","megaCurso":"Executing Basic ERP Processes","modulo":"P2P","tipo":"T4","volumen":1,"archivo":"courses/p2p-procuretopay/t4-p2p-procuretopay.html","fecha":"2026-07-17" },
+  { "curso":"Procure to Pay","cursoSlug":"p2p-procuretopay","megaCurso":"Executing Basic ERP Processes","modulo":"P2P","tipo":"T5","volumen":1,"archivo":"courses/p2p-procuretopay/t5-p2p-procuretopay.html","fecha":"2026-07-17" },
+
+  { "curso":"Plan to Produce","cursoSlug":"pp-plantoproduce","megaCurso":"Executing Basic ERP Processes","modulo":"PP","tipo":"T1","volumen":1,"archivo":"courses/pp-plantoproduce/t1-pp-plantoproduce.html","fecha":"2026-07-17" },
+  { "curso":"Plan to Produce","cursoSlug":"pp-plantoproduce","megaCurso":"Executing Basic ERP Processes","modulo":"PP","tipo":"T2","volumen":1,"archivo":"courses/pp-plantoproduce/t2-pp-plantoproduce.html","fecha":"2026-07-17" },
+  { "curso":"Plan to Produce","cursoSlug":"pp-plantoproduce","megaCurso":"Executing Basic ERP Processes","modulo":"PP","tipo":"T3","volumen":1,"archivo":"courses/pp-plantoproduce/t3-pp-plantoproduce.html","fecha":"2026-07-17" },
+  { "curso":"Plan to Produce","cursoSlug":"pp-plantoproduce","megaCurso":"Executing Basic ERP Processes","modulo":"PP","tipo":"T4","volumen":1,"archivo":"courses/pp-plantoproduce/t4-pp-plantoproduce.html","fecha":"2026-07-17" },
+  { "curso":"Plan to Produce","cursoSlug":"pp-plantoproduce","megaCurso":"Executing Basic ERP Processes","modulo":"PP","tipo":"T5","volumen":1,"archivo":"courses/pp-plantoproduce/t5-pp-plantoproduce.html","fecha":"2026-07-17" }
 ]

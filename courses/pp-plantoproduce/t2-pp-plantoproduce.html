@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Plan to Produce — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,133,133,0.14); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-track{ display:inline-block; font-size:0.66rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:2px; }
+  .track-deep{ background:var(--t2-pale); color:var(--t2-dark); }
+  .track-adj{ background:#E8EDF6; color:#1A4B8C; }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:900px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t2-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:20px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; }
+  .formula-box{ background:var(--bg); border-radius:8px; padding:12px 14px; margin-top:14px; font-size:0.8rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:4px; }
+  .formula-box div.frow{ padding:2px 0; color:var(--body); }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:220px; border:1.5px solid; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.85rem; font-weight:700; }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-desc{ font-size:0.74rem; color:var(--body); margin-top:8px; line-height:1.45; }
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); } .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); } .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); } .chip-purple .chip-title{ color:#7E4FBF; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+  .badge-alert{ background:rgba(192,57,43,0.1); color:#C0392B; }
+  .badge-ok{ background:rgba(0,168,150,0.12); color:#00806E; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media (max-width:780px){ .cmp-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">MRP Types</a>
+  <a href="#s2">BOM Detail</a>
+  <a href="#s3">Scheduling Detail</a>
+  <a href="#s4">Lot-Sizing</a>
+  <a href="#s5">Safety Stock</a>
+  <a href="#s6">Special Procurement</a>
+  <a href="#s7">Firming</a>
+  <a href="#s8">Capacity Planning</a>
+  <a href="#s9">Confirmations</a>
+  <a href="#s10">Settlement</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Production Planning</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Manufacturing Execution</span>
+      <span class="pill pill-secondary">Controlling</span>
+    </div>
+    <h1><span class="accent">Plan</span> to Produce</h1>
+    <h2>Del Plan a la Producción — Profundización</h2>
+    <p class="desc">Segunda capa sobre el proceso Plan-to-Produce: los mecanismos internos que el Tipo 1 dejó a nivel conceptual — tipos de MRP, explosión de BOM en detalle, floats de programación, lot-sizing, aprovisionamiento especial, capacidad y liquidación de costos.</p>
+    <div class="hlbox">Resumen Visual — <b>Plan to Produce</b>, Tipo 2 (Profundización). 10 secciones — 5 de mayor profundidad sobre lo visto en T1, 5 de temas adyacentes conectados.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — ADYACENTE — tabla tipos de MRP -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">MRP Types — How Different Materials Get Planned</span>
+          <span class="sec-title-es">Tipos de MRP — cómo se planifica cada material</span>
+          <span class="sec-track track-adj">Adyacente</span>
+        </div>
+        <div class="sec-desc">El MRP basado en necesidades netas que viste en T1 es uno de tres procedimientos de planificación posibles.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En T1 viste el <strong>MRP</strong> disparado por una orden de venta o un requerimiento independiente, comparando receipts contra requirements. Ese es el procedimiento de <strong>planificación por necesidades netas</strong> — pero no es el único. SAP S/4HANA permite asignar, material por material, uno de tres <strong>tipos de planificación (MRP Types)</strong> según qué tan predecible sea su consumo.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Procedimiento</th><th>Disparador</th><th>Mejor para</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">🎯 Reorder Point Planning</span><span class="mod-en">Planificación por Punto de Reorden</span></td>
+            <td>El stock disponible cae por debajo de un umbral fijo (punto de reorden)</td>
+            <td>Materiales de bajo valor y consumo constante</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🔄 MRP (Net Requirements)</span><span class="mod-en">MRP por Necesidades Netas — visto en T1</span></td>
+            <td>Orden de venta o requerimiento independiente</td>
+            <td>Materiales con demanda ligada a pedidos concretos</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📈 Forecast-Based Planning</span><span class="mod-en">Planificación Basada en Pronóstico</span></td>
+            <td>Un pronóstico de consumo actualizado periódicamente</td>
+            <td>Materiales de alta rotación sin orden de venta directa</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — PROFUNDIZACIÓN — BOM single-level vs multi-level -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">BOM Explosion in Detail — Single-Level vs. Multi-Level</span>
+          <span class="sec-title-es">Explosión de BOM en detalle — vista simple vs. multinivel</span>
+          <span class="sec-track track-deep">Profundización</span>
+        </div>
+        <div class="sec-desc">En T1 viste que la explosión se repite en cada conjunto. Acá se ve la diferencia entre mirar solo un nivel o toda la cadena — y qué es una BOM alternativa.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un <strong>single-level BOM</strong> muestra solo los componentes <strong>directos</strong> de un material, sin bajar a los niveles de sus conjuntos. Una <strong>multi-level BOM explosion</strong> es la que viste en T1: baja recursivamente hasta que solo quedan materias primas. Además, un mismo conjunto puede tener más de una <strong>BOM alternativa</strong> (alternative BOM) — por ejemplo, una receta de producción distinta para un lote pequeño versus uno grande.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="0" x2="450" y2="340" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="5,5"/>
+
+        <rect x="40" y="10" width="370" height="34" rx="8" fill="#0A0F1C"/>
+        <text x="225" y="32" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Single-Level BOM</text>
+
+        <line x1="225" y1="110" x2="225" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="75" y1="130" x2="375" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="75" y1="130" x2="75" y2="150" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="175" y1="130" x2="175" y2="150" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="275" y1="130" x2="275" y2="150" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="375" y1="130" x2="375" y2="150" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="140" y="60" width="170" height="50" rx="10" fill="#5A6B8C"/>
+        <text x="225" y="83" text-anchor="middle" fill="white" class="box-label">Finished Product</text>
+        <text x="225" y="99" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">producto terminado</text>
+
+        <rect x="35" y="150" width="80" height="55" rx="8" fill="#94A3B8"/>
+        <text x="75" y="180" text-anchor="middle" fill="white" class="box-sub" font-size="9.5">Componente</text>
+        <text x="75" y="192" text-anchor="middle" fill="white" class="box-sub" font-size="9.5">directo</text>
+        <rect x="135" y="150" width="80" height="55" rx="8" fill="#94A3B8"/>
+        <text x="175" y="180" text-anchor="middle" fill="white" class="box-sub" font-size="9.5">Componente</text>
+        <text x="175" y="192" text-anchor="middle" fill="white" class="box-sub" font-size="9.5">directo</text>
+        <rect x="235" y="150" width="80" height="55" rx="8" fill="#94A3B8"/>
+        <text x="275" y="180" text-anchor="middle" fill="white" class="box-sub" font-size="9.5">Componente</text>
+        <text x="275" y="192" text-anchor="middle" fill="white" class="box-sub" font-size="9.5">directo</text>
+        <rect x="335" y="150" width="80" height="55" rx="8" fill="#94A3B8"/>
+        <text x="375" y="180" text-anchor="middle" fill="white" class="box-sub" font-size="9.5">Componente</text>
+        <text x="375" y="192" text-anchor="middle" fill="white" class="box-sub" font-size="9.5">directo</text>
+
+        <text x="225" y="235" text-anchor="middle" fill="#64748B" font-size="10" font-style="italic">Solo un nivel — no muestra los sub-componentes de cada conjunto.</text>
+
+        <rect x="490" y="10" width="370" height="34" rx="8" fill="#0A0F1C"/>
+        <text x="675" y="32" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Multi-Level BOM (Explosion)</text>
+
+        <line x1="675" y1="110" x2="675" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="585" y1="130" x2="765" y2="130" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="585" y1="130" x2="585" y2="150" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="765" y1="130" x2="765" y2="150" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="590" y="60" width="170" height="50" rx="10" fill="#5A6B8C"/>
+        <text x="675" y="83" text-anchor="middle" fill="white" class="box-label">Finished Product</text>
+        <text x="675" y="99" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">producto terminado</text>
+
+        <rect x="510" y="150" width="150" height="55" rx="9" fill="#1A4B8C"/>
+        <text x="585" y="172" text-anchor="middle" fill="white" class="box-label" font-size="11">Assembly A</text>
+        <text x="585" y="188" text-anchor="middle" fill="rgba(255,255,255,0.7)" class="box-sub" font-size="9">conjunto</text>
+
+        <rect x="690" y="150" width="150" height="55" rx="9" fill="#1A6B99" stroke="#A94444" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="765" y="170" text-anchor="middle" fill="white" class="box-label" font-size="11">Assembly B</text>
+        <text x="765" y="184" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub" font-size="8.5" font-style="italic">tiene BOM alternativa</text>
+        <text x="765" y="196" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub" font-size="8.5" font-style="italic">(Usage 2)</text>
+
+        <line x1="585" y1="205" x2="585" y2="225" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="545" y1="225" x2="625" y2="225" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="545" y1="225" x2="545" y2="245" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="625" y1="225" x2="625" y2="245" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="505" y="245" width="80" height="50" rx="8" fill="#94A3B8"/>
+        <text x="545" y="273" text-anchor="middle" fill="white" class="box-sub" font-size="9">Raw Material</text>
+        <rect x="585" y="245" width="80" height="50" rx="8" fill="#94A3B8"/>
+        <text x="625" y="273" text-anchor="middle" fill="white" class="box-sub" font-size="9">Raw Material</text>
+
+        <line x1="765" y1="205" x2="765" y2="225" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="725" y1="225" x2="805" y2="225" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="725" y1="225" x2="725" y2="245" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="805" y1="225" x2="805" y2="245" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="685" y="245" width="80" height="50" rx="8" fill="#94A3B8"/>
+        <text x="725" y="273" text-anchor="middle" fill="white" class="box-sub" font-size="9">Raw Material</text>
+        <rect x="765" y="245" width="80" height="50" rx="8" fill="#94A3B8"/>
+        <text x="805" y="273" text-anchor="middle" fill="white" class="box-sub" font-size="9">Raw Material</text>
+
+        <text x="675" y="320" text-anchor="middle" fill="#64748B" font-size="10" font-style="italic">Baja hasta materia prima — es la explosión que usa el MRP para calcular faltantes.</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — PROFUNDIZACIÓN — floats de programación -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Scheduling in Detail — Forward Scheduling and Floats</span>
+          <span class="sec-title-es">Programación en detalle — programación hacia adelante y floats</span>
+          <span class="sec-track track-deep">Profundización</span>
+        </div>
+        <div class="sec-desc">La Backward Scheduling de T1 no es el único sentido de cálculo, y entre cada etapa hay márgenes de seguridad.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En T1 viste la <strong>Backward Scheduling</strong>: el sistema parte de la fecha de necesidad y calcula hacia atrás. Existe también la <strong>Forward Scheduling</strong>, que parte de la fecha más temprana posible de inicio y calcula hacia adelante. En ambos casos, el tiempo total no es solo "producción" — incluye <strong>floats</strong> (márgenes de seguridad) antes y después de fabricar, más el tiempo de procesamiento de la entrada de mercadería.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 940 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="fwarrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#00A896"/>
+          </marker>
+        </defs>
+        <line x1="60" y1="50" x2="880" y2="50" stroke="#00A896" stroke-width="2.2" marker-end="url(#fwarrow)"/>
+        <text x="470" y="30" text-anchor="middle" fill="#00806E" font-family="Syne" font-weight="700" font-size="13">Forward Scheduling</text>
+
+        <rect x="60" y="90" width="100" height="60" fill="#5A6B8C"/>
+        <text x="110" y="116" text-anchor="middle" fill="white" font-size="9.5" font-weight="600">Opening</text>
+        <text x="110" y="128" text-anchor="middle" fill="white" font-size="9.5" font-weight="600">Period</text>
+
+        <rect x="160" y="90" width="130" height="60" fill="#94A3B8"/>
+        <text x="225" y="116" text-anchor="middle" fill="white" font-size="9.5" font-weight="600">Float Before</text>
+        <text x="225" y="128" text-anchor="middle" fill="white" font-size="9.5" font-weight="600">Production</text>
+
+        <rect x="290" y="90" width="260" height="60" fill="#1A6B99"/>
+        <text x="420" y="116" text-anchor="middle" fill="white" font-size="10.5" font-weight="700">In-house Production</text>
+        <text x="420" y="130" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">tiempo real de fabricación</text>
+
+        <rect x="550" y="90" width="130" height="60" fill="#94A3B8"/>
+        <text x="615" y="116" text-anchor="middle" fill="white" font-size="9.5" font-weight="600">Float After</text>
+        <text x="615" y="128" text-anchor="middle" fill="white" font-size="9.5" font-weight="600">Production</text>
+
+        <rect x="680" y="90" width="200" height="60" fill="#7E4FBF"/>
+        <text x="780" y="116" text-anchor="middle" fill="white" font-size="9.5" font-weight="600">GR Processing</text>
+        <text x="780" y="128" text-anchor="middle" fill="white" font-size="9.5" font-weight="600">Time</text>
+
+        <text x="110" y="172" text-anchor="middle" fill="#64748B" font-size="9.5">Apertura</text>
+        <text x="225" y="172" text-anchor="middle" fill="#64748B" font-size="9.5">Margen previo</text>
+        <text x="420" y="172" text-anchor="middle" fill="#64748B" font-size="9.5">Producción in-house</text>
+        <text x="615" y="172" text-anchor="middle" fill="#64748B" font-size="9.5">Margen posterior</text>
+        <text x="780" y="172" text-anchor="middle" fill="#64748B" font-size="9.5">Procesar entrada</text>
+
+        <text x="470" y="205" text-anchor="middle" fill="#64748B" font-size="10.5" font-style="italic">Los floats absorben desvíos sin mover la fecha de disponibilidad final.</text>
+        <text x="470" y="222" text-anchor="middle" fill="#94A3B8" font-size="9.5">↔ Comparar con Backward Scheduling — ver T1, sección 04</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — ADYACENTE — lot-sizing -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Lot-Sizing Procedures — Deciding How Much to Replenish</span>
+          <span class="sec-title-es">Procedimientos de Lot-Sizing — cuánto reponer</span>
+          <span class="sec-track track-adj">Adyacente</span>
+        </div>
+        <div class="sec-desc">El Net Requirements Calculation de T1 determina que falta material — el lot-sizing decide la cantidad exacta que se pide u ordena.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En T1, el cálculo de necesidades netas detectaba un faltante (por ejemplo, 100 cadenas) y ese número se volvía directamente la cantidad del elemento de reabastecimiento. En la práctica, esa cantidad final depende del <strong>procedimiento de lot-sizing</strong> configurado para el material — que puede pedir exactamente lo que falta, redondear a un lote fijo, o agrupar varios períodos en una sola orden.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">🎯</span><span class="chip-title">Lot-for-Lot</span><span class="chip-en">Exact Lot Size</span><div class="chip-desc">Pide exactamente la cantidad del faltante — sin redondeo, sin stock extra.</div></div>
+        <div class="chip chip-teal"><span class="chip-icon">📦</span><span class="chip-title">Fixed Lot Size</span><span class="chip-en">Static Quantity</span><div class="chip-desc">Siempre pide un múltiplo de una cantidad fija predefinida, aunque sobre o falte ajustar.</div></div>
+        <div class="chip chip-purple"><span class="chip-icon">🗓️</span><span class="chip-title">Periodic Lot Sizing</span><span class="chip-en">Grouped by Period</span><div class="chip-desc">Agrupa las necesidades de varios días/semanas en una sola orden de reposición.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — PROFUNDIZACIÓN — safety stock & availability check -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Net Requirements in Detail — Safety Stock and the Availability Check</span>
+          <span class="sec-title-es">Necesidades netas en detalle — stock de seguridad y chequeo de disponibilidad</span>
+          <span class="sec-track track-deep">Profundización</span>
+        </div>
+        <div class="sec-desc">La fórmula de T1 se ajusta cuando el material tiene un colchón de seguridad configurado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En T1, un faltante existía cuando <strong>Requirements &gt; Receipts</strong>. Cuando un material tiene <strong>safety stock</strong> configurado, ese colchón se suma al lado de los requerimientos: el sistema dispara reposición no solo si el stock llega a cero, sino apenas amenaza con caer por debajo del nivel de seguridad. Este mismo principio de "disponible vs. necesario" es el que corre la <strong>Availability Check</strong> antes de liberar una orden de producción.
+    </div>
+    <div class="visual-wrap">
+      <div class="formula-box">
+        <span class="flabel">Comparación con stock de seguridad</span>
+        <div class="frow">Σ Receipts &nbsp;vs.&nbsp; Σ Requirements <strong>+ Safety Stock</strong></div>
+        <div class="frow">Si Receipts no cubre Requirements + Safety Stock → se dispara reposición antes de quedarse en cero.</div>
+      </div>
+      <div class="cmp-grid" style="margin-top:20px;">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🛟</span>Con Safety Stock</h4>
+          <p>El material nunca llega a faltante crítico — el colchón absorbe variaciones de demanda o demoras de proveedor. Más previsible, más costo de inventario.</p>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">⚖️</span>Sin Safety Stock</h4>
+          <p>El material se repone justo al llegar a cero (como en el ejemplo de T1). Menor costo de inventario, mayor riesgo ante variaciones inesperadas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — ADYACENTE — special procurement -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Special Procurement Types — Beyond the Standard Purchase Requisition</span>
+          <span class="sec-title-es">Tipos de aprovisionamiento especial — más allá de la solicitud de pedido estándar</span>
+          <span class="sec-track track-adj">Adyacente</span>
+        </div>
+        <div class="sec-desc">El camino "materia prima faltante → proveedor externo" de T1 es uno de varios caminos de aprovisionamiento posibles.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En T1, un faltante de materia prima generaba una <strong>Purchase Requisition</strong> hacia un <strong>proveedor externo</strong>. Ese es el aprovisionamiento estándar, pero el sistema soporta variantes: en <strong>subcontracting</strong>, el proveedor fabrica usando componentes que la propia compañía le envía; en <strong>stock transfer</strong>, el material no se compra sino que se mueve internamente desde otra planta o centro.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="60" x2="450" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="90" x2="750" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="90" x2="150" y2="110" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="90" x2="450" y2="110" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="750" y1="90" x2="750" y2="110" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="320" y="10" width="260" height="50" rx="10" fill="#C0392B"/>
+        <text x="450" y="31" text-anchor="middle" fill="white" class="box-label">Procurement Need Detected</text>
+        <text x="450" y="47" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">faltante determinado por el MRP</text>
+
+        <rect x="40" y="110" width="220" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="150" y="136" text-anchor="middle" fill="white" class="box-label">Standard Procurement</text>
+        <text x="150" y="153" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">visto en T1</text>
+
+        <rect x="340" y="110" width="220" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="450" y="136" text-anchor="middle" fill="white" class="box-label">Subcontracting</text>
+        <text x="450" y="153" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">trabajo a fasón</text>
+
+        <rect x="640" y="110" width="220" height="60" rx="10" fill="#E07B39"/>
+        <text x="750" y="136" text-anchor="middle" fill="white" class="box-label">Stock Transfer</text>
+        <text x="750" y="153" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">traslado entre plantas</text>
+
+        <line x1="150" y1="170" x2="150" y2="195" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="170" x2="450" y2="195" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="750" y1="170" x2="750" y2="195" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="40" y="195" width="220" height="70" rx="10" fill="#5A6B8C"/>
+        <text x="150" y="220" text-anchor="middle" fill="white" class="box-label" font-size="11">External Supplier</text>
+        <text x="150" y="236" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">entrega el material listo</text>
+        <text x="150" y="249" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">para usar</text>
+
+        <rect x="340" y="195" width="220" height="70" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="220" text-anchor="middle" fill="white" class="box-label" font-size="11">Vendor + Our Components</text>
+        <text x="450" y="236" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">enviamos componentes,</text>
+        <text x="450" y="249" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">recibimos el conjunto</text>
+
+        <rect x="640" y="195" width="220" height="70" rx="10" fill="#5A6B8C"/>
+        <text x="750" y="220" text-anchor="middle" fill="white" class="box-label" font-size="11">Other Plant / Storage Loc.</text>
+        <text x="750" y="236" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">sin compra externa,</text>
+        <text x="750" y="249" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">movimiento interno</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — PROFUNDIZACIÓN — firming & conversion -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">From Planned Order to Production Order — Firming &amp; Conversion</span>
+          <span class="sec-title-es">De la orden planificada a la orden de producción — firming y conversión</span>
+          <span class="sec-track track-deep">Profundización</span>
+        </div>
+        <div class="sec-desc">En T1 la orden planificada "se convertía" en orden de producción — acá se ve el paso intermedio que la protege de recálculos automáticos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cada vez que corre el MRP, las órdenes planificadas <strong>no firmadas</strong> pueden recalcularse o eliminarse automáticamente. Cuando el planificador decide que una orden ya es definitiva, la <strong>firma (firming)</strong> — protegiéndola de esos recálculos. Recién entonces se <strong>convierte</strong>, manual o automáticamente, en una orden de producción (fabricación interna) o una solicitud de pedido (aprovisionamiento externo).
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#5A6B8C;">
+            <span class="icon">🌀</span><span class="title-en">Planned Order (Unfirmed)</span><span class="title-es">Orden Planificada sin Firmar</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Creada automáticamente por el MRP</li>
+            <li>Puede recalcularse en la próxima corrida</li>
+            <li>Aún no es definitiva</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">📌</span><span class="title-en">Firmed</span><span class="title-es">Firmada</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>El planificador la fija</li>
+            <li>Protegida de recálculo automático</li>
+            <li>Cantidad y fecha se consideran definitivas</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">🔀</span><span class="title-en">Conversion</span><span class="title-es">Conversión</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Manual o automática</li>
+            <li>Según el tipo de aprovisionamiento</li>
+            <li>Punto de no retorno operativo</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🏭</span><span class="title-en">Production Order / PR</span><span class="title-es">Orden de Producción / Solicitud</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Objeto final, visto en T1</li>
+            <li>Interna → Production Order</li>
+            <li>Externa → Purchase Requisition</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — ADYACENTE — capacity planning -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Capacity Planning — Matching Orders to Work Center Capacity</span>
+          <span class="sec-title-es">Planificación de capacidad — cruzando órdenes contra la capacidad del puesto</span>
+          <span class="sec-track track-adj">Adyacente</span>
+        </div>
+        <div class="sec-desc">Una orden puede tener fechas y componentes perfectos y aun así chocar contra un puesto de trabajo sobrecargado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En T1 viste que una orden de producción define "qué operaciones se hacen en qué work centers". La <strong>capacity planning</strong> es lo que verifica que ese work center realmente tenga horas disponibles en la ventana calculada por la programación. Cuando la carga requerida supera la capacidad disponible, el sistema señala <strong>sobrecarga (overload)</strong> y el planificador debe nivelar (capacity leveling): mover la orden, dividir el lote o sumar turnos.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <text x="40" y="35" fill="#16213A" font-family="Syne" font-weight="700" font-size="12">Pre-Assembly</text>
+        <rect x="230" y="45" width="550" height="26" rx="6" fill="#E3E7EE"/>
+        <rect x="230" y="45" width="429" height="26" rx="6" fill="#00A896"/>
+        <text x="670" y="63" fill="#16213A" font-size="10.5" font-weight="700">78%</text>
+        <text x="230" y="90" fill="#64748B" font-size="9.5">dentro de capacidad disponible</text>
+
+        <text x="40" y="140" fill="#16213A" font-family="Syne" font-weight="700" font-size="12">Assembly</text>
+        <rect x="230" y="150" width="550" height="26" rx="6" fill="#E3E7EE"/>
+        <rect x="230" y="150" width="633" height="26" rx="6" fill="#C0392B"/>
+        <text x="873" y="168" fill="#C0392B" font-size="10.5" font-weight="700">115%</text>
+        <text x="230" y="195" fill="#C0392B" font-size="9.5" font-weight="600">⚠ overload — requiere nivelación de capacidad</text>
+
+        <text x="40" y="245" fill="#16213A" font-family="Syne" font-weight="700" font-size="12">Inspection</text>
+        <rect x="230" y="255" width="550" height="26" rx="6" fill="#E3E7EE"/>
+        <rect x="230" y="255" width="319" height="26" rx="6" fill="#00A896"/>
+        <text x="560" y="273" fill="#16213A" font-size="10.5" font-weight="700">58%</text>
+        <text x="230" y="298" fill="#64748B" font-size="9.5">dentro de capacidad disponible</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — PROFUNDIZACIÓN — confirmaciones y backflush -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Confirmations &amp; Backflushing — Tracking Progress in Detail</span>
+          <span class="sec-title-es">Confirmaciones y backflush — el seguimiento en detalle</span>
+          <span class="sec-track track-deep">Profundización</span>
+        </div>
+        <div class="sec-desc">T1 mostró "Confirmation" como un paso único — en la práctica hay más de una forma de registrar avance y consumo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En T1, la <strong>confirmación</strong> trackeaba el avance de la orden y la <strong>salida de mercadería</strong> registraba el consumo de componentes — como dos pasos separados. Con <strong>backflushing</strong>, ambos ocurren juntos: al confirmar la operación, el sistema calcula y contabiliza automáticamente el consumo de los componentes asociados, sin que alguien registre cada salida manualmente.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">✅</span>Confirmación Manual</h4>
+          <ul>
+            <li><strong>Time ticket:</strong> se registra el tiempo real trabajado en la operación</li>
+            <li><strong>Milestone confirmation:</strong> confirmar una operación clave confirma automáticamente las anteriores</li>
+            <li>Salidas de mercadería se registran por separado</li>
+          </ul>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">⚡</span>Backflushing</h4>
+          <ul>
+            <li>El consumo de componentes se calcula automáticamente</li>
+            <li>Se contabiliza al momento de la confirmación</li>
+            <li>Reduce el registro manual, exige BOM y routing precisos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — ADYACENTE — settlement -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Order Settlement — Where Production Costs Go</span>
+          <span class="sec-title-es">Liquidación de orden — a dónde van los costos de producción</span>
+          <span class="sec-track track-adj">Adyacente</span>
+        </div>
+        <div class="sec-desc">Toda la actividad de la orden de producción que viste en T1 acumula costos — este es el cierre de ese ciclo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cada movimiento sobre la orden de producción — salidas de mercadería, confirmaciones, entrada de mercadería — acumula <strong>costos reales</strong> que se comparan contra los <strong>costos planificados</strong> de la orden. La diferencia es la <strong>varianza (variance)</strong>. Al cerrar el período, la <strong>liquidación (settlement)</strong> traslada esos costos desde la orden hacia su destino final: un centro de costo, el propio material producido, o un segmento de rentabilidad — conectando Production Planning con Controlling.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="60" x2="450" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="320" y="10" width="260" height="50" rx="10" fill="#0A0F1C"/>
+        <text x="450" y="31" text-anchor="middle" fill="white" class="box-label">Production Order</text>
+        <text x="450" y="47" text-anchor="middle" fill="#7FE3D8" class="box-sub">planned costs vs. actual costs</text>
+
+        <rect x="350" y="95" width="200" height="50" rx="10" fill="#C0392B"/>
+        <text x="450" y="116" text-anchor="middle" fill="white" class="box-label">Variance</text>
+        <text x="450" y="132" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">diferencia planeado vs. real</text>
+
+        <line x1="450" y1="145" x2="450" y2="170" stroke="#94A3B8" stroke-width="2"/>
+        <text x="450" y="163" text-anchor="middle" fill="#64748B" font-size="10" font-style="italic">Settlement</text>
+        <line x1="150" y1="180" x2="750" y2="180" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="180" x2="150" y2="200" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="180" x2="450" y2="200" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="750" y1="180" x2="750" y2="200" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="40" y="200" width="220" height="65" rx="10" fill="#1A6B99"/>
+        <text x="150" y="228" text-anchor="middle" fill="white" class="box-label">Cost Center</text>
+        <text x="150" y="245" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">centro de costo</text>
+
+        <rect x="340" y="200" width="220" height="65" rx="10" fill="#1A4B8C"/>
+        <text x="450" y="228" text-anchor="middle" fill="white" class="box-label">Material</text>
+        <text x="450" y="245" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">costo del producto</text>
+
+        <rect x="640" y="200" width="220" height="65" rx="10" fill="#7E4FBF"/>
+        <text x="750" y="228" text-anchor="middle" fill="white" class="box-label">Profitability Segment</text>
+        <text x="750" y="245" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">CO-PA</text>
+      </svg>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 2 — Profundización). No repite términos ya glosados en T1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Reorder Point Planning</div><div class="term-es">Planificación por Punto de Reorden</div><div class="term-def">Procedimiento que dispara reposición cuando el stock cae por debajo de un umbral fijo.</div></div>
+      <div class="gcard"><div class="term-en">Forecast-Based Planning</div><div class="term-es">Planificación Basada en Pronóstico</div><div class="term-def">Procedimiento de MRP disparado por un pronóstico de consumo, no por una orden concreta.</div></div>
+      <div class="gcard"><div class="term-en">Alternative BOM</div><div class="term-es">BOM Alternativa</div><div class="term-def">Lista de materiales adicional para el mismo producto, usada según el escenario de fabricación.</div></div>
+      <div class="gcard"><div class="term-en">Forward Scheduling</div><div class="term-es">Programación Hacia Adelante</div><div class="term-def">Cálculo de fechas que parte del inicio más temprano posible y avanza hacia la fecha final.</div></div>
+      <div class="gcard"><div class="term-en">Scheduling Float</div><div class="term-es">Margen de Programación</div><div class="term-def">Tiempo de seguridad antes o después de la producción que absorbe desvíos sin mover la fecha final.</div></div>
+      <div class="gcard"><div class="term-en">Lot-Sizing Procedure</div><div class="term-es">Procedimiento de Lot-Sizing</div><div class="term-def">Regla que determina la cantidad final de una orden de reposición a partir del faltante detectado.</div></div>
+      <div class="gcard"><div class="term-en">Safety Stock</div><div class="term-es">Stock de Seguridad</div><div class="term-def">Colchón de inventario que dispara reposición antes de que el material llegue a faltante crítico.</div></div>
+      <div class="gcard"><div class="term-en">Availability Check</div><div class="term-es">Chequeo de Disponibilidad</div><div class="term-def">Verificación de que los componentes estén disponibles en cantidad y fecha antes de liberar una orden.</div></div>
+      <div class="gcard"><div class="term-en">Subcontracting</div><div class="term-es">Trabajo a Fasón</div><div class="term-def">Aprovisionamiento especial donde el proveedor fabrica con componentes que la compañía le provee.</div></div>
+      <div class="gcard"><div class="term-en">Order Firming</div><div class="term-es">Firmar la Orden</div><div class="term-def">Acción que protege una orden planificada de ser recalculada o eliminada por una nueva corrida de MRP.</div></div>
+      <div class="gcard"><div class="term-en">Capacity Leveling</div><div class="term-es">Nivelación de Capacidad</div><div class="term-def">Ajuste manual o automático para resolver la sobrecarga de un puesto de trabajo.</div></div>
+      <div class="gcard"><div class="term-en">Backflushing</div><div class="term-es">Backflush</div><div class="term-def">Contabilización automática del consumo de componentes al momento de confirmar la operación.</div></div>
+      <div class="gcard"><div class="term-en">Order Settlement</div><div class="term-es">Liquidación de Orden</div><div class="term-def">Traslado de los costos acumulados en la orden hacia su destino final al cierre del período.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Plan to Produce · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general SAP validado</footer>
+
+</body>
+</html>

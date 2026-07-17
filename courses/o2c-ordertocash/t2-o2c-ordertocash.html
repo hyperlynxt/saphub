@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Order to Cash — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t2);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #2A1518 55%, #4A1F22 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:640px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(224,133,133,0.14);
+    border-left:4px solid var(--t2);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:640px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t2-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(169,68,68,0.35);
+  }
+  .sec-tag{ display:inline-block; align-self:flex-start; width:fit-content; font-size:0.68rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase; padding:3px 10px; border-radius:20px; margin-bottom:6px; }
+  .sec-tag.adj{ background:rgba(0,168,150,0.1); color:#00A896; }
+  .sec-tag.deep{ background:rgba(169,68,68,0.1); color:var(--t2-dark); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{
+    background:var(--t2-pale);
+    border-left:4px solid var(--t2-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  /* FLOW */
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t2-dark); font-size:9px; top:4px; }
+  .flow-connector{
+    position:absolute; top:20px; right:-21px; width:28px; height:28px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* EQUATION ROW */
+  .eq-row{ display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; min-width:760px; }
+  .eq-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:16px 18px; text-align:center; min-width:170px; }
+  .eq-box .eq-icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .eq-box .eq-title{ font-size:0.85rem; font-weight:700; color:var(--t2-dark); }
+  .eq-box .eq-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .eq-sym{ font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:#94A3B8; }
+  .eq-result{ background:var(--navy-950); border-radius:10px; padding:16px 20px; text-align:center; min-width:190px; }
+  .eq-result .eq-icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .eq-result .eq-title{ font-size:0.9rem; font-weight:700; color:var(--t2); font-family:'Syne',sans-serif; }
+  .eq-result .eq-en{ font-size:0.7rem; color:rgba(255,255,255,0.6); display:block; margin-top:2px; }
+
+  /* CARD ROW */
+  .cardrow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .cardrow.g3{ grid-template-columns:repeat(3,1fr); }
+  .cardrow .item{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card.alert{ border-top:4px solid #C0392B; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:8px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.82rem; color:var(--body); line-height:1.6; }
+
+  /* CHIPS */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:170px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t2-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+  .chip-red{ background:rgba(192,57,43,0.07); border-color:rgba(192,57,43,0.28); }
+  .chip-red .chip-title{ color:#C0392B; }
+
+  /* TABLE */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+  .badge-debit{ background:rgba(224,123,57,0.12); color:#B85C1E; }
+  .badge-credit{ background:rgba(0,168,150,0.12); color:#00806F; }
+
+  /* TREE (jerarquias reales, HTML/CSS con border-left punteado) */
+  .htree{ min-width:640px; }
+  .htree-root{ background:var(--navy-950); color:white; border-radius:10px; padding:14px 20px; display:inline-block; }
+  .htree-root .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:14px; }
+  .htree-root .t-es{ display:block; font-size:10px; color:rgba(255,255,255,0.6); }
+  .htree-branch{ margin-left:24px; padding-left:24px; border-left:2px dashed #CBD5E1; margin-top:14px; padding-top:4px; }
+  .htree-node{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:8px; padding:10px 16px; margin-bottom:10px; display:inline-block; }
+  .htree-node .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; color:var(--ink); }
+  .htree-node .t-es{ font-size:10px; color:var(--muted); display:block; }
+  .htree-leaf{ margin-left:24px; padding-left:24px; border-left:2px dashed #CBD5E1; margin-top:8px; }
+  .htree-leaf-item{ background:var(--t2-pale); border-radius:6px; padding:7px 12px; margin-bottom:7px; font-size:11.5px; color:var(--t2-dark); font-weight:600; display:inline-block; }
+  .htree-note{ font-size:0.78rem; color:var(--muted); margin-top:6px; max-width:560px; line-height:1.5; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Document Types</a>
+  <a href="#s2">Partner Functions</a>
+  <a href="#s3">Pricing</a>
+  <a href="#s4">Item &amp; Schedule Line Cat.</a>
+  <a href="#s5">Availability Check</a>
+  <a href="#s6">Credit Management</a>
+  <a href="#s7">Copy Control</a>
+  <a href="#s8">Goods Issue Accounting</a>
+  <a href="#s9">Org. Assignment</a>
+  <a href="#s10">AR Terms in Depth</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Order to Cash</span>
+      <span class="pill pill-secondary">Sales &amp; Distribution</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Accounts Receivable</span>
+    </div>
+    <h1>Order to <span class="accent">Cash</span></h1>
+    <h2>De la Orden al Cobro — Profundización</h2>
+    <p class="desc">Segunda pasada sobre Order-to-Cash: los mecanismos internos que T1 no explicó (tipos de documento, funciones de socio, precios, control de copia, disponibilidad, crédito) y el detalle más fino de lo ya visto (categorías de posición, asientos contables del goods issue, asignación organizativa, condiciones de AR).</p>
+    <div class="hlbox">Resumen Visual — <b>Order to Cash</b>, Tipo 2 (Profundización). 10 secciones — 5 de mayor profundidad sobre lo visto en T1, 5 de temas adyacentes conectados.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — Tipos de documento de venta (profundidad) -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <span class="sec-tag deep">Profundidad — Sales Order</span>
+        <div class="sec-title-row">
+          <span class="sec-title-en">Sales Document Types</span>
+          <span class="sec-title-es">Tipos de documento de venta</span>
+        </div>
+        <div class="sec-desc">T1 mostró "la orden de venta" en general — en la práctica, el tipo de documento determina cómo se comporta cada una.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cada orden de venta se crea bajo un <strong>tipo de documento</strong> (sales document type), que controla el comportamiento por defecto: qué partners son obligatorios, cómo se determina el precio, si genera entrega automática, si es relevante para facturación inmediata. No todos los pedidos son iguales.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-navy"><span class="chip-icon">📋</span><span class="chip-title">Standard Order (OR)</span><span class="chip-en">Flujo completo: orden → entrega → factura</span></div>
+        <div class="chip chip-teal"><span class="chip-icon">💵</span><span class="chip-title">Cash Sale (CF)</span><span class="chip-en">Venta y cobro inmediato, factura al instante</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">🚀</span><span class="chip-title">Rush Order (SO)</span><span class="chip-en">Entrega el mismo día de creada la orden</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">↩️</span><span class="chip-title">Credit Memo Request (CR)</span><span class="chip-en">Solicita un ajuste a favor del cliente</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — Partner Functions (adyacente) -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <span class="sec-tag adj">Adyacente</span>
+        <div class="sec-title-row">
+          <span class="sec-title-en">Partner Functions</span>
+          <span class="sec-title-es">Funciones de socio de negocio</span>
+        </div>
+        <div class="sec-desc">T1 mostró Sold-to Party y Ship-to Party en la tabla del documento de venta — acá se completa el resto de los roles que puede tener un mismo cliente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un mismo Business Partner puede jugar distintos roles en una orden de venta al mismo tiempo. Estas <strong>partner functions</strong> definen quién pide, a quién se entrega, a quién se factura y quién paga — y no siempre son la misma persona o empresa.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow g3">
+        <div class="item"><span class="icon">🧑</span><h5>Sold-to Party</h5><span class="en">Solicitante</span><p>Quien genera la orden — determina precios y condiciones por defecto.</p></div>
+        <div class="item"><span class="icon">📍</span><h5>Ship-to Party</h5><span class="en">Destinatario</span><p>Dirección física donde se entrega la mercadería.</p></div>
+        <div class="item"><span class="icon">🧾</span><h5>Bill-to Party</h5><span class="en">Receptor de factura</span><p>A quién se le envía el documento de facturación.</p></div>
+      </div>
+      <div style="margin-top:14px;">
+        <div class="cardrow" style="grid-template-columns:1fr;">
+          <div class="item" style="max-width:340px; margin:0 auto;"><span class="icon">💳</span><h5>Payer</h5><span class="en">Pagador</span><p>Quien efectivamente paga la factura — puede ser la casa matriz del sold-to.</p></div>
+        </div>
+      </div>
+      <div style="margin-top:20px;">
+        <table class="data-table">
+          <thead><tr><th>Partner Function</th><th>Ejemplo (extiende el pedido de T1)</th></tr></thead>
+          <tbody>
+            <tr><td class="mod-name">Sold-to Party</td><td>2387</td></tr>
+            <tr><td class="mod-name">Ship-to Party</td><td>4976</td></tr>
+            <tr><td class="mod-name">Bill-to Party</td><td>2387 (mismo que sold-to, por defecto)</td></tr>
+            <tr><td class="mod-name">Payer</td><td>2387 (mismo que sold-to, salvo que se redefina)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — Pricing y condition technique (adyacente) -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <span class="sec-tag adj">Adyacente</span>
+        <div class="sec-title-row">
+          <span class="sec-title-en">Pricing &amp; the Condition Technique</span>
+          <span class="sec-title-es">Precios y la técnica de condiciones</span>
+        </div>
+        <div class="sec-desc">T1 mencionó que la Sales Organization "negocia condiciones de venta" — acá se ve cómo el sistema calcula el precio final.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El precio de un ítem no se tipea a mano: se calcula con la <strong>técnica de condiciones</strong>. Un <strong>pricing procedure</strong> ejecuta, en orden, una lista de <strong>condition types</strong> — precio base, descuentos, impuestos — hasta llegar al valor neto que se ve en la orden.
+    </div>
+    <div class="visual-wrap">
+      <div class="htree">
+        <div class="htree-root"><span class="t-en">Pricing Procedure</span><span class="t-es">Esquema de fijación de precios</span></div>
+        <div class="htree-branch">
+          <div class="htree-node"><span class="t-en">Condition Types</span><span class="t-es">Se ejecutan en secuencia</span></div>
+          <div class="htree-leaf">
+            <div class="htree-leaf-item">PR00 — Precio base</div><br>
+            <div class="htree-leaf-item">K004 — Descuento por cliente</div><br>
+            <div class="htree-leaf-item">MWST — Impuesto (IVA)</div>
+          </div>
+          <p class="htree-note">Cada condition type suma o resta sobre el valor acumulado hasta ese paso — el resultado final es el Net Value que ya se vio en la tabla del documento de venta de T1.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — Item Category / Schedule Line Category (profundidad) -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <span class="sec-tag deep">Profundidad — Sales Document Structure</span>
+        <div class="sec-title-row">
+          <span class="sec-title-en">Item Category &amp; Schedule Line Category</span>
+          <span class="sec-title-es">Categoría de posición y de línea de programación</span>
+        </div>
+        <div class="sec-desc">T1 mostró los tres niveles del documento (header/item/schedule line) — acá se ve qué controla el comportamiento de cada ítem y cada línea.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cada línea del Item Level tiene una <strong>item category</strong> que controla si es relevante para precios, facturación y entrega. Cada Schedule Line tiene además una <strong>schedule line category</strong>, que controla si dispara verificación de disponibilidad y movimiento de mercadería.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📦</span>Item Category <span class="en-tag">ej. TAN</span></h4>
+          <p>Controla, a nivel de cada ítem:</p>
+          <ul><li>Si es relevante para pricing</li><li>Si es relevante para facturación</li><li>Si genera una entrega</li></ul>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">📅</span>Schedule Line Category <span class="en-tag">ej. CP</span></h4>
+          <p>Controla, a nivel de cada línea de programación:</p>
+          <ul><li>Si dispara availability check (ATP)</li><li>Si transfiere requerimientos a MRP</li><li>Qué tipo de movimiento de mercadería genera</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — Availability Check ATP (adyacente) -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <span class="sec-tag adj">Adyacente</span>
+        <div class="sec-title-row">
+          <span class="sec-title-en">Availability Check (ATP)</span>
+          <span class="sec-title-es">Verificación de disponibilidad</span>
+        </div>
+        <div class="sec-desc">T1 mostró que el sourcing viene de stock o producción propia — acá se ve cómo el sistema decide, al momento, cuánto puede confirmar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando se ingresa una cantidad en la orden, el sistema corre un <strong>availability check</strong> para confirmar cuánto y cuándo puede entregarse. No mira solo el stock físico — también considera lo ya comprometido y lo que está por llegar.
+    </div>
+    <div class="visual-wrap">
+      <div class="eq-row">
+        <div class="eq-box"><span class="eq-icon">🏬</span><span class="eq-title">Warehouse Stock</span><span class="eq-en">Stock físico</span></div>
+        <span class="eq-sym">−</span>
+        <div class="eq-box"><span class="eq-icon">📤</span><span class="eq-title">Reserved / Outbound</span><span class="eq-en">Ya comprometido</span></div>
+        <span class="eq-sym">+</span>
+        <div class="eq-box"><span class="eq-icon">📥</span><span class="eq-title">Planned Inbound</span><span class="eq-en">Producción / compra en curso</span></div>
+        <span class="eq-sym">=</span>
+        <div class="eq-result"><span class="eq-icon">✅</span><span class="eq-title">ATP Quantity</span><span class="eq-en">Cantidad confirmable</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — Credit Management (adyacente) -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <span class="sec-tag adj">Adyacente</span>
+        <div class="sec-title-row">
+          <span class="sec-title-en">Credit Management</span>
+          <span class="sec-title-es">Gestión de crédito</span>
+        </div>
+        <div class="sec-desc">T1 mostró a Accounts Receivable gestionando el cobro — acá se ve el control que puede frenar una orden antes de llegar a ese punto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de que una orden pueda entregarse o facturarse, el sistema puede correr un <strong>chequeo de crédito</strong> contra el <strong>límite de crédito</strong> del cliente. Si la exposición total (lo ya facturado + lo pendiente de entrega) supera el límite, la orden queda bloqueada hasta su liberación manual.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">✅</span>Credit Check Passed <span class="en-tag">Dentro del límite</span></h4>
+          <p>La exposición del cliente está dentro de su límite de crédito. La orden sigue su curso normal hacia entrega y facturación sin interrupciones.</p>
+        </div>
+        <div class="cmp-card alert">
+          <h4><span class="icon-inline">🚫</span>Credit Block <span class="en-tag">Excede el límite</span></h4>
+          <p>La orden queda retenida. Un responsable de crédito (dentro de Accounts Receivable) debe revisar y liberarla manualmente antes de continuar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — Copy Control (adyacente) -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <span class="sec-tag adj">Adyacente</span>
+        <div class="sec-title-row">
+          <span class="sec-title-en">Copy Control Between Documents</span>
+          <span class="sec-title-es">Control de copia entre documentos</span>
+        </div>
+        <div class="sec-desc">T1 mencionó que el Document Flow actualiza el estado de todos los documentos asociados — acá se ve qué datos viajan de uno al siguiente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando un documento se genera a partir de otro (orden → entrega → factura), reglas de <strong>copy control</strong> deciden qué datos se copian tal cual, cuáles se vuelven a determinar, y cómo se actualizan las cantidades ya procesadas en el documento de origen.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;">
+            <span class="icon">🛒</span><span class="title-en">Sales Order</span><span class="title-es">Orden de venta</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Origen de partners, precios y cantidades</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">🚚</span><span class="title-en">Delivery</span><span class="title-es">Entrega</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Copia partners y cantidad confirmada (ATP)</li>
+            <li>Reduce el saldo pendiente en la orden</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🧾</span><span class="title-en">Billing Document</span><span class="title-es">Factura</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Copia cantidad entregada de la delivery</li>
+            <li>Puede re-determinar precios según configuración</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — Goods Issue Accounting (profundidad) -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <span class="sec-tag deep">Profundidad — Goods Issue</span>
+        <div class="sec-title-row">
+          <span class="sec-title-en">Goods Issue — Accounting Entries</span>
+          <span class="sec-title-es">Los asientos contables del goods issue</span>
+        </div>
+        <div class="sec-desc">T1 dijo que el goods issue "reduce cantidad y valor en stock" — acá se ve exactamente qué cuentas se mueven.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El goods issue no solo mueve cantidades físicas: dispara un asiento contable automático que traslada el valor del material del <strong>inventario</strong> al <strong>costo de mercadería vendida</strong> (COGS), valuado al costo — no al precio de venta.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Cuenta</th><th>Debe/Haber</th><th>Por qué</th><th>Importe (ejemplo T1: 100 PC a 12 EUR)</th></tr></thead>
+        <tbody>
+          <tr><td class="mod-name">Cost of Goods Sold</td><td><span class="badge badge-debit">Debe</span></td><td>Se reconoce el costo de lo vendido en el resultado del período.</td><td>1.200 EUR</td></tr>
+          <tr><td class="mod-name">Inventory / Stock</td><td><span class="badge badge-credit">Haber</span></td><td>Sale del balance porque el material ya no está en depósito.</td><td>1.200 EUR</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — Company Code & Plant Assignment (profundidad) -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <span class="sec-tag deep">Profundidad — Organizational Units</span>
+        <div class="sec-title-row">
+          <span class="sec-title-en">Company Code &amp; Plant Assignment</span>
+          <span class="sec-title-es">Asignación a sociedad y a centro</span>
+        </div>
+        <div class="sec-desc">T1 mostró Sales Organization, Distribution Channel y Division — acá se ve cómo se integran con la estructura financiera y logística.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cada Sales Organization está asignada a exactamente una <strong>Company Code</strong>, que es donde caen los ingresos que genera. La <strong>Delivering Plant</strong> que despacha el material queda determinada por la combinación de sales organization y distribution channel.
+    </div>
+    <div class="visual-wrap">
+      <div class="htree">
+        <div class="htree-root"><span class="t-en">Sales Organization Frankfurt</span><span class="t-es">Organización de ventas</span></div>
+        <div class="htree-branch">
+          <div class="htree-node"><span class="t-en">Assigned Company Code</span><span class="t-es">Sociedad asignada</span></div>
+          <p class="htree-note">Cada venta de esta sales organization contabiliza sus ingresos en esa sociedad — la asignación es 1 a 1, no puede repartirse entre varias.</p>
+        </div>
+        <div class="htree-branch">
+          <div class="htree-node"><span class="t-en">Delivering Plant</span><span class="t-es">Centro suministrador</span></div>
+          <p class="htree-note">Determinado por la combinación Sales Org + Distribution Channel + material — es el centro desde donde efectivamente sale la mercadería.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — AR terms en profundidad -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <span class="sec-tag deep">Profundidad — Customer Business Partner</span>
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reconciliation Account, Payment &amp; Dunning Terms</span>
+          <span class="sec-title-es">Cómo funcionan realmente los tres campos de FI del Business Partner</span>
+        </div>
+        <div class="sec-desc">T1 los listó como los tres campos de la vista de sociedad — acá se ve el mecanismo detrás de cada uno.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los tres campos que T1 mostró en la vista financiera del Business Partner no son solo datos de referencia — cada uno activa un mecanismo automático distinto dentro de Accounts Receivable.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow g3">
+        <div class="item"><span class="icon">🔗</span><h5>Reconciliation Account</h5><span class="en">Cuenta de enlace</span><p>Cada factura o cobro del cliente se postea automáticamente también en esta cuenta del Libro Mayor, en tiempo real.</p></div>
+        <div class="item"><span class="icon">📆</span><h5>Payment Terms</h5><span class="en">Condiciones de pago</span><p>Define días de vencimiento y % de descuento por pronto pago (cash discount) sobre la factura.</p></div>
+        <div class="item"><span class="icon">📢</span><h5>Dunning Terms</h5><span class="en">Condiciones de reclamo</span><p>Define los niveles de reclamo y cada cuántos días se envía el siguiente aviso de pago vencido.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 2 — Profundización). No repite términos ya glosados en T1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Partner Function</div><div class="term-es">Función de Socio</div><div class="term-def">Rol que juega un Business Partner en una orden de venta (sold-to, ship-to, bill-to, payer).</div></div>
+      <div class="gcard"><div class="term-en">Sold-to Party</div><div class="term-es">Solicitante</div><div class="term-def">Partner que genera la orden y determina precios y condiciones por defecto.</div></div>
+      <div class="gcard"><div class="term-en">Payer</div><div class="term-es">Pagador</div><div class="term-def">Partner que efectivamente paga la factura, puede diferir del sold-to party.</div></div>
+      <div class="gcard"><div class="term-en">Availability Check (ATP)</div><div class="term-es">Verificación de Disponibilidad</div><div class="term-def">Cálculo que confirma cuánta cantidad y en qué fecha puede entregarse.</div></div>
+      <div class="gcard"><div class="term-en">Pricing Procedure</div><div class="term-es">Esquema de Fijación de Precios</div><div class="term-def">Secuencia de condition types que calculan el valor neto de un ítem.</div></div>
+      <div class="gcard"><div class="term-en">Condition Type</div><div class="term-es">Clase de Condición</div><div class="term-def">Elemento individual de precio, descuento o impuesto dentro de un pricing procedure.</div></div>
+      <div class="gcard"><div class="term-en">Copy Control</div><div class="term-es">Control de Copia</div><div class="term-def">Reglas que definen qué datos se transfieren entre documentos del flujo O2C.</div></div>
+      <div class="gcard"><div class="term-en">Credit Management</div><div class="term-es">Gestión de Crédito</div><div class="term-def">Control que compara la exposición del cliente contra su límite de crédito.</div></div>
+      <div class="gcard"><div class="term-en">Credit Limit</div><div class="term-es">Límite de Crédito</div><div class="term-def">Monto máximo de exposición permitido para un cliente antes de bloquear sus órdenes.</div></div>
+      <div class="gcard"><div class="term-en">Item Category</div><div class="term-es">Categoría de Posición</div><div class="term-def">Control que determina si un ítem es relevante para precio, facturación o entrega.</div></div>
+      <div class="gcard"><div class="term-en">Schedule Line Category</div><div class="term-es">Categoría de Línea de Programación</div><div class="term-def">Control que determina si una línea dispara availability check y movimiento de mercadería.</div></div>
+      <div class="gcard"><div class="term-en">Cost of Goods Sold (COGS)</div><div class="term-es">Costo de Mercadería Vendida</div><div class="term-def">Cuenta de resultado que recibe el costo del material al momento del goods issue.</div></div>
+      <div class="gcard"><div class="term-en">Delivering Plant</div><div class="term-es">Centro Suministrador</div><div class="term-def">Centro desde donde se despacha físicamente la mercadería de una orden.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Order to Cash · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>
