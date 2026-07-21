@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Cash Application &amp; Reconciliation — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t2-pale); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:820px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; background:var(--t2-dark); }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.6px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t2-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:18px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; font-size:13px; color:var(--t2-dark); }
+
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t2-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g2{ grid-template-columns:repeat(2,1fr); }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+
+  .vert-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:420px; }
+  .vf-box{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:12px 20px; text-align:center; min-width:280px; }
+  .vf-box.tier1{ border-color:var(--t2-dark); background:var(--t2-pale); font-weight:700; }
+  .vf-box.tier2{ border-style:dashed; }
+  .vf-arrow{ font-size:20px; color:var(--t2-dark); }
+  .vf-label{ font-size:0.7rem; color:var(--muted); margin-top:2px; }
+
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:150px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t2-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t2-dark); font-weight:700; }
+
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){
+    .compare-grid, .cards-grid.g2, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Bank Statement Formats</a>
+  <a href="#s2">Dispute Management</a>
+  <a href="#s3">Credit &amp; DSO</a>
+  <a href="#s4">Deductions</a>
+  <a href="#s5">Lockbox Processing</a>
+  <a href="#s6">How Cash Application Learns</a>
+  <a href="#s7">Posting Rules In Depth</a>
+  <a href="#s8">Matching Hierarchy In Depth</a>
+  <a href="#s9">Remittance In Depth</a>
+  <a href="#s10">Complexity Revisited</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Credit Management</span>
+      <span class="pill pill-secondary">Cash Management</span>
+      <span class="pill pill-secondary">Bank Reconciliation</span>
+    </div>
+    <h1>Cash Application &amp; Reconciliation — <span class="accent">Profundización</span></h1>
+    <h2>Aplicación y Conciliación de Efectivo</h2>
+    <p class="desc">Lo que rodea a Invoice-to-Cash y no vimos en el Tipo 1: formatos de extracto bancario, disputas, deducciones, lockbox, y el mecanismo interno de cómo SAP Cash Application y la jerarquía de matching realmente deciden.</p>
+    <div class="hlbox">Resumen Visual — <b>Cash Application &amp; Reconciliation</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 de profundidad sobre lo visto en el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Bank Statement Formats</span>
+          <span class="sec-title-es">Formatos de extracto bancario</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó que Multi-Bank Connectivity "agrega" datos de bancos — pero, ¿en qué formato viajan esos datos?</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué conecta a los bancos con SAP?</strong> Los bancos entregan sus extractos en formatos estandarizados. Multi-Bank Connectivity los recibe y normaliza para que SAP Cash Application y las reglas de contabilización puedan procesarlos sin importar de qué banco vinieron.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="icon">📄</span><h6>MT940</h6><p>Formato SWIFT clásico para extractos bancarios electrónicos.</p></div>
+        <div class="mini-card"><span class="icon">🇺🇸</span><h6>BAI2</h6><p>Estándar de la industria bancaria de EE. UU. para datos de extracto.</p></div>
+        <div class="mini-card"><span class="icon">🧬</span><h6>camt.053</h6><p>Formato XML ISO 20022, más moderno y estructurado.</p></div>
+        <div class="mini-card"><span class="icon">🔌</span><h6>Host-to-Host</h6><p>Conexión directa banco–empresa sin intermediarios externos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Dispute Management</span>
+          <span class="sec-title-es">Gestión de disputas</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 explicó que cuando no hay match exacto, el pago cae a nivel cuenta. Pero, ¿qué pasa si el cliente directamente disputa el cobro?</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> Cuando una discrepancia entre lo facturado y lo pagado no se resuelve con matching automático, se abre un caso de disputa. El contador de AR documenta el motivo, lo asigna para investigación, y lo cierra una vez resuelto — evitando que quede indefinidamente como partida sin aclarar.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">⚠️</span><span class="title-en">Mismatch Detected</span><span class="title-es">Discrepancia detectada</span></div>
+          <div class="flow-step-body"><ul><li>El pago no aclara la factura</li><li>El monto o los datos no coinciden</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">📋</span><span class="title-en">Dispute Case Created</span><span class="title-es">Caso de disputa</span></div>
+          <div class="flow-step-body"><ul><li>Se documenta el motivo</li><li>Se asigna para investigación</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">✅</span><span class="title-en">Resolved &amp; Closed</span><span class="title-es">Resuelto y cerrado</span></div>
+          <div class="flow-step-body"><ul><li>Se corrige el registro</li><li>Se libera la partida abierta</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Credit Management &amp; DSO</span>
+          <span class="sec-title-es">Gestión de crédito y DSO</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Por qué a la empresa le importa tanto acelerar la aplicación de cash.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> Cuanto más rápido se aplica un pago a la factura correcta, más rápido se libera crédito disponible para el cliente y más preciso es el indicador de <strong>DSO</strong> (Days Sales Outstanding) — el promedio de días que tarda la empresa en cobrar después de una venta.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Faster Cash Application</div><div class="t-es">aplicación más rápida</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Lower DSO</div><div class="t-es">menos días de cobro</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Accurate Credit Exposure</div><div class="t-es">exposición de crédito precisa</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Deductions &amp; Short Payments</span>
+          <span class="sec-title-es">Deducciones y pagos parciales</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Otra razón por la que el monto del pago no siempre coincide con la factura — sin que sea un error.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es una deducción?</strong> Es la diferencia entre lo facturado y lo efectivamente pagado por el cliente, cuando esa diferencia es intencional — no un error de captura. El sistema necesita distinguir esto de un dato incorrecto para no tratarlo como una excepción a resolver de la misma manera.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">💲</span><h6>Pricing Dispute</h6><p>El cliente considera que el precio facturado no es el acordado.</p></div>
+        <div class="mini-card"><span class="icon">📦</span><h6>Damaged Goods</h6><p>Se descuenta el valor de mercadería dañada o faltante.</p></div>
+        <div class="mini-card"><span class="icon">🏷️</span><h6>Discount Taken</h6><p>El cliente aplicó un descuento por pronto pago no reflejado en la factura.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Lockbox Processing</span>
+          <span class="sec-title-es">Procesamiento de lockbox</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "mail" como canal de remittance information — este es el mecanismo que hay detrás.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es un lockbox?</strong> Es un servicio bancario tradicional donde el cliente envía su cheque y comprobante de remesa por correo directamente al banco, que escanea y procesa esa información antes de que llegue a SAP Cash Application como dato ya digitalizado.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">✉️</span><span class="title-en">Customer Mails Payment</span><span class="title-es">Cliente envía por correo</span></div>
+          <div class="flow-step-body"><ul><li>Cheque + comprobante de remesa</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">🏦</span><span class="title-en">Bank Scans &amp; Digitizes</span><span class="title-es">El banco escanea</span></div>
+          <div class="flow-step-body"><ul><li>OCR sobre el comprobante</li><li>Extrae montos y referencias</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">📥</span><span class="title-en">Data Feeds Cash Application</span><span class="title-es">Alimenta la aplicación de cash</span></div>
+          <div class="flow-step-body"><ul><li>Llega como dato digital</li><li>Listo para matching automático</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How SAP Cash Application Learns</span>
+          <span class="sec-title-es">Cómo aprende SAP Cash Application</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo "usa machine learning" — acá vemos qué significa eso en la práctica.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> El modelo se entrena con el historial de matches ya confirmados (los que el contador de AR corrigió o aprobó manualmente en el pasado). A partir de ahí, asigna un <strong>puntaje de confianza</strong> a cada sugerencia nueva: si es suficientemente alto, se compensa automáticamente; si no, queda como sugerencia para revisión humana.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Historical Matches</div><div class="t-es">matches históricos</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Learned Criteria</div><div class="t-es">criterios aprendidos</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Confidence Score</div><div class="t-es">puntaje de confianza</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Auto-Clear or Suggest</div><div class="t-es">aclara o sugiere</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting Rules in Depth</span>
+          <span class="sec-title-es">Reglas de contabilización en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 las mencionó junto a Cash Application; acá vemos cómo se diferencian entre sí.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es una regla de contabilización?</strong> Son mecanismos configurados (no basados en ML) que también ayudan a hacer matching de partidas abiertas contra pagos. Hay dos estilos principales: reglas de match exacto, y reglas con tolerancia para pequeñas diferencias de monto.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Exact Match Rules</h5>
+          <span class="en">match exacto</span>
+          <ul>
+            <li>Requieren coincidencia exacta de monto y referencia</li>
+            <li>Alta precisión, baja cobertura</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Tolerance-Based Rules</h5>
+          <span class="en">con tolerancia</span>
+          <ul>
+            <li>Aceptan pequeñas diferencias de monto</li>
+            <li>Mayor cobertura, requiere calibrar el margen</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Matching Hierarchy in Depth</span>
+          <span class="sec-title-es">La jerarquía de matching en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró 2 niveles (factura / cuenta). En la práctica hay un escalón intermedio.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> Antes de caer al nivel cuenta, el sistema intenta primero un match exacto por factura, y si eso falla, prueba un match con tolerancia (parcial). Solo si ninguno de los dos funciona, el pago se asocia al cliente a nivel de cuenta como último recurso.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">1. Exact Match — Invoice Level</div>
+        <div class="vf-arrow">↓ si falla</div>
+        <div class="vf-box tier2">2. Tolerance Match — Invoice Level</div>
+        <div class="vf-arrow">↓ si falla</div>
+        <div class="vf-box">3. Account Level (fallback final)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Remittance Information in Depth</span>
+          <span class="sec-title-es">Remesa en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró los canales; acá vemos por qué no toda remittance es igual de útil.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> No toda la remittance information llega con el mismo nivel de estructura. Cuanto más estructurada, más fácil es de procesar automáticamente; cuanto más libre el formato, más depende de interpretación (humana o de ML) para extraer los datos útiles.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Structured Remittance</h5>
+          <span class="en">estructurada</span>
+          <ul>
+            <li>Formato EDI o XML predecible</li>
+            <li>Fácil de parsear automáticamente</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Unstructured Remittance</h5>
+          <span class="en">no estructurada</span>
+          <ul>
+            <li>Texto libre en e-mail o carta escaneada</li>
+            <li>Requiere interpretación (OCR/ML/manual)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Complexity Factors, Revisited</span>
+          <span class="sec-title-es">Fuentes de complejidad, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Retomamos los 3 factores del T1, esta vez con cómo se mitiga cada uno.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> Ninguno de los tres factores del T1 se resuelve del todo — se mitigan con distintas herramientas: remittance estructurada para pagos múltiples, aprendizaje de ML sobre errores recurrentes de captura, y visibilidad de la cadena de end-payers cuando el dato está disponible.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🧾🧾</span><h6>Múltiples facturas</h6><p>Se mitiga exigiendo o incentivando remittance estructurada en el canal de pago.</p></div>
+        <div class="mini-card"><span class="icon">✍️</span><h6>Datos incorrectos</h6><p>SAP Cash Application aprende patrones de error recurrentes y los tolera con confianza calibrada.</p></div>
+        <div class="mini-card"><span class="icon">🔗</span><h6>End-payers</h6><p>Se mitiga solo parcialmente — depende de que el dato del pagador final llegue en la remesa.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Cash Application &amp; Reconciliation — Tipo 2 (no repite T1)</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Dispute Management</div><div class="term-es">Gestión de Disputas</div><div class="term-def">Proceso para documentar, investigar y resolver discrepancias que el matching automático no puede aclarar.</div></div>
+      <div class="gcard"><div class="term-en">Deduction</div><div class="term-es">Deducción</div><div class="term-def">Diferencia intencional entre el monto facturado y el efectivamente pagado por el cliente.</div></div>
+      <div class="gcard"><div class="term-en">Short Payment</div><div class="term-es">Pago Parcial</div><div class="term-def">Pago recibido por un monto menor al total facturado.</div></div>
+      <div class="gcard"><div class="term-en">Days Sales Outstanding (DSO)</div><div class="term-es">Días de Venta Pendientes de Cobro</div><div class="term-def">Promedio de días que tarda la empresa en cobrar después de una venta.</div></div>
+      <div class="gcard"><div class="term-en">Lockbox</div><div class="term-es">Buzón de Cobranza</div><div class="term-def">Servicio bancario que recibe y procesa pagos y remesas de clientes enviados por correo.</div></div>
+      <div class="gcard"><div class="term-en">MT940</div><div class="term-es">MT940</div><div class="term-def">Formato SWIFT estándar para extractos bancarios electrónicos.</div></div>
+      <div class="gcard"><div class="term-en">BAI2</div><div class="term-es">BAI2</div><div class="term-def">Estándar de la industria bancaria de EE. UU. para datos de extracto bancario.</div></div>
+      <div class="gcard"><div class="term-en">camt.053</div><div class="term-es">camt.053</div><div class="term-def">Formato XML bajo ISO 20022 para extractos de cuenta bancaria.</div></div>
+      <div class="gcard"><div class="term-en">Structured Remittance</div><div class="term-es">Remesa Estructurada</div><div class="term-def">Información de remesa entregada en formato estandarizado y fácil de procesar (EDI, XML).</div></div>
+      <div class="gcard"><div class="term-en">Unstructured Remittance</div><div class="term-es">Remesa No Estructurada</div><div class="term-def">Información de remesa en texto libre — e-mail, carta escaneada — que requiere interpretación.</div></div>
+      <div class="gcard"><div class="term-en">Confidence Score</div><div class="term-es">Puntaje de Confianza</div><div class="term-def">Probabilidad que SAP Cash Application asigna a una sugerencia de match, según criterios aprendidos.</div></div>
+      <div class="gcard"><div class="term-en">Credit Exposure</div><div class="term-es">Exposición de Crédito</div><div class="term-def">Monto total que un cliente debe, usado para evaluar el riesgo de crédito.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Cash Application &amp; Reconciliation · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

@@ -90,6 +90,9 @@ const COURSE_META = {
   },
   "pp-plantoproduce": {
     desc: "The end-to-end manufacturing process: from demand and production planning through order execution and confirmation to goods receipt of the finished product."
+  },
+  "ar-cashreconciliation": {
+    desc: "How incoming payments get matched to open receivables: cash application, bank statement reconciliation, and where SAP Business AI speeds up the matching process."
   }
 };
 

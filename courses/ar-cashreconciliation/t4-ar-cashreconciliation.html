@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Cash Application &amp; Reconciliation — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#5D3E82;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --gui-bg:#ECE9D8;
+    --gui-window:#ECECEC;
+    --gui-titlebar:#0A5CA8;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241C33 55%, #3C2C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(93,62,130,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .spro-area-tag{ display:inline-flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t4-dark); color:white; margin-left:8px; vertical-align:middle; }
+
+  .theory-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .part-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--t4-dark); margin:0 0 8px; }
+  .part-label:not(:first-child){ margin-top:22px; }
+
+  /* ARBOL SPRO — listas anidadas HTML/CSS, sin SVG, sin riesgo de solapamiento */
+  .spro-tree, .spro-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'Courier New',monospace; font-size:12px; }
+  .spro-tree ul{ padding-left:20px; border-left:1px dotted #B399D4; margin-left:7px; }
+  .spro-tree li{ position:relative; padding:4px 0 4px 16px; color:var(--body); }
+  .spro-tree li::before{ content:''; position:absolute; left:0; top:13px; width:12px; height:1px; background:#B399D4; }
+  .spro-tree .folder{ font-weight:700; color:var(--ink); }
+  .spro-tree .leaf{ color:var(--t4-dark); font-weight:700; }
+  .spro-tree .leaf .tc{ background:var(--t4-dark); color:white; font-size:9.5px; font-weight:700; padding:1px 6px;
+    border-radius:4px; margin-right:6px; letter-spacing:.3px; }
+
+  /* MOCKUP GUI CLASICO */
+  .gui-window{ background:var(--gui-window); border:1px solid #808080; border-radius:2px; min-width:640px; }
+  .gui-titlebar{ background:var(--gui-titlebar); color:white; font-size:11.5px; font-weight:600; padding:4px 10px;
+    display:flex; justify-content:space-between; font-family:'Courier New',monospace; }
+  .gui-menubar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:4px 10px; font-size:10.5px; color:#333;
+    display:flex; gap:14px; font-family:'Courier New',monospace; }
+  .gui-content{ background:white; padding:16px; }
+  .gui-page-title{ font-family:'Courier New',monospace; font-weight:700; font-size:12.5px; color:#1A1A1A; margin:0 0 12px; }
+  .gui-field-row{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .gui-field-row label{ font-family:'Courier New',monospace; font-size:11px; color:#333; min-width:150px; }
+  .gui-input{ border:1px solid #7A7A7A; padding:4px 8px; background:white; font-family:'Courier New',monospace; font-size:11px; min-width:160px; }
+  .gui-table{ width:100%; border-collapse:collapse; font-family:'Courier New',monospace; font-size:10.8px; margin-top:8px; }
+  .gui-table th{ background:#D8D4C4; border:1px solid #B8B8B8; padding:5px 8px; text-align:left; color:#1A1A1A; }
+  .gui-table td{ border:1px solid #D8D4C4; padding:5px 8px; color:#1A1A1A; background:white; }
+  .gui-statusbar{ background:var(--gui-bg); border-top:1px solid #B8B8B8; padding:4px 10px; font-size:10px; color:#555;
+    display:flex; justify-content:space-between; font-family:'Courier New',monospace; }
+  .gui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E;
+    margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px;
+    font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  .to-t3-note{ background:var(--t4-pale); border:1px dashed var(--t4-dark); border-radius:8px; padding:10px 14px;
+    margin-top:14px; font-size:0.8rem; color:var(--t4-dark); }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">House Banks</a>
+  <a href="#s2">Electronic Bank Statement</a>
+  <a href="#s3">Posting Rules</a>
+  <a href="#s4">Transaction Types</a>
+  <a href="#s5">Cash Application Matching</a>
+  <a href="#s6">Customer Tolerances</a>
+  <a href="#s7">Reason Codes</a>
+  <a href="#s8">Dispute Case Types</a>
+  <a href="#s9">Clearing Accounts</a>
+  <a href="#s10">Credit Segments</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Bank Accounting</span>
+      <span class="pill pill-secondary">Dispute Management</span>
+      <span class="pill pill-secondary">Credit Management</span>
+    </div>
+    <h1>Cash Application &amp; Reconciliation — <span class="accent">Customizing</span></h1>
+    <h2>Tangibilización Configurador (GUI)</h2>
+    <p class="desc">La base que hay que armar en SPRO antes de que cualquier pago se pueda aplicar solo: bancos, reglas de contabilización, tolerancias, reason codes y tipos de caso de disputa.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Customizing en SAP GUI — Bike GmbH (DE01)</div>
+        <div class="p-note">esto arma la base que Linda usa del otro lado, en Fiori</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining House Banks</span>
+          <span class="sec-title-es">Definiendo bancos propios</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">Sin bancos definidos en el sistema, Multi-Bank Connectivity no tiene dónde entregar los datos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Punto de partida:</strong> cada banco con el que trabaja Bike GmbH necesita existir como House Bank en el sistema, con sus cuentas asociadas, antes de que cualquier extracto pueda importarse contra él.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="spro-tree">
+        <li class="folder">Financial Accounting (New)
+          <ul>
+            <li class="folder">Bank Accounting
+              <ul>
+                <li class="folder">Bank Account Management
+                  <ul>
+                    <li class="leaf">Define House Banks</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="gui-window">
+        <div class="gui-titlebar"><span>Change View "House Banks": Overview</span><span>DE01</span></div>
+        <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Selection</span></div>
+        <div class="gui-content">
+          <p class="gui-page-title">House Bank / Bank Accounts — Company Code DE01</p>
+          <table class="gui-table">
+            <tr><th>House Bank</th><th>Bank Name</th><th>Country</th></tr>
+            <tr><td>DTBK</td><td>Deutsche Bank</td><td>DE</td></tr>
+            <tr><td>CMBK</td><td>Commerzbank</td><td>DE</td></tr>
+          </table>
+        </div>
+        <div class="gui-statusbar"><span>Client 100</span><span>DE01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Global Settings for Electronic Bank Statement</span>
+          <span class="sec-title-es">Configuración global del extracto bancario electrónico</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">El nodo central de todo lo que Multi-Bank Connectivity entrega al sistema.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> acá se definen los "account symbols" — nombres lógicos que representan conceptos como "banco" o "cliente" — antes de poder mapearlos a cuentas contables reales.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="spro-tree">
+        <li class="folder">Financial Accounting (New)
+          <ul>
+            <li class="folder">Bank Accounting
+              <ul>
+                <li class="folder">Business Transactions
+                  <ul>
+                    <li class="folder">Payment Transactions
+                      <ul>
+                        <li class="folder">Electronic Bank Statement
+                          <ul>
+                            <li class="leaf"><span class="tc">OT83</span>Make Global Settings for Electronic Bank Statement</li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="gui-window">
+        <div class="gui-titlebar"><span>Create Account Symbols</span><span>OT83</span></div>
+        <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span></div>
+        <div class="gui-content">
+          <p class="gui-page-title">Account Symbols — Bike GmbH</p>
+          <table class="gui-table">
+            <tr><th>Symbol</th><th>Description</th></tr>
+            <tr><td>BANK</td><td>Bank Clearing</td></tr>
+            <tr><td>CUST</td><td>Customer Clearing</td></tr>
+            <tr><td>CHRG</td><td>Bank Charges</td></tr>
+          </table>
+        </div>
+        <div class="gui-statusbar"><span>Client 100</span><span>DE01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Posting Rules</span>
+          <span class="sec-title-es">Definiendo reglas de contabilización</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">El paso que conecta un movimiento bancario con un asiento contable real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué hace esto?</strong> Cada regla dice qué cuentas debitar y acreditar cuando aparece cierto tipo de movimiento en el extracto — es lo que hace posible que la conciliación sea automática y no manual.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="spro-tree">
+        <li class="folder">Bank Accounting
+          <ul>
+            <li class="folder">Business Transactions
+              <ul>
+                <li class="folder">Electronic Bank Statement
+                  <ul>
+                    <li class="leaf">Define Posting Rules</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="gui-window">
+        <div class="gui-titlebar"><span>Change View "Posting Rules": Overview</span></div>
+        <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span></div>
+        <div class="gui-content">
+          <p class="gui-page-title">Posting Rules — Incoming Payment</p>
+          <table class="gui-table">
+            <tr><th>Rule</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>001</td><td>BANK (Bank Clearing)</td><td>CUST (Customer)</td></tr>
+          </table>
+          <div class="gui-hint">⚠ regla genérica — la asignación a factura puntual la resuelve Cash Application, no esta regla</div>
+        </div>
+        <div class="gui-statusbar"><span>Client 100</span><span>DE01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning Transaction Types to Bank Accounts</span>
+          <span class="sec-title-es">Asignando tipos de transacción a cuentas bancarias</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">El último eslabón: decirle al sistema qué reglas usar para cada cuenta bancaria específica.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> sin esta asignación, el sistema tiene las reglas definidas pero no sabe cuál aplicar cuando llega un extracto de una cuenta bancaria en particular.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="spro-tree">
+        <li class="folder">Bank Accounting
+          <ul>
+            <li class="folder">Business Transactions
+              <ul>
+                <li class="folder">Electronic Bank Statement
+                  <ul>
+                    <li class="leaf">Assign Bank Accounts to Transaction Types</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="gui-window">
+        <div class="gui-titlebar"><span>Assign Bank Accounts to Transaction Types</span></div>
+        <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span></div>
+        <div class="gui-content">
+          <p class="gui-page-title">House Bank DTBK — Account 001</p>
+          <table class="gui-table">
+            <tr><th>Transaction Type</th><th>Posting Rule</th></tr>
+            <tr><td>Incoming Payment</td><td>001</td></tr>
+            <tr><td>Bank Charges</td><td>002</td></tr>
+          </table>
+        </div>
+        <div class="gui-statusbar"><span>Client 100</span><span>DE01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring Cash Application Matching</span>
+          <span class="sec-title-es">Configurando el matching de Cash Application</span>
+          <span class="spro-area-tag">Cash Application</span>
+        </div>
+        <div class="sec-desc">El umbral que decide si un match se aplica solo o queda para revisión humana.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el umbral de confianza mínimo para auto-clear es un parámetro de negocio, no un valor fijo del sistema — subirlo reduce errores pero aumenta el trabajo manual de Linda; bajarlo hace lo contrario.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="spro-tree">
+        <li class="folder">Cross-Application Components
+          <ul>
+            <li class="folder">SAP Cash Application
+              <ul>
+                <li class="leaf">Configure Matching Confidence Thresholds</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="gui-window">
+        <div class="gui-titlebar"><span>Configure Cash Application</span></div>
+        <div class="gui-menubar"><span>Settings</span><span>Edit</span></div>
+        <div class="gui-content">
+          <p class="gui-page-title">Matching Thresholds — Company Code DE01</p>
+          <div class="gui-field-row"><label>Auto-Clear Threshold</label><div class="gui-input">92%</div></div>
+          <div class="gui-field-row"><label>Suggest-Only Threshold</label><div class="gui-input">60%</div></div>
+          <div class="gui-hint">⚠ subir el umbral reduce falsos positivos, pero aumenta la cola de revisión manual</div>
+        </div>
+        <div class="gui-statusbar"><span>Client 100</span><span>DE01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Customer Tolerance Groups</span>
+          <span class="sec-title-es">Definiendo grupos de tolerancia de cliente</span>
+          <span class="spro-area-tag">Accounts Receivable</span>
+        </div>
+        <div class="sec-desc">Cuánta diferencia de monto se acepta antes de exigir intervención manual.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué hace esto?</strong> Define el margen de diferencia (absoluto o porcentual) que el sistema tolera entre lo facturado y lo pagado antes de bloquear el clearing automático — la base técnica del "tolerance match" del T2.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="spro-tree">
+        <li class="folder">Financial Accounting (New)
+          <ul>
+            <li class="folder">Accounts Receivable and Accounts Payable
+              <ul>
+                <li class="folder">Business Transactions
+                  <ul>
+                    <li class="folder">Incoming Payments
+                      <ul>
+                        <li class="folder">Incoming Payments Global Settings
+                          <ul>
+                            <li class="leaf"><span class="tc">OBA3</span>Define Tolerance Groups for Customers</li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="gui-window">
+        <div class="gui-titlebar"><span>Change View "Customer Tolerances": Details</span><span>OBA3</span></div>
+        <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span></div>
+        <div class="gui-content">
+          <p class="gui-page-title">Tolerance Group — DE01 / Blank</p>
+          <div class="gui-field-row"><label>Arrears / Payment terms</label><div class="gui-input">2 days</div></div>
+          <div class="gui-field-row"><label>Permitted Payment Diff. (Revenue)</label><div class="gui-input">2.00 EUR</div></div>
+          <div class="gui-field-row"><label>Permitted Payment Diff. (%)</label><div class="gui-input">1.0 %</div></div>
+        </div>
+        <div class="gui-statusbar"><span>Client 100</span><span>DE01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Reason Codes for Deductions</span>
+          <span class="sec-title-es">Definiendo reason codes para deducciones</span>
+          <span class="spro-area-tag">Accounts Receivable</span>
+        </div>
+        <div class="sec-desc">Sin esto, cada pago parcial válido se ve igual que un error de captura.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el reason code le dice al sistema (y a quien mire el reporte después) por qué un pago vino incompleto — sin esto, Linda no puede distinguir una deducción legítima de un error a corregir.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="spro-tree">
+        <li class="folder">Accounts Receivable and Accounts Payable
+          <ul>
+            <li class="folder">Business Transactions
+              <ul>
+                <li class="folder">Incoming Payments
+                  <ul>
+                    <li class="leaf">Define Reason Codes for Payment Differences</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="gui-window">
+        <div class="gui-titlebar"><span>Change View "Reason Codes": Overview</span></div>
+        <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span></div>
+        <div class="gui-content">
+          <p class="gui-page-title">Reason Codes — Company Code DE01</p>
+          <table class="gui-table">
+            <tr><th>Code</th><th>Description</th><th>Post as Deduction</th></tr>
+            <tr><td>D01</td><td>Damaged Goods</td><td>Yes</td></tr>
+            <tr><td>D02</td><td>Pricing Dispute</td><td>Yes</td></tr>
+            <tr><td>D03</td><td>Early Payment Discount</td><td>No</td></tr>
+          </table>
+        </div>
+        <div class="gui-statusbar"><span>Client 100</span><span>DE01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring Dispute Case Types</span>
+          <span class="sec-title-es">Configurando tipos de caso de disputa</span>
+          <span class="spro-area-tag">Dispute Management</span>
+        </div>
+        <div class="sec-desc">Antes de que Linda pueda abrir un caso, el tipo de caso tiene que existir.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define un case type?</strong> Los campos obligatorios, el flujo de estados (abierto → en investigación → cerrado) y quién puede procesar cada tipo de disputa — distinto para una disputa de precio que para una de mercadería dañada.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="spro-tree">
+        <li class="folder">Financial Supply Chain Management
+          <ul>
+            <li class="folder">Dispute Management
+              <ul>
+                <li class="folder">Case Definition
+                  <ul>
+                    <li class="leaf">Define Case Types</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="gui-window">
+        <div class="gui-titlebar"><span>Change View "Case Types": Overview</span></div>
+        <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span></div>
+        <div class="gui-content">
+          <p class="gui-page-title">Case Type — Customer Dispute</p>
+          <table class="gui-table">
+            <tr><th>Case Type</th><th>Status Flow</th></tr>
+            <tr><td>CDISP</td><td>Open → In Process → Resolved → Closed</td></tr>
+          </table>
+        </div>
+        <div class="gui-statusbar"><span>Client 100</span><span>DE01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning GL Accounts for Bank Clearing</span>
+          <span class="sec-title-es">Asignando cuentas de mayor para clearing bancario</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">Dónde vive contablemente el efectivo mientras todavía no se aplicó a ninguna factura.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> esta cuenta de mayor es exactamente el "efectivo no asignado" del T1 — existe para que el dinero quede contabilizado desde el minuto uno, aunque todavía no sepamos a qué factura corresponde.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="spro-tree">
+        <li class="folder">Bank Accounting
+          <ul>
+            <li class="folder">Business Transactions
+              <ul>
+                <li class="folder">Electronic Bank Statement
+                  <ul>
+                    <li class="leaf">Assign Accounts to Account Symbols</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="gui-window">
+        <div class="gui-titlebar"><span>Assign Accounts to Account Symbols</span></div>
+        <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span></div>
+        <div class="gui-content">
+          <p class="gui-page-title">Account Assignment — Company Code DE01</p>
+          <table class="gui-table">
+            <tr><th>Symbol</th><th>G/L Account</th><th>Description</th></tr>
+            <tr><td>BANK</td><td>113100</td><td>Bank Clearing Account</td></tr>
+            <tr><td>CUST</td><td>140000</td><td>Unallocated Cash — Reconciliation</td></tr>
+          </table>
+        </div>
+        <div class="gui-statusbar"><span>Client 100</span><span>DE01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring Credit Segments for DSO Reporting</span>
+          <span class="sec-title-es">Configurando segmentos de crédito para reporting de DSO</span>
+          <span class="spro-area-tag">Credit Management</span>
+        </div>
+        <div class="sec-desc">La base para que el dashboard de DSO que Linda mira en T3 tenga sentido.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el segmento de crédito agrupa clientes bajo una misma política de riesgo — es lo que permite calcular el DSO de forma consistente para todos los clientes de Bike GmbH, incluyendo Velotics.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="spro-tree">
+        <li class="folder">Financial Supply Chain Management
+          <ul>
+            <li class="folder">Credit Management
+              <ul>
+                <li class="folder">Credit Risk Monitoring
+                  <ul>
+                    <li class="leaf">Define Credit Segments</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="gui-window">
+        <div class="gui-titlebar"><span>Change View "Credit Segments": Overview</span></div>
+        <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span></div>
+        <div class="gui-content">
+          <p class="gui-page-title">Credit Segment — Bike GmbH</p>
+          <table class="gui-table">
+            <tr><th>Segment</th><th>Description</th></tr>
+            <tr><td>DE01</td><td>Germany — Standard Risk</td></tr>
+          </table>
+        </div>
+        <div class="gui-statusbar"><span>Client 100</span><span>DE01</span></div>
+      </div>
+      <div class="to-t3-note">🔧 → 👤 esto es lo que alimenta el tile de DSO que Linda revisa al final de su día en Fiori (T3, sección 9).</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Cash Application &amp; Reconciliation · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>
