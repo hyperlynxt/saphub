@@ -93,6 +93,9 @@ const COURSE_META = {
   },
   "ar-cashreconciliation": {
     desc: "How incoming payments get matched to open receivables: cash application, bank statement reconciliation, and where SAP Business AI speeds up the matching process."
+  },
+  "ar-cashreconciliationai": {
+    desc: "A closer look at the AI-assisted side of cash reconciliation: automated matching proposals, dispute handling, and how SAP Business AI changes the analyst's day-to-day workflow."
   }
 };
 

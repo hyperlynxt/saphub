@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Cash Reconciliation with AI — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t1-pale); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:820px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; background:var(--t1-dark); }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.6px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:18px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; font-size:13px; color:var(--t1-dark); }
+
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t1-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t1-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g2{ grid-template-columns:repeat(2,1fr); }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+
+  .channel-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; min-width:640px; }
+  .channel-card{ flex:1; min-width:130px; border:1px solid var(--border); border-radius:10px; padding:16px 12px; text-align:center; background:#FAFBFC; }
+  .channel-card .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .channel-card span{ font-size:0.82rem; font-weight:600; color:var(--ink); }
+
+  .decision-flow{ display:flex; flex-direction:column; align-items:center; gap:8px; min-width:520px; }
+  .df-box{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:12px 20px; text-align:center; }
+  .df-box.decision{ border-color:var(--t1-dark); background:var(--t1-pale); font-weight:700; }
+  .df-arrow-down{ font-size:20px; color:var(--t1-dark); }
+  .df-branches{ display:flex; gap:60px; margin-top:6px; }
+  .df-branch{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .df-outcome{ border-radius:10px; padding:12px 16px; text-align:center; font-size:0.84rem; font-weight:600; min-width:180px; }
+  .df-outcome.ok{ background:rgba(127,191,143,0.18); border:1.5px solid var(--t1-dark); color:var(--t1-dark); }
+  .df-outcome.fallback{ background:#FFF3E0; border:1.5px solid #C9932E; color:#8A6A1E; }
+  .df-tag{ font-size:0.7rem; color:var(--muted); }
+
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:520px; }
+  .chain-box{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:170px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t1-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t1-dark); font-weight:700; }
+
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){
+    .compare-grid, .cards-grid.g2, .cards-grid.g3{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">From Manual to Intelligent</a>
+  <a href="#s2">Three AI Scenarios</a>
+  <a href="#s3">Artificial Intelligence</a>
+  <a href="#s4">Situation Handling</a>
+  <a href="#s5">Process Automation</a>
+  <a href="#s6">Line-Item Matching Service</a>
+  <a href="#s7">What Is a Payment Advice</a>
+  <a href="#s8">Payment Advice Extraction</a>
+  <a href="#s9">The Skipped Invoice Problem</a>
+  <a href="#s10">From Situation to Dispute Case</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">SAP Business AI</span>
+      <span class="pill pill-secondary">Cash Management</span>
+      <span class="pill pill-secondary">Dispute Management</span>
+    </div>
+    <h1>Cash Reconciliation with <span class="accent">AI</span></h1>
+    <h2>Conciliación de Efectivo con Inteligencia Artificial</h2>
+    <p class="desc">Cómo SAP Business AI mejora el proceso de cash reconciliation ya conocido: matching más inteligente, detección proactiva de discrepancias, y extracción automática de payment advices.</p>
+    <div class="hlbox">Resumen Visual — <b>Cash Reconciliation with AI</b>, Tipo 1 (Básico). 10 secciones — los tres escenarios de IA de SAP, el servicio de matching por ML, y cómo la IA resuelve el problema real de las facturas omitidas en un payment advice.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">From Manual to Intelligent</span>
+          <span class="sec-title-es">De lo manual a lo inteligente</span>
+        </div>
+        <div class="sec-desc">El punto de partida: el proceso de cash reconciliation ya existente, ahora con una capa nueva encima.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el proceso de invoice-to-cash — cobro, conciliación y aplicación de cash — ya existe en SAP S/4HANA Cloud. SAP Business AI no lo reemplaza: se integra sobre él para lograr mayor eficiencia, menos esfuerzo manual y mejor precisión.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">📋</span><span class="title-en">Traditional Process</span><span class="title-es">Proceso tradicional</span></div>
+          <div class="flow-step-body"><ul><li>Invoice-to-cash ya conocido</li><li>Matching y conciliación manual</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">🧠</span><span class="title-en">+ SAP Business AI</span><span class="title-es">Capa de IA</span></div>
+          <div class="flow-step-body"><ul><li>Se integra sobre el proceso existente</li><li>No lo reemplaza, lo potencia</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">⚡</span><span class="title-en">Faster, More Accurate</span><span class="title-es">Más rápido y preciso</span></div>
+          <div class="flow-step-body"><ul><li>Menos esfuerzo manual</li><li>Cierre financiero más confiable</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Three AI Scenarios</span>
+          <span class="sec-title-es">Tres escenarios de IA</span>
+        </div>
+        <div class="sec-desc">El marco teórico central de todo el curso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> SAP Business AI aporta tres escenarios distintos al cash reconciliation: Artificial Intelligence (matching automático), Situation Handling (detección proactiva de excepciones), y Process Automation (automatización de punta a punta). Cada uno contribuye de forma distinta a un flujo más inteligente.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🤖</span><h6>Artificial Intelligence</h6><p>Automatiza el matching entre payment advices y facturas abiertas.</p></div>
+        <div class="mini-card"><span class="icon">🚨</span><h6>Situation Handling</h6><p>Identifica proactivamente discrepancias y casos especiales.</p></div>
+        <div class="mini-card"><span class="icon">⚙️</span><h6>Process Automation</h6><p>Automatiza de punta a punta, desde la carga de datos hasta el pago aclarado.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Artificial Intelligence — Automated Matching</span>
+          <span class="sec-title-es">Matching automatizado</span>
+        </div>
+        <div class="sec-desc">El primero de los tres escenarios, en detalle.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué hace este escenario?</strong> Automatiza el matching de payment advices contra facturas abiertas, reduciendo la intervención manual y minimizando errores. A través de la extracción inteligente de datos, la IA se asegura de que los detalles del payment advice se interpreten con precisión.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">📨</span><span class="title-en">Payment Advice Received</span><span class="title-es">Llega el aviso de pago</span></div>
+          <div class="flow-step-body"><ul><li>Notificación del cliente</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">🧠</span><span class="title-en">Intelligent Extraction</span><span class="title-es">Extracción inteligente</span></div>
+          <div class="flow-step-body"><ul><li>Interpreta texto, ítems y montos</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">✅</span><span class="title-en">Matched to Open Invoice</span><span class="title-es">Emparejado con la factura</span></div>
+          <div class="flow-step-body"><ul><li>Menos intervención manual</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Situation Handling — Proactive Detection</span>
+          <span class="sec-title-es">Detección proactiva</span>
+        </div>
+        <div class="sec-desc">El segundo escenario: no todo se puede resolver solo, y el sistema lo sabe.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> Situation Handling identifica proactivamente discrepancias y casos especiales que requieren intervención humana, proporcionando alertas e información en tiempo real que ayudan a decidir y resolver rápido.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">⚠️</span><span class="title-en">Discrepancy Arises</span><span class="title-es">Surge una discrepancia</span></div>
+          <div class="flow-step-body"><ul><li>Caso especial detectado</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">🚨</span><span class="title-en">Situation Flagged</span><span class="title-es">Situación marcada</span></div>
+          <div class="flow-step-body"><ul><li>Alerta e insight en tiempo real</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">🙋</span><span class="title-en">Human Decision</span><span class="title-es">Decisión humana</span></div>
+          <div class="flow-step-body"><ul><li>Resolución informada y rápida</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Process Automation — End to End</span>
+          <span class="sec-title-es">Automatización de punta a punta</span>
+        </div>
+        <div class="sec-desc">El tercer escenario: eliminar cuellos de botella en todo el recorrido.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> Process Automation automatiza procesos completos, desde la carga de datos hasta los pagos ya aclarados. Esto elimina cuellos de botella y acelera la compensación de pagos.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">📥</span><span class="title-en">Data Upload</span><span class="title-es">Carga de datos</span></div>
+          <div class="flow-step-body"><ul><li>Ingresa la información al sistema</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">⚙️</span><span class="title-en">Automated Processing</span><span class="title-es">Procesamiento automatizado</span></div>
+          <div class="flow-step-body"><ul><li>Sin intervención manual entre pasos</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">✅</span><span class="title-en">Payment Cleared</span><span class="title-es">Pago aclarado</span></div>
+          <div class="flow-step-body"><ul><li>Cierre financiero más rápido</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Line-Item Matching Service</span>
+          <span class="sec-title-es">El servicio de matching por partidas</span>
+        </div>
+        <div class="sec-desc">El motor de machine learning detrás del escenario "Artificial Intelligence".</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es?</strong> El servicio de machine learning Receivables Line-Item Matching de SAP Cash Application propone matches entre partidas por cobrar y partidas entrantes de extracto bancario, y las aclara automáticamente según el nivel de confianza y el umbral de compensación. Consta de dos tareas.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Schedule Jobs</h5>
+          <span class="en">programar trabajos</span>
+          <ul>
+            <li>Define cuándo corre el matching de ML</li>
+            <li>Parámetros de programación configurables</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Reprocess Bank Statement Items</h5>
+          <span class="en">reprocesar partidas de extracto</span>
+          <ul>
+            <li>App Fiori donde se ven los resultados</li>
+            <li>Permite reprocesar lo que no aclaró solo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Is a Payment Advice?</span>
+          <span class="sec-title-es">¿Qué es un payment advice?</span>
+        </div>
+        <div class="sec-desc">La pieza de información que hace posible todo lo anterior.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Definición:</strong> es una notificación que el cliente envía al proveedor, informando un pago próximo por bienes o servicios específicos. Típicamente incluye texto, números de ítem y montos. Históricamente no se integraba directamente a los sistemas contables por razones técnicas — quedaba solo como referencia manual.
+    </div>
+    <div class="visual-wrap">
+      <div class="channel-row">
+        <div class="channel-card"><span class="icon">📝</span><span>Text</span></div>
+        <div class="channel-card"><span class="icon">🔢</span><span>Item Numbers</span></div>
+        <div class="channel-card"><span class="icon">💰</span><span>Amounts</span></div>
+      </div>
+      <div class="visual-caption">las tres piezas de información que típicamente trae un payment advice</div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Advice Extraction</span>
+          <span class="sec-title-es">Extracción del payment advice</span>
+        </div>
+        <div class="sec-desc">Cómo SAP Business AI cambia lo que antes quedaba solo como referencia manual.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> con SAP Cash Application – Payment Advice Extraction y SAP Business AI, el payment advice deja de ser solo una referencia manual: su contenido se extrae e integra de forma más eficiente y ágil al proceso de reconciliación.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Antes</h5>
+          <span class="en">manual reference only</span>
+          <ul>
+            <li>El payment advice se consultaba a mano</li>
+            <li>No se integraba al sistema contable</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Con SAP Business AI</h5>
+          <span class="en">automated extraction</span>
+          <ul>
+            <li>Extracción automática del contenido</li>
+            <li>Integración directa al proceso de reconciliación</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Skipped Invoice Problem</span>
+          <span class="sec-title-es">El problema de la factura omitida</span>
+        </div>
+        <div class="sec-desc">Un riesgo concreto que la IA ayuda a atrapar antes de que se pierda dinero de vista.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué puede salir mal?</strong> No siempre es claro si el payment advice incluyó todas las facturas pendientes del cliente. Cuando el sistema detecta que puede haber quedado una afuera, informa a través de mensajes de situación o notificaciones en el Fiori launchpad — para que montos significativos no se pierdan de vista.
+    </div>
+    <div class="visual-wrap">
+      <div class="decision-flow">
+        <div class="df-box">Payment advice recibido</div>
+        <div class="df-arrow-down">↓</div>
+        <div class="df-box decision">¿Incluye todas las facturas pendientes?</div>
+        <div class="df-arrow-down">↓</div>
+        <div class="df-branches">
+          <div class="df-branch">
+            <div class="df-outcome ok">Proceso continúa normalmente</div>
+            <span class="df-tag">completo</span>
+          </div>
+          <div class="df-branch">
+            <div class="df-outcome fallback">Se dispara notificación / mensaje de situación</div>
+            <span class="df-tag">factura omitida</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">From Situation to Dispute Case</span>
+          <span class="sec-title-es">De la situación al caso de disputa</span>
+        </div>
+        <div class="sec-desc">Cómo se cierra el círculo cuando la factura omitida no se resuelve sola.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> la información generada por la situación puede usarse directamente para crear un caso de disputa, basado en el monto de pago pendiente — conectando la detección automática con el proceso de resolución ya existente.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Situation Detected</div><div class="t-es">situación detectada</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Outstanding Amount Identified</div><div class="t-es">monto pendiente identificado</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Dispute Case Created</div><div class="t-es">caso de disputa creado</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos clave de Cash Reconciliation with AI — Tipo 1</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Payment Advice</div><div class="term-es">Aviso de Pago</div><div class="term-def">Notificación que el cliente envía al proveedor sobre un pago próximo, con texto, ítems y montos.</div></div>
+      <div class="gcard"><div class="term-en">Payment Advice Extraction</div><div class="term-es">Extracción de Aviso de Pago</div><div class="term-def">Capacidad de SAP Business AI que lee y digitaliza automáticamente el contenido del payment advice.</div></div>
+      <div class="gcard"><div class="term-en">Situation Handling</div><div class="term-es">Manejo de Situaciones</div><div class="term-def">Escenario de IA que identifica proactivamente discrepancias y casos especiales, con alertas en tiempo real.</div></div>
+      <div class="gcard"><div class="term-en">Process Automation</div><div class="term-es">Automatización de Procesos</div><div class="term-def">Escenario de IA que automatiza de punta a punta, desde la carga de datos hasta el pago aclarado.</div></div>
+      <div class="gcard"><div class="term-en">Receivables Line-Item Matching</div><div class="term-es">Emparejamiento de Partidas por Cobrar</div><div class="term-def">Servicio de machine learning que propone y aclara matches entre partidas por cobrar y extractos bancarios.</div></div>
+      <div class="gcard"><div class="term-en">Schedule Jobs</div><div class="term-es">Programar Trabajos</div><div class="term-def">Tarea del servicio de matching que define cuándo corre el proceso de ML.</div></div>
+      <div class="gcard"><div class="term-en">Reprocess Bank Statement Items</div><div class="term-es">Reprocesar Partidas de Extracto</div><div class="term-def">Tarea/app Fiori para revisar y reprocesar partidas de extracto que no aclararon automáticamente.</div></div>
+      <div class="gcard"><div class="term-en">Clearing Threshold</div><div class="term-es">Umbral de Compensación</div><div class="term-def">Nivel de confianza mínimo requerido para que un match se aclare automáticamente.</div></div>
+      <div class="gcard"><div class="term-en">Skipped Invoice</div><div class="term-es">Factura Omitida</div><div class="term-def">Factura pendiente que no quedó incluida en el payment advice del cliente.</div></div>
+      <div class="gcard"><div class="term-en">Situation Message</div><div class="term-es">Mensaje de Situación</div><div class="term-def">Notificación in-app que alerta al usuario sobre un caso que necesita revisión.</div></div>
+      <div class="gcard"><div class="term-en">Fiori Launchpad Notification</div><div class="term-es">Notificación del Fiori Launchpad</div><div class="term-def">Alerta visible en el launchpad que impulsa al usuario a investigar un caso.</div></div>
+      <div class="gcard"><div class="term-en">Manage Payment Advices</div><div class="term-es">Gestionar Avisos de Pago</div><div class="term-def">App Fiori usada para investigar y resolver problemas detectados en un payment advice.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Cash Reconciliation with AI · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

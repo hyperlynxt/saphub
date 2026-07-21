@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Cash Reconciliation with AI — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-blue:#0070F2;
+    --sap-bg:#F5F6F7;
+    --sap-tile-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #132A36 55%, #1C4A5F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .actor-badge{ display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t3-dark); color:white; margin-left:8px; vertical-align:middle; }
+
+  .theory-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .breadcrumb-nav{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
+  .breadcrumb-nav .sep{ color:var(--t3-pale-border); }
+  .breadcrumb-nav .current{ color:var(--t3-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .fiori-mock{ background:var(--sap-bg); border:1px solid var(--sap-tile-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .fiori-shellbar{ background:var(--sap-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .fiori-shellbar .fs-title{ font-size:12.5px; }
+  .fiori-shellbar .fs-user{ width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:10px; }
+  .fiori-body{ padding:18px 20px; background:white; }
+  .fiori-page-title{ font-size:16px; font-weight:600; color:#1D2D3E; margin:0 0 12px; }
+
+  .fiori-tiles{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .fiori-tile{ background:white; border:1px solid var(--sap-tile-border); border-radius:6px; padding:14px; }
+  .fiori-tile .tile-num{ font-size:22px; font-weight:700; color:var(--sap-blue); }
+  .fiori-tile .tile-label{ font-size:11px; color:#5B738B; margin-top:4px; }
+  .fiori-tile.highlight{ border-color:var(--sap-blue); background:#EBF5FF; }
+  .fiori-tile.alert{ border-color:#C9932E; background:#FFF8E8; }
+  .fiori-tile.alert .tile-num{ color:#8A6A1E; }
+
+  .fiori-list{ border:1px solid var(--sap-tile-border); border-radius:6px; overflow:hidden; }
+  .fiori-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid #EDEFF1; font-size:12.5px; background:white; }
+  .fiori-row:last-child{ border-bottom:none; }
+  .fiori-row .fr-main{ font-weight:600; color:#1D2D3E; }
+  .fiori-row .fr-sub{ font-size:10.5px; color:#5B738B; margin-top:2px; }
+  .fr-badge{ font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fr-badge.high{ background:#E3F7E6; color:#187A32; }
+  .fr-badge.medium{ background:#FFF3D6; color:#8A6A1E; }
+  .fr-badge.low{ background:#FDE7E7; color:#A32D2D; }
+  .fr-badge.open{ background:#E6F1FB; color:#0C447C; }
+  .fr-badge.ai{ background:#EDE7FB; color:#5D3E82; }
+
+  .fiori-btn{ background:var(--sap-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .fiori-btn.ghost{ background:white; color:var(--sap-blue); border:1px solid var(--sap-blue); }
+
+  .fiori-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .fiori-field{ flex:1; min-width:140px; }
+  .fiori-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .fiori-field .ffval{ border:1px solid var(--sap-tile-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+  .fiori-field .ffval.extracted{ border-color:#7FC48A; background:#F3FBF4; }
+
+  .fiori-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .fiori-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sap-tile-border); }
+  .fiori-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+
+  .fiori-kpi-row{ display:flex; gap:14px; }
+  .fiori-kpi{ flex:1; background:white; border:1px solid var(--sap-tile-border); border-radius:6px; padding:14px; text-align:center; }
+  .fiori-kpi .kv{ font-size:20px; font-weight:700; color:var(--sap-blue); }
+  .fiori-kpi .kl{ font-size:10.5px; color:#5B738B; margin-top:3px; }
+  .fiori-kpi.good .kv{ color:#187A32; }
+
+  .situation-banner{ background:#FFF8E8; border:1px solid #E0D48A; border-radius:6px; padding:10px 14px; margin-bottom:12px;
+    display:flex; align-items:center; gap:10px; font-size:11.5px; color:#5C4A1E; }
+  .situation-banner .sb-icon{ font-size:16px; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px;
+    font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){ .fiori-tiles{ grid-template-columns:1fr; } .fiori-kpi-row{ flex-direction:column; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">AI-Enhanced Launchpad</a>
+  <a href="#s2">Reviewing an AI Match</a>
+  <a href="#s3">Reprocessing App</a>
+  <a href="#s4">Skipped Invoice Alert</a>
+  <a href="#s5">Manage Payment Advices</a>
+  <a href="#s6">Correcting Extraction</a>
+  <a href="#s7">Confirming Low Confidence</a>
+  <a href="#s8">Creating the Case</a>
+  <a href="#s9">Posting the Resolution</a>
+  <a href="#s10">Touchless Rate Dashboard</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">SAP Business AI</span>
+      <span class="pill pill-secondary">Dispute Management</span>
+    </div>
+    <h1>Cash Reconciliation with AI — <span class="accent">Día a Día</span></h1>
+    <h2>Tangibilización Usuario (Fiori)</h2>
+    <p class="desc">El mismo trabajo diario de aplicar cash, ahora con SAP Business AI ayudando: matches sugeridos, avisos de pago leídos solos, y alertas antes de que una factura se pierda de vista.</p>
+    <div class="protagonist">
+      <div class="avatar">L</div>
+      <div>
+        <div class="p-name">Linda</div>
+        <div class="p-role">Accounts Receivable Accountant — Bike GmbH (DE01)</div>
+        <div class="p-note">cliente de ejemplo: Velotics</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The AI-Enhanced Launchpad</span>
+          <span class="sec-title-es">El Launchpad con IA</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">El mismo Launchpad de siempre, con un tile nuevo que antes no existía.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Además de su cola de pagos a revisar, Linda ahora ve un tile de "Situaciones abiertas" — casos que la IA detectó proactivamente y que no estaban ahí antes.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Fiori Launchpad <span class="sep">›</span> <span class="current">Cash Application</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">SAP Fiori · Bike GmbH (DE01)</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">My Home — Cash Application</p>
+          <div class="fiori-tiles">
+            <div class="fiori-tile highlight"><div class="tile-num">6</div><div class="tile-label">Payments to Review</div></div>
+            <div class="fiori-tile"><div class="tile-num">94</div><div class="tile-label">Auto-Matched by AI</div></div>
+            <div class="fiori-tile alert"><div class="tile-num">2</div><div class="tile-label">Open Situations</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="visual-caption">el matching de IA subió el auto-clear, pero apareció una cola nueva: las situaciones</div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing an AI-Suggested Match</span>
+          <span class="sec-title-es">Revisando un match sugerido por IA</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">El servicio de matching ya corrió — Linda solo confirma lo que quedó con confianza alta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El job de Receivables Line-Item Matching ya corrió de fondo. Cuando la confianza es alta, Linda no busca nada — solo revisa y confirma.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Reprocess Bank Statement Items <span class="sep">›</span> <span class="current">Item 88231</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Reprocess Bank Statement Items</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Bank Statement Item 88231 — €4,280.00 — Velotics</p>
+          <div class="fiori-list">
+            <div class="fiori-row">
+              <div><div class="fr-main">Invoice 90015 — €4,280.00</div><div class="fr-sub">Suggested by Receivables Line-Item Matching</div></div>
+              <span class="fr-badge ai">AI Match</span>
+            </div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Confirm</button> <button class="fiori-btn ghost">Reject</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reprocessing What Didn't Auto-Clear</span>
+          <span class="sec-title-es">Reprocesando lo que no se aclaró solo</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">No todo llega a la confianza necesaria para aclararse automáticamente — este es el resto de la lista.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Acá Linda ve todo lo que el matching de ML dejó como sugerencia y no como aclaración automática, ordenado para revisar uno por uno.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Reprocess Bank Statement Items <span class="sep">›</span> <span class="current">Pending Review</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Reprocess Bank Statement Items</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Pending Review — Bike GmbH (DE01)</p>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Item 88240 — €1,890.00</div><div class="fr-sub">No confident match found</div></div><span class="fr-badge low">Low Confidence</span></div>
+            <div class="fiori-row"><div><div class="fr-main">Item 88245 — €3,120.00</div><div class="fr-sub">Two possible invoices</div></div><span class="fr-badge medium">Medium Confidence</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Skipped Invoice Alert</span>
+          <span class="sec-title-es">La alerta de factura omitida</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">Acá aparece el escenario de Situation Handling en su forma más concreta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El payment advice de Velotics llegó, pero el sistema detectó que había una factura abierta que no aparecía en ningún lado del aviso. En vez de dejarlo pasar, Linda recibe una notificación en el Launchpad.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Fiori Launchpad <span class="sep">›</span> <span class="current">Notifications</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">SAP Fiori · Bike GmbH (DE01)</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <div class="situation-banner"><span class="sb-icon">⚠️</span> Situation detected: possible skipped invoice in payment advice from Velotics</div>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Payment Advice PA-20456 — Velotics</div><div class="fr-sub">Invoice 90031 not referenced — €2,750.00 at risk</div></div><span class="fr-badge open">Review</span></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Investigate</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Investigating in Manage Payment Advices</span>
+          <span class="sec-title-es">Investigando en Manage Payment Advices</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">Un clic desde la notificación, y Linda ya está frente al detalle completo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La app le muestra todo lo que necesita: los datos del cliente, la sociedad, la referencia de pago, y las líneas del asiento que ya se generó — sin que Linda tenga que buscar nada en otro lado.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Manage Payment Advices <span class="sep">›</span> <span class="current">PA-20456</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Manage Payment Advices</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Payment Advice PA-20456 — Velotics — Bike GmbH (DE01)</p>
+          <table class="fiori-table">
+            <tr><th>Invoice</th><th>Amount</th><th>Status</th></tr>
+            <tr><td>90028</td><td>€1,600.00</td><td>Referenced</td></tr>
+            <tr><td>90029</td><td>€2,300.00</td><td>Referenced</td></tr>
+            <tr><td>90031</td><td>€2,750.00</td><td>Skipped</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Correcting an Extracted Field</span>
+          <span class="sec-title-es">Corrigiendo un campo extraído</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">La extracción no siempre es perfecta — Linda es quien tiene la última palabra.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El documento original de Velotics tenía un monto borroso en el escaneo. La IA extrajo un valor, pero Linda lo compara contra el PDF original antes de confirmar.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Manage Payment Advices <span class="sep">›</span> <span class="current">Review Extracted Data</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Manage Payment Advices</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Extracted Field Review</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Invoice Number (extracted)</label><div class="ffval extracted">90029</div></div>
+            <div class="fiori-field"><label>Amount (extracted)</label><div class="ffval extracted">€2,300.00</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Confirm Extraction</button> <button class="fiori-btn ghost">Correct Manually</button></div>
+        </div>
+      </div>
+      <div class="visual-caption">campos con fondo verde = extraídos por IA, no tipeados por Linda</div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Manually Confirming a Low-Confidence Match</span>
+          <span class="sec-title-es">Confirmando a mano un match de baja confianza</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">La IA no fuerza nada por debajo del umbral — la decisión final queda en manos de Linda.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El sistema propone la factura 90040 con confianza baja. Linda reconoce el patrón del cliente y decide confirmar — su criterio queda registrado y ayuda a entrenar el modelo hacia adelante.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Reprocess Bank Statement Items <span class="sep">›</span> <span class="current">Item 88240</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Reprocess Bank Statement Items</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Item 88240 — €1,890.00 — Velotics</p>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Invoice 90040 — €1,890.00</div><div class="fr-sub">Suggested by ML — low confidence</div></div><span class="fr-badge low">Low Confidence</span></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Confirm Anyway</button> <button class="fiori-btn ghost">Send to Account Level</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating the Case, Pre-Filled</span>
+          <span class="sec-title-es">Creando el caso, ya pre-completado</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">La factura 90031 no se aclara con más espera — vuelve a la investigación de la sección 5.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Linda confirma que la factura 90031 realmente quedó fuera del pago de Velotics. En vez de armar un caso desde cero, lo crea directamente desde la situación — que ya trae el monto, la factura y el vínculo al payment advice.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Manage Customer Disputes <span class="sep">›</span> <span class="current">New Case (from Situation)</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Manage Customer Disputes</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">New Dispute Case — Velotics</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Invoice (from situation)</label><div class="ffval extracted">90031</div></div>
+            <div class="fiori-field"><label>Amount (from situation)</label><div class="ffval extracted">€2,750.00</div></div>
+            <div class="fiori-field"><label>Source</label><div class="ffval extracted">Payment Advice PA-20456</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Create Case</button></div>
+        </div>
+      </div>
+      <div class="visual-caption">Linda no volvió a tipear nada — todo vino ya cargado desde la situación</div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Confirmed Match</span>
+          <span class="sec-title-es">Contabilizando el match confirmado</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">El match de baja confianza que Linda confirmó en la sección 7 termina en un asiento real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Confirmar el match no es el paso final: al hacerlo, el sistema genera automáticamente el documento contable que compensa la partida.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Reprocess Bank Statement Items <span class="sep">›</span> <span class="current">Posting Result</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Reprocess Bank Statement Items</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Posted Document — Item 88240</p>
+          <table class="fiori-table">
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Bank Clearing</td><td>€1,890.00</td><td>—</td></tr>
+            <tr><td>Accounts Receivable — Velotics</td><td>—</td><td>€1,890.00</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="dc-note">
+        <span class="dc-label">Debe / Haber</span>
+        Se <b>debita</b> Bank Clearing por el monto recibido (€1.890) y se <b>acredita</b> Accounts Receivable de Velotics por el mismo importe — la factura 90040 queda completamente compensada. El match tuvo confianza baja, pero una vez confirmado por Linda, el asiento se contabiliza igual que cualquier otro clearing.
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking the Touchless Rate</span>
+          <span class="sec-title-es">Revisando la tasa sin intervención</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">El número que resume si toda esta IA realmente está funcionando.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de cerrar el día, Linda mira el dashboard: la proporción de pagos que se aclararon sin que nadie los tocara sigue subiendo — la señal de que Artificial Intelligence, Situation Handling y Process Automation están funcionando juntos.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Cash Application Analytics <span class="sep">›</span> <span class="current">Touchless Rate</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Cash Application Analytics</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Bike GmbH (DE01) — Automation Overview</p>
+          <div class="fiori-kpi-row">
+            <div class="fiori-kpi good"><div class="kv">89%</div><div class="kl">Touchless Rate Today</div></div>
+            <div class="fiori-kpi"><div class="kv">83%</div><div class="kl">Touchless Rate Last Month</div></div>
+            <div class="fiori-kpi good"><div class="kv">1</div><div class="kl">Skipped Invoices Caught</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Cash Reconciliation with AI · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

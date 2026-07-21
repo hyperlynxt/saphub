@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Cash Reconciliation with AI — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t2-pale); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:820px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; background:var(--t2-dark); }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.6px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t2-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:18px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; font-size:13px; color:var(--t2-dark); }
+
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t2-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+
+  .vert-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:420px; }
+  .vf-box{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:12px 20px; text-align:center; min-width:300px; }
+  .vf-box.tier1{ border-color:var(--t2-dark); background:var(--t2-pale); font-weight:700; }
+  .vf-box.tier2{ border-style:dashed; }
+  .vf-arrow{ font-size:20px; color:var(--t2-dark); }
+
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:150px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t2-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t2-dark); font-weight:700; }
+
+  .kpi-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+  .kpi-card{ flex:1; min-width:150px; background:white; border:1px solid var(--border); border-radius:10px; padding:16px; text-align:center; }
+  .kpi-card .kv{ font-size:22px; font-weight:700; color:var(--t2-dark); font-family:'Syne',sans-serif; }
+  .kpi-card .kl{ font-size:11px; color:var(--muted); margin-top:4px; }
+
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){
+    .compare-grid, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">SAP Business AI Foundation</a>
+  <a href="#s2">ML vs. Generative AI</a>
+  <a href="#s3">Situation Handling Framework</a>
+  <a href="#s4">Automation KPIs</a>
+  <a href="#s5">Exception Queues</a>
+  <a href="#s6">Scheduling Parameters</a>
+  <a href="#s7">Reprocessing in Depth</a>
+  <a href="#s8">Extraction Accuracy</a>
+  <a href="#s9">Detecting Skipped Amounts</a>
+  <a href="#s10">Case Creation In Depth</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">SAP Business AI</span>
+      <span class="pill pill-secondary">Dispute Management</span>
+      <span class="pill pill-secondary">Embedded Analytics</span>
+    </div>
+    <h1>Cash Reconciliation with AI — <span class="accent">Profundización</span></h1>
+    <h2>Conciliación de Efectivo con Inteligencia Artificial</h2>
+    <p class="desc">Lo que rodea a los tres escenarios de IA y no vimos en el Tipo 1: dónde vive SAP Business AI dentro de S/4HANA, cómo se mide la automatización, y el mecanismo interno de cómo el matching y la detección de facturas omitidas realmente deciden.</p>
+    <div class="hlbox">Resumen Visual — <b>Cash Reconciliation with AI</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 de profundidad sobre lo visto en el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">SAP Business AI — Where This Fits</span>
+          <span class="sec-title-es">Dónde encaja SAP Business AI</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 asumió que "SAP Business AI" ya era conocido. Acá vemos el paraguas del que forma parte.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> SAP Business AI es el paraguas de capacidades de inteligencia artificial embebidas directamente en las aplicaciones de SAP — no es una herramienta separada que haya que abrir aparte. Los tres escenarios del T1 (Artificial Intelligence, Situation Handling, Process Automation) son manifestaciones puntuales de ese paraguas, aplicadas específicamente a cash reconciliation.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🧠</span><h6>Embedded AI</h6><p>IA integrada directamente en las apps Fiori, sin herramientas externas.</p></div>
+        <div class="mini-card"><span class="icon">💬</span><h6>Generative AI</h6><p>Capacidades conversacionales y de generación de texto (ej. Joule).</p></div>
+        <div class="mini-card"><span class="icon">📊</span><h6>Predictive &amp; ML</h6><p>Modelos de machine learning para matching, forecasting y clasificación.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Machine Learning vs. Generative AI</span>
+          <span class="sec-title-es">Machine Learning vs. IA Generativa</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "extracción inteligente" y "matching automático" como si fueran lo mismo — no lo son.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> el matching de partidas (Receivables Line-Item Matching) es un problema de clasificación clásico de machine learning, entrenado con historial de matches confirmados. La extracción de payment advices, en cambio, se apoya más en técnicas de comprensión de texto/documento — más cercanas a lo que hoy se llama IA generativa o de lenguaje.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Machine Learning (Matching)</h5>
+          <span class="en">line-item matching</span>
+          <ul>
+            <li>Entrenado con historial de matches confirmados</li>
+            <li>Produce un puntaje de confianza numérico</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Document/Language AI (Extracción)</h5>
+          <span class="en">payment advice extraction</span>
+          <ul>
+            <li>Interpreta texto libre, ítems y montos</li>
+            <li>Convierte contenido no estructurado en datos usables</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Situation Handling Framework</span>
+          <span class="sec-title-es">El framework de Situation Handling</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mostró Situation Handling aplicado a cash — acá vemos el mecanismo general de S/4HANA detrás.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es una "situation" en SAP?</strong> Es un objeto de negocio genérico de S/4HANA que representa un evento que necesita atención — no es exclusivo de cash reconciliation. Cada situation se define con una condición de disparo, un destinatario (usuario o rol), y una o más acciones sugeridas para resolverla.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Trigger Condition</div><div class="t-es">condición de disparo</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Situation Instance</div><div class="t-es">instancia de situación</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Notification + Suggested Action</div><div class="t-es">notificación + acción sugerida</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Measuring Automation Success</span>
+          <span class="sec-title-es">Cómo se mide el éxito de la automatización</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Los tres escenarios del T1 prometen "más eficiencia" — ¿con qué número se comprueba?</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el indicador más usado para este tipo de procesos es la <strong>touchless rate</strong> (tasa de partidas que se aclaran sin ninguna intervención humana). Un aumento sostenido de este indicador es la evidencia concreta de que Artificial Intelligence, Situation Handling y Process Automation están funcionando juntos.
+    </div>
+    <div class="visual-wrap">
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kv">Touchless Rate</div><div class="kl">% aclarado sin intervención</div></div>
+        <div class="kpi-card"><div class="kv">Avg. Time to Clear</div><div class="kl">tiempo promedio de aclaración</div></div>
+        <div class="kpi-card"><div class="kv">Skipped Invoice Catches</div><div class="kl">facturas omitidas detectadas</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Exception Queues</span>
+          <span class="sec-title-es">Colas de excepción</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Todo lo que la IA no aclara sola, tiene que caer en algún lado ordenado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es una cola de excepciones?</strong> Es la lista priorizada de partidas que el matching automático no pudo cerrar solo — ya sea por baja confianza, monto significativo, o una situación detectada. En vez de mezclarse con el trabajo diario, quedan agrupadas y ordenadas para que el contador de AR las revise con criterio.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📉</span><h6>Low Confidence</h6><p>El match sugerido no alcanzó el umbral de aclaración automática.</p></div>
+        <div class="mini-card"><span class="icon">💰</span><h6>High-Value Discrepancy</h6><p>El monto en juego amerita revisión, aunque la confianza sea razonable.</p></div>
+        <div class="mini-card"><span class="icon">🚨</span><h6>Flagged Situation</h6><p>Una situación (ej. factura omitida) marcó la partida para revisión.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Scheduling Parameters in Depth</span>
+          <span class="sec-title-es">Parámetros de programación en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "Schedule Jobs" como una de las dos tareas del servicio — acá vemos qué se puede ajustar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> programar el job de Receivables Line-Item Matching no es solo elegir una hora — implica decidir con qué frecuencia corre, sobre qué rango de partidas actúa, y qué pasa con los resultados que no llegan al umbral de aclaración automática.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Frequency</h5>
+          <span class="en">frecuencia</span>
+          <ul>
+            <li>Cada cuánto corre el job de matching</li>
+            <li>Balance entre latencia y carga de sistema</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Scope</h5>
+          <span class="en">alcance</span>
+          <ul>
+            <li>Qué partidas de extracto entran en cada corrida</li>
+            <li>Puede acotarse por banco, cuenta o rango de fecha</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reprocessing Bank Statement Items, in Depth</span>
+          <span class="sec-title-es">Reprocesar partidas de extracto, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que ahí "se ven los resultados" — acá vemos qué puede hacer el usuario con eso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué se puede hacer en esta app?</strong> No es solo un visor de resultados: permite forzar un reintento del matching sobre partidas que quedaron sin aclarar, revisar por qué el modelo sugirió (o no sugirió) un match, y confirmar manualmente una sugerencia de baja confianza si el criterio humano lo respalda.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">1. Ver resultado del último matching automático</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box tier2">2. Revisar por qué no aclaró (o aclaró) esa partida</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box">3. Reintentar matching o confirmar manualmente</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Extraction Accuracy Depends On</span>
+          <span class="sec-title-es">De qué depende la precisión de la extracción</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 explicó qué hace la extracción — acá vemos qué la hace más o menos confiable.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> la calidad de la extracción de un payment advice depende directamente de qué tan estructurado llegue el documento original. Un formato consistente y con texto claro se interpreta con mucha más precisión que una carta escaneada con formato libre.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Consistent Format</h5>
+          <span class="en">formato consistente</span>
+          <ul>
+            <li>Texto, ítems y montos en posiciones predecibles</li>
+            <li>Alta precisión de extracción</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Free-Form Document</h5>
+          <span class="en">formato libre</span>
+          <ul>
+            <li>Texto no estructurado, sin posiciones fijas</li>
+            <li>Mayor riesgo de interpretación incorrecta</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How the System Flags a Skipped Invoice</span>
+          <span class="sec-title-es">Cómo el sistema marca una factura omitida</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró el problema — acá vemos qué compara el sistema para detectarlo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el sistema compara la lista de facturas mencionadas en el payment advice contra el total de partidas abiertas de ese cliente. Si hay facturas abiertas que no aparecen en ningún lado del aviso — y su monto es significativo — se dispara la notificación mencionada en el T1.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Invoices in Advice</div><div class="t-es">facturas en el aviso</div></div>
+        <div class="chain-arrow">vs.</div>
+        <div class="chain-box"><div class="t-en">Open Items on Account</div><div class="t-es">partidas abiertas del cliente</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Gap = Skipped Invoice</div><div class="t-es">diferencia = factura omitida</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Transfers Into the Dispute Case</span>
+          <span class="sec-title-es">Qué información pasa al caso de disputa</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que la situación "puede usarse" para crear el caso — acá vemos qué dato concreto viaja.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> el caso de disputa no arranca en blanco. Se crea ya con el monto pendiente identificado por la situación, la referencia a la factura omitida, y el vínculo al payment advice original — el contador de AR no tiene que volver a buscar esa información desde cero.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="icon">💰</span><h6>Outstanding Amount</h6><p>El monto pendiente ya calculado por la situación.</p></div>
+        <div class="mini-card"><span class="icon">🧾</span><h6>Invoice Reference</h6><p>La factura específica que quedó omitida.</p></div>
+        <div class="mini-card"><span class="icon">📨</span><h6>Source Payment Advice</h6><p>El vínculo directo al aviso de pago original.</p></div>
+        <div class="mini-card"><span class="icon">👤</span><h6>Customer &amp; Company Code</h6><p>Datos del cliente y sociedad, ya disponibles sin re-ingresar.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Cash Reconciliation with AI — Tipo 2 (no repite T1)</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">SAP Business AI</div><div class="term-es">SAP Business AI</div><div class="term-def">Paraguas de capacidades de IA embebidas directamente en las aplicaciones de SAP.</div></div>
+      <div class="gcard"><div class="term-en">Embedded AI</div><div class="term-es">IA Embebida</div><div class="term-def">IA integrada dentro de las apps Fiori, sin necesidad de herramientas externas.</div></div>
+      <div class="gcard"><div class="term-en">Generative AI</div><div class="term-es">IA Generativa</div><div class="term-def">Capacidades de generación y comprensión de texto, usadas por ejemplo en extracción de documentos.</div></div>
+      <div class="gcard"><div class="term-en">Situation (Framework)</div><div class="term-es">Situación (Framework)</div><div class="term-def">Objeto de negocio genérico de S/4HANA que representa un evento que necesita atención.</div></div>
+      <div class="gcard"><div class="term-en">Touchless Rate</div><div class="term-es">Tasa Sin Intervención</div><div class="term-def">Porcentaje de partidas aclaradas sin ninguna intervención humana.</div></div>
+      <div class="gcard"><div class="term-en">Exception Queue</div><div class="term-es">Cola de Excepciones</div><div class="term-def">Lista priorizada de partidas que el matching automático no pudo cerrar solo.</div></div>
+      <div class="gcard"><div class="term-en">Confidence Threshold</div><div class="term-es">Umbral de Confianza</div><div class="term-def">Nivel mínimo de certeza que un match necesita para aclararse automáticamente.</div></div>
+      <div class="gcard"><div class="term-en">Structured Document</div><div class="term-es">Documento Estructurado</div><div class="term-def">Documento con formato consistente y predecible, más fácil de extraer con precisión.</div></div>
+      <div class="gcard"><div class="term-en">Free-Form Document</div><div class="term-es">Documento de Formato Libre</div><div class="term-def">Documento sin estructura predecible, más difícil de interpretar automáticamente.</div></div>
+      <div class="gcard"><div class="term-en">Open Items on Account</div><div class="term-es">Partidas Abiertas de la Cuenta</div><div class="term-def">Conjunto total de facturas pendientes de un cliente, usado como referencia para detectar omisiones.</div></div>
+      <div class="gcard"><div class="term-en">Suggested Action</div><div class="term-es">Acción Sugerida</div><div class="term-def">Recomendación concreta que acompaña a una notificación de situación.</div></div>
+      <div class="gcard"><div class="term-en">Job Scope</div><div class="term-es">Alcance del Job</div><div class="term-def">Rango de partidas (por banco, cuenta o fecha) que un job de matching procesa en cada corrida.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Cash Reconciliation with AI · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>
