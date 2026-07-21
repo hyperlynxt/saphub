@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Treasury Management — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t2-pale); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t2-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+
+  .vert-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:420px; }
+  .vf-box{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:12px 20px; text-align:center; min-width:300px; }
+  .vf-box.tier1{ border-color:var(--t2-dark); background:var(--t2-pale); font-weight:700; }
+  .vf-box.tier2{ border-style:dashed; }
+  .vf-arrow{ font-size:20px; color:var(--t2-dark); }
+
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:150px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t2-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t2-dark); font-weight:700; }
+
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){
+    .compare-grid, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Physical vs. Notional Pooling</a>
+  <a href="#s2">Types of Hedging Instruments</a>
+  <a href="#s3">Credit Lines in Depth</a>
+  <a href="#s4">SAP BTP as Foundation</a>
+  <a href="#s5">Deployment Models</a>
+  <a href="#s6">Working Capital Levers, Revisited</a>
+  <a href="#s7">Legacy Fragmentation In Depth</a>
+  <a href="#s8">The Reporting Lag Problem</a>
+  <a href="#s9">The Portfolio, Layered</a>
+  <a href="#s10">The Four AI Capabilities, Chained</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Treasury &amp; Risk Management</span>
+      <span class="pill pill-secondary">Cash Management</span>
+      <span class="pill pill-secondary">SAP BTP</span>
+      <span class="pill pill-secondary">SAP Business AI</span>
+    </div>
+    <h1>Treasury Management — <span class="accent">Profundización</span></h1>
+    <h2>Gestión de Tesorería</h2>
+    <p class="desc">Lo que rodea a los elementos clave del T1 y no vimos ahí: pooling físico vs. notional, tipos de cobertura, la plataforma técnica detrás del portfolio, y el mecanismo interno de por qué la fragmentación legacy y el rezago de datos son tan costosos.</p>
+    <div class="hlbox">Resumen Visual — <b>Treasury Management</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 de profundidad sobre lo visto en el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Physical vs. Notional Pooling</span>
+          <span class="sec-title-es">Pooling físico vs. notional</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "cash pooling" como una sola cosa — en la práctica hay dos enfoques bien distintos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el cash pooling físico mueve efectivamente el dinero entre cuentas hacia una cuenta maestra (sweeping). El pooling notional, en cambio, no mueve un solo peso — el banco simplemente calcula el interés como si los saldos estuvieran consolidados, sin transferencias reales.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Physical Pooling</h5>
+          <span class="en">sweeping real</span>
+          <ul>
+            <li>El efectivo se mueve realmente entre cuentas</li>
+            <li>Requiere transferencias intercompañía</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Notional Pooling</h5>
+          <span class="en">sin movimiento de fondos</span>
+          <ul>
+            <li>El banco calcula interés sobre el saldo combinado</li>
+            <li>No hay transferencias reales entre cuentas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Types of Hedging Instruments</span>
+          <span class="sec-title-es">Tipos de instrumentos de cobertura</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "hedging" dentro de Treasury & Risk Management — acá vemos con qué herramientas se hace.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Con qué se cubre un riesgo?</strong> Los instrumentos más comunes son forwards (fijan un tipo de cambio o tasa a futuro), swaps (intercambian flujos, por ejemplo tasa fija por variable) y options (dan el derecho, no la obligación, de ejecutar a un precio pactado).
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📅</span><h6>Forwards</h6><p>Fijan hoy un tipo de cambio o tasa para una operación futura.</p></div>
+        <div class="mini-card"><span class="icon">🔄</span><h6>Swaps</h6><p>Intercambian flujos financieros, por ejemplo tasa fija por variable.</p></div>
+        <div class="mini-card"><span class="icon">🎯</span><h6>Options</h6><p>Dan el derecho, no la obligación, de ejecutar a un precio pactado.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Credit Lines, in Depth</span>
+          <span class="sec-title-es">Líneas de crédito en detalle</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que el día de tesorería incluye "gestionar líneas de crédito" — acá vemos qué implica eso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> una línea de crédito es un monto máximo pre-aprobado por un banco, del cual la empresa puede disponer (drawdown) cuando lo necesite. Tesorería monitorea cuánto de esa línea ya está utilizado (utilización) versus cuánto queda disponible, para no quedarse sin margen de maniobra en un momento crítico.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Approved Limit</div><div class="t-es">límite aprobado</div></div>
+        <div class="chain-arrow">−</div>
+        <div class="chain-box"><div class="t-en">Utilized Amount</div><div class="t-es">monto utilizado</div></div>
+        <div class="chain-arrow">=</div>
+        <div class="chain-box"><div class="t-en">Available Headroom</div><div class="t-es">margen disponible</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">SAP BTP as the Underlying Foundation</span>
+          <span class="sec-title-es">SAP BTP como base subyacente</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "SAP Business Technology Platform" al pasar — acá vemos qué rol juega realmente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es SAP BTP en este contexto?</strong> Es la plataforma técnica que sostiene capacidades como integración entre sistemas, extensibilidad (agregar funcionalidad sin modificar el core), y los servicios de datos y analítica que alimentan el forecasting y los dashboards de tesorería.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🔗</span><h6>Integration Services</h6><p>Conecta sistemas SAP y no-SAP entre sí.</p></div>
+        <div class="mini-card"><span class="icon">🧩</span><h6>Extensibility</h6><p>Permite agregar funcionalidad sin tocar el core estándar.</p></div>
+        <div class="mini-card"><span class="icon">📊</span><h6>Data &amp; Analytics</h6><p>Sostiene el forecasting y los dashboards de tesorería.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Deployment Models, Compared</span>
+          <span class="sec-title-es">Modelos de despliegue, comparados</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó cloud, on-premise e híbrido como opciones — acá vemos qué implica elegir cada una.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> la elección de deployment no es solo técnica — condiciona quién mantiene la infraestructura, qué tan rápido llegan las actualizaciones, y qué tan fácil es integrar con bancos y sistemas externos.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">☁️</span><h6>Cloud</h6><p>SAP mantiene la infraestructura; actualizaciones continuas y automáticas.</p></div>
+        <div class="mini-card"><span class="icon">🏢</span><h6>On-Premise</h6><p>La empresa controla la infraestructura y el ritmo de las actualizaciones.</p></div>
+        <div class="mini-card"><span class="icon">🔀</span><h6>Hybrid</h6><p>Combina componentes cloud y on-premise según necesidad.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Working Capital Levers, Revisited</span>
+          <span class="sec-title-es">Palancas de capital de trabajo, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "ajustar la estrategia de capital de trabajo" como un paso del día — acá vemos con qué palancas concretas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> cuando hay un faltante de liquidez, tesorería tiene dos palancas principales para no recurrir de inmediato a deuda: acelerar el cobro de facturas (cobranza proactiva) o financiar facturas por cobrar contra un tercero (receivables financing) — el dynamic discounting hace lo mismo pero del lado de los pagos a proveedores.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Proactive Collection</h5>
+          <span class="en">cobranza proactiva</span>
+          <ul>
+            <li>Acelera el cobro de facturas ya emitidas</li>
+            <li>No involucra a un tercero financiero</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Receivables Financing / Dynamic Discounting</h5>
+          <span class="en">financiamiento de facturas</span>
+          <ul>
+            <li>Convierte facturas por cobrar/pagar en liquidez inmediata</li>
+            <li>Involucra un tercero (financiador) o un descuento negociado</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Legacy Fragmentation, in Depth</span>
+          <span class="sec-title-es">Fragmentación legacy en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 nombró la fragmentación como desafío — acá vemos por qué exactamente frena la automatización.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> el problema no es solo tener sistemas viejos — es que cada uno tiene su propio modelo de datos y formato de reporte. Automatizar un proceso que cruza varios de esos sistemas exige primero traducir todo a un lenguaje común, y eso es exactamente lo que las infraestructuras legacy no hacen.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Sistema A — su propio formato</div>
+        <div class="vf-arrow">+</div>
+        <div class="vf-box tier2">Sistema B — otro formato distinto</div>
+        <div class="vf-arrow">↓ sin estandarización posible</div>
+        <div class="vf-box">Automatización bloqueada / esfuerzo manual de traducción</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Reporting Lag Problem, in Depth</span>
+          <span class="sec-title-es">El problema del rezago de reporte en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que el rezago "expone a riesgo de liquidez" — acá vemos el mecanismo exacto de cómo pasa eso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> si la posición de caja que ve tesorería tiene 24 o 48 horas de rezago, una decisión de financiamiento tomada "hoy" en realidad se basa en datos de ayer o antes de ayer — el riesgo no es solo teórico: significa comprometer fondos con información ya desactualizada.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Delayed Bank Data</div><div class="t-es">datos bancarios rezagados</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Outdated Cash Position</div><div class="t-es">posición de caja desactualizada</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Decision Made on Stale Data</div><div class="t-es">decisión con datos viejos</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Portfolio, Layered</span>
+          <span class="sec-title-es">El portfolio, en capas</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró el portfolio como una lista — acá vemos que en realidad tiene una jerarquía de dependencia.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> los componentes de conectividad (Multi-Bank Connectivity, Market Rates Management) no son "otra categoría más" — son la base técnica sobre la que se apoyan los componentes core. Sin datos de mercado ni conectividad bancaria, Cash Management y Treasury & Risk Management no tienen con qué trabajar.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Core: Cash Management · Treasury &amp; Risk · Advanced Payment</div>
+        <div class="vf-arrow">↑ se apoya en</div>
+        <div class="vf-box">Conectividad: Multi-Bank Connectivity · Market Rates Management</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Four AI Capabilities, Chained</span>
+          <span class="sec-title-es">Las cuatro capacidades de IA, encadenadas</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró Execute, Anticipate, Adapt y Optimize como cuatro cosas separadas — en la práctica se alimentan entre sí.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> Execute automatiza tareas y genera datos limpios; Anticipate usa esos datos para detectar situaciones de riesgo; Adapt aprende de esas situaciones para mejorar el forecasting; y Optimize convierte todo ese forecasting mejorado en reportes e insights que informan la próxima decisión — cerrando el círculo.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Execute</div><div class="t-es">automatiza y genera datos</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Anticipate</div><div class="t-es">detecta riesgos</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Adapt</div><div class="t-es">mejora el forecasting</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Optimize</div><div class="t-es">genera insights</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Treasury Management — Tipo 2 (no repite T1)</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Physical Pooling</div><div class="term-es">Pooling Físico</div><div class="term-def">Estructura de cash pooling que efectivamente transfiere fondos entre cuentas hacia una cuenta maestra.</div></div>
+      <div class="gcard"><div class="term-en">Notional Pooling</div><div class="term-es">Pooling Notional</div><div class="term-def">Estructura donde el banco calcula interés sobre saldos combinados, sin mover fondos realmente.</div></div>
+      <div class="gcard"><div class="term-en">Forward</div><div class="term-es">Contrato Forward</div><div class="term-def">Instrumento que fija hoy un tipo de cambio o tasa para una operación futura.</div></div>
+      <div class="gcard"><div class="term-en">Swap</div><div class="term-es">Swap</div><div class="term-def">Instrumento que intercambia flujos financieros, por ejemplo tasa fija por variable.</div></div>
+      <div class="gcard"><div class="term-en">Option (Financial)</div><div class="term-es">Opción Financiera</div><div class="term-def">Instrumento que da el derecho, no la obligación, de ejecutar una operación a un precio pactado.</div></div>
+      <div class="gcard"><div class="term-en">Credit Line Utilization</div><div class="term-es">Utilización de Línea de Crédito</div><div class="term-def">Porción de una línea de crédito aprobada que ya está en uso.</div></div>
+      <div class="gcard"><div class="term-en">SAP Business Technology Platform (BTP)</div><div class="term-es">SAP BTP</div><div class="term-def">Plataforma técnica que sostiene integración, extensibilidad y analítica dentro del ecosistema SAP.</div></div>
+      <div class="gcard"><div class="term-en">Extensibility</div><div class="term-es">Extensibilidad</div><div class="term-def">Capacidad de agregar funcionalidad a un sistema sin modificar su núcleo estándar.</div></div>
+      <div class="gcard"><div class="term-en">Deployment Model</div><div class="term-es">Modelo de Despliegue</div><div class="term-def">Forma en que se implementa un sistema: cloud, on-premise o híbrido.</div></div>
+      <div class="gcard"><div class="term-en">Data Model Inconsistency</div><div class="term-es">Inconsistencia de Modelo de Datos</div><div class="term-def">Diferencias estructurales entre cómo cada sistema legacy organiza y reporta su información.</div></div>
+      <div class="gcard"><div class="term-en">Reporting Lag</div><div class="term-es">Rezago de Reporte</div><div class="term-def">Demora entre que ocurre un movimiento financiero y que aparece reflejado en los reportes.</div></div>
+      <div class="gcard"><div class="term-en">Stale Data</div><div class="term-es">Datos Desactualizados</div><div class="term-def">Información que ya no refleja la posición financiera más actual al momento de decidir.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Treasury Management · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

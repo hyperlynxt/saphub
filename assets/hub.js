@@ -96,6 +96,9 @@ const COURSE_META = {
   },
   "ar-cashreconciliationai": {
     desc: "A closer look at the AI-assisted side of cash reconciliation: automated matching proposals, dispute handling, and how SAP Business AI changes the analyst's day-to-day workflow."
+  },
+  "tr-treasurymanagement": {
+    desc: "The core building blocks of SAP Treasury & Risk Management: cash and liquidity management, multi-bank connectivity, and where SAP Business AI fits into treasury operations."
   }
 };
 

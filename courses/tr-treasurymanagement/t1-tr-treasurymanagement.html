@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Treasury Management — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t1-pale); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:12px; min-width:920px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; background:var(--t1-dark); }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:11.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 10px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.2px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:18px; right:-19px; width:26px; height:26px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; font-size:12px; color:var(--t1-dark); }
+
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t1-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t1-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .mini-card .subtag{ display:inline-block; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.4px;
+    color:var(--t1-dark); background:var(--t1-pale); padding:2px 8px; border-radius:20px; margin-bottom:6px; }
+
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){
+    .compare-grid, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">What Is Treasury Management</a>
+  <a href="#s2">Oversight &amp; Decision Support</a>
+  <a href="#s3">Bank Relationships &amp; Liquidity</a>
+  <a href="#s4">Risk Management</a>
+  <a href="#s5">Investment &amp; Debt Management</a>
+  <a href="#s6">A Day in Treasury</a>
+  <a href="#s7">Why It's Complex</a>
+  <a href="#s8">The Core Portfolio</a>
+  <a href="#s9">Connectivity &amp; Value-Added</a>
+  <a href="#s10">SAP Business AI</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Treasury &amp; Risk Management</span>
+      <span class="pill pill-secondary">Cash Management</span>
+      <span class="pill pill-secondary">Multi-Bank Connectivity</span>
+      <span class="pill pill-secondary">SAP Business AI</span>
+    </div>
+    <h1>Treasury <span class="accent">Management</span></h1>
+    <h2>Gestión de Tesorería</h2>
+    <p class="desc">Los elementos clave de Treasury Management en SAP S/4HANA: qué hace el área día a día, por qué es tan compleja, y qué portfolio de soluciones — incluyendo IA — SAP ofrece para modernizarla.</p>
+    <div class="hlbox">Resumen Visual — <b>Treasury Management</b>, Tipo 1 (Básico). 10 secciones — los aspectos clave del proceso, un día típico del área, sus desafíos reales, el portfolio completo de soluciones SAP, y la estrategia de IA aplicada a tesorería.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Is Treasury Management?</span>
+          <span class="sec-title-es">¿Qué es Treasury Management?</span>
+        </div>
+        <div class="sec-desc">La función financiera que sostiene todo lo demás.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Definición:</strong> Treasury Management es la función de negocio que abarca la planificación estratégica, ejecución y control de los recursos financieros de una organización — asegurando estabilidad financiera, optimizando el flujo de caja y sosteniendo los objetivos generales del negocio. Se apoya en siete aspectos clave, que vemos en las próximas secciones.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="icon">📊</span><h6>Financial Oversight</h6></div>
+        <div class="mini-card"><span class="icon">🎯</span><h6>Strategic Decision Support</h6></div>
+        <div class="mini-card"><span class="icon">🏦</span><h6>Bank Relationships</h6></div>
+        <div class="mini-card"><span class="icon">💧</span><h6>Cash &amp; Liquidity</h6></div>
+        <div class="mini-card"><span class="icon">⚠️</span><h6>Risk Management</h6></div>
+        <div class="mini-card"><span class="icon">📈</span><h6>Investment Management</h6></div>
+        <div class="mini-card"><span class="icon">💳</span><h6>Debt Management</h6></div>
+      </div>
+      <div class="visual-caption">los siete aspectos clave que sostienen la función de tesorería</div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Financial Oversight &amp; Strategic Decision Support</span>
+          <span class="sec-title-es">Supervisión financiera y soporte a decisiones</span>
+        </div>
+        <div class="sec-desc">El primer par de aspectos clave: mirar hacia adentro, y ayudar a decidir.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> Financial Oversight monitorea el flujo de caja, proyecta necesidades futuras y optimiza la liquidez y el capital de trabajo. Strategic Decision-Making Support usa esa visibilidad para respaldar decisiones informadas de inversión, financiamiento, e iniciativas estratégicas como fusiones y adquisiciones.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Financial Oversight</h5>
+          <span class="en">supervisión financiera</span>
+          <ul>
+            <li>Monitorea flujos de caja</li>
+            <li>Proyecta necesidades futuras de caja</li>
+            <li>Optimiza liquidez y capital de trabajo</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Strategic Decision-Making Support</h5>
+          <span class="en">soporte a decisiones estratégicas</span>
+          <ul>
+            <li>Da visibilidad y control sobre operaciones financieras</li>
+            <li>Habilita decisiones de inversión y financiamiento</li>
+            <li>Sostiene iniciativas como fusiones y adquisiciones</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Bank Relationships &amp; Cash and Liquidity Management</span>
+          <span class="sec-title-es">Relaciones bancarias y gestión de liquidez</span>
+        </div>
+        <div class="sec-desc">El segundo par: quién administra el vínculo con los bancos, y quién administra el efectivo mismo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> Financial Institution Relationships supervisa el vínculo con bancos y otras instituciones, negociando términos y gestionando cuentas y estructuras de cash pooling. Cash and Liquidity Management se asegura de que haya fondos suficientes para las operaciones, vía forecasting, concentración y pooling de efectivo.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Financial Institution Relationships</h5>
+          <span class="en">relaciones bancarias</span>
+          <ul>
+            <li>Negocia términos, fees y servicios</li>
+            <li>Gestiona cuentas bancarias</li>
+            <li>Implementa estructuras de cash pooling</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Cash and Liquidity Management</h5>
+          <span class="en">gestión de caja y liquidez</span>
+          <ul>
+            <li>Cash forecasting, concentración y pooling</li>
+            <li>Mantiene niveles de liquidez apropiados</li>
+            <li>Maximiza el retorno del efectivo excedente</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Risk Management</span>
+          <span class="sec-title-es">Gestión de riesgos</span>
+        </div>
+        <div class="sec-desc">El aspecto clave que protege a todos los demás de la volatilidad del mercado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué hace este aspecto?</strong> Identifica, evalúa y mitiga riesgos financieros — gestionando específicamente el riesgo de tasa de interés, el riesgo de tipo de cambio y el riesgo de crédito, para proteger a la organización de la volatilidad del mercado.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📉</span><h6>Interest Rate Risk</h6><p>Exposición a cambios en las tasas de interés.</p></div>
+        <div class="mini-card"><span class="icon">💱</span><h6>Foreign Exchange Risk</h6><p>Exposición a fluctuaciones del tipo de cambio.</p></div>
+        <div class="mini-card"><span class="icon">🏛️</span><h6>Credit Risk</h6><p>Exposición al incumplimiento de contrapartes.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Investment &amp; Debt Management</span>
+          <span class="sec-title-es">Gestión de inversiones y deuda</span>
+        </div>
+        <div class="sec-desc">Los dos últimos aspectos clave: qué hacer con el excedente, y cómo financiarse cuando falta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> Investment Management decide cómo invertir los fondos excedentes, equilibrando retorno y riesgo en instrumentos de corto y largo plazo. Debt Management, en la dirección opuesta, optimiza los costos de endeudamiento y los cronogramas de repago, manteniendo acceso a financiamiento de mediano y largo plazo.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Investment Management</h5>
+          <span class="en">gestión de inversiones</span>
+          <ul>
+            <li>Decide cómo invertir fondos excedentes</li>
+            <li>Balancea retorno y riesgo</li>
+            <li>Invierte en money market funds, bonos o equities</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Debt Management</h5>
+          <span class="en">gestión de deuda</span>
+          <ul>
+            <li>Optimiza costos de endeudamiento</li>
+            <li>Mantiene acceso a financiamiento de mediano/largo plazo</li>
+            <li>Sostiene inversiones estratégicas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">A Day in the Life of Treasury</span>
+          <span class="sec-title-es">Un día típico en tesorería</span>
+        </div>
+        <div class="sec-desc">Cómo se ven todos estos aspectos clave, puestos en movimiento en un solo día.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el día arranca analizando liquidez real y proyectada con cifras de bancos y sistemas financieros. A partir de ahí se inician acciones de financiamiento, se ajusta la estrategia de capital de trabajo, y se monitorean los riesgos de mercado de forma continua.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">📊</span><span class="title-en">Analyze Liquidity</span><span class="title-es">Analizar liquidez</span></div>
+          <div class="flow-step-body"><ul><li>Cifras reales y proyectadas</li><li>Datos de bancos y sistemas</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">💸</span><span class="title-en">Initiate Funding Actions</span><span class="title-es">Iniciar acciones de fondeo</span></div>
+          <div class="flow-step-body"><ul><li>Transferir fondos</li><li>Acelerar cobranzas</li><li>Gestionar líneas de crédito</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">⚖️</span><span class="title-en">Adjust Working Capital</span><span class="title-es">Ajustar capital de trabajo</span></div>
+          <div class="flow-step-body"><ul><li>Cobranza proactiva</li><li>Receivables financing, dynamic discounting</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">🌐</span><span class="title-en">Monitor Market Risk</span><span class="title-es">Monitorear riesgo de mercado</span></div>
+          <div class="flow-step-body"><ul><li>FX, tasas, commodities</li><li>Tarea continua durante el día</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why It's So Complex</span>
+          <span class="sec-title-es">Por qué es tan complejo</span>
+        </div>
+        <div class="sec-desc">Los desafíos reales detrás de ese día tan cargado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> reunir y analizar flujos de caja reales y proyectados implica acceder a numerosos portales bancarios y fuentes de datos, consumiendo mucho tiempo. Sumado a esto, muchos sistemas bancarios operan con ciclos de reporte demorados — la información disponible no siempre refleja la posición financiera más actual, lo que expone a la empresa a riesgo de liquidez.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🏦</span><h6>Múltiples portales bancarios</h6><p>Acceder y consolidar datos de cada banco es lento y manual.</p></div>
+        <div class="mini-card"><span class="icon">🧩</span><h6>Sistemas legacy fragmentados</h6><p>Infraestructuras antiguas con procesos y modelos de datos inconsistentes.</p></div>
+        <div class="mini-card"><span class="icon">⏱️</span><h6>Datos con demora</h6><p>Reportes bancarios no siempre reflejan la posición financiera más actual.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Treasury Portfolio — Core Components</span>
+          <span class="sec-title-es">El portfolio de tesorería — componentes core</span>
+        </div>
+        <div class="sec-desc">Las tres soluciones centrales que sostienen todo lo visto hasta ahora.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el portfolio de Treasury de SAP S/4HANA integra distintos componentes dentro del ecosistema SAP, apalancándose en SAP Business Technology Platform para mayor funcionalidad e integración.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="subtag">Core</span><span class="icon">💵</span><h6>Cash Management</h6><p>Gestiona cuentas bancarias, posiciones de caja y forecasting predictivo de flujo de caja.</p></div>
+        <div class="mini-card"><span class="subtag">Core</span><span class="icon">⚠️</span><h6>Treasury &amp; Risk Management</h6><p>Aborda deuda, inversiones, hedging, contabilidad y gestión de riesgo financiero.</p></div>
+        <div class="mini-card"><span class="subtag">Core</span><span class="icon">🌍</span><h6>Advanced Payment</h6><p>Centraliza y agiliza los pagos de un grupo corporativo — hub unificado de pagos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Connectivity &amp; Value-Added Capabilities</span>
+          <span class="sec-title-es">Conectividad y capacidades de valor agregado</span>
+        </div>
+        <div class="sec-desc">El resto del portfolio: lo que conecta, y lo que suma capacidades extra.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> además de los componentes core, el portfolio incluye soluciones de integración y conectividad con bancos y mercados, más capacidades de valor agregado como financiamiento de payables/receivables y pagos electrónicos.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="subtag">Integración</span><span class="icon">📈</span><h6>Market Rates Management</h6><p>Integra datos de mercado para decisiones financieras informadas.</p></div>
+        <div class="mini-card"><span class="subtag">Integración</span><span class="icon">🔌</span><h6>Multi-Bank Connectivity</h6><p>Conectividad bancaria vía SWIFT, Host-to-Host o API.</p></div>
+        <div class="mini-card"><span class="subtag">Valor agregado</span><span class="icon">🤝</span><h6>SAP Taulia</h6><p>Financiamiento de payables, dynamic discounting y financiamiento de receivables.</p></div>
+        <div class="mini-card"><span class="subtag">Valor agregado</span><span class="icon">💳</span><h6>Digital Payments Add-On</h6><p>Gestión de pagos electrónicos, aprobaciones y seguimiento.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">SAP Business AI for Treasury</span>
+          <span class="sec-title-es">SAP Business AI para tesorería</span>
+        </div>
+        <div class="sec-desc">Cómo la estrategia de IA de SAP se aplica específicamente a tesorería.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> la estrategia de IA embebida y de automatización de procesos aporta cuatro capacidades a Treasury: ejecutar tareas rutinarias, anticipar situaciones de riesgo, adaptar el forecasting con machine learning, y optimizar el trabajo analítico con IA generativa.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="icon">⚙️</span><h6>Execute</h6><p>Automatiza cash positioning, reconciliación de extractos y procesamiento de pagos.</p></div>
+        <div class="mini-card"><span class="icon">🔮</span><h6>Anticipate</h6><p>Detecta faltantes de liquidez, movimientos FX inusuales o problemas de compliance.</p></div>
+        <div class="mini-card"><span class="icon">📈</span><h6>Adapt</h6><p>Machine learning que mejora la precisión del forecasting con el tiempo.</p></div>
+        <div class="mini-card"><span class="icon">💡</span><h6>Optimize</h6><p>IA generativa que crea reportes y genera insights sobre inversión y riesgo.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos clave de Treasury Management — Tipo 1</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Treasury Management</div><div class="term-es">Gestión de Tesorería</div><div class="term-def">Planificación, ejecución y control estratégico de los recursos financieros de una organización.</div></div>
+      <div class="gcard"><div class="term-en">Cash Positioning</div><div class="term-es">Posición de Caja</div><div class="term-def">Vista consolidada de cuánto efectivo tiene la organización disponible en un momento dado.</div></div>
+      <div class="gcard"><div class="term-en">Cash Pooling</div><div class="term-es">Cash Pooling</div><div class="term-def">Estructura que concentra el efectivo de varias cuentas bancarias para optimizar su uso.</div></div>
+      <div class="gcard"><div class="term-en">Cash Forecasting</div><div class="term-es">Pronóstico de Caja</div><div class="term-def">Proyección de necesidades futuras de efectivo de la organización.</div></div>
+      <div class="gcard"><div class="term-en">Liquidity</div><div class="term-es">Liquidez</div><div class="term-def">Disponibilidad de fondos suficientes para cubrir las necesidades operativas.</div></div>
+      <div class="gcard"><div class="term-en">Working Capital</div><div class="term-es">Capital de Trabajo</div><div class="term-def">Recursos que la empresa gestiona activamente para sostener su operación diaria.</div></div>
+      <div class="gcard"><div class="term-en">Hedging</div><div class="term-es">Cobertura de Riesgo</div><div class="term-def">Estrategia financiera para protegerse de movimientos adversos de tasas, FX o commodities.</div></div>
+      <div class="gcard"><div class="term-en">Receivables Financing</div><div class="term-es">Financiamiento de Cuentas por Cobrar</div><div class="term-def">Obtener liquidez anticipada a partir de facturas por cobrar pendientes.</div></div>
+      <div class="gcard"><div class="term-en">Dynamic Discounting</div><div class="term-es">Descuento Dinámico</div><div class="term-def">Descuento variable ofrecido a cambio de un pago anticipado al proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Bank Connectivity (SWIFT / H2H / API)</div><div class="term-es">Conectividad Bancaria</div><div class="term-def">Canales técnicos (SWIFT, Host-to-Host, API) para comunicarse electrónicamente con los bancos.</div></div>
+      <div class="gcard"><div class="term-en">Situation Handling</div><div class="term-es">Manejo de Situaciones</div><div class="term-def">Capacidad que detecta proactivamente riesgos o discrepancias y notifica para su resolución.</div></div>
+      <div class="gcard"><div class="term-en">Cash Concentration</div><div class="term-es">Concentración de Efectivo</div><div class="term-def">Proceso de reunir el efectivo disperso en distintas cuentas en una posición centralizada.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Treasury Management · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>
