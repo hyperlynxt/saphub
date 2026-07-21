@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · SAP Cash Management Benefits — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t1-pale); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:820px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; background:var(--t1-dark); }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.6px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:18px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; font-size:13px; color:var(--t1-dark); }
+
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:170px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t1-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t1-dark); font-weight:700; }
+
+  .hub-simple{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; justify-content:center; min-width:800px; }
+  .hub-sources{ display:flex; flex-direction:column; gap:8px; }
+  .hub-source-box{ border:1.5px solid var(--t1-pale-border); background:var(--t1-pale); border-radius:8px;
+    padding:8px 13px; font-size:11.5px; font-weight:600; color:var(--t1-dark); min-width:170px; text-align:center; }
+  .hub-arrow{ font-size:26px; color:var(--t1-dark); font-weight:700; }
+  .hub-center{ background:var(--t1-dark); color:white; border-radius:12px; padding:20px 22px; text-align:center;
+    min-width:190px; box-shadow:0 4px 14px rgba(61,122,82,0.3); }
+  .hub-center .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; }
+  .hub-center .t-es{ font-size:0.72rem; opacity:.8; margin-top:2px; }
+  .hub-output{ background:white; border:2px solid var(--t1-dark); border-radius:10px; padding:14px 18px;
+    text-align:center; min-width:170px; }
+  .hub-output .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.88rem; color:var(--t1-dark); }
+  .hub-output .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){
+    .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">What Is Cash Management</a>
+  <a href="#s2">Eight Deployment Scenarios</a>
+  <a href="#s3">Real-Time Visibility</a>
+  <a href="#s4">Centralized Data</a>
+  <a href="#s5">Enhanced Forecasting</a>
+  <a href="#s6">Improved Liquidity</a>
+  <a href="#s7">Bank Relationship Management</a>
+  <a href="#s8">Risk, Compliance &amp; Scale</a>
+  <a href="#s9">The One Exposure Table</a>
+  <a href="#s10">Multi-Bank Connectivity</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Cash Management</span>
+      <span class="pill pill-secondary">Treasury &amp; Risk Management</span>
+      <span class="pill pill-secondary">Multi-Bank Connectivity</span>
+      <span class="pill pill-secondary">Working Capital</span>
+    </div>
+    <h1>SAP Cash Management — <span class="accent">Beneficios</span></h1>
+    <h2>Beneficios de Negocio de SAP S/4HANA Cash Management</h2>
+    <p class="desc">Los escenarios de despliegue, los beneficios concretos y las dos piezas técnicas — el One Exposure Table y Multi-Bank Connectivity — que hacen posible que SAP S/4HANA Cash Management ofrezca visibilidad de caja en tiempo real.</p>
+    <div class="hlbox">Resumen Visual — <b>SAP Cash Management Benefits</b>, Tipo 1 (Básico). 10 secciones — ocho escenarios de despliegue, los seis grandes beneficios de negocio, y el detalle de las dos piezas técnicas que los sostienen.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Is SAP S/4HANA Cash Management?</span>
+          <span class="sec-title-es">¿Qué es SAP S/4HANA Cash Management?</span>
+        </div>
+        <div class="sec-desc">Una pieza de una suite integrada, no una herramienta aislada.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> SAP S/4HANA ofrece una suite de soluciones de capital de trabajo para optimizar operaciones financieras y mejorar la gestión de liquidez. Una ventaja clave es su arquitectura integrada: incorpora sin fricción soluciones de capital de trabajo y facilita la optimización a través de receivables, payables e inventory management — todas plenamente integradas con los módulos de Treasury.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="icon">💰</span><h6>Receivables</h6><p>Integrado para mejorar la visibilidad de flujo de caja.</p></div>
+        <div class="mini-card"><span class="icon">💳</span><h6>Payables</h6><p>Integrado con los módulos de Treasury.</p></div>
+        <div class="mini-card"><span class="icon">📦</span><h6>Inventory Management</h6><p>Parte del alcance de optimización de capital de trabajo.</p></div>
+        <div class="mini-card"><span class="icon">🏦</span><h6>Treasury Modules</h6><p>El núcleo con el que todo lo anterior se integra.</p></div>
+      </div>
+      <div class="visual-caption">arquitectura integrada: capital de trabajo + tesorería, no dos sistemas separados</div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Eight Deployment Scenarios</span>
+          <span class="sec-title-es">Ocho escenarios de despliegue</span>
+        </div>
+        <div class="sec-desc">El menú completo de para qué se puede desplegar Cash Management, cloud edition.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> el escenario específico de despliegue depende de la madurez de gestión de caja de la organización, sus necesidades de negocio y sus objetivos estratégicos. Muchas empresas implementan por fases, arrancando con visibilidad de caja básica.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="icon">🌍</span><h6>Centralized Cash Visibility</h6><p>Visibilidad en tiempo real de posiciones globales.</p></div>
+        <div class="mini-card"><span class="icon">⚙️</span><h6>Automated Cash Operations</h6><p>Automatiza procesamiento de extractos y cash positioning.</p></div>
+        <div class="mini-card"><span class="icon">🔮</span><h6>Enhanced Forecasting</h6><p>Forecasting de liquidez potenciado con IA.</p></div>
+        <div class="mini-card"><span class="icon">🤝</span><h6>Bank Relationship Mgmt.</h6><p>Centraliza cuentas, fees y comunicación bancaria.</p></div>
+        <div class="mini-card"><span class="icon">📊</span><h6>Cash Flow Analysis</h6><p>Analítica avanzada de flujos históricos y proyectados.</p></div>
+        <div class="mini-card"><span class="icon">✅</span><h6>Regulatory Compliance</h6><p>Audit trails y segregación de funciones.</p></div>
+        <div class="mini-card"><span class="icon">💧</span><h6>Cash Pooling</h6><p>Pooling físico y notional automatizado.</p></div>
+        <div class="mini-card"><span class="icon">🔗</span><h6>Treasury Integration</h6><p>Plataforma unificada de caja, liquidez y riesgo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Real-Time Visibility and Insights</span>
+          <span class="sec-title-es">Visibilidad e insights en tiempo real</span>
+        </div>
+        <div class="sec-desc">El primer gran beneficio: saber, no adivinar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué habilita esto?</strong> Acceso a datos en tiempo real desde cualquier lugar — ver balances bancarios globales y forecasts de liquidez en el momento, mejorar la visibilidad del flujo de caja, y tomar decisiones basadas en información financiera actualizada al minuto.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🌐</span><h6>Global Balances</h6><p>Balances bancarios y forecasts de liquidez en tiempo real.</p></div>
+        <div class="mini-card"><span class="icon">👁️</span><h6>Better Cash Flow Visibility</h6><p>Mejora directa sobre lo que la organización puede ver.</p></div>
+        <div class="mini-card"><span class="icon">🕐</span><h6>Up-to-the-Minute Decisions</h6><p>Decisiones basadas en información al minuto, no rezagada.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Centralized Data Management</span>
+          <span class="sec-title-es">Gestión centralizada de datos</span>
+        </div>
+        <div class="sec-desc">Una sola versión de la verdad, en vez de muchas versiones dispersas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> al centralizar todos los datos financieros relevantes en una plataforma central, la solución integra datos de múltiples fuentes dispares, mejora la toma de decisiones con una vista comprensiva, y reduce errores e inconsistencias en el reporting financiero.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Multiple Disparate Sources</div><div class="t-es">fuentes dispersas</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Central Platform</div><div class="t-es">plataforma central</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Single Version of Truth</div><div class="t-es">una sola versión de la verdad</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Enhanced Cash Forecasting</span>
+          <span class="sec-title-es">Pronóstico de caja mejorado</span>
+        </div>
+        <div class="sec-desc">Predicción con IA, no solo extrapolación manual.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué mejora esto?</strong> Herramientas de planificación de liquidez basadas en IA predicen flujos de caja futuros con mayor precisión, automatizan la captura y revisión de flujos reales, pronosticados y planificados, y permiten comparar y analizar flujos históricos versus proyectados.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🤖</span><h6>AI-Based Prediction</h6><p>Mayor precisión en la predicción de flujos futuros.</p></div>
+        <div class="mini-card"><span class="icon">📥</span><h6>Automated Capture</h6><p>Captura y revisión automática de flujos reales/planificados.</p></div>
+        <div class="mini-card"><span class="icon">📈</span><h6>Historical vs. Projected</h6><p>Comparación y análisis entre lo histórico y lo proyectado.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Improved Liquidity Management</span>
+          <span class="sec-title-es">Gestión de liquidez mejorada</span>
+        </div>
+        <div class="sec-desc">Más control, con conectividad bancaria integrada de base.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> mejor control de liquidez a través de posiciones de caja generadas con conectividad bancaria integrada, análisis de flujos reales y forecasting de tendencias de liquidez de mediano plazo, y una gestión más eficiente de transferencias, inversiones y financiamiento.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🔌</span><h6>Integrated Bank Connectivity</h6><p>Genera posiciones de caja actuales de forma directa.</p></div>
+        <div class="mini-card"><span class="icon">📉</span><h6>Medium-Term Forecasting</h6><p>Analiza tendencias de liquidez de mediano plazo.</p></div>
+        <div class="mini-card"><span class="icon">💸</span><h6>Efficient Transfers &amp; Financing</h6><p>Gestiona transferencias, inversiones y endeudamiento.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Efficient Bank Relationship Management</span>
+          <span class="sec-title-es">Gestión eficiente de relaciones bancarias</span>
+        </div>
+        <div class="sec-desc">Menos fricción con cada banco del portfolio.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué agiliza esto?</strong> Controla cuentas bancarias con procesos guiados por workflow, intercambia información con los socios bancarios de forma segura y eficiente, y permite operar las tareas de caja y pagos de manera más efectiva.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🗂️</span><h6>Workflow-Driven Control</h6><p>Procesos guiados para controlar cuentas bancarias.</p></div>
+        <div class="mini-card"><span class="icon">🔐</span><h6>Secure Exchange</h6><p>Intercambio de información seguro con cada banco.</p></div>
+        <div class="mini-card"><span class="icon">⚡</span><h6>More Effective Operations</h6><p>Operaciones de caja y pagos más efectivas en el día a día.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Risk Management, Compliance &amp; Scalability</span>
+          <span class="sec-title-es">Riesgo, compliance y escalabilidad</span>
+        </div>
+        <div class="sec-desc">Los últimos beneficios: protegerse, cumplir, y crecer sin fricción.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> la solución ayuda a identificar riesgos de liquidez en tiempo real, mantener compliance con requerimientos regulatorios, y facilitar auditorías con registros detallados — además de integrarse sin fricción con AP, AR y General Ledger, escalar con el crecimiento del negocio, y desplegarse en la nube desde cualquier navegador.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="icon">⚠️</span><h6>Real-Time Risk ID</h6><p>Identifica y evalúa riesgos de liquidez al momento.</p></div>
+        <div class="mini-card"><span class="icon">✅</span><h6>Regulatory Compliance</h6><p>Mantiene cumplimiento normativo y de industria.</p></div>
+        <div class="mini-card"><span class="icon">🔍</span><h6>Auditable Records</h6><p>Registros detallados que facilitan auditorías.</p></div>
+        <div class="mini-card"><span class="icon">☁️</span><h6>Cloud &amp; Scalable</h6><p>Se integra con AP/AR/GL y escala desde cualquier navegador.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The One Exposure Table</span>
+          <span class="sec-title-es">La tabla One Exposure</span>
+        </div>
+        <div class="sec-desc">El diferenciador técnico detrás de toda la visibilidad en tiempo real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es?</strong> Es un repositorio central para todas las transacciones y datos relevantes de caja, que usa la potencia de la base de datos HANA para dar acceso ultrarrápido a los datos de flujo de caja — consolidando información de seis aplicaciones fuente distintas en una sola tabla.
+    </div>
+    <div class="visual-wrap">
+      <div class="hub-simple">
+        <div class="hub-sources">
+          <div class="hub-source-box">Financial Accounting</div>
+          <div class="hub-source-box">Accounts Payable</div>
+          <div class="hub-source-box">Accounts Receivable</div>
+          <div class="hub-source-box">Treasury &amp; Risk Mgmt.</div>
+          <div class="hub-source-box">Materials Management</div>
+          <div class="hub-source-box">Sales and Distribution</div>
+        </div>
+        <div class="hub-arrow">→</div>
+        <div class="hub-center">
+          <div class="t-en">One Exposure Table</div>
+          <div class="t-es">motor HANA</div>
+        </div>
+        <div class="hub-arrow">→</div>
+        <div class="hub-output">
+          <div class="t-en">Real-Time, Holistic View</div>
+          <div class="t-es">de posición y liquidez</div>
+        </div>
+      </div>
+      <div class="visual-caption">seis fuentes distintas, una sola vista consolidada de caja y liquidez</div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">SAP Multi-Bank Connectivity</span>
+          <span class="sec-title-es">SAP Multi-Bank Connectivity</span>
+        </div>
+        <div class="sec-desc">El canal digital que conecta todo lo anterior con el mundo bancario real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> es una solución cloud que ofrece un canal digital seguro entre los sistemas ERP corporativos y múltiples bancos — eliminando la necesidad de conexiones propietarias por banco, con conectividad EBICS y SWIFT embebida, y certificación para SWIFT gpi.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">🖥️</span><span class="title-en">Corporate ERP</span><span class="title-es">Sistema ERP corporativo</span></div>
+          <div class="flow-step-body"><ul><li>Punto de partida del pago o dato</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">🔐</span><span class="title-en">Multi-Bank Connectivity</span><span class="title-es">Canal digital seguro</span></div>
+          <div class="flow-step-body"><ul><li>EBICS y SWIFT embebidos</li><li>Encriptación y firma digital</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">🏦</span><span class="title-en">Multiple Banks</span><span class="title-es">Múltiples bancos</span></div>
+          <div class="flow-step-body"><ul><li>Sin conexiones propietarias por banco</li><li>Certificado para SWIFT gpi</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos clave de SAP Cash Management Benefits — Tipo 1</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">One Exposure Table</div><div class="term-es">Tabla One Exposure</div><div class="term-def">Repositorio central de datos de caja, consolidado de seis aplicaciones fuente distintas.</div></div>
+      <div class="gcard"><div class="term-en">Cash Positioning</div><div class="term-es">Posición de Caja</div><div class="term-def">Vista consolidada de cuánto efectivo tiene la organización disponible en un momento dado.</div></div>
+      <div class="gcard"><div class="term-en">Liquidity Forecast</div><div class="term-es">Pronóstico de Liquidez</div><div class="term-def">Proyección de la disponibilidad futura de efectivo de la organización.</div></div>
+      <div class="gcard"><div class="term-en">Cash Pooling (Physical / Notional)</div><div class="term-es">Cash Pooling (Físico / Notional)</div><div class="term-def">Estructura que optimiza la liquidez concentrando o virtualmente combinando saldos de distintas cuentas.</div></div>
+      <div class="gcard"><div class="term-en">EBICS</div><div class="term-es">EBICS</div><div class="term-def">Estándar de comunicación bancaria electrónica usado para conectar con un gran número de bancos.</div></div>
+      <div class="gcard"><div class="term-en">SWIFT gpi</div><div class="term-es">SWIFT gpi</div><div class="term-def">Iniciativa de pagos globales de SWIFT, con certificación específica para mensajería de pagos.</div></div>
+      <div class="gcard"><div class="term-en">Host-to-Host Connectivity</div><div class="term-es">Conectividad Host-to-Host</div><div class="term-def">Conexión directa entre los sistemas de la empresa y los de la institución financiera.</div></div>
+      <div class="gcard"><div class="term-en">Segregation of Duties</div><div class="term-es">Segregación de Funciones</div><div class="term-def">Práctica de compliance que divide responsabilidades para reducir el riesgo de error o fraude.</div></div>
+      <div class="gcard"><div class="term-en">Audit Trail</div><div class="term-es">Registro de Auditoría</div><div class="term-def">Historial detallado de transacciones que facilita los procesos de auditoría.</div></div>
+      <div class="gcard"><div class="term-en">Working Capital Solutions</div><div class="term-es">Soluciones de Capital de Trabajo</div><div class="term-def">Conjunto de soluciones para optimizar los recursos que sostienen la operación diaria del negocio.</div></div>
+      <div class="gcard"><div class="term-en">Bank Fee Monitoring</div><div class="term-es">Monitoreo de Comisiones Bancarias</div><div class="term-def">Seguimiento centralizado de los costos que cobran los bancos por sus servicios.</div></div>
+      <div class="gcard"><div class="term-en">Cash Flow Analysis</div><div class="term-es">Análisis de Flujo de Caja</div><div class="term-def">Analítica sobre flujos de caja históricos y proyectados para respaldar decisiones.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — SAP Cash Management Benefits · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

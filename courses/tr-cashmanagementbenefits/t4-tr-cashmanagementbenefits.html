@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · SAP Cash Management Benefits — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#5D3E82;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sscui-blue:#0070F2;
+    --sscui-bg:#F5F6F7;
+    --sscui-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241C33 55%, #3C2C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(93,62,130,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .spro-area-tag{ display:inline-flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t4-dark); color:white; margin-left:8px; vertical-align:middle; }
+
+  .theory-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .part-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--t4-dark); margin:0 0 8px; }
+  .part-label:not(:first-child){ margin-top:22px; }
+
+  .sscui-tree, .sscui-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'JetBrains Mono',monospace; font-size:11.5px; }
+  .sscui-tree ul{ padding-left:20px; border-left:1px dotted #B399D4; margin-left:7px; }
+  .sscui-tree li{ position:relative; padding:4px 0 4px 16px; color:var(--body); }
+  .sscui-tree li::before{ content:''; position:absolute; left:0; top:13px; width:12px; height:1px; background:#B399D4; }
+  .sscui-tree .folder{ font-weight:700; color:var(--ink); }
+  .sscui-tree .leaf{ color:var(--t4-dark); font-weight:700; }
+
+  .sscui-mock{ background:var(--sscui-bg); border:1px solid var(--sscui-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .sscui-shellbar{ background:var(--sscui-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .sscui-body{ padding:18px 20px; background:white; }
+  .sscui-page-title{ font-size:15px; font-weight:600; color:#1D2D3E; margin:0 0 4px; }
+  .sscui-page-sub{ font-size:11px; color:#5B738B; margin:0 0 14px; }
+  .sscui-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .sscui-field{ flex:1; min-width:160px; }
+  .sscui-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .sscui-field .ffval{ border:1px solid var(--sscui-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+  .sscui-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .sscui-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sscui-border); }
+  .sscui-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .sscui-toggle-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid #EDEFF1; font-size:12px; }
+  .sscui-toggle{ width:34px; height:18px; border-radius:20px; background:var(--sscui-blue); position:relative; flex-shrink:0; }
+  .sscui-toggle::after{ content:''; position:absolute; top:2px; right:2px; width:14px; height:14px; border-radius:50%; background:white; }
+  .sscui-toggle.off{ background:#C9CDD2; }
+  .sscui-toggle.off::after{ right:auto; left:2px; }
+  .sscui-btn{ background:var(--sscui-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .sscui-btn.ghost{ background:white; color:var(--sscui-blue); border:1px solid var(--sscui-blue); }
+  .sscui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E;
+    margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  .to-t3-note{ background:var(--t4-pale); border:1px dashed var(--t4-dark); border-radius:8px; padding:10px 14px;
+    margin-top:14px; font-size:0.8rem; color:var(--t4-dark); }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Activate Cash Management</a>
+  <a href="#s2">One Exposure Source Apps</a>
+  <a href="#s3">Bank Account Opening Workflow</a>
+  <a href="#s4">MBC Channel per Bank</a>
+  <a href="#s5">AI Forecast Model Training</a>
+  <a href="#s6">Liquidity Situation Template</a>
+  <a href="#s7">Embedded Analytics KPI Tiles</a>
+  <a href="#s8">Segregation of Duties</a>
+  <a href="#s9">Cash Pool Automation Rules</a>
+  <a href="#s10">Business Role Authorizations</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Cash Management</span>
+      <span class="pill pill-secondary">Multi-Bank Connectivity</span>
+      <span class="pill pill-secondary">Embedded Analytics</span>
+      <span class="pill pill-secondary">Situation Handling</span>
+    </div>
+    <h1>SAP Cash Management Benefits — <span class="accent">Customizing</span></h1>
+    <h2>Tangibilización Configurador (GUI)</h2>
+    <p class="desc">La base que hay que activar y calibrar antes de que Sofía tenga una sola pantalla con visibilidad global: fuentes del One Exposure Table, canales por banco, entrenamiento del forecast, y los controles de compliance que sostienen el registro de auditoría.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Configure Your Solution — Bike Company Group</div>
+        <div class="p-note">esto arma la base que Sofía usa del otro lado, en Fiori</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Activating Cash Management, Cloud Edition</span>
+          <span class="sec-title-es">Activando Cash Management, cloud edition</span>
+          <span class="spro-area-tag">Cash Management</span>
+        </div>
+        <div class="sec-desc">El interruptor general — sin esto, ninguno de los ocho escenarios del T1 está disponible.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Punto de partida:</strong> SAP Cash Management, cloud edition es un escenario de negocio que se activa explícitamente por grupo/sociedad — recién ahí quedan disponibles las capacidades de visibilidad centralizada, automatización y forecasting que Sofía usa en T3.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Cash Management
+                  <ul>
+                    <li class="leaf">Activate Cash Management, Cloud Edition</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Configure Your Solution</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Activate Cash Management</p>
+          <p class="sscui-page-sub">Bike Company Group</p>
+          <div class="sscui-toggle-row"><span>Enable Centralized Cash Visibility</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Enable AI-Powered Forecasting</span><div class="sscui-toggle off"></div></div>
+          <div class="sscui-hint">⚠ el forecasting con IA se activa por separado en la sección 5</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Connecting Source Apps to the One Exposure Table</span>
+          <span class="sec-title-es">Conectando apps fuente a la One Exposure Table</span>
+          <span class="spro-area-tag">Cash Management</span>
+        </div>
+        <div class="sec-desc">Las seis fuentes del T1 no se combinan solas — hay que activarlas una por una.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define qué aplicaciones alimentan la tabla — Financial Accounting, AP, AR, Treasury & Risk Management, Materials Management, Sales and Distribution — y si su dato entra como confirmado o como proyectado en el cálculo de posición.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Cash Management
+                  <ul>
+                    <li class="leaf">Assign Source Applications to One Exposure Table</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>One Exposure Table — Sources</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Source Applications — Bike Company Group</p>
+          <table class="sscui-table">
+            <tr><th>Source</th><th>Data Type</th></tr>
+            <tr><td>Financial Accounting</td><td>Confirmed</td></tr>
+            <tr><td>Sales and Distribution</td><td>Projected</td></tr>
+            <tr><td>Materials Management</td><td>Projected</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring the Bank Account Opening Workflow</span>
+          <span class="sec-title-es">Configurando el workflow de apertura de cuenta</span>
+          <span class="spro-area-tag">Bank Account Mgmt.</span>
+        </div>
+        <div class="sec-desc">El pedido que Sofía envió en T3 sigue el flujo de aprobación que se define acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se define quién solicita, quién aprueba y quién valida la apertura de una cuenta bancaria nueva — asegurando segregación de funciones desde el primer paso.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Bank Account Management
+                  <ul>
+                    <li class="leaf">Configure Account Opening Workflow</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Workflow Configuration</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Bank Account Opening — Approval Steps</p>
+          <table class="sscui-table">
+            <tr><th>Step</th><th>Role</th></tr>
+            <tr><td>1. Request</td><td>Treasury Analyst</td></tr>
+            <tr><td>2. Approve</td><td>Treasury Manager</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning the MBC Channel per Bank</span>
+          <span class="sec-title-es">Asignando el canal MBC por banco</span>
+          <span class="spro-area-tag">Multi-Bank Connectivity</span>
+        </div>
+        <div class="sec-desc">El seguimiento de pago que Sofía vio en T3 depende de que este canal esté bien elegido.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se asigna, banco por banco, si la comunicación va vía EBICS, SWIFT o host-to-host — la elección depende de qué estándar soporta cada institución en particular.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Multi-Bank Connectivity
+                  <ul>
+                    <li class="leaf">Assign Connectivity Channel to House Bank</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Connectivity Channels</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Bank Connectivity — Bike Company Group</p>
+          <table class="sscui-table">
+            <tr><th>House Bank</th><th>Channel</th><th>SWIFT gpi</th></tr>
+            <tr><td>Deutsche Bank</td><td>SWIFT</td><td>Yes</td></tr>
+            <tr><td>Wells Fargo</td><td>Host-to-Host</td><td>No</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Training the AI Forecast Model</span>
+          <span class="sec-title-es">Entrenando el modelo de forecast con IA</span>
+          <span class="spro-area-tag">AI Forecasting</span>
+        </div>
+        <div class="sec-desc">El "94% de precisión" que Sofía vio en T3 no aparece solo — depende de qué historial se le da al modelo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se define cuánto historial usa el modelo para entrenarse (por ejemplo, 24 meses de flujos reales vs. planificados) y cada cuánto se re-entrena a medida que llegan datos nuevos.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Cash Management
+                  <ul>
+                    <li class="leaf">Configure AI Forecasting Model</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>AI Forecast Model Settings</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Training Configuration</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Training Window</label><div class="ffval">24 months</div></div>
+            <div class="sscui-field"><label>Retraining Frequency</label><div class="ffval">Weekly</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="sscui-btn">Save Settings</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Liquidity Risk Situation Template</span>
+          <span class="sec-title-es">Definiendo la plantilla de riesgo de liquidez</span>
+          <span class="spro-area-tag">Situation Handling</span>
+        </div>
+        <div class="sec-desc">La alerta que Sofía recibió en T3 sobre el forecast que empeoró se dispara desde acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se define cuánto tiene que empeorar el forecast (en monto o porcentaje) de un día para el otro antes de que se dispare una notificación de riesgo de liquidez.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Cross-Application Components
+              <ul>
+                <li class="folder">Situation Handling
+                  <ul>
+                    <li class="leaf">Define Situation Template — Liquidity Risk</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Situation Template Editor</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Template — Liquidity Forecast Deterioration</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Trigger Condition</label><div class="ffval">Forecast worsened vs. prior day</div></div>
+            <div class="sscui-field"><label>Minimum Change</label><div class="ffval">€100,000</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="sscui-btn">Save Template</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up Embedded Analytics KPI Tiles</span>
+          <span class="sec-title-es">Configurando los tiles de KPI</span>
+          <span class="spro-area-tag">Embedded Analytics</span>
+        </div>
+        <div class="sec-desc">Los tiles que Sofía ve al abrir su Launchpad cada mañana se configuran acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se define qué KPIs aparecen como tile en el Launchpad — balance global, forecast a 7 días, situaciones abiertas — y con qué frecuencia se refrescan.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Embedded Analytics
+                  <ul>
+                    <li class="leaf">Configure Cash Management KPI Tiles</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>KPI Tile Configuration</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Launchpad Tiles — Cash Management</p>
+          <table class="sscui-table">
+            <tr><th>Tile</th><th>Refresh</th></tr>
+            <tr><td>Current Global Balance</td><td>Real-time</td></tr>
+            <tr><td>7-Day Liquidity Forecast</td><td>Every 4 hours</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Enforcing Segregation of Duties</span>
+          <span class="sec-title-es">Aplicando segregación de funciones</span>
+          <span class="spro-area-tag">Compliance</span>
+        </div>
+        <div class="sec-desc">El registro de auditoría que Sofía exportó en T3 solo es confiable si esto está bien configurado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué protege esto?</strong> Se definen qué combinaciones de permisos no pueden asignarse a la misma persona — por ejemplo, quien solicita una transferencia no debería poder aprobarla también.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Treasury and Risk Management
+                  <ul>
+                    <li class="leaf">Define Segregation of Duties Rules</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>SoD Rule Configuration</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Conflicting Permission Combinations</p>
+          <table class="sscui-table">
+            <tr><th>Permission A</th><th>Permission B</th></tr>
+            <tr><td>Request Transfer</td><td>Approve Transfer</td></tr>
+            <tr><td>Open Bank Account</td><td>Approve Bank Account</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Cash Pool Automation Rules</span>
+          <span class="sec-title-es">Configurando reglas de automatización del pool</span>
+          <span class="spro-area-tag">Cash Pooling</span>
+        </div>
+        <div class="sec-desc">La validación de sweep y cálculo notional que Sofía revisó en T3 corre según lo que se define acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se define el horario del sweep físico automático y la fórmula de cálculo de interés para el pooling notional — sin correr manualmente cada noche.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Cash Management
+                  <ul>
+                    <li class="leaf">Configure Cash Pooling Automation</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Cash Pooling Automation</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Automation Rules — Bike Company Group</p>
+          <div class="sscui-toggle-row"><span>Enable Automatic Physical Sweep</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Enable Notional Interest Calculation</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Authorizing Business Roles for Cash Management</span>
+          <span class="sec-title-es">Autorizando roles de negocio</span>
+          <span class="spro-area-tag">Authorizations</span>
+        </div>
+        <div class="sec-desc">Quién puede exportar el audit trail, y quién solo puede ver el dashboard.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se asigna qué puede hacer cada rol de negocio dentro de las apps de Cash Management — desde solo visualizar hasta exportar registros de auditoría o solicitar cuentas nuevas.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Cash Management
+                  <ul>
+                    <li class="leaf">Assign Business Roles to Cash Management Apps</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Business Role Assignment</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Cash Management Apps — Access</p>
+          <table class="sscui-table">
+            <tr><th>Business Role</th><th>Access Level</th></tr>
+            <tr><td>Treasury Analyst</td><td>Request / Export / View</td></tr>
+            <tr><td>Treasury Manager</td><td>Approve / View Only</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="to-t3-note">🔧 → 👤 esto es exactamente lo que determina qué botones ve Sofía en cada app de Cash Management en T3.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — SAP Cash Management Benefits · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

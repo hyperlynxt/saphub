@@ -99,6 +99,9 @@ const COURSE_META = {
   },
   "tr-treasurymanagement": {
     desc: "The core building blocks of SAP Treasury & Risk Management: cash and liquidity management, multi-bank connectivity, and where SAP Business AI fits into treasury operations."
+  },
+  "tr-cashmanagementbenefits": {
+    desc: "The business case for SAP Cash Management: how visibility into liquidity, multi-bank connectivity, and working capital translate into measurable value for the organization."
   }
 };
 
