@@ -73,6 +73,9 @@ const COURSE_META = {
   "co-managementaccountingprocesses": {
     desc: "The day-to-day operational side of Controlling: planning, allocations, settlements, and the period-end processes that feed profitability analysis."
   },
+  "co-costestimateoptions": {
+    desc: "How SAP S/4HANA estimates a product's standard cost from material master data, BOM, and routing — and how that result updates the standard price."
+  },
   "gl-financialpostingdocuments": {
     desc: "The anatomy of a financial document: how a business transaction becomes a structured, balanced posting in the General Ledger."
   },
