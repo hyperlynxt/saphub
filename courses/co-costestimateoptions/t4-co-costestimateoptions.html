@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Cost Estimate Options in Product Cost Planning — Configurador/GUI | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#6B4C8F;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t4);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #241A33 55%, #3C2A54 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:640px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .protagonist-box{
+    display:flex; align-items:center; gap:14px;
+    background:rgba(167,139,201,0.14);
+    border-left:4px solid var(--t4);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:660px;
+  }
+  .protagonist-avatar{
+    width:40px; height:40px; min-width:40px; border-radius:50%;
+    background:var(--t4-dark); color:white;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+  }
+  .protagonist-text{ font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .protagonist-text b{ color:var(--t4); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t4-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(107,76,143,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .area-tag{ display:inline-flex; align-self:flex-start; align-items:center; gap:5px; font-size:0.7rem; font-weight:700; letter-spacing:.2px; padding:3px 10px; border-radius:20px; margin-top:6px; background:var(--t4-pale); color:var(--t4-dark); }
+
+  .theory-box{
+    background:var(--t4-pale);
+    border-left:4px solid var(--t4-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  /* SPRO TREE — listas anidadas HTML/CSS, color de marco del tipo (violeta), NO SVG */
+  .spro-wrap{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-bottom:14px; }
+  .spro-wrap .spro-title{ font-size:0.72rem; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); font-weight:700; margin-bottom:10px; }
+  .spro-tree ul{ list-style:none; margin:0; padding-left:20px; border-left:1px dashed var(--t4-pale-border); }
+  .spro-tree > ul{ padding-left:0; border-left:none; }
+  .spro-tree li{ padding:4px 0 4px 14px; font-size:0.82rem; color:var(--body); position:relative; }
+  .spro-tree li.active{ color:white; background:var(--t4-dark); border-radius:6px; padding:5px 10px; font-weight:700; display:inline-block; margin:2px 0; }
+  .tcode{ font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--t4-dark); background:var(--t4-pale); padding:2px 7px; border-radius:4px; margin-left:8px; }
+  .tcode.on-dark{ color:white; background:rgba(255,255,255,0.2); }
+
+  /* GUI MOCKUP — grises reales SAP GUI clasica, Courier New, dentro del mockup solamente */
+  .gui-frame{ border:1px solid #6B6B6B; border-radius:3px; overflow:hidden; box-shadow:0 2px 10px rgba(10,15,28,0.08); font-family:'Courier New',monospace; }
+  .gui-titlebar{ background:linear-gradient(180deg,#5C7FB0,#31527F); color:white; padding:5px 12px; font-size:0.74rem; font-weight:700; display:flex; justify-content:space-between; align-items:center; }
+  .gui-titlebar .gui-tcode{ font-family:'Courier New',monospace; background:rgba(255,255,255,0.18); padding:1px 8px; border-radius:3px; font-size:0.7rem; }
+  .gui-menubar{ background:#ECE9D8; border-bottom:1px solid #ACA899; padding:4px 10px; font-size:0.68rem; color:#333; display:flex; gap:16px; }
+  .gui-body{ background:#D4D0C8; padding:20px 22px; }
+  .gui-field-row{ display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .gui-field-row label{ width:200px; font-size:0.74rem; color:#1A1A1A; text-align:right; flex-shrink:0; }
+  .gui-field-row .gui-input{ background:white; border:1px solid #7A7A7A; padding:3px 9px; font-size:0.76rem; color:#00008B; flex:1; }
+  .gui-hint{ font-size:0.66rem; color:#4A4A4A; font-style:italic; margin-top:10px; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t4-dark); }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+
+  .closing-note{
+    background:var(--navy-950); color:rgba(255,255,255,0.85);
+    border-radius:12px; padding:18px 22px; font-size:0.88rem; line-height:1.6;
+    display:flex; align-items:flex-start; gap:12px;
+  }
+  .closing-note .icon{ font-size:20px; }
+  .closing-note b{ color:var(--t4); }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR/GUI</span>
+  <a href="#s1">Material Master</a>
+  <a href="#s2">Costing Variant</a>
+  <a href="#s3">Valuation Variant</a>
+  <a href="#s4">Bill of Material</a>
+  <a href="#s5">Routing</a>
+  <a href="#s6">Work Center</a>
+  <a href="#s7">Activity Price</a>
+  <a href="#s8">Run Cost Estimate</a>
+  <a href="#s9">Display Results</a>
+  <a href="#s10">Mark, Release &amp; Run</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Product Cost Planning</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Production Planning</span>
+    </div>
+    <h1><span class="accent">Cost Estimate</span> Options — Building the Setup</h1>
+    <h2>Opciones de Estimación de Costos — Armando la base</h2>
+    <p class="desc">Recorrido independiente del T3: acá no se analiza un cost estimate ya corrido, se arma todo lo que hace falta para que exista — customizing y datos maestros en SAP GUI clásica.</p>
+    <div class="protagonist-box">
+      <div class="protagonist-avatar">🔧</div>
+      <div class="protagonist-text">Vos, en el rol de <b>Configurador</b> — antes de que Priya pueda costear nada en Fiori, alguien tiene que definir la costing variant, cargar el material, el BOM, el routing y los work centers en SAP GUI.</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up the Material Master for Costing</span>
+          <span class="sec-title-es">Configurando el material master para costeo</span>
+        </div>
+        <div class="sec-desc">Antes de cualquier cost estimate, el material necesita sus vistas de Accounting y Costing completas.</div>
+        <span class="area-tag">Materials Management</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sin las vistas <strong>Accounting 1/2</strong> y <strong>Costing 1/2</strong> completas, el material queda excluido de tener cost estimate. Acá se define el <strong>price control</strong>, el <strong>costing lot size</strong> por defecto, y los grupos que después determinan el overhead.
+    </div>
+    <div class="gui-frame">
+      <div class="gui-titlebar">Change Material (Accounting/Costing Views) <span class="gui-tcode">MM02</span></div>
+      <div class="gui-menubar"><span>Material</span><span>Edit</span><span>Goto</span><span>Environment</span></div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Material</label><span class="gui-input">BIKE-FRAME-001</span></div>
+        <div class="gui-field-row"><label>Plant</label><span class="gui-input">DE01</span></div>
+        <div class="gui-field-row"><label>Price Control</label><span class="gui-input">S</span></div>
+        <div class="gui-field-row"><label>Costing Lot Size</label><span class="gui-input">100 PC</span></div>
+        <div class="gui-field-row"><label>Overhead Group</label><span class="gui-input">PROD-STD</span></div>
+        <div class="gui-field-row"><label>Origin Group</label><span class="gui-input">FRAME-RAW</span></div>
+        <div class="gui-hint">Vistas: Accounting 1/2 · Costing 1/2 — MM01 para crear, MM02 para modificar.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Costing Variant</span>
+          <span class="sec-title-es">Definiendo la costing variant</span>
+        </div>
+        <div class="sec-desc">El corazón de la configuración: qué reglas sigue cada cost estimate que se corra con esta variante.</div>
+        <span class="area-tag">Controlling</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      La <strong>costing variant</strong> es la pieza de customizing que conecta todo: contiene una <strong>valuation variant</strong> (a qué precio se valúa) y un <strong>costing type</strong> (para qué se usa el costeo — base object o material costing).
+    </div>
+    <div class="spro-wrap">
+      <div class="spro-title">SPRO — SAP Reference IMG</div>
+      <div class="spro-tree">
+        <ul>
+          <li>Controlling
+            <ul>
+              <li>Product Cost Controlling
+                <ul>
+                  <li>Product Cost Planning
+                    <ul>
+                      <li>Material Cost Estimate with Quantity Structure
+                        <ul>
+                          <li class="active">Costing Variant: Components and Settings <span class="tcode on-dark">OKKN</span></li>
+                          <li>Define Costing Types</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="gui-frame">
+      <div class="gui-titlebar">Define Costing Variants <span class="gui-tcode">OKKN</span></div>
+      <div class="gui-menubar"><span>Costing Variant</span><span>Edit</span><span>Goto</span></div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Costing Variant</label><span class="gui-input">PPC1</span></div>
+        <div class="gui-field-row"><label>Description</label><span class="gui-input">Standard Cost Estimate Material</span></div>
+        <div class="gui-field-row"><label>Costing Type</label><span class="gui-input">01 — Standard Cost Estimate</span></div>
+        <div class="gui-field-row"><label>Valuation Variant</label><span class="gui-input">001</span></div>
+        <div class="gui-field-row"><label>Update</label><span class="gui-input">Standard Price</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining the Valuation Variant</span>
+          <span class="sec-title-es">Manteniendo la valuation variant</span>
+        </div>
+        <div class="sec-desc">Puertas adentro de la costing variant, acá se decide a qué precio se valúa cada cosa.</div>
+        <span class="area-tag">Controlling</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      La <strong>valuation variant</strong> determina a qué precio se valúan materiales, activity types, procesos, subcontratación y actividades externas — por ejemplo, el precio más reciente o el precio promedio del ejercicio.
+    </div>
+    <div class="spro-wrap">
+      <div class="spro-title">SPRO — SAP Reference IMG</div>
+      <div class="spro-tree">
+        <ul>
+          <li>Controlling
+            <ul>
+              <li>Product Cost Controlling
+                <ul>
+                  <li>Product Cost Planning
+                    <ul>
+                      <li>Material Cost Estimate with Quantity Structure
+                        <ul>
+                          <li>Costing Variant: Components and Settings
+                            <ul>
+                              <li class="active">Define Valuation Variants</li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="gui-frame">
+      <div class="gui-titlebar">Define Valuation Variants</div>
+      <div class="gui-menubar"><span>Valuation Variant</span><span>Edit</span><span>Goto</span></div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Valuation Variant</label><span class="gui-input">001</span></div>
+        <div class="gui-field-row"><label>Material Valuation</label><span class="gui-input">Standard Price</span></div>
+        <div class="gui-field-row"><label>Activity Price</label><span class="gui-input">Plan Price, Periodic</span></div>
+        <div class="gui-field-row"><label>External Activities</label><span class="gui-input">Purchasing Info Record</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating the Bill of Material</span>
+          <span class="sec-title-es">Creando la lista de materiales</span>
+        </div>
+        <div class="sec-desc">Sin BOM no hay quantity structure — el primer dato maestro de producción que hace falta cargar.</div>
+        <span class="area-tag">Production Planning</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>BOM</strong> lista cada componente del producto: material, cantidad, unidad de medida y merma esperada. En estructuras multinivel, cada nivel de ensamble se mantiene en su propio BOM.
+    </div>
+    <div class="gui-frame">
+      <div class="gui-titlebar">Create Material BOM <span class="gui-tcode">CS01</span></div>
+      <div class="gui-menubar"><span>BOM</span><span>Edit</span><span>Goto</span><span>Extras</span></div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Material</label><span class="gui-input">BIKE-FRAME-001</span></div>
+        <div class="gui-field-row"><label>Plant</label><span class="gui-input">DE01</span></div>
+        <div class="gui-field-row"><label>BOM Usage</label><span class="gui-input">1 — Production</span></div>
+        <div class="gui-field-row"><label>Component 1</label><span class="gui-input">RAW-STEEL-TUBE · 4 PC</span></div>
+        <div class="gui-field-row"><label>Component 2</label><span class="gui-input">RAW-PAINT-COAT · 0,3 L</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating the Routing</span>
+          <span class="sec-title-es">Creando la hoja de ruta</span>
+        </div>
+        <div class="sec-desc">La secuencia de operaciones que determina cuánta mano de obra y máquina hace falta.</div>
+        <span class="area-tag">Production Planning</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cada operación del <strong>routing</strong> especifica dónde se hace (work center), qué actividad (setup, labor, machine time) y cuánto dura — esa duración es la que después se valúa con el precio de actividad del cost center.
+    </div>
+    <div class="gui-frame">
+      <div class="gui-titlebar">Create Routing <span class="gui-tcode">CA01</span></div>
+      <div class="gui-menubar"><span>Routing</span><span>Edit</span><span>Goto</span><span>Extras</span></div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Material</label><span class="gui-input">BIKE-FRAME-001</span></div>
+        <div class="gui-field-row"><label>Plant</label><span class="gui-input">DE01</span></div>
+        <div class="gui-field-row"><label>Operation 0010</label><span class="gui-input">Work Center ASSY-01 · Setup 15 min</span></div>
+        <div class="gui-field-row"><label>Operation 0020</label><span class="gui-input">Work Center ASSY-01 · Labor 22 min</span></div>
+        <div class="gui-field-row"><label>Operation 0030</label><span class="gui-input">Work Center PAINT-01 · Machine 8 min</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating the Work Center</span>
+          <span class="sec-title-es">Creando el work center</span>
+        </div>
+        <div class="sec-desc">La pieza que enlaza cada operación del routing con un cost center puntual.</div>
+        <span class="area-tag">Production Planning</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cada <strong>work center</strong> se enlaza a un único cost center. Su <strong>standard value key</strong> define hasta seis valores estándar (setup, labor, machine time), y ese enlace es lo que le permite al sistema calcular el precio de actividad.
+    </div>
+    <div class="gui-frame">
+      <div class="gui-titlebar">Create Work Center <span class="gui-tcode">KL01</span></div>
+      <div class="gui-menubar"><span>Work Center</span><span>Edit</span><span>Goto</span><span>Extras</span></div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Work Center</label><span class="gui-input">ASSY-01</span></div>
+        <div class="gui-field-row"><label>Plant</label><span class="gui-input">DE01</span></div>
+        <div class="gui-field-row"><label>Cost Center</label><span class="gui-input">4100 — Assembly</span></div>
+        <div class="gui-field-row"><label>Standard Value Key</label><span class="gui-input">SAP1 — Setup/Labor/Machine</span></div>
+        <div class="gui-field-row"><label>Activity Types</label><span class="gui-input">SETUP, LABOR, MACHINE</span></div>
+        <div class="gui-hint">KL02 para modificar un work center existente.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Planning the Activity Price</span>
+          <span class="sec-title-es">Planificando el precio de actividad</span>
+        </div>
+        <div class="sec-desc">El último dato que falta antes de poder costear: cuánto cuesta cada hora de esa actividad.</div>
+        <span class="area-tag">Controlling</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de correr el cost estimate, alguien tiene que planificar el <strong>precio de actividad</strong> en el cost center para cada activity type — sin esto, el routing no tiene con qué valuarse.
+    </div>
+    <div class="gui-frame">
+      <div class="gui-titlebar">Activity Type Planning <span class="gui-tcode">KP26</span></div>
+      <div class="gui-menubar"><span>Planning</span><span>Edit</span><span>Goto</span><span>Extras</span></div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Cost Center</label><span class="gui-input">4100 — Assembly</span></div>
+        <div class="gui-field-row"><label>Activity Type</label><span class="gui-input">LABOR</span></div>
+        <div class="gui-field-row"><label>Fiscal Year</label><span class="gui-input">2026</span></div>
+        <div class="gui-field-row"><label>Plan Price</label><span class="gui-input">€ 0,80 / min</span></div>
+        <div class="gui-field-row"><label>Plan Activity Qty</label><span class="gui-input">12.000 min</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running the Cost Estimate from GUI</span>
+          <span class="sec-title-es">Corriendo el cost estimate desde GUI</span>
+        </div>
+        <div class="sec-desc">Con todo el customizing y los datos maestros listos, ya se puede ejecutar el cost estimate.</div>
+        <span class="area-tag">Controlling</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Con la costing variant, el material, el BOM, el routing y el work center ya configurados, el cost estimate con quantity structure se ejecuta indicando <strong>costing variant, material, planta</strong> y, opcionalmente, el <strong>lot size</strong>.
+    </div>
+    <div class="gui-frame">
+      <div class="gui-titlebar">Create Material Cost Estimate with Quantity Structure <span class="gui-tcode">CK11N</span></div>
+      <div class="gui-menubar"><span>Cost Estimate</span><span>Edit</span><span>Goto</span><span>Extras</span></div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Material</label><span class="gui-input">BIKE-FRAME-001</span></div>
+        <div class="gui-field-row"><label>Plant</label><span class="gui-input">DE01</span></div>
+        <div class="gui-field-row"><label>Costing Variant</label><span class="gui-input">PPC1</span></div>
+        <div class="gui-field-row"><label>Costing Version</label><span class="gui-input">1</span></div>
+        <div class="gui-field-row"><label>Lot Size</label><span class="gui-input">(vacío — toma Costing 1)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Displaying the Cost Estimate Results</span>
+          <span class="sec-title-es">Mostrando el resultado del cost estimate</span>
+        </div>
+        <div class="sec-desc">Antes de marcarlo, hay que revisar que el resultado no tenga errores evidentes.</div>
+        <span class="area-tag">Controlling</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El sistema no detecta errores de quantity structure o de precios por sí solo — hay que revisar el resultado a mano antes de avanzar al Mark &amp; Release.
+    </div>
+    <div class="gui-frame">
+      <div class="gui-titlebar">Display Material Cost Estimate <span class="gui-tcode">CK13N</span></div>
+      <div class="gui-menubar"><span>Cost Estimate</span><span>Edit</span><span>Goto</span><span>Extras</span></div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Cost of Goods Manufactured</label><span class="gui-input">€ 84,20 / PC</span></div>
+        <div class="gui-field-row"><label>Cost of Goods Sold</label><span class="gui-input">€ 91,50 / PC</span></div>
+        <div class="gui-field-row"><label>Costing Status</label><span class="gui-input">KA — No Errors</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Mark, Release, and Costing Run</span>
+          <span class="sec-title-es">Marcar, liberar, y la corrida masiva</span>
+        </div>
+        <div class="sec-desc">El cierre del ciclo: fijar el precio estándar, y escalar el mismo proceso a muchos materiales.</div>
+        <span class="area-tag">Controlling</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Mark</strong> fija el precio futuro; <strong>Release</strong> lo convierte en precio actual y revalúa el stock existente. Para no repetir esto material por material, se usa un <strong>costing run</strong> que procesa varios de una sola vez.
+    </div>
+    <div class="data-table" style="margin-bottom:16px;">
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr><th>Paso</th><th>Transacción</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="mod-name">Price Update — Mark &amp; Release</span></td><td><span class="tcode">CK24</span></td></tr>
+          <tr><td><span class="mod-name">Edit Costing Run (mass)</span></td><td><span class="tcode">CK40N</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="closing-note">
+      <span class="icon">🔁</span>
+      <div>Todo lo que armaste acá — la costing variant, el BOM, el routing, el work center y el precio de actividad — es exactamente la base que <b>Priya</b> usa del otro lado, en Fiori, cuando corre <b>Manage Material Cost Estimates</b> sin tener que pensar en ninguno de estos pasos de customizing.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador/GUI — Cost Estimate Options in Product Cost Planning · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>
