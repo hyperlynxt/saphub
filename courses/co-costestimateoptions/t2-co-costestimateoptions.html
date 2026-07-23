@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Cost Estimate Options in Product Cost Planning — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t2);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A1F1F 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:640px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(224,133,133,0.14);
+    border-left:4px solid var(--t2);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:640px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t2-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(169,68,68,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-tag{ display:inline-block; align-self:flex-start; font-size:0.68rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase; padding:3px 9px; border-radius:20px; margin-top:6px; }
+  .sec-tag.adjacent{ background:rgba(224,133,133,0.14); color:var(--t2-dark); }
+  .sec-tag.deeper{ background:#E8EDF6; color:#1A4B8C; }
+
+  .theory-box{
+    background:var(--t2-pale);
+    border-left:4px solid var(--t2-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+  .visual-wrap + .visual-wrap{ margin-top:16px; }
+
+  .cardrow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .cardrow.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .cardrow.cols-5{ grid-template-columns:repeat(5,1fr); }
+  .cardrow .item{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .formula-box{ background:var(--bg); border-radius:8px; padding:12px 14px; margin-top:14px; font-size:0.8rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:4px; }
+  .formula-box div.frow{ padding:2px 0; color:var(--body); }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:180px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t2-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-orange{ background:rgba(224,123,57,0.08); border-color:rgba(224,123,57,0.28); }
+  .chip-orange .chip-title{ color:#E07B39; }
+  .chip-steel{ background:rgba(90,107,140,0.08); border-color:rgba(90,107,140,0.28); }
+  .chip-steel .chip-title{ color:#5A6B8C; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Material Master Views</a>
+  <a href="#s2">Costing Fields</a>
+  <a href="#s3">Costing Variant</a>
+  <a href="#s4">Explanation Facilities</a>
+  <a href="#s5">Work Center Fields</a>
+  <a href="#s6">Cost Component Split</a>
+  <a href="#s7">Cost Component Views</a>
+  <a href="#s8">Price Field Mapping</a>
+  <a href="#s9">Analysis Apps</a>
+  <a href="#s10">Itemization</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Product Cost Planning</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Production Planning</span>
+    </div>
+    <h1><span class="accent">Cost Estimate</span> Options — Deep Dive</h1>
+    <h2>Opciones de Estimación de Costos — Profundización</h2>
+    <p class="desc">Continúa el T1: por un lado, temas adyacentes que el básico no tocó (las vistas del material master, sus campos de costeo, las apps de análisis); por otro, más profundidad en los mismos temas ya vistos (mecánica de la costing variant, itemización, mapeo de precios).</p>
+    <div class="hlbox">Resumen Visual — <b>Cost Estimate Options in Product Cost Planning</b>, Tipo 2 (Profundización). 10 secciones: 5 temas adyacentes + 5 con más profundidad sobre el T1, basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Material Master's Views</span>
+          <span class="sec-title-es">Las vistas del material master</span>
+        </div>
+        <div class="sec-desc">Dónde vive cada dato del material que Product Cost Controlling necesita.</div>
+        <span class="sec-tag adjacent">Tema adyacente</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>material master</strong> está dividido en vistas, cada una con datos de un área distinta (ventas, compras, MRP, contabilidad, costeo). También se divide en dos áreas de validez: <strong>datos globales</strong> (válidos para todas las sociedades y plantas) y <strong>datos específicos de planta</strong>. Para Product Cost Controlling, las vistas relevantes son <strong>Basic 1</strong>, <strong>Accounting 1 y 2</strong>, y <strong>Costing 1 y 2</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow cols-5">
+        <div class="item">
+          <span class="icon">📄</span>
+          <h5>Basic 1</h5>
+          <p>Descripciones del material, grupos de material, unidad de medida base.</p>
+        </div>
+        <div class="item">
+          <span class="icon">📘</span>
+          <h5>Accounting 1</h5>
+          <p>Valuation class, price control, precio medio móvil.</p>
+        </div>
+        <div class="item">
+          <span class="icon">📗</span>
+          <h5>Accounting 2</h5>
+          <p>Más datos contables para la valuación del material.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🧮</span>
+          <h5>Costing 1</h5>
+          <p>Lot size, método de costeo, origen del material.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🧾</span>
+          <h5>Costing 2</h5>
+          <p>Más datos de costeo, incluyendo los Planned Prices 1-3.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Costing-Relevant Fields in the Material Master</span>
+          <span class="sec-title-es">Campos del material master relevantes para el costeo</span>
+        </div>
+        <div class="sec-desc">Los campos puntuales que controlan cómo se costea y valúa cada material.</div>
+        <span class="sec-tag adjacent">Tema adyacente</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>material type</strong> determina si un material admite vista de costeo. A partir de ahí, un grupo de campos puntuales define el comportamiento de costeo de cada material — desde el lote por defecto hasta si el material queda directamente excluido de tener cost estimate.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Campo</th><th>Qué controla</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">Costing Lot Size</span></td>
+            <td>Valor por defecto para generar el material cost estimate; se puede sobrescribir al procesar individualmente.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Valuation Class</span></td>
+            <td>Controla la determinación de cuentas; en la itemización, define qué cuenta de consumo usar como cost element primario.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Origin Group</span></td>
+            <td>Subgrupo de un cost element; junto al cost element, define el overhead para grupos específicos de materiales.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Overhead Group</span></td>
+            <td>Agrupa materiales fabricados con el mismo tipo de aplicación de overhead.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">No Costing / Inactive</span></td>
+            <td>Excluye al material de la ejecución de un cost estimate.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Planned Prices 1, 2, 3</span></td>
+            <td>Para reporting y valuación de material en cost estimates; se ingresan a mano o vía Price Update.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Tax-Based / Commercial Prices</span></td>
+            <td>Para costeo de inventario de partes compradas; los actualiza un inventory cost estimate.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Price Control</span></td>
+            <td>Define qué precio usar para la valuación de inventario: standard price (S) o moving average price (V).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — PROFUNDIZACIÓN -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Costing Variant Mechanics</span>
+          <span class="sec-title-es">Cómo funciona por dentro la costing variant</span>
+        </div>
+        <div class="sec-desc">Sus dos componentes internos, y cómo el lot size afecta el costo unitario.</div>
+        <span class="sec-tag deeper">Más profundidad</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      En el T1 vimos que la <strong>costing variant</strong> determina las reglas de valuación. Puntualmente, contiene dos elementos: una <strong>valuation variant</strong> y un <strong>costing type</strong>. Si no se ingresa un lot size al crear el cost estimate, el sistema toma el de la vista <strong>Costing 1</strong> del material master — y un lote más grande impacta el costo unitario, porque los costos fijos lot-size-independientes (ej. setup) se distribuyen entre más unidades.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">💲</span>Valuation Variant <span class="en-tag">· Variante de Valoración</span></h4>
+          <p>Determina a qué precio se valúan materiales, activity types, procesos, subcontratación y actividades externas — ej. el precio más reciente o el precio promedio del ejercicio.</p>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🎯</span>Costing Type <span class="en-tag">· Tipo de Costeo</span></h4>
+          <p>Determina el propósito del costeo (base object costing o material costing) y qué actualización de precio está permitida.</p>
+        </div>
+      </div>
+      <div class="formula-box" style="margin-top:16px;">
+        <span class="flabel">Impacto del lot size en el costo unitario</span>
+        <div class="frow">Lote más grande → mismos costos fijos lot-size-independientes (ej. setup) repartidos entre más unidades → costo unitario más bajo</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Cost Estimate Explanation Facilities</span>
+          <span class="sec-title-es">Las facilidades de explicación del cost estimate</span>
+        </div>
+        <div class="sec-desc">Cómo acceder a los datos del entorno de costeo directamente desde la pantalla del cost estimate.</div>
+        <span class="sec-tag adjacent">Tema adyacente</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El botón <strong>Information on Cost Estimate</strong>, dentro de la app <strong>Manage Material Cost Estimates</strong>, le permite al cost planner acceder a los datos del entorno de costeo directamente desde la pantalla del cost estimate — sin salir de ahí a buscarlos por separado. Las facilidades disponibles dependen del costo del objeto.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip"><span class="chip-icon">📋</span><span class="chip-title">Material Master Data</span><span class="chip-en">datos del material</span></div>
+        <div class="chip"><span class="chip-icon">📐</span><span class="chip-title">Quantity Structures</span><span class="chip-en">BOM y Routing</span></div>
+        <div class="chip"><span class="chip-icon">⚙️</span><span class="chip-title">Settings</span><span class="chip-en">configuración del entorno de costeo</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — PROFUNDIZACIÓN -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Work Center Fields in Depth</span>
+          <span class="sec-title-es">Los campos del work center en detalle</span>
+        </div>
+        <div class="sec-desc">Qué datos maestros del work center son relevantes puntualmente para el costeo.</div>
+        <span class="sec-tag deeper">Más profundidad</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El T1 mostró que el work center está enlazado a un cost center. En detalle, tres campos de su master data son relevantes para costeo: <strong>standard value key</strong>, <strong>performance efficiency rate</strong>, y el <strong>enlace con el cost center</strong> — un work center puede tener hasta seis activity types, definidos también en el cost center, y cada <strong>production version</strong> es una combinación única de routing, BOM y lot size.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow cols-3">
+        <div class="item">
+          <span class="icon">🔑</span>
+          <h5>Standard Value Key</h5>
+          <p>Controla cómo se planean y miden las actividades — hasta 6 valores estándar (setup, labor, machine time), cada uno con su dimensión.</p>
+        </div>
+        <div class="item">
+          <span class="icon">📏</span>
+          <h5>Performance Efficiency Rate</h5>
+          <p>Relación entre el tiempo objetivo predefinido y el tiempo real; se usa para considerar el standard time en salarios a destajo.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🔗</span>
+          <h5>Link with Cost Center</h5>
+          <p>Un work center se asigna a un solo cost center a la vez; sus activity types se copian por defecto a cada operación del routing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — ADYACENTE -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Cost Component Split — Five Categories</span>
+          <span class="sec-title-es">El desglose de componentes de costo — cinco categorías</span>
+        </div>
+        <div class="sec-desc">Cómo se categoriza el resultado del cost estimate a lo largo de toda la estructura de producción.</div>
+        <span class="sec-tag adjacent">Tema adyacente</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>cost component split</strong> categoriza los costos de toda la estructura de producción en cinco categorías. Es posible solo si ya existe una <strong>Cost Component Structure</strong> definida (configuración, cubierta en otro curso).
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip chip-teal"><span class="chip-icon">📦</span><span class="chip-title">Material Costs</span><span class="chip-en">Costos de Material</span></div>
+        <div class="chip chip-navy"><span class="chip-icon">🏭</span><span class="chip-title">Production Costs</span><span class="chip-en">Costos de Producción</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">➕</span><span class="chip-title">Material Overhead</span><span class="chip-en">Overhead de Material</span></div>
+        <div class="chip chip-orange"><span class="chip-icon">➕</span><span class="chip-title">Production Overhead</span><span class="chip-en">Overhead de Producción</span></div>
+        <div class="chip chip-steel"><span class="chip-icon">🗂️</span><span class="chip-title">Other Costs</span><span class="chip-en">Otros Costos</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — PROFUNDIZACIÓN -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Cost Component Views for Analysis</span>
+          <span class="sec-title-es">Las vistas de componente de costo para análisis</span>
+        </div>
+        <div class="sec-desc">Los distintos ángulos desde los que se puede mirar el mismo cost component split.</div>
+        <span class="sec-tag deeper">Más profundidad</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El T1 mencionó que existen distintas <strong>cost component views</strong>. En la app <strong>Cost Components - Materials</strong>, ese mismo split se puede mirar desde varias perspectivas — y elegir un layout estándar de SAP para mostrarlas individualmente, agrupadas o por nivel.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip"><span class="chip-icon">🏗️</span><span class="chip-title">Cost of Goods Manufactured</span><span class="chip-en">COGM</span></div>
+        <div class="chip"><span class="chip-icon">🏷️</span><span class="chip-title">Cost of Goods Sold</span><span class="chip-en">COGS</span></div>
+        <div class="chip"><span class="chip-icon">📦</span><span class="chip-title">Inventory Valuation</span><span class="chip-en">Valuación de Inventario</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — PROFUNDIZACIÓN -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Mapping the Cost Estimate to a Price Field</span>
+          <span class="sec-title-es">Qué campo de precio actualiza cada tipo de cost estimate</span>
+        </div>
+        <div class="sec-desc">El T1 mostró el flujo Mark → Release → Revaluate; acá se detalla qué campo puntual actualiza cada tipo.</div>
+        <span class="sec-tag deeper">Más profundidad</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>costing type</strong> determina qué campo de precio del material master se puede actualizar con el resultado de un cost estimate. La elección depende del propósito de costeo: no todos los tipos actualizan el mismo campo.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Resultado de</th><th>Actualiza</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">Standard Cost Estimate</span></td>
+            <td><span class="badge badge-accent">Standard Price</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Modified Standard / Current Cost Estimate</span></td>
+            <td><span class="badge badge-neutral">Planned Prices 1, 2 y 3</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">Inventory Cost Estimate</span></td>
+            <td><span class="badge badge-neutral">Commercial Prices 1-3 o Tax-Based Prices 1-3</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — ADYACENTE -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Cost Estimate Analysis Apps</span>
+          <span class="sec-title-es">Las apps para analizar cost estimates</span>
+        </div>
+        <div class="sec-desc">Tres apps Fiori dedicadas a analizar el resultado del costeo, por ítem o por componente.</div>
+        <span class="sec-tag adjacent">Tema adyacente</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Además de lo ya visto en <strong>Manage Material Cost Estimates</strong> y <strong>Display Material Cost Estimates</strong>, existen tres apps separadas dedicadas al análisis: mostrar cost estimates, analizar datos de costo, comparar costos y ver el desglose detallado.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow cols-3">
+        <div class="item">
+          <span class="icon">🧩</span>
+          <h5>Cost Components - Materials</h5>
+          <p>Vista del cost component split desde distintas perspectivas (COGM, COGS, valuación de inventario).</p>
+        </div>
+        <div class="item">
+          <span class="icon">📊</span>
+          <h5>Itemization - Materials</h5>
+          <p>Desglose por cost elements; layouts personalizables con purchasing org, origin groups, texto de activity types.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🔀</span>
+          <h5>Comparison of Itemizations</h5>
+          <p>Compara dos cost estimates según sus itemizaciones, ajustando lot size y moneda.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — PROFUNDIZACIÓN -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Itemization — From Cost Elements to Comparison</span>
+          <span class="sec-title-es">Itemización — de los cost elements a la comparación</span>
+        </div>
+        <div class="sec-desc">Qué determina el cost element de cada línea, y qué características se comparan entre dos cost estimates.</div>
+        <span class="sec-tag deeper">Más profundidad</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      En la itemización, no todos los costos se asignan a un cost element de la misma forma. Como todos los costos reales también se asignan a estos mismos cost elements, más adelante es posible una comparación <strong>plan/real</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🔹</span>Primary Cost Elements <span class="en-tag">· Elementos Primarios</span></h4>
+          <p>Material costs, external activities y nonstock materials se asignan a distintos <strong>primary cost elements</strong>, determinados por el sistema.</p>
+        </div>
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">🔸</span>Secondary Cost Elements <span class="en-tag">· Elementos Secundarios</span></h4>
+          <p>La actividad interna aparece bajo el <strong>allocation cost element</strong> del activity type master record; el overhead también se muestra bajo cost elements secundarios.</p>
+        </div>
+      </div>
+      <div class="chip-row" style="margin-top:16px;">
+        <div class="chip"><span class="chip-title">Item Category</span></div>
+        <div class="chip"><span class="chip-title">Cost Element</span></div>
+        <div class="chip"><span class="chip-title">Resource</span></div>
+        <div class="chip"><span class="chip-title">Cost Center / Activity Type</span></div>
+        <div class="chip"><span class="chip-title">BOM Item</span></div>
+        <div class="chip"><span class="chip-title">Cost Component</span></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 2 — Profundización). No repite términos del glosario T1. Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Material Master</div><div class="term-es">Maestro de Materiales</div><div class="term-def">Registro central de un material, dividido en vistas (Basic, Accounting, Costing, etc.) y en datos globales/específicos de planta.</div></div>
+      <div class="gcard"><div class="term-en">Costing Type</div><div class="term-es">Tipo de Costeo</div><div class="term-def">Componente de la costing variant que determina el propósito del costeo y qué actualización de precio se permite.</div></div>
+      <div class="gcard"><div class="term-en">Costing Lot Size</div><div class="term-es">Tamaño de Lote de Costeo</div><div class="term-def">Valor por defecto de lote usado al generar un material cost estimate, tomado de la vista Costing 1.</div></div>
+      <div class="gcard"><div class="term-en">Valuation Class</div><div class="term-es">Clase de Valoración</div><div class="term-def">Campo del material master que controla la determinación de cuentas y el cost element primario en la itemización.</div></div>
+      <div class="gcard"><div class="term-en">Origin Group</div><div class="term-es">Grupo de Origen</div><div class="term-def">Subgrupo de un cost element que, junto a este, define el overhead para grupos específicos de materiales.</div></div>
+      <div class="gcard"><div class="term-en">Overhead Group</div><div class="term-es">Grupo de Overhead</div><div class="term-def">Agrupa materiales fabricados que reciben el mismo tipo de aplicación de overhead.</div></div>
+      <div class="gcard"><div class="term-en">Planned Price</div><div class="term-es">Precio Planeado</div><div class="term-def">Campo de precio (1, 2 o 3) usado en reporting y valuación de material dentro de cost estimates.</div></div>
+      <div class="gcard"><div class="term-en">Tax-Based Price</div><div class="term-es">Precio Impositivo</div><div class="term-def">Precio de material actualizado por un inventory cost estimate, con fines impositivos.</div></div>
+      <div class="gcard"><div class="term-en">Commercial Price</div><div class="term-es">Precio Comercial</div><div class="term-def">Precio de material actualizado por un inventory cost estimate, con fines de valuación comercial.</div></div>
+      <div class="gcard"><div class="term-en">Cost Component Split</div><div class="term-es">Desglose de Componentes de Costo</div><div class="term-def">Categorización del resultado del cost estimate en material, producción, overhead de material, overhead de producción y otros costos.</div></div>
+      <div class="gcard"><div class="term-en">Cost Component View</div><div class="term-es">Vista de Componente de Costo</div><div class="term-def">Ángulo de análisis del cost component split — ej. COGM, COGS, valuación de inventario.</div></div>
+      <div class="gcard"><div class="term-en">Performance Efficiency Rate</div><div class="term-es">Tasa de Eficiencia</div><div class="term-def">Relación entre el tiempo objetivo y el tiempo real de una actividad; usada para salarios a destajo.</div></div>
+      <div class="gcard"><div class="term-en">Primary Cost Element</div><div class="term-es">Elemento de Costo Primario</div><div class="term-def">Cost element asignado a material costs, external activities y nonstock materials en la itemización.</div></div>
+      <div class="gcard"><div class="term-en">Secondary Cost Element</div><div class="term-es">Elemento de Costo Secundario</div><div class="term-def">Cost element bajo el cual aparecen la actividad interna (allocation cost element) y el overhead.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Cost Estimate Options in Product Cost Planning · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>
