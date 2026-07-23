@@ -188,8 +188,16 @@ const TYPE_META = {
 };
 const TYPE_ORDER = ["T1","T2","T3","T4","T5"];
 
+/* Learning paths shown on the homepage. Each key maps to a <div id="section-{key}">
+   in index.html. To add a course to a section, just add its cursoSlug to the array —
+   no other changes needed. */
+const SECTION_COURSES = {
+  "newjoiner": ["r2r-recordtoreport","ap-payablesmanagement","ar-receivablemanagement","aa-assetaccountingprocesses"],
+  "mgmtacct": ["co-costmanagementprofitabilityanalysis","co-managementaccountingprocesses","co-costestimateoptions"],
+  "treasury": ["ar-cashreconciliation","ar-cashreconciliationai"]
+};
+
 let DATA = [];
-let filter = { type:null, courseSlug:null };
 
 async function loadLibrary(){
   try{
@@ -211,20 +219,10 @@ function uniqueCourses(){
   return [...map.values()];
 }
 
-function groupByMega(courses){
-  const map = new Map();
-  courses.forEach(c=>{
-    if(!map.has(c.megaCurso)) map.set(c.megaCurso, []);
-    map.get(c.megaCurso).push(c);
-  });
-  return [...map.entries()];
-}
-
 function render(){
   renderStats();
   renderTypeGrid();
-  renderCourseGrid();
-  renderResults();
+  renderMegaSections();
 }
 
 function renderStats(){
@@ -239,9 +237,8 @@ function renderTypeGrid(){
   grid.innerHTML = TYPE_ORDER.map(code=>{
     const m = TYPE_META[code];
     const count = DATA.filter(d=>d.tipo===code).length;
-    const active = filter.type===code ? "active" : "";
     return `
-      <div class="type-tile ${active}" style="--tint-dark:${m.dark}" data-type="${code}">
+      <div class="type-tile" style="--tint-dark:${m.dark}">
         <div class="icon">${m.icon}</div>
         <div class="tt-code">${code}</div>
         <h3>${m.en}</h3>
@@ -249,48 +246,39 @@ function renderTypeGrid(){
         <div class="tt-count">${count} file${count===1?"":"s"}</div>
       </div>`;
   }).join("");
-  grid.querySelectorAll(".type-tile").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      const t = el.dataset.type;
-      filter.type = (filter.type===t) ? null : t;
-      render();
-      document.getElementById("results-anchor").scrollIntoView({behavior:"smooth", block:"start"});
-    });
-  });
 }
 
-function renderCourseGrid(){
-  const grid = document.getElementById("course-grid");
-  const courses = uniqueCourses();
-  if(courses.length===0){
-    grid.innerHTML = `<div class="empty-state"><div class="big">Todavía no hay cursos cargados</div>Agregá entradas a library.json para que aparezcan acá.</div>`;
-    return;
-  }
-  const groups = groupByMega(courses);
-  grid.innerHTML = groups.map(([mega, list])=>{
-    const cards = list.map(c=>{
-      const bar = TYPE_ORDER.map(code=>{
-        const has = c.entries.some(e=>e.tipo===code);
-        const dark = TYPE_META[code].dark;
-        return `<span class="${has?"on":""}" style="--dot-color:${dark}" title="${code}"></span>`;
-      }).join("");
-      return `
-        <div class="course-card" data-slug="${c.cursoSlug}">
-          <span class="course-pill">${c.modulo}</span>
-          <h3>${c.curso}</h3>
-          <div class="course-typebar">${bar}</div>
-          <div class="course-meta">${c.entries.length} / 5 tipos</div>
-        </div>`;
-    }).join("");
-    return `
-      <div class="mega-group">
-        <div class="mega-label">${mega}</div>
-        <div class="course-subgrid">${cards}</div>
-      </div>`;
+function courseCardHTML(c){
+  const bar = TYPE_ORDER.map(code=>{
+    const has = c.entries.some(e=>e.tipo===code);
+    const dark = TYPE_META[code].dark;
+    return `<span class="${has?"on":""}" style="--dot-color:${dark}" title="${code}"></span>`;
   }).join("");
-  grid.querySelectorAll(".course-card").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      openCourseModal(el.dataset.slug);
+  return `
+    <div class="course-card" data-slug="${c.cursoSlug}">
+      <span class="course-pill">${c.modulo}</span>
+      <h3>${c.curso}</h3>
+      <div class="course-typebar">${bar}</div>
+      <div class="course-meta">${c.entries.length} / 5 tipos</div>
+    </div>`;
+}
+
+function renderMegaSections(){
+  const courses = uniqueCourses();
+  Object.entries(SECTION_COURSES).forEach(([key, slugs])=>{
+    const container = document.getElementById(`section-${key}`);
+    if(!container) return;
+    const list = slugs.map(slug=>courses.find(c=>c.cursoSlug===slug)).filter(Boolean);
+    if(list.length===0){
+      container.innerHTML = `<div class="empty-state"><div class="big">Todavía no hay cursos en esta sección</div>Sumalos en SECTION_COURSES, en hub.js.</div>`;
+      return;
+    }
+    const mega = list[0].megaCurso;
+    container.innerHTML = `
+      <div class="mega-label">${mega}</div>
+      <div class="course-subgrid">${list.map(courseCardHTML).join("")}</div>`;
+    container.querySelectorAll(".course-card").forEach(el=>{
+      el.addEventListener("click", ()=> openCourseModal(el.dataset.slug));
     });
   });
 }
@@ -333,53 +321,6 @@ function openCourseModal(slug){
 function closeCourseModal(){
   document.getElementById("modal-overlay").classList.remove("open");
   document.body.style.overflow = "";
-}
-
-function renderResults(){
-  const panel = document.getElementById("results");
-  let list = DATA;
-  if(filter.type) list = list.filter(d=>d.tipo===filter.type);
-  if(filter.courseSlug) list = list.filter(d=>d.cursoSlug===filter.courseSlug);
-
-  let label = "Todos los archivos";
-  if(filter.type && filter.courseSlug){
-    label = `${TYPE_META[filter.type].en} · ${list[0]?.curso ?? ""}`;
-  }else if(filter.type){
-    label = `${TYPE_META[filter.type].en}`;
-  }else if(filter.courseSlug){
-    label = `${list[0]?.curso ?? ""}`;
-  }
-
-  const showClear = filter.type || filter.courseSlug;
-
-  const cards = list
-    .sort((a,b)=> a.tipo.localeCompare(b.tipo) || (a.volumen-b.volumen))
-    .map(d=>{
-      const m = TYPE_META[d.tipo];
-      const vol = d.volumen>1 ? ` · Vol.${d.volumen}` : "";
-      return `
-        <a class="file-card" style="--card-dark:${m.dark}" href="${d.archivo}" target="_blank" rel="noopener">
-          <div class="fc-type">${d.tipo} · ${m.en}</div>
-          <h4>${d.curso}</h4>
-          <div class="fc-sub">${d.modulo}${vol}</div>
-          <div class="fc-open">Open ↗</div>
-        </a>`;
-    }).join("");
-
-  panel.innerHTML = `
-    <div class="results-head">
-      <div class="results-title">${label} <span class="tag">${list.length} file${list.length===1?"":"s"}</span></div>
-      ${showClear ? `<button class="clear-btn" id="clear-filter">Clear filter ×</button>` : ""}
-    </div>
-    <div class="file-grid">
-      ${cards || `<div class="empty-state"><div class="big">Sin resultados</div>No hay archivos que combinen ese tipo y curso todavía.</div>`}
-    </div>
-  `;
-  const clearBtn = document.getElementById("clear-filter");
-  if(clearBtn) clearBtn.addEventListener("click", ()=>{
-    filter = { type:null, courseSlug:null };
-    render();
-  });
 }
 
 loadLibrary();
