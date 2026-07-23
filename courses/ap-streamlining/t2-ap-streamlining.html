@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Supplier Invoice Optimization — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E08585;--t1-dark:#A94444;--t1-pale:rgba(224,133,133,0.12);--t1-pale-border:rgba(224,133,133,0.38);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-secondary:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-co:#1A6B99;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-sales:#E07B39;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#28100C 55%,#3B1818 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;letter-spacing:.2px;}
+  .pill-primary{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-secondary{border:1.5px solid var(--pill-secondary);color:var(--pill-secondary);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.5rem);color:rgba(255,255,255,0.62);margin:0 0 18px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,133,133,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:640px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.5;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(169,68,68,0.35);}
+  .sec-titles{display:flex;flex-direction:column;gap:2px;flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;margin-top:2px;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(10,15,28,0.04);}
+  .card.accent{border-top:4px solid var(--t1-dark);}
+  .card.navy{border-top:4px solid var(--cat-fi);}
+  .card.teal{border-top:4px solid var(--cat-log);}
+  .card.purple{border-top:4px solid var(--cat-purchase);}
+  .card.gold{border-top:4px solid var(--cat-legal);}
+  .card.steel{border-top:4px solid var(--cat-steel);}
+  .card h4{font-family:'Syne',sans-serif;font-size:1rem;margin:0 0 4px;color:var(--ink);}
+  .card .sub{font-size:0.72rem;color:var(--muted);font-style:italic;}
+  .card p{font-size:0.84rem;color:var(--body);line-height:1.6;margin:8px 0 0;}
+  .card ul{margin:8px 0 0;padding-left:18px;}
+  .card ul li{font-size:0.82rem;color:var(--body);line-height:1.7;}
+  .icon-big{font-size:26px;display:block;margin-bottom:6px;}
+  .data-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:0.85rem;box-shadow:0 2px 10px rgba(10,15,28,0.05);}
+  .data-table th{background:var(--navy-900);color:white;padding:11px 14px;text-align:left;font-size:0.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+  .data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:nth-child(even) td{background:#FAFBFD;}
+  .data-table .strong{font-weight:700;color:var(--ink);}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;white-space:nowrap;}
+  .badge-red{background:rgba(192,57,43,0.1);color:#C0392B;}
+  .badge-green{background:rgba(0,168,150,0.1);color:#00A896;}
+  .badge-blue{background:rgba(26,75,140,0.08);color:#1A4B8C;}
+  .badge-gold{background:rgba(201,147,46,0.09);color:#C9932E;}
+  /* maturity ladder */
+  .maturity-step{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:10px;margin-bottom:8px;color:white;}
+  .ms-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:800;flex-shrink:0;width:36px;text-align:center;}
+  .ms-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;display:block;}
+  .ms-sub{font-size:10.5px;color:rgba(255,255,255,0.75);display:block;margin-top:2px;}
+  .hflow{display:flex;align-items:center;gap:0;min-width:700px;}
+  .hstep{flex:1;padding:14px 12px;border-radius:10px;text-align:center;color:white;}
+  .hstep .hi{font-size:18px;display:block;margin-bottom:3px;}
+  .hstep .ht{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;display:block;}
+  .hstep .hs{font-size:9.5px;color:rgba(255,255,255,0.72);display:block;margin-top:2px;}
+  .harrow{padding:0 8px;color:#94A3B8;font-size:20px;}
+  .glossary{background:var(--navy-950);padding:64px 40px 72px;scroll-margin-top:64px;}
+  .glossary-inner{max-width:1100px;margin:0 auto;}
+  .glossary h2{font-family:'Syne',sans-serif;color:white;font-size:1.6rem;margin:0 0 6px;}
+  .glossary p.gloss-sub{color:rgba(255,255,255,0.55);font-size:0.9rem;margin:0 0 30px;}
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .gcard{background:var(--navy-800);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 18px;}
+  .term-en{font-family:'Syne',sans-serif;font-weight:700;color:var(--t1);font-size:1rem;}
+  .term-es{color:rgba(255,255,255,0.5);font-size:0.78rem;margin:2px 0 8px;}
+  .term-def{color:rgba(255,255,255,0.82);font-size:0.83rem;line-height:1.5;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">OCR &amp; Intelligence</a>
+  <a href="#s2">EDI &amp; e-Invoicing</a>
+  <a href="#s3">Automation Maturity</a>
+  <a href="#s4">Audit Trail</a>
+  <a href="#s5">Background Job Scheduling</a>
+  <a href="#s6">Recurring Entry — Deep</a>
+  <a href="#s7">Import Template Structure</a>
+  <a href="#s8">Change Document Log</a>
+  <a href="#s9">Single vs Mass Change</a>
+  <a href="#s10">Field Change Rules Config</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1>Supplier Invoice <span class="accent">Optimization</span></h1>
+    <h2>Profundización — Adyacentes y Mecanismos</h2>
+    <p class="desc">Cinco temas adyacentes (OCR, EDI, madurez de automatización, audit trail, scheduling) y cinco mecanismos internos en mayor profundidad (recurring entries, import template, change log, single/mass change, reglas de configuración).</p>
+    <div class="hlbox">Profundización — <b>Supplier Invoice Optimization (AP)</b>, Tipo 2. ~5 temas adyacentes + ~5 mecanismos en detalle.</div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">OCR and Invoice Intelligence</span><span class="sec-title-es">Reconocimiento óptico e inteligencia</span></div><div class="sec-desc">Cómo SAP puede leer automáticamente los datos de facturas en papel o PDF usando reconocimiento de caracteres.</div></div></div>
+  <div class="theory-box"><strong>OCR es la base del Upload inteligente:</strong> cuando el contador de AP sube facturas electrónicas (PDF, imágenes), el motor de <strong>Optical Character Recognition (OCR)</strong> extrae automáticamente los datos clave — proveedor, importe, fecha, número de factura — y los propone en los campos del documento SAP. Esto elimina el ingreso manual de datos y reduce errores de tipeo. El sistema también puede <strong>priorizar facturas</strong> que requieren atención experta (por discrepancias, importes inusuales, etc.).</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card navy"><span class="icon-big">📄</span><h4>Input <span class="sub">· Factura en papel / PDF</span></h4><p>La factura llega como imagen escaneada o documento PDF al directorio del contador de AP.</p></div>
+      <div class="card accent"><span class="icon-big">🔍</span><h4>OCR Engine <span class="sub">· Motor de reconocimiento</span></h4><p>SAP aplica OCR para extraer: proveedor, número de factura, importe, fecha, posiciones. Propone los valores en los campos del documento.</p></div>
+      <div class="card teal"><span class="icon-big">✅</span><h4>Result <span class="sub">· Documento pre-cargado</span></h4><p>El contador revisa y confirma los datos extraídos — no los ingresa manualmente. Adjunto PDF queda vinculado al documento SAP para auditores.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">EDI and Electronic Invoicing Channels</span><span class="sec-title-es">EDI y canales de factura electrónica</span></div><div class="sec-desc">Los canales digitales por los que las facturas llegan al sistema más allá de Excel y PDF.</div></div></div>
+  <div class="theory-box"><strong>EDI es el canal más automatizado:</strong> el intercambio electrónico de datos (<strong>Electronic Data Interchange</strong>) permite que los sistemas del proveedor envíen facturas directamente al sistema SAP del cliente en formato estructurado (XML, EDIFACT, etc.) sin intervención humana. A diferencia del Excel (que requiere que una persona descargue y complete la plantilla), EDI elimina completamente el ingreso manual — la factura llega, se valida y se contabiliza automáticamente.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card steel">
+        <h4>📬 Traditional Channels <span class="sub">· Canales tradicionales</span></h4>
+        <ul>
+          <li>Factura en papel (correo / presencial)</li>
+          <li>PDF por email — requiere ingreso manual o OCR</li>
+          <li>Excel con datos — Import function</li>
+          <li>Portal de proveedores — proveedor ingresa datos en web</li>
+        </ul>
+      </div>
+      <div class="card teal">
+        <h4>⚡ Electronic / EDI Channels <span class="sub">· Canales electrónicos</span></h4>
+        <ul>
+          <li><strong>EDI:</strong> sistema proveedor → sistema SAP, automático y estructurado</li>
+          <li><strong>e-Invoice legal:</strong> factura electrónica con firma digital (formato CFDI, ZUGFeRD, etc.)</li>
+          <li><strong>API integration:</strong> conexión directa vía API entre sistemas</li>
+          <li>Requiere configuración técnica (middleware, formatos) pero cero ingreso manual</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Invoice Automation Maturity</span><span class="sec-title-es">Madurez de la automatización de facturas</span></div><div class="sec-desc">Los niveles de automatización del procesamiento de facturas, desde manual hasta totalmente automático.</div></div></div>
+  <div class="theory-box"><strong>La madurez define cuánto trabajo hace el sistema vs. el humano:</strong> no todas las organizaciones tienen el mismo nivel de automatización en AP. Las cuatro técnicas del curso (user settings, recurring entries, import/upload, changes) son pasos en el camino hacia mayor madurez. El nivel más alto elimina prácticamente toda intervención manual — las facturas llegan, se validan y se contabilizan solas.</div>
+  <div class="visual-wrap">
+    <div class="maturity-step" style="background:#5A6B8C;"><div class="ms-num">1</div><div><span class="ms-title">Manual Entry</span><span class="ms-sub">Cada factura ingresada manualmente · alta carga operativa · propenso a errores</span></div></div>
+    <div class="maturity-step" style="background:#1A6B99;"><div class="ms-num">2</div><div><span class="ms-title">User Settings + Recurring</span><span class="ms-sub">Parámetros personalizados + plantillas recurrentes · menos clics por factura · automático para pagos fijos</span></div></div>
+    <div class="maturity-step" style="background:#7E4FBF;"><div class="ms-num">3</div><div><span class="ms-title">Mass Import / Upload + OCR</span><span class="ms-sub">Múltiples facturas de una vez · OCR reduce ingreso manual · validación antes de postear</span></div></div>
+    <div class="maturity-step" style="background:#A94444;"><div class="ms-num">4</div><div><span class="ms-title">EDI + Automated Workflow</span><span class="ms-sub">Sistema proveedor → SAP directo · validación automática · intervención humana solo en excepciones</span></div></div>
+    <div class="maturity-step" style="background:#0A0F1C;"><div class="ms-num">5</div><div><span class="ms-title">Fully Automated (AI/ML)</span><span class="ms-sub">Inteligencia artificial para excepciones · tasa de straight-through processing máxima</span></div></div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Audit Trail and Document Immutability</span><span class="sec-title-es">Pista de auditoría e inmutabilidad</span></div><div class="sec-desc">Por qué el principio de inmutabilidad contable es también una protección de auditoría y compliance.</div></div></div>
+  <div class="theory-box"><strong>Inmutabilidad = trazabilidad completa para auditores:</strong> la restricción de no modificar campos contables después de la contabilización no es solo una limitación técnica — es la base del <strong>audit trail</strong> contable. Si los importes y cuentas fueran modificables retroactivamente, ningún auditor podría confiar en que los estados financieros reflejan las transacciones reales. SAP construye la inmutabilidad por diseño para garantizar que cada documento cuente su historia completa desde el primer posteo.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card navy">
+        <h4>🔍 What Auditors Check <span class="sub">· Qué controlan los auditores</span></h4>
+        <ul>
+          <li>¿El importe de la factura fue el que se pagó?</li>
+          <li>¿La cuenta GL es correcta para ese tipo de gasto?</li>
+          <li>¿La fecha de contabilización corresponde al período correcto?</li>
+          <li>¿Hay adjuntos que respaldan cada asiento?</li>
+          <li>¿Quién y cuándo realizó cambios a los campos modificables?</li>
+        </ul>
+      </div>
+      <div class="card accent">
+        <h4>📜 Change Document Log <span class="sub">· Registro de cambios</span></h4>
+        <p>SAP registra automáticamente en el <strong>Change Document Log</strong> cada modificación a un campo permitido de un documento FI:</p>
+        <ul>
+          <li>Quién hizo el cambio (usuario)</li>
+          <li>Cuándo (fecha y hora)</li>
+          <li>Valor anterior vs valor nuevo</li>
+        </ul>
+        <p style="margin-top:8px;">Este log es parte del audit trail y no puede ser eliminado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Background Job Scheduling for AP Programs</span><span class="sec-title-es">Programación de jobs en segundo plano</span></div><div class="sec-desc">Cómo los programas automáticos de AP (como el Recurring Entry Program) se programan para correr sin intervención manual.</div></div></div>
+  <div class="theory-box"><strong>El scheduling libera al contador de AP de ejecutar programas manualmente:</strong> SAP permite programar <strong>background jobs</strong> (trabajos en segundo plano) que se ejecutan automáticamente en fechas y horas predefinidas. El <strong>Recurring Entry Program</strong> es uno de los candidatos típicos — un empleado autorizado lo configura para correr el primer día hábil de cada mes, y el sistema genera los documentos FI recurrentes para todos los colegas sin que nadie tenga que iniciarlo manualmente.</div>
+  <div class="visual-wrap">
+    <div class="hflow">
+      <div class="hstep" style="background:#5A6B8C;"><span class="hi">👤</span><span class="ht">Authorized Employee</span><span class="hs">Configura el job una sola vez</span></div>
+      <div class="harrow">›</div>
+      <div class="hstep" style="background:#7E4FBF;"><span class="hi">🗓️</span><span class="ht">Job Definition</span><span class="hs">Programa: nombre, usuario, variante, horario</span></div>
+      <div class="harrow">›</div>
+      <div class="hstep" style="background:#0A0F1C;"><span class="hi">⚙️</span><span class="ht">SAP Scheduler</span><span class="hs">Ejecuta en background según el horario</span></div>
+      <div class="harrow">›</div>
+      <div class="hstep" style="background:var(--cat-fi);"><span class="hi">📑</span><span class="ht">FI Documents</span><span class="hs">Generados para todos los colegas automáticamente</span></div>
+      <div class="harrow">›</div>
+      <div class="hstep" style="background:var(--cat-log);"><span class="hi">📊</span><span class="ht">Job Log</span><span class="hs">Registro de ejecución: OK / errores</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Recurring Entry — Deep Dive</span><span class="sec-title-es">Entradas recurrentes — mecanismo interno</span></div><div class="sec-desc">Qué pasa exactamente cuando el programa corre: fecha límite, tracking de períodos ya ejecutados.</div></div></div>
+  <div class="theory-box"><strong>El Original Document sabe qué períodos ya fueron ejecutados:</strong> la plantilla de entrada recurrente (Original Document) lleva internamente un registro de la <strong>última fecha de ejecución</strong>. Cuando el Recurring Entry Program corre, busca plantillas cuya fecha de inicio sea anterior al período actual y que no hayan sido ejecutadas para ese período. Si el programa no corre en mayo, no crea el documento de mayo — el documento perdido no se recupera automáticamente (requiere intervención manual o corrida atrasada).</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card navy">
+        <h4>📅 Run Logic <span class="sub">· Lógica de ejecución</span></h4>
+        <ul>
+          <li>El programa verifica: ¿la plantilla tiene <strong>Start Date ≤ período actual</strong>?</li>
+          <li>¿Ya fue ejecutada para este período? → si no, genera el documento</li>
+          <li>Si la plantilla tiene End Date: deja de generar después de esa fecha</li>
+          <li>Una ejecución genera exactamente <strong>un documento FI por plantilla activa</strong></li>
+        </ul>
+      </div>
+      <div class="card accent">
+        <h4>⚠️ Edge Cases <span class="sub">· Casos especiales</span></h4>
+        <ul>
+          <li><strong>Período saltado:</strong> si el programa no corrió en mayo, el doc de mayo no se crea automáticamente en junio — requiere corrida manual retroactiva</li>
+          <li><strong>Cambio de importe:</strong> si el alquiler sube, hay que modificar el Original Document antes de la próxima ejecución</li>
+          <li><strong>Desactivar plantilla:</strong> si termina el contrato, hay que dar de baja el Original Document para evitar docs innecesarios</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Import Template Structure — Detail</span><span class="sec-title-es">Estructura de la plantilla de importación</span></div><div class="sec-desc">Los campos clave del Excel de importación y la lógica de validación antes de contabilizar.</div></div></div>
+  <div class="theory-box"><strong>La plantilla Excel tiene un formato fijo que SAP espera:</strong> al descargar la plantilla de Import Supplier Invoices, el archivo tiene columnas predefinidas que corresponden a los campos del documento FI. El sistema valida que todos los campos obligatorios estén completos y que los valores sean válidos (ej. código de sociedad existente, proveedor activo) antes de permitir el posteo. Las filas con errores se marcan y no se contabilizan hasta ser corregidas.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>Tipo de campo</th><th>Campos típicos de cabecera</th><th>Campos típicos de posición</th><th>Requerido</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">Identificación</td><td>Company Code · Document Type</td><td>GL Account / Cost Object</td><td><span class="badge badge-red">Obligatorio</span></td></tr>
+        <tr><td class="strong">Fechas</td><td>Invoice Date · Posting Date · Document Date</td><td>Baseline Date</td><td><span class="badge badge-red">Obligatorio</span></td></tr>
+        <tr><td class="strong">Importes</td><td>Gross Amount · Currency</td><td>Net Amount · Tax Amount</td><td><span class="badge badge-red">Obligatorio</span></td></tr>
+        <tr><td class="strong">Proveedor / PO</td><td>Supplier Number · Reference</td><td>Purchase Order · PO Item</td><td><span class="badge badge-gold">Según caso</span></td></tr>
+        <tr><td class="strong">Impuesto</td><td>Tax Code</td><td>Tax Amount (auto o manual)</td><td><span class="badge badge-gold">Según caso</span></td></tr>
+        <tr><td class="strong">Pago</td><td>Payment Terms · Payment Method</td><td>Payment Block</td><td><span class="badge badge-green">Opcional</span></td></tr>
+        <tr><td class="strong">Texto / Info</td><td>Header Text</td><td>Item Text · Assignment</td><td><span class="badge badge-green">Opcional</span></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;background:rgba(224,133,133,0.1);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:10px 14px;font-size:0.82rem;color:var(--ink);">⚠️ Una fila con errores no bloquea al resto — SAP marca la fila específica y permite contabilizar el resto del lote.</div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Change Document Log</span><span class="sec-title-es">Registro de cambios del documento</span></div><div class="sec-desc">El historial completo de cada modificación a un campo de un documento FI contabilizado.</div></div></div>
+  <div class="theory-box"><strong>SAP registra cada cambio en el Change Document Log:</strong> toda modificación a un campo permitido de un documento FI genera automáticamente una entrada en el <strong>Change Document Log</strong> (historial de cambios). Este log incluye: el usuario que hizo el cambio, el timestamp, el campo modificado, el valor anterior y el valor nuevo. Es inmutable — no puede borrarse ni editarse — y forma parte del audit trail que los auditores pueden consultar.</div>
+  <div class="visual-wrap">
+    <div style="background:#FAFBFD;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+      <div style="background:var(--navy-900);color:white;padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.3px;">CHANGE DOCUMENT LOG — FI Document 5105600042 · DE01</div>
+      <table class="data-table" style="border:none;border-radius:0;box-shadow:none;">
+        <thead><tr><th>Changed by</th><th>Date / Time</th><th>Field Changed</th><th>Old Value</th><th>New Value</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">JENNIFER_K</td><td>15.07.2025 · 09:23</td><td>Reference (XBLNR)</td><td>INV-2025-07-01 <em style="font-size:0.75rem;color:var(--muted);">(incorrect)</em></td><td style="color:#2E7D32;font-weight:600;">INV-2025-0701</td></tr>
+          <tr><td class="strong">JENNIFER_K</td><td>22.07.2025 · 14:05</td><td>Payment Terms (ZTERM)</td><td>NT30</td><td style="color:#2E7D32;font-weight:600;">NT45</td></tr>
+          <tr><td class="strong">AP_MASS_USER</td><td>01.08.2025 · 07:00</td><td>Baseline Date (ZFBDT)</td><td>01.07.2025</td><td style="color:#2E7D32;font-weight:600;">15.07.2025</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Single Change vs Mass Change</span><span class="sec-title-es">Cambio individual vs cambio masivo</span></div><div class="sec-desc">Las dos formas de modificar campos en documentos ya contabilizados y cuándo usar cada una.</div></div></div>
+  <div class="theory-box"><strong>El contexto determina si conviene un cambio individual o masivo:</strong> cuando el error o la actualización afecta a <strong>un solo documento</strong>, el cambio individual es suficiente. Cuando la actualización afecta a <strong>muchas partidas abiertas del mismo proveedor</strong> (por ejemplo, un cambio de condiciones de pago que impacta todas las facturas pendientes), el cambio masivo ahorra tiempo y elimina el riesgo de olvidar alguna partida. Ambos se realizan desde la app <strong>Manage Supplier Line Items</strong>.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card navy">
+        <h4>🔍 Single Change <span class="sub">· Cambio individual</span></h4>
+        <p><strong>Cuándo:</strong> un error puntual en un documento específico (ej. número de referencia incorrecto en una sola factura).</p>
+        <p><strong>Cómo:</strong> abrir el documento en Manage Supplier Line Items → editar el campo específico → guardar.</p>
+        <p><strong>Caso del curso:</strong> cambiar el reference number en una factura ya contabilizada con el número erróneo.</p>
+      </div>
+      <div class="card accent">
+        <h4>📋 Mass Change <span class="sub">· Cambio masivo</span></h4>
+        <p><strong>Cuándo:</strong> una actualización que aplica a muchas partidas (ej. proveedor mejoró sus condiciones de pago y todas las facturas abiertas deben actualizarse).</p>
+        <p><strong>Cómo:</strong> seleccionar múltiples partidas en Manage Supplier Line Items → usar la función Mass Change → aplicar el nuevo valor en bloque.</p>
+        <p><strong>Caso del curso:</strong> actualizar payment terms en todas las facturas abiertas de un proveedor cuyo Vendor Master ya fue actualizado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Field Change Rules — Configuration Depth</span><span class="sec-title-es">Reglas de cambio de campos — configuración</span></div><div class="sec-desc">Cómo SAP determina qué campos pueden cambiarse: las reglas de cambio configurables por sociedad.</div></div></div>
+  <div class="theory-box"><strong>Las reglas de cambio se configuran en SPRO:</strong> SAP permite al configurador definir qué campos adicionales pueden modificarse en documentos ya contabilizados, y bajo qué condiciones. Las dos condiciones principales son: (1) el <strong>período contable debe estar abierto</strong> para esa sociedad, y (2) la <strong>partida no debe haber sido reconciliada/compensada</strong> aún. Estas condiciones previenen que se modifiquen datos de partidas ya cerradas, lo que haría imposible la conciliación.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card gold">
+        <h4>⚙️ Condition 1: Open Posting Period <span class="sub">· Período contable abierto</span></h4>
+        <p>Si el período de la partida está cerrado (locked), la modificación es rechazada — aunque el campo sea técnicamente modificable. Esta regla aplica a cambios en cualquier campo que tenga relevancia de período (ej. baseline date, payment terms).</p>
+        <p style="margin-top:8px;"><strong>Propósito:</strong> proteger la integridad del cierre contable ya completado.</p>
+      </div>
+      <div class="card teal">
+        <h4>⚙️ Condition 2: Not Reconciled <span class="sub">· Partida no compensada</span></h4>
+        <p>Si la partida ya fue <strong>compensada (cleared)</strong> — es decir, el pago ya fue aplicado — la partida pasa a estado "cerrado" y ya no puede modificarse ningún campo. Solo las partidas <strong>abiertas (open items)</strong> son candidatas a cambios post-contabilización.</p>
+        <p style="margin-top:8px;"><strong>Propósito:</strong> no modificar lo que ya fue reconciliado con un pago real.</p>
+      </div>
+    </div>
+    <div style="margin-top:16px;background:rgba(224,133,133,0.1);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:12px 16px;font-size:0.84rem;color:var(--ink);">
+      💡 Si ninguna de las dos condiciones permite el cambio — período cerrado O partida ya compensada — la única opción es <strong>reversar el documento original</strong> y crear uno nuevo correcto.
+    </div>
+  </div>
+</section>
+
+</main>
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Tipo 2 — Profundización. Complementan al glosario de T1 (no repiten).</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">OCR (Optical Character Recognition)</div><div class="term-es">Reconocimiento óptico de caracteres</div><div class="term-def">Tecnología que extrae texto y datos de imágenes de facturas (PDF, scan) y los propone automáticamente en los campos del documento SAP.</div></div>
+      <div class="gcard"><div class="term-en">EDI (Electronic Data Interchange)</div><div class="term-es">Intercambio electrónico de datos</div><div class="term-def">Protocolo de comunicación estructurada entre sistemas que permite enviar facturas directamente del sistema del proveedor al sistema SAP del cliente, sin intervención manual.</div></div>
+      <div class="gcard"><div class="term-en">Automation Maturity</div><div class="term-es">Madurez de automatización</div><div class="term-def">Escala de 1 a 5 que mide cuánto del proceso de facturas está automatizado, desde ingreso manual hasta procesamiento totalmente automático con IA.</div></div>
+      <div class="gcard"><div class="term-en">Audit Trail</div><div class="term-es">Pista de auditoría</div><div class="term-def">Registro completo e inmutable de todas las transacciones y cambios en el sistema contable, que permite a los auditores verificar la integridad de los datos financieros.</div></div>
+      <div class="gcard"><div class="term-en">Background Job</div><div class="term-es">Trabajo en segundo plano</div><div class="term-def">Programa SAP configurado para ejecutarse automáticamente según un horario predefinido, sin requerir que un usuario lo inicie manualmente.</div></div>
+      <div class="gcard"><div class="term-en">Change Document Log</div><div class="term-es">Registro de cambios del documento</div><div class="term-def">Historial inmutable que SAP genera automáticamente para cada modificación a un campo de un documento FI. Incluye usuario, timestamp, campo, valor anterior y nuevo.</div></div>
+      <div class="gcard"><div class="term-en">Single Change</div><div class="term-es">Cambio individual</div><div class="term-def">Modificación de un campo en un único documento FI ya contabilizado. Adecuado para correcciones puntuales en una sola factura.</div></div>
+      <div class="gcard"><div class="term-en">Open Item</div><div class="term-es">Partida abierta</div><div class="term-def">Partida de un documento FI que aún no ha sido compensada (no hay pago aplicado contra ella). Solo las partidas abiertas pueden modificarse post-contabilización.</div></div>
+      <div class="gcard"><div class="term-en">Posting Period</div><div class="term-es">Período de contabilización</div><div class="term-def">El período contable (mes/año) al que se asigna un documento FI. Un período cerrado impide modificaciones a los documentos que pertenecen a ese período.</div></div>
+      <div class="gcard"><div class="term-en">Cleared Item</div><div class="term-es">Partida compensada</div><div class="term-def">Partida de un documento FI que ya fue reconciliada con un pago. Una partida compensada no puede modificarse — requiere reversa si hay un error.</div></div>
+      <div class="gcard"><div class="term-en">Document Reversal</div><div class="term-es">Reversión de documento</div><div class="term-def">Proceso de anular un documento FI ya contabilizado creando un documento inverso. Necesario cuando un campo no modificable contiene un error.</div></div>
+      <div class="gcard"><div class="term-en">Straight-Through Processing</div><div class="term-es">Procesamiento sin intervención</div><div class="term-def">Métrica de automatización que mide el porcentaje de facturas procesadas de principio a fin sin ninguna intervención manual.</div></div>
+    </div>
+  </div>
+</section>
+<footer>T2 · Profundización — Supplier Invoice Optimization (AP) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

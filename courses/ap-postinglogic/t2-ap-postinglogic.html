@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · AP Posting Logic — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E08585;--t1-dark:#A94444;--t1-pale:rgba(224,133,133,0.12);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--c-fi:#1A4B8C;--c-log:#00A896;--c-ap:#E07B39;--c-cr:#3D7A52;--c-alert:#C0392B;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#28100C 55%,#3B1818 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,133,133,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:640px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.5;}
+  .hlbox b{color:var(--t1);}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(10,15,28,0.04);}
+  .card h4{font-family:'Syne',sans-serif;font-size:1rem;margin:0 0 6px;color:var(--ink);}
+  .card .sub{font-size:0.72rem;color:var(--muted);font-style:italic;}
+  .card p{font-size:0.84rem;color:var(--body);line-height:1.6;margin:8px 0 0;}
+  .card ul{margin:8px 0 0;padding-left:18px;}
+  .card ul li{font-size:0.82rem;color:var(--body);line-height:1.75;}
+  .card.acc{border-top:4px solid var(--t1-dark);}
+  .card.b{border-top:4px solid var(--c-fi);}
+  .card.t{border-top:4px solid var(--c-log);}
+  .card.g{border-top:4px solid var(--c-cr);}
+  .card.o{border-top:4px solid var(--c-ap);}
+  .card.r{border-top:4px solid var(--c-alert);}
+  .card.steel{border-top:4px solid #5A6B8C;}
+  .icon-big{font-size:26px;display:block;margin-bottom:6px;}
+  .data-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:0.85rem;}
+  .data-table th{background:var(--navy-900);color:white;padding:11px 14px;text-align:left;font-size:0.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+  .data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:nth-child(even) td{background:#FAFBFD;}
+  .data-table .strong{font-weight:700;color:var(--ink);}
+  .glossary{background:var(--navy-950);padding:64px 40px 72px;scroll-margin-top:64px;}
+  .glossary-inner{max-width:1100px;margin:0 auto;}
+  .glossary h2{font-family:'Syne',sans-serif;color:white;font-size:1.6rem;margin:0 0 6px;}
+  .gloss-sub{color:rgba(255,255,255,0.55);font-size:0.9rem;margin:0 0 30px;}
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .gcard{background:var(--navy-800);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 18px;}
+  .term-en{font-family:'Syne',sans-serif;font-weight:700;color:var(--t1);font-size:1rem;}
+  .term-es{color:rgba(255,255,255,0.5);font-size:0.78rem;margin:2px 0 8px;}
+  .term-def{color:rgba(255,255,255,0.82);font-size:0.83rem;line-height:1.5;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Procure to Receipt vs Invoice to Pay</a>
+  <a href="#s2">Double-Entry Mechanics in AP</a>
+  <a href="#s3">Supplier Master Record — Deep</a>
+  <a href="#s4">FX Risk in AP</a>
+  <a href="#s5">Valid Supplier Invoice — Source Documents</a>
+  <a href="#s6">4 Transaction Types — Extended</a>
+  <a href="#s7">Invoice-to-Journal Entry Mapping</a>
+  <a href="#s8">Subsequent Debit vs Invoice</a>
+  <a href="#s9">Currency Translation Mechanics</a>
+  <a href="#s10">AP as Subledger of GL</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+      <span class="pill pill-sec">Procurement</span>
+    </div>
+    <h1>AP <span class="accent">Posting Logic</span></h1>
+    <h2>Profundización — Adyacentes y Mecanismos</h2>
+    <p class="desc">Cinco temas adyacentes (proceso previo, partida doble, maestro de proveedor, riesgo FX, documentos fuente) y cinco mecanismos en mayor profundidad (4 tipos extendidos, mapeo campo a campo, Subsequent Debit, conversión de moneda, subledger AP).</p>
+    <div class="hlbox">Profundización — <b>AP Posting Logic (AP)</b>, Tipo 2. Glosario con términos distintos a T1.</div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Procure to Receipt vs Invoice to Pay — The Handoff</span><span class="sec-title-es">El traspaso entre logística y AP</span></div><div class="sec-desc">La conexión entre el sub-proceso previo (Procure to Receipt) y el de AP (Invoice to Pay).</div></div></div>
+  <div class="theory-box"><strong>Invoice to Pay comienza donde termina Procure to Receipt:</strong> el equipo de compras maneja la fase <strong>Procure to Receipt</strong> — crear la orden de compra, recibir los bienes, verificar la entrega. Cuando los bienes llegan y se registra la entrada de mercancía (Goods Receipt, GR), se crea automáticamente un documento FI provisional (GR/IR account). El equipo de AP toma el relevo con la llegada de la factura del proveedor, verificando que coincida con la PO y el GR antes de contabilizarla definitivamente.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card t">
+        <h4>&#128666; Procure to Receipt (Logistics) <span class="sub">· Previo a AP</span></h4>
+        <ul>
+          <li>Purchase Order (PO) creada por compras</li>
+          <li>Goods Receipt (GR) — el proveedor entrega</li>
+          <li>GR/IR account provisionado automáticamente</li>
+          <li>Handoff: el proveedor envía la factura a AP</li>
+        </ul>
+      </div>
+      <div class="card o">
+        <h4>&#128196; Invoice to Pay (AP) <span class="sub">· El trabajo de Jennifer</span></h4>
+        <ul>
+          <li>Factura del proveedor llega a AP</li>
+          <li>Jennifer verifica factura vs PO vs GR (3-way match)</li>
+          <li>Contabiliza la factura como Accounting Document</li>
+          <li>Saldo GR/IR se compensa — deuda real con proveedor</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Double-Entry Accounting Behind AP Postings</span><span class="sec-title-es">La partida doble detrás de los posteos de AP</span></div><div class="sec-desc">Cómo funciona la mecánica de Debe/Haber en los asientos de factura y credit memo de AP.</div></div></div>
+  <div class="theory-box"><strong>Cada posting de AP genera siempre al menos dos líneas — una en AP, una en GL:</strong> la partida doble exige que todo asiento esté balanceado: lo que entra en el Debe = lo que entra en el Haber. En una factura de proveedor, la deuda con el proveedor va al Haber de la cuenta AP, y el gasto o activo recibido va al Debe de la cuenta de gastos. Nunca hay una sola línea — siempre hay como mínimo una línea en AP y una en GL.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div style="border:1.5px solid #E07B39;border-radius:10px;overflow:hidden;">
+        <div style="background:#E07B39;padding:8px 14px;"><span style="font-family:Syne;font-weight:800;color:white;font-size:12px;">INVOICE POSTING</span></div>
+        <div style="padding:14px;background:white;">
+          <div style="display:flex;gap:0;border:1.5px solid #CBD5E1;border-radius:7px;overflow:hidden;font-size:11.5px;margin-bottom:8px;">
+            <div style="flex:1;padding:10px;border-right:1.5px solid #CBD5E1;"><div style="font-weight:700;font-size:10px;color:#C0392B;margin-bottom:3px;">DEBIT</div><div>Expense Acct. (GL)<br><span style="color:#888;font-size:10px;">516000 – Purchases</span><br><strong>EUR 1.000</strong></div></div>
+            <div style="flex:1;padding:10px;"><div style="font-weight:700;font-size:10px;color:#3D7A52;margin-bottom:3px;">CREDIT</div><div>Supplier Acct. (AP)<br><span style="color:#888;font-size:10px;">Tireless Tires</span><br><strong>EUR 1.000</strong></div></div>
+          </div>
+          <div style="font-size:10.5px;color:#5A6B8C;">Balance: DEBIT 1.000 = CREDIT 1.000 ✓ · Open item created in AP</div>
+        </div>
+      </div>
+      <div style="border:1.5px solid #3D7A52;border-radius:10px;overflow:hidden;">
+        <div style="background:#3D7A52;padding:8px 14px;"><span style="font-family:Syne;font-weight:800;color:white;font-size:12px;">CREDIT MEMO POSTING</span></div>
+        <div style="padding:14px;background:white;">
+          <div style="display:flex;gap:0;border:1.5px solid #CBD5E1;border-radius:7px;overflow:hidden;font-size:11.5px;margin-bottom:8px;">
+            <div style="flex:1;padding:10px;border-right:1.5px solid #CBD5E1;"><div style="font-weight:700;font-size:10px;color:#C0392B;margin-bottom:3px;">DEBIT</div><div>Supplier Acct. (AP)<br><span style="color:#888;font-size:10px;">Tireless Tires</span><br><strong>EUR 150</strong></div></div>
+            <div style="flex:1;padding:10px;"><div style="font-weight:700;font-size:10px;color:#3D7A52;margin-bottom:3px;">CREDIT</div><div>Discount/Revenue GL<br><span style="color:#888;font-size:10px;">740000 – Cash Discounts</span><br><strong>EUR 150</strong></div></div>
+          </div>
+          <div style="font-size:10.5px;color:#5A6B8C;">Balance: DEBIT 150 = CREDIT 150 ✓ · Reduces AP open balance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Supplier Master Record — What It Contributes</span><span class="sec-title-es">Maestro del proveedor — qué aporta al asiento</span></div><div class="sec-desc">Los datos que SAP toma automáticamente del Supplier Master Record al contabilizar una factura.</div></div></div>
+  <div class="theory-box"><strong>El Supplier Master Record es la base silenciosa de cada posting de AP:</strong> al ingresar una factura, el contador solo ingresa los datos de la factura. SAP enriquece automáticamente el asiento con los datos del <strong>Supplier Master Record</strong>, que contiene información general del proveedor (datos de contacto), datos de la sociedad (condiciones de pago, cuenta de reconciliación) y datos de compras (banco, información bancaria).</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card b">
+        <h4>&#127760; General Data <span class="sub">· Datos generales</span></h4>
+        <ul>
+          <li>Nombre y dirección del proveedor</li>
+          <li>País y región</li>
+          <li>Número de identificación fiscal</li>
+          <li>Idioma de correspondencia</li>
+        </ul>
+      </div>
+      <div class="card o">
+        <h4>&#127970; Company Code Data <span class="sub">· Datos por sociedad</span></h4>
+        <ul>
+          <li><strong>Reconciliation Account</strong> en GL</li>
+          <li><strong>Payment Terms</strong> (condiciones de pago)</li>
+          <li>Accounting Clerk responsable</li>
+          <li>Moneda de pago preferida</li>
+        </ul>
+      </div>
+      <div class="card t">
+        <h4>&#128717; Purchasing Data <span class="sub">· Datos de compras</span></h4>
+        <ul>
+          <li><strong>Bank Details</strong> — datos bancarios para pagos</li>
+          <li>Incoterms / shipping conditions</li>
+          <li>Supplier group / category</li>
+          <li>Tax information</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Foreign Exchange Risk in AP</span><span class="sec-title-es">Riesgo de tipo de cambio en AP</span></div><div class="sec-desc">Por qué las facturas en moneda extranjera crean exposición al riesgo de tipo de cambio y cómo SAP lo registra.</div></div></div>
+  <div class="theory-box"><strong>Una factura en USD crea una deuda en USD — y el tipo de cambio puede cambiar:</strong> cuando se contabiliza una factura en moneda extranjera, se crea una partida abierta en la cuenta del proveedor. El importe en moneda extranjera (USD) queda fijo en el documento, pero el equivalente en moneda local (EUR) puede fluctuar según el tipo de cambio. Si el USD sube frente al EUR entre la fecha de la factura y la fecha de pago, la empresa pagará más EUR de lo esperado. SAP gestiona esta diferencia de cambio automáticamente al momento del pago.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card acc">
+        <h4>&#128205; At Invoice Date <span class="sub">· Al contabilizar</span></h4>
+        <p>Factura USD 10.000 · tipo de cambio: 1 USD = 0.90 EUR</p>
+        <p style="margin-top:6px;"><strong>AP balance: EUR 9.000</strong></p>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:4px;">SAP registra: USD 10.000 + EUR 9.000 (tipo de cambio del día)</p>
+      </div>
+      <div class="card r">
+        <h4>&#128201; At Payment Date <span class="sub">· Al pagar (si el USD sube)</span></h4>
+        <p>Factura USD 10.000 · nuevo tipo de cambio: 1 USD = 0.95 EUR</p>
+        <p style="margin-top:6px;"><strong>Payment: EUR 9.500</strong></p>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:4px;">SAP reconoce la diferencia: EUR 500 como <strong>Exchange Rate Loss</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Valid Supplier Invoice — Source Document Requirements</span><span class="sec-title-es">Documentos fuente válidos en AP</span></div><div class="sec-desc">Qué constituye un documento de proveedor válido para fines de contabilización y auditoría.</div></div></div>
+  <div class="theory-box"><strong>No todo papel es una factura contabilizable — el documento fuente tiene requisitos:</strong> para que una factura de proveedor pueda contabilizarse en SAP, debe cumplir ciertos requisitos como documento fuente. Esto no solo es un requerimiento de SAP — es también un requerimiento legal y de auditoría. El contador de AP debe verificar que la factura recibida es un documento válido antes de ingresarla al sistema.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card g">
+        <h4>&#9989; Valid Invoice Elements <span class="sub">· Elementos de una factura válida</span></h4>
+        <ul>
+          <li>Nombre y dirección del proveedor (emisor)</li>
+          <li>Fecha de emisión de la factura</li>
+          <li>Número único de factura del proveedor</li>
+          <li>Descripción de los bienes/servicios</li>
+          <li>Importe neto, impuesto (IVA) e importe total</li>
+          <li>Datos bancarios del proveedor (opcional pero frecuente)</li>
+        </ul>
+      </div>
+      <div class="card r">
+        <h4>&#10060; Not Valid / Problematic <span class="sub">· Problemas comunes</span></h4>
+        <ul>
+          <li>Factura duplicada (mismo número, mismo proveedor)</li>
+          <li>Importe que no coincide con la PO ni con el GR</li>
+          <li>Proveedor no registrado en el Supplier Master</li>
+          <li>Factura sin número de referencia</li>
+          <li>Factura de un período contable ya cerrado sin autorización</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">4 Transaction Types — Extended Examples</span><span class="sec-title-es">Los 4 tipos de transacción — ejemplos extendidos</span></div><div class="sec-desc">Escenarios reales para cada uno de los cuatro tipos — cuándo exactamente se usaría cada uno.</div></div></div>
+  <div class="theory-box"><strong>Los cuatro tipos no son abstractos — responden a situaciones comerciales específicas:</strong> la diferencia entre ellos no es técnica sino de negocio. Entender el escenario detrás de cada tipo es clave para elegir el correcto al ingresar un documento.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>Type</th><th>Scenario example</th><th>Supplier Account</th><th>Who processes</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">Invoice</td><td>Tireless Tires entrega 500 neumáticos y envía factura EUR 12.000</td><td>Credit EUR 12.000</td><td>AP Accountant</td></tr>
+        <tr><td class="strong">Credit Memo</td><td>Tireless Tires ofrece EUR 500 de descuento por fidelidad comercial — emite nota de crédito</td><td>Debit EUR 500</td><td>AP Accountant</td></tr>
+        <tr><td class="strong">Subsequent Debit</td><td>Tireless Tires factura EUR 200 de flete adicional que no estaba en la factura original</td><td>Credit EUR 200 (additional)</td><td>Logistics (mostly)</td></tr>
+        <tr><td class="strong">Subsequent Credit</td><td>Tireless Tires aplica EUR 50 de bonificación adicional a la nota de crédito existente</td><td>Debit EUR 50 (additional)</td><td>Logistics (mostly)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Invoice-to-Journal Entry Field Mapping</span><span class="sec-title-es">Mapeo campo a campo: factura al asiento</span></div><div class="sec-desc">Qué campo de la factura física corresponde a qué campo del asiento de diario SAP.</div></div></div>
+  <div class="theory-box"><strong>El mapeo es automático — SAP lo hace al ingresar los datos:</strong> al ingresar una factura en SAP, los datos del documento físico se mapean directamente a los campos del Journal Entry. No hay que "crear" el asiento manualmente — SAP lo genera según los datos ingresados y las parametrizaciones del sistema (tipo de documento, cuenta del proveedor, plan de cuentas).</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>Supplier Invoice Field</th><th>Journal Entry Field in SAP</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">Invoice date</td><td>Document Date (BLDAT)</td><td>Invoice</td></tr>
+        <tr><td class="strong">Invoice number (from supplier)</td><td>Reference (XBLNR)</td><td>Invoice</td></tr>
+        <tr><td class="strong">Total amount</td><td>Amount in document currency (WRBTR)</td><td>Invoice</td></tr>
+        <tr><td class="strong">VAT/Tax amount</td><td>Tax amount (HWSTE)</td><td>Invoice</td></tr>
+        <tr><td class="strong">Currency</td><td>Currency key (WAERS)</td><td>Invoice</td></tr>
+        <tr><td class="strong">Supplier ID</td><td>Vendor account (LIFNR)</td><td>Supplier Master</td></tr>
+        <tr><td class="strong">(auto from master)</td><td>Reconciliation account (HKONT)</td><td>Supplier Master</td></tr>
+        <tr><td class="strong">(auto from master)</td><td>Payment terms (ZTERM)</td><td>Supplier Master</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Subsequent Debit vs Invoice — Why the Difference?</span><span class="sec-title-es">Subsequent Debit vs Invoice — por qué la distinción</span></div><div class="sec-desc">Por qué existe un tipo de transacción separado para cargos adicionales en lugar de solo usar Invoice.</div></div></div>
+  <div class="theory-box"><strong>Subsequent Debit existe porque los cargos adicionales llegan después de que la factura original ya fue procesada:</strong> cuando la factura original fue contabilizada y quizás ya compensada contra una Goods Receipt (GR/IR), un cargo adicional posterior no puede ni debería contabilizarse como una nueva Invoice independiente. El <strong>Subsequent Debit</strong> permite registrar el cargo extra vinculado a la transacción original sin crear confusión en el sistema. SAP puede trazar el cargo adicional al documento de referencia original.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card o">
+        <h4>&#128196; Invoice <span class="sub">· Para usar cuando...</span></h4>
+        <ul>
+          <li>Es la factura <strong>principal y original</strong> del proveedor</li>
+          <li>Representa el cargo acordado en la PO</li>
+          <li>No existe un documento de referencia previo</li>
+          <li>Se concilia directamente contra la Goods Receipt</li>
+        </ul>
+      </div>
+      <div class="card acc">
+        <h4>&#10133; Subsequent Debit <span class="sub">· Para usar cuando...</span></h4>
+        <ul>
+          <li>Es un <strong>cargo adicional</strong> sobre la factura original</li>
+          <li>Ej. flete, aduanas, embalaje no incluidos inicialmente</li>
+          <li>La factura original ya fue procesada y quizás compensada</li>
+          <li>Procesado mayormente desde logística (MM)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Currency Translation Mechanics</span><span class="sec-title-es">Mecánica de conversión de moneda en SAP</span></div><div class="sec-desc">Cómo SAP convierte exactamente las facturas en moneda extranjera a la moneda local.</div></div></div>
+  <div class="theory-box"><strong>SAP siempre guarda dos importes — extranjero y local — y usa el tipo de cambio del Posting Date:</strong> al contabilizar una factura en USD, SAP guarda el importe en USD (moneda del documento) y automáticamente calcula el equivalente en EUR (moneda local de la sociedad) usando el tipo de cambio mantenido en el sistema para la <strong>Posting Date</strong>. El contador no necesita calcular la conversión — SAP lo hace automáticamente.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card b">
+        <h4>&#128205; Step 1: Enter currency <span class="sub">· Ingresar moneda extranjera</span></h4>
+        <p>En el campo <strong>Currency Key</strong> de la app, el contador cambia de EUR a USD (u otra moneda). Ingresa el importe en USD tal como figura en la factura.</p>
+      </div>
+      <div class="card acc">
+        <h4>&#128201; Step 2: SAP translates <span class="sub">· SAP convierte automáticamente</span></h4>
+        <p>SAP busca el tipo de cambio USD/EUR válido para la <strong>Posting Date</strong> en la tabla de tipos de cambio (OB08). Calcula el equivalente en EUR automáticamente.</p>
+      </div>
+      <div class="card g">
+        <h4>&#128230; Step 3: Stored dual <span class="sub">· Se guardan ambos importes</span></h4>
+        <p>El Accounting Document contiene: <strong>USD 10.000</strong> (moneda del documento) + <strong>EUR 9.000</strong> (moneda local). Ambos visibles en el asiento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">AP as Subledger of GL — Why It Matters</span><span class="sec-title-es">AP como subledger del GL — por qué importa</span></div><div class="sec-desc">La relación entre el subledger de AP y la cuenta de reconciliación del GL — por qué son dos vistas del mismo dato.</div></div></div>
+  <div class="theory-box"><strong>AP es un libro auxiliar del GL — cada posting en AP actualiza automáticamente el GL:</strong> la cuenta de AP de cada proveedor es un <strong>subledger</strong> (libro auxiliar). La suma de todos los saldos de todos los proveedores debe coincidir exactamente con el saldo de la <strong>Reconciliation Account</strong> del GL. SAP garantiza esta coherencia automáticamente — no se puede contabilizar en AP sin actualizar el GL.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card o">
+        <h4>&#128218; AP Sub-ledger <span class="sub">· Nivel de proveedor individual</span></h4>
+        <ul>
+          <li>Cuenta individual por proveedor (ej. Tireless Tires)</li>
+          <li>Detalla cada partida individual (cada factura, pago)</li>
+          <li>Permite análisis por proveedor, vencimiento, tipo</li>
+          <li>App: Display Supplier Balances / Manage Line Items</li>
+          <li>Saldo Tireless Tires: EUR -12.000</li>
+          <li>Saldo Steel Parts: EUR -8.500</li>
+          <li style="font-weight:700;color:var(--c-ap);">Total AP subledger: EUR -20.500</li>
+        </ul>
+      </div>
+      <div class="card b">
+        <h4>&#128196; GL Reconciliation Account <span class="sub">· Nivel agregado en GL</span></h4>
+        <ul>
+          <li>Cuenta colectiva en el GL (ej. 191100)</li>
+          <li>Refleja el saldo total de todos los proveedores</li>
+          <li>No se puede contabilizar directamente — solo a través de AP</li>
+          <li>Visible en: Balance Sheet / Trial Balance</li>
+          <li style="font-weight:700;color:var(--c-fi);">GL Account 191100: EUR -20.500</li>
+          <li style="font-size:0.8rem;color:var(--muted);">= Sum of all individual AP accounts</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de T2 — Profundización. No repiten los de T1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">3-Way Match</div><div class="term-es">Verificación triangular</div><div class="term-def">Proceso de verificar que la factura del proveedor coincide con la Orden de Compra (PO) y la entrada de mercancía (GR) en términos de cantidad y precio. Paso previo a la contabilización en AP.</div></div>
+      <div class="gcard"><div class="term-en">GR/IR Account</div><div class="term-es">Cuenta de recepción de mercancía/facturas</div><div class="term-def">Cuenta transitoria del GL donde SAP registra provisionalmente el valor de los bienes recibidos antes de recibir la factura del proveedor. Se compensa al contabilizar la factura.</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Account</div><div class="term-es">Cuenta de reconciliación</div><div class="term-def">Cuenta en el GL que recibe automáticamente todos los posteos de AP. Su saldo debe coincidir siempre con la suma de todos los saldos individuales del subledger de AP.</div></div>
+      <div class="gcard"><div class="term-en">Exchange Rate Loss / Gain</div><div class="term-es">Pérdida / ganancia por tipo de cambio</div><div class="term-def">Diferencia entre el importe en moneda local registrado en la factura y el importe efectivamente pagado, causada por variación en el tipo de cambio entre la fecha de factura y la fecha de pago.</div></div>
+      <div class="gcard"><div class="term-en">Goods Receipt (GR)</div><div class="term-es">Entrada de mercancía</div><div class="term-def">Registro en SAP del momento en que se reciben físicamente los bienes del proveedor. Pertenece al módulo MM. Genera una entrada provisionaria en el GR/IR account.</div></div>
+      <div class="gcard"><div class="term-en">Purchase Order (PO)</div><div class="term-es">Orden de compra</div><div class="term-def">Documento creado por el departamento de compras que formaliza el pedido al proveedor. Contiene cantidad, precio y condiciones acordadas. Es la referencia para el 3-way match.</div></div>
+      <div class="gcard"><div class="term-en">Document Date (BLDAT)</div><div class="term-es">Fecha del documento</div><div class="term-def">Campo del asiento SAP que registra la fecha que figura en la factura física del proveedor. Puede diferir de la Posting Date (fecha de contabilización en el sistema).</div></div>
+      <div class="gcard"><div class="term-en">Reference (XBLNR)</div><div class="term-es">Referencia</div><div class="term-def">Campo del asiento SAP donde se guarda el número de la factura del proveedor (tal como aparece en el documento físico). Clave para evitar duplicados y para la auditoría.</div></div>
+      <div class="gcard"><div class="term-en">Credit Memo without Reference</div><div class="term-es">Nota de crédito sin referencia</div><div class="term-def">Credit memo no vinculado a una factura específica previa. Común cuando el proveedor emite un descuento por fidelidad o compensación comercial, no como corrección de un error.</div></div>
+      <div class="gcard"><div class="term-en">Open Item</div><div class="term-es">Partida abierta</div><div class="term-def">Una factura contabilizada (o credit memo) que todavía no ha sido pagada ni compensada. La gestión de open items es el núcleo del trabajo diario de AP.</div></div>
+      <div class="gcard"><div class="term-en">Incoterms</div><div class="term-es">Términos de entrega internacionales</div><div class="term-def">Reglas internacionales que definen responsabilidades de transporte, seguros y aduanas entre comprador y vendedor. Relevantes en AP internacional — pueden generar Subsequent Debits de flete.</div></div>
+      <div class="gcard"><div class="term-en">Document Currency</div><div class="term-es">Moneda del documento</div><div class="term-def">La moneda en que está expresada la factura del proveedor (puede ser USD, AUD, EUR, etc.). SAP almacena siempre el importe en la moneda del documento Y en la moneda local de la sociedad.</div></div>
+    </div>
+  </div>
+</section>
+<footer>T2 · Profundización — AP Posting Logic (AP) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

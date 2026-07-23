@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Invoice Holding &amp; Parking — Configurador GUI | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#A78BC9;--t1-dark:#6B4C8F;--t1-pale:rgba(167,139,201,0.12);--t1-pale-border:rgba(167,139,201,0.38);--navy-950:#0A0F1C;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#160C24 55%,#200E32 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(167,139,201,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;}
+  .area-tag{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);color:var(--t1-dark);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;white-space:nowrap;align-self:center;}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 26px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .spro-tree{background:#FAFAFA;border:1px solid #D0D4DC;border-radius:8px;padding:12px 16px;margin-bottom:14px;}
+  .spro-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--t1-dark);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+  .spro-node{display:flex;align-items:center;gap:6px;padding:2px 0;color:var(--body);}
+  .spro-node .sn-text{font-size:11.5px;}
+  .spro-node.active .sn-text{font-weight:700;color:var(--t1-dark);background:rgba(167,139,201,0.15);border-radius:4px;padding:1px 6px;}
+  .i1{padding-left:18px;}.i2{padding-left:36px;}.i3{padding-left:54px;}.i4{padding-left:72px;}
+  .sapgui{border:2px solid #A8B0BC;border-radius:4px;overflow:hidden;box-shadow:0 4px 14px rgba(10,15,28,0.1);}
+  .gui-bar{background:linear-gradient(180deg,#3A5A80,#2A4060);padding:7px 14px;display:flex;align-items:center;gap:12px;}
+  .tcode{font-family:'JetBrains Mono',monospace;font-size:11px;color:white;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:3px;padding:3px 8px;flex-shrink:0;}
+  .gui-title{font-size:12.5px;font-weight:600;color:white;}
+  .gui-tools{background:#C8D0DA;padding:5px 10px;display:flex;gap:6px;border-bottom:1px solid #A8B0BC;}
+  .gbtn{background:#D8E0E8;border:1px solid #9AA0AA;border-radius:2px;padding:3px 8px;font-size:10.5px;color:#2A2A2A;}
+  .gui-body{background:white;padding:14px 16px;}
+  .gui-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .gui-table th{background:#C8D0DA;color:#1A1A1A;padding:6px 10px;text-align:left;border:1px solid #A8B0BC;font-weight:700;font-size:11px;}
+  .gui-table td{padding:5px 10px;border:1px solid #D4D8DC;color:#2A2A2A;vertical-align:middle;}
+  .gui-table tr:nth-child(even) td{background:#F5F7FA;}
+  .gui-table .hi td{background:#CCE0F5;border-left:2px solid #0070C8;}
+  .gui-status{background:#C8D0DA;border-top:1px solid #A8B0BC;padding:4px 12px;font-size:10.5px;color:#444;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR / GUI</span>
+  <a href="#s1">Document Types for Hold/Park</a>
+  <a href="#s2">Number Ranges</a>
+  <a href="#s3">Field Status Variants</a>
+  <a href="#s4">Tolerance Groups</a>
+  <a href="#s5">Posting Periods</a>
+  <a href="#s6">Authorization — Hold</a>
+  <a href="#s7">Authorization — Park &amp; Delete</a>
+  <a href="#s8">Workflow Task Configuration</a>
+  <a href="#s9">Supplier Invoices List — App Config</a>
+  <a href="#s10">Company Code Settings</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+    </div>
+    <h1>Invoice <span class="accent">Holding &amp; Parking</span></h1>
+    <h2>Tangibilización — Configurador SAP GUI</h2>
+    <p class="desc">Las 10 configuraciones que habilitan y controlan el Hold, el Park y el Workflow: tipos de documento, rangos de numeración, status de campos, tolerancias, períodos, autorizaciones y tareas de workflow.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">🔧</span>
+      <b>Vos, en el rol de Configurador</b> · SAP Consultant<br>
+      <span style="font-size:12.5px;opacity:0.85;">Estas configuraciones determinan qué campos son requeridos para Hold y Park, quién puede eliminar borradores, y cómo fluye la aprobación vía Workflow.</span>
+    </div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Document Types for Hold and Parked Documents</span><span class="sec-title-es">Tipos de documento para Hold y Park</span></div><div class="sec-desc">Los tipos de documento que controlan el comportamiento del Hold y Park — específicamente KR para facturas de proveedor.</div></div></div>
+  <div class="theory-box"><strong>El tipo de documento KR aplica tanto a los documentos parkeados como a los Accounting Documents:</strong> cuando se parkea una factura, el sistema crea una referencia con el tipo de documento KR (Vendor Invoice). Al contabilizar, el Accounting Document también usa KR. El tipo de documento controla qué cuentas pueden usarse, el rango de numeración, y las reglas de saldo. Para Hold, el documento provisional puede usar un tipo de documento provisional diferente — esto es configurable.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Define Document Types for Entry View</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Document Types — Vendor Invoice Processing</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">📋 Detail</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>DocType</th><th>Description</th><th>Net Doc Type</th><th>Park-able?</th><th>Account Types</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>KR</strong></td><td>Vendor Invoice</td><td>KR</td><td>✔ Yes</td><td>K, S, D, A</td></tr>
+            <tr><td>KG</td><td>Vendor Credit Memo</td><td>KG</td><td>✔ Yes</td><td>K, S</td></tr>
+            <tr><td>RE</td><td>Invoice – Gross</td><td>RE</td><td>✔ Yes</td><td>K, S, M</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Hold function saves with doc type KR in a temporary buffer · Parking creates a parked KR entry visible in AP sub-ledger</div>
+      </div>
+      <div class="gui-status">KR = primary doc type for vendor invoices · supports both Hold and Park</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Number Ranges — Hold, Park, and Posted Documents</span><span class="sec-title-es">Rangos de numeración para borradores y documentos contabilizados</span></div><div class="sec-desc">Cómo se numeran los documentos en Hold, en Park y después de contabilizar.</div></div></div>
+  <div class="theory-box"><strong>Los rangos de numeración determinan los números asignados en cada estado:</strong> SAP puede asignar números distintos en la fase de borrador (Hold/Park) y en el Accounting Document final. En Hold, el número es provisional del rango de Hold. Al publicar, SAP asigna el número definitivo desde el rango del Accounting Document. El configurador gestiona estos rangos para garantizar que no se agoten y que sean auditables.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Document Number Ranges — Entry View</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Number Ranges — DE01 · Document Type KR</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Intervals</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Range No.</th><th>From</th><th>To</th><th>Current</th><th>Type</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>19</td><td>1900000000</td><td>1999999999</td><td>1900000025</td><td>Internal</td><td>KR Accounting Documents (posted)</td></tr>
+            <tr><td>00</td><td>0000000000</td><td>0099999999</td><td>0020000145</td><td>Internal</td><td>Hold provisional numbers</td></tr>
+            <tr><td>18</td><td>1800000000</td><td>1899999999</td><td>1800000003</td><td>Internal</td><td>Parked KR documents</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Hold provisional (range 00) → posted accounting doc (range 19) — different numbers are normal</div>
+      </div>
+      <div class="gui-status">Range 19 = final Accounting Document · Range 00 = Hold buffer · Range 18 = Parked</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Field Status Variants — Required Fields for Posting</span><span class="sec-title-es">Variantes de status de campo — campos requeridos para publicar</span></div><div class="sec-desc">La configuración que determina qué campos son obligatorios al contabilizar (y por ende al Save as Complete).</div></div></div>
+  <div class="theory-box"><strong>El Field Status Variant define qué campos son Must, Optional, o Suppressed:</strong> cuando el sistema valida un documento en "Save as Complete", verifica que todos los campos con status "Required" (Must) estén completos. El configurador define esto mediante el Field Status Variant asignado a cada GL account. Si una cuenta exige Cost Center, el documento no puede guardarse como Complete sin él. Esto es lo que convierte el "Save as Complete" en una validación real de completitud.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Define Field Status Variants</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Field Status Variant BIKE — GL Account 416000 (Maintenance)</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Field Group</th><th>Field</th><th>Status</th><th>Impact on Hold</th></tr></thead>
+          <tbody>
+            <tr><td>General Data</td><td>Invoice Date</td><td><strong>Required</strong></td><td>Required for Hold AND Park</td></tr>
+            <tr><td>General Data</td><td>Reference</td><td>Required</td><td>Required for Park only</td></tr>
+            <tr class="hi"><td>Account Assignment</td><td><strong>Cost Center (KOSTL)</strong></td><td><strong>Required</strong></td><td>Optional in Hold · Required for Save as Complete</td></tr>
+            <tr><td>Account Assignment</td><td>WBS Element</td><td>Optional</td><td>Not required in any state</td></tr>
+            <tr><td>Tax</td><td>Tax Code</td><td>Required</td><td>Required for Save as Complete</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Field Status Variant BIKE · GL Account 416000 · Cost Center = Required → triggers Hold scenario</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Tolerance Groups for Invoice Posting</span><span class="sec-title-es">Grupos de tolerancia para posteo de facturas</span></div><div class="sec-desc">Los límites de tolerancia que controlan qué diferencias de importe se aceptan en el documento antes de contabilizar.</div></div></div>
+  <div class="theory-box"><strong>Las tolerancias definen las diferencias que SAP acepta sin error al publicar:</strong> cuando se completa una factura (de Hold o Park) para contabilizar, el saldo debe ser exactamente cero. Sin embargo, pueden surgir pequeñas diferencias por redondeos o tipos de cambio. El Tolerance Group define hasta qué importe SAP acepta estas diferencias automáticamente vs cuáles requieren corrección manual.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Business Transactions</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Define Tolerances (Employees)</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Tolerance Groups — Employees · DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Group</th><th>Upper Limit per Doc</th><th>Upper Limit per Item</th><th>Assigned to</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>AP01</strong></td><td>EUR 999.999</td><td>EUR 20.000</td><td>Standard AP Accountants (Jennifer)</td></tr>
+            <tr><td>AP02</td><td>EUR 999.999</td><td>EUR 100.000</td><td>AP Senior / Supervisors</td></tr>
+            <tr><td>AP03</td><td>Unlimited</td><td>Unlimited</td><td>AP Manager</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">EUR 45.000 exceeds Jennifer's AP01 group limit per item → must be approved by AP02 (Supervisor) → triggers Park + Workflow</div>
+      </div>
+      <div class="gui-status">AP01: EUR 20.000 per-item limit → EUR 45.000 invoice requires AP02 approval</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Posting Periods — Impact on Park and Posting</span><span class="sec-title-es">Períodos de contabilización — impacto en Park y posteo</span></div><div class="sec-desc">Los períodos abiertos que determinan si un documento parkeado puede contabilizarse en el período de su fecha.</div></div></div>
+  <div class="theory-box"><strong>Un documento puede parkearse en cualquier momento, pero solo se publica si el período está abierto:</strong> el Parking en sí no requiere que el período esté abierto. Sin embargo, al intentar publicar el documento (desde Park o desde Hold editado), SAP verifica que el período de la Posting Date esté abierto. Si el período se cerró mientras el documento estaba en Park, hay que cambiar la Posting Date al período actual antes de poder contabilizar.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 T-code: OB52</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Fiscal Year</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Open and Close Posting Periods (OB52)</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">OB52</span><span class="gui-title">Posting Periods — DE01 · July 2025</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Var.</th><th>Acct Type</th><th>From Per.</th><th>Year</th><th>To Per.</th><th>Year</th><th>Parking OK?</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>DE01</td><td>K (Vendor)</td><td><strong>7</strong></td><td>2025</td><td><strong>8</strong></td><td>2025</td><td>✔ Yes for posting · Park always ok</td></tr>
+            <tr><td>DE01</td><td>+ (all)</td><td>7</td><td>2025</td><td>8</td><td>2025</td><td>✔ Yes for posting</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Park itself does NOT check period · Post checks that Posting Date falls within open periods</div>
+      </div>
+      <div class="gui-status">Period 7–8/2025 open · Parked docs can post as long as Posting Date is within open periods</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="area-tag">Basis / Authorization</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Authorization for Hold Function</span><span class="sec-title-es">Autorización para la función Hold</span></div><div class="sec-desc">Los objetos de autorización que controlan quién puede retener documentos y quién puede eliminarlos.</div></div></div>
+  <div class="theory-box"><strong>El Hold es una función de entrada de datos — casi todos los contadores de AP la tienen:</strong> el Hold es una función de baja restricción en SAP — la mayoría de los contadores AP que pueden crear facturas también pueden retenerlas. Sin embargo, la <strong>eliminación</strong> de documentos en Hold sí requiere una autorización adicional (actibity 06 en el objeto F_BKPF_BUK), porque eliminar un borrador es una acción con mayor impacto.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 T-code: PFCG — Role: AP_ACCOUNTANT</div>
+      <div class="spro-node i1 active"><span>🔷</span><span class="sn-text">PFCG — Authorization Object: F_BKPF_BUK</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">PFCG</span><span class="gui-title">Role AP_ACCOUNTANT — Hold &amp; Delete Authorization</span></div>
+      <div class="gui-tools"><button class="gbtn">Authorizations</button><button class="gbtn">💾 Generate</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Auth. Object</th><th>Activity (ACTVT)</th><th>Description</th><th>Hold?</th><th>Delete?</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>F_BKPF_BUK</td><td>01 — Create</td><td>Create documents (incl. Hold)</td><td>✔</td><td></td></tr>
+            <tr><td>F_BKPF_BUK</td><td>02 — Change</td><td>Edit held/parked documents</td><td>✔</td><td></td></tr>
+            <tr class="hi"><td>F_BKPF_BUK</td><td><strong>06 — Delete</strong></td><td>Delete held documents</td><td></td><td><strong>✔ Requires explicit grant</strong></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Activity 06 (Delete) is NOT included in standard AP Accountant role — must be explicitly added</div>
+      </div>
+      <div class="gui-status">Delete held documents = Activity 06 · NOT standard · requires approval to grant</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="area-tag">Basis / Authorization</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Authorization for Park and Save as Complete</span><span class="sec-title-es">Autorización para Park y Save as Complete</span></div><div class="sec-desc">Los roles y objetos que controlan quién puede estacionar facturas y quién puede guardarlas como completas para iniciar el workflow.</div></div></div>
+  <div class="theory-box"><strong>Park y Save as Complete tienen el mismo objeto pero pueden separarse por rol:</strong> la autorización para Park y para Save as Complete usa el mismo objeto F_BKPF_BUK. Sin embargo, los roles pueden diferenciarse por el límite del importe (el Tolerance Group). Un AP Accountant puede parkear cualquier importe, pero Save as Complete queda limitado a los importes dentro de su Tolerance Group — encima de ese límite, el sistema no permite el posteo aunque permita el Park.</div>
+  <div class="visual-wrap">
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">PFCG</span><span class="gui-title">Roles AP_ACCOUNTANT vs AP_SUPERVISOR — Park &amp; Complete</span></div>
+      <div class="gui-tools"><button class="gbtn">Compare Roles</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Capability</th><th>AP_ACCOUNTANT (Jennifer)</th><th>AP_SUPERVISOR</th></tr></thead>
+          <tbody>
+            <tr><td>Park invoice (any amount)</td><td>✔</td><td>✔</td></tr>
+            <tr><td>Save as Complete ≤ EUR 20.000</td><td>✔ (within tolerance)</td><td>✔</td></tr>
+            <tr class="hi"><td>Save as Complete > EUR 20.000</td><td>✔ park only · post requires approval</td><td>✔ Full authorization</td></tr>
+            <tr><td>Post invoice > EUR 20.000</td><td>❌ Not authorized</td><td>✔</td></tr>
+            <tr><td>Approve via Workflow</td><td>❌</td><td>✔</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Tolerance Group AP01 (EUR 20.000 limit) forces Park+Workflow for high-value invoices</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="area-tag">Workflow (BC-BMT)</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Workflow Task Configuration for Invoice Approval</span><span class="sec-title-es">Configuración de tarea de Workflow para aprobación de facturas</span></div><div class="sec-desc">La configuración básica de la tarea de Workflow que envía la factura al revisor cuando se guarda como completa.</div></div></div>
+  <div class="theory-box"><strong>El Workflow es el motor que mueve la factura entre personas automáticamente:</strong> cuando una factura se guarda como "Save as Complete", SAP puede disparar automáticamente un <strong>Workflow Task</strong> que notifica al revisor designado. El configurador define qué tarea se dispara, quién es el agente (revisor), y cuáles son las posibles acciones (Approve → Post, Reject → Return). Sin esta configuración, el Save as Complete solo cambia el estado pero no notifica a nadie.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 T-code: SWI1 / Workflow Builder</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">SAP Business Workflow</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Development</span></div>
+      <div class="spro-node i2 active"><span>🔷</span><span class="sn-text">Task: Approve Parked Supplier Invoice (WS00600033)</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">SWI1</span><span class="gui-title">Workflow Task WS00600033 — Approve Parked Supplier Invoice</span></div>
+      <div class="gui-tools"><button class="gbtn">Task Properties</button><button class="gbtn">Agent Assignment</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Property</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Task ID</td><td>WS00600033</td></tr>
+            <tr class="hi"><td>Trigger Event</td><td>Invoice Saved as Complete (BKPF — Save as Complete)</td></tr>
+            <tr><td>Agent Type</td><td>Organizational Unit (AP Supervisors group)</td></tr>
+            <tr><td>Decision Options</td><td>Approve (→ Post invoice) · Reject (→ Return to creator)</td></tr>
+            <tr><td>Notification</td><td>SAP My Inbox + Email notification</td></tr>
+            <tr><td>Deadline</td><td>48 hours (configurable)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">WS00600033 triggers on Save as Complete · routes to AP_SUPERVISOR role holders</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Supplier Invoices List — App Configuration and Filters</span><span class="sec-title-es">Lista de facturas de proveedor — configuración de la app</span></div><div class="sec-desc">Las configuraciones que determinan qué statuses aparecen en la Supplier Invoices List y cómo se filtran.</div></div></div>
+  <div class="theory-box"><strong>La Supplier Invoices List puede configurarse para mostrar u ocultar ciertos statuses según el rol:</strong> el configurador puede personalizar qué statuses son visibles por defecto en la Supplier Invoices List según el rol del usuario. Por ejemplo, los supervisores pueden ver todos los statuses incluyendo Draft (Personal) de otros usuarios, mientras que los contables estándar solo ven sus propios Draft (Personal) y los Held/Parked del equipo.</div>
+  <div class="visual-wrap">
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Supplier Invoices List — Status Visibility by Role</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit Config</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Status</th><th>AP_ACCOUNTANT sees</th><th>AP_SUPERVISOR sees</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>Draft (Personal)</td><td>Own drafts only</td><td>All users' drafts</td></tr>
+            <tr><td>Held</td><td>All held invoices (team)</td><td>All held invoices</td></tr>
+            <tr class="hi"><td>Parked</td><td>All parked invoices</td><td>All parked invoices</td></tr>
+            <tr><td>Saved as Complete</td><td>All (for own submissions)</td><td>All (+ approve action)</td></tr>
+            <tr><td>Posted</td><td>All posted</td><td>All posted</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Draft (Personal) = user-specific · all other statuses = team-visible</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Company Code Settings — Hold and Park Behavior</span><span class="sec-title-es">Configuración de sociedad — comportamiento de Hold y Park</span></div><div class="sec-desc">Los parámetros de la sociedad que afectan el comportamiento del Hold y el Park — moneda, ejercicio fiscal, y controles generales.</div></div></div>
+  <div class="theory-box"><strong>La sociedad encapsula el contexto en el que opera el Hold y el Park:</strong> aunque Hold y Park son funciones globales, su comportamiento específico (qué períodos están abiertos, qué moneda se usa, qué plan de cuentas aplica) depende de la sociedad. El configurador define la sociedad con su moneda local, el plan de cuentas, y el ejercicio fiscal — todos estos parámetros afectan directamente qué datos son obligatorios al publicar desde un borrador.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2 active"><span>🔷</span><span class="sn-text">Define Company Code Global Settings</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Company Code DE01 — Bike GmbH</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Parameter</th><th>Value</th><th>Impact on Hold/Park</th></tr></thead>
+          <tbody>
+            <tr><td>Company Code</td><td>DE01</td><td>Context for all Hold/Park operations</td></tr>
+            <tr class="hi"><td>Local Currency</td><td>EUR</td><td>Currency of amounts in Held/Parked docs</td></tr>
+            <tr><td>Chart of Accounts</td><td>BIKE</td><td>Determines valid GL accounts for expense line</td></tr>
+            <tr class="hi"><td>Fiscal Year Variant</td><td>K4 (Calendar Year)</td><td>Period control for posting after Park/Hold</td></tr>
+            <tr><td>Field Status Variant</td><td>BIKE</td><td>Required fields for Save as Complete</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">DE01 Bike GmbH · EUR · Chart BIKE · FY K4 · Field Status BIKE</div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>T4 · Configurador SAP GUI — Invoice Holding &amp; Parking (AP) · 🔧 Rol: Configurador · Biblioteca de Guías SAP</footer>
+</body>
+</html>

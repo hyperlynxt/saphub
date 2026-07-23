@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Invoice Holding &amp; Parking — Usuario Fiori | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#7FC4E0;--t1-dark:#2E7096;--t1-pale:rgba(127,196,224,0.12);--navy-950:#0A0F1C;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--hold:#8B4513;--park:#1A4B8C;--complete:#3D7A52;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#0C1C2E 55%,#0C2838 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(127,196,224,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;}
+  .actor-badge{width:36px;height:36px;border-radius:50%;background:var(--t1-dark);color:white;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid rgba(127,196,224,0.6);}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 26px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .nav-trail{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.82rem;}
+  .trail-step{color:var(--muted);font-weight:500;}
+  .trail-sep{color:var(--border);}
+  .trail-current{color:var(--t1-dark);font-weight:700;}
+  .screen-wrap{border:2px solid #C8D8E6;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(10,15,28,0.1);}
+  .screen-shell{background:#354A5E;padding:9px 16px;display:flex;align-items:center;gap:14px;}
+  .sap-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:white;letter-spacing:1px;flex-shrink:0;}
+  .app-title-bar{font-size:12.5px;font-weight:600;color:white;}
+  .user-chip{margin-left:auto;background:rgba(255,255,255,0.15);border-radius:20px;padding:3px 10px;font-size:11px;color:rgba(255,255,255,0.9);}
+  .screen-body{background:#F5F6F7;padding:14px 16px;}
+  .fiori-page-head{background:white;border-radius:8px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .fiori-page-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#32363A;}
+  .btn-primary{background:#0070F2;color:white;border:none;border-radius:4px;padding:6px 14px;font-size:11.5px;font-weight:600;cursor:pointer;}
+  .btn-hold{background:#8B4513;color:white;border:none;border-radius:4px;padding:6px 14px;font-size:11.5px;font-weight:600;}
+  .btn-park{background:#1A4B8C;color:white;border:none;border-radius:4px;padding:6px 14px;font-size:11.5px;font-weight:600;}
+  .btn-complete{background:#3D7A52;color:white;border:none;border-radius:4px;padding:6px 14px;font-size:11.5px;font-weight:600;}
+  .btn-secondary{background:white;color:#0070F2;border:1.5px solid #0070F2;border-radius:4px;padding:6px 14px;font-size:11.5px;font-weight:600;}
+  .fiori-form{background:white;border-radius:8px;padding:12px 14px;margin-bottom:8px;}
+  .form-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+  .ffield{flex:1;min-width:110px;}
+  .ffield label{font-size:10.5px;color:#666;display:block;margin-bottom:2px;}
+  .ffield .fval{border:1px solid #89919A;border-radius:4px;padding:5px 8px;font-size:11.5px;color:#32363A;background:white;width:100%;}
+  .ffield .fval.filled{border-color:#0070F2;background:rgba(0,112,242,0.03);}
+  .ffield .fval.missing{border-color:#C62828;background:rgba(198,40,40,0.03);}
+  .fval-err{font-size:10px;color:#C62828;margin-top:2px;}
+  .fiori-table{width:100%;border-collapse:collapse;font-size:11.5px;}
+  .fiori-table th{background:#F5F6F7;color:#666;padding:7px 10px;text-align:left;font-weight:600;border-bottom:2px solid #E0E0E0;font-size:10.5px;white-space:nowrap;}
+  .fiori-table td{padding:7px 10px;border-bottom:1px solid #F0F0F0;color:#32363A;vertical-align:middle;}
+  .fiori-table tr:last-child td{border-bottom:none;}
+  .fstatus{display:inline-block;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:600;}
+  .fs-hold{background:rgba(139,69,19,0.1);color:#8B4513;}
+  .fs-park{background:rgba(26,75,140,0.08);color:#1A4B8C;}
+  .fs-complete{background:rgba(61,122,82,0.1);color:#3D7A52;}
+  .fs-posted{background:rgba(10,15,28,0.07);color:#2A2A2A;}
+  .fs-draft{background:rgba(90,107,140,0.1);color:#5A6B8C;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO / FIORI</span>
+  <a href="#s1">Jennifer's Situation</a>
+  <a href="#s2">Create Incoming Invoice</a>
+  <a href="#s3">Hold — Saving the Minimum</a>
+  <a href="#s4">Supplier Invoices List — Held</a>
+  <a href="#s5">Edit a Held Invoice</a>
+  <a href="#s6">Post After Completing</a>
+  <a href="#s7">Park — More Data Required</a>
+  <a href="#s8">Supplier Invoices List — All Statuses</a>
+  <a href="#s9">Save as Complete</a>
+  <a href="#s10">Workflow Notification</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+    </div>
+    <h1>Invoice <span class="accent">Holding &amp; Parking</span></h1>
+    <h2>Tangibilización — Usuario Fiori</h2>
+    <p class="desc">El Hold y el Park vistos desde la pantalla de Jennifer: cómo guardar una factura incompleta, recuperarla después, completarla, y moverla al workflow para aprobación.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">👤</span>
+      <b>Jennifer</b> · AP Accountant · Accounts Payable<br>
+      <span style="font-size:12.5px;opacity:0.85;">Situación: recibió una factura pero no sabe el centro de costo correcto. Necesita guardarla provisionalmente y completarla mañana.</span>
+    </div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Jennifer's Situation — Missing Cost Center</span><span class="sec-title-es">El escenario de Jennifer</span></div><div class="sec-desc">Jennifer recibe una factura de Tireless Tires pero no puede identificar el centro de costo correcto para la imputación.</div></div></div>
+  <div class="theory-box"><strong>La factura llegó, pero falta información clave para contabilizarla:</strong> Jennifer tiene el documento físico de Tireless Tires GmbH. Sabe el importe y la fecha, pero la factura se refiere a un servicio cuyo centro de costo desconoce. Su colega del área de costos no está disponible hasta mañana. En lugar de esperar sin hacer nada o inventar una imputación incorrecta, Jennifer decide usar Hold para guardar lo que tiene.</div>
+  <div class="visual-wrap">
+    <div style="background:white;border-radius:10px;padding:16px 20px;border:2px solid #E0E0E0;">
+      <div style="font-size:12.5px;font-weight:700;color:#32363A;margin-bottom:12px;">📧 Incoming Situation — Tireless Tires GmbH</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11.5px;">
+        <div style="background:#E8F5E9;border-radius:6px;padding:10px 12px;"><span style="color:#2E7D32;font-weight:700;">✓ Known:</span><br>Invoice date: 15.07.2025<br>Supplier: Tireless Tires GmbH<br>Invoice amount: EUR 8.800</div>
+        <div style="background:#FFEBEE;border-radius:6px;padding:10px 12px;"><span style="color:#C62828;font-weight:700;">✗ Missing:</span><br>GL Account for posting<br>Cost Center assignment<br>Colleague not available until tomorrow</div>
+      </div>
+      <div style="margin-top:10px;background:rgba(46,112,150,0.08);border-radius:6px;padding:8px 12px;font-size:11px;color:#1565C0;">💡 Jennifer's decision: <strong>Hold</strong> the invoice now with the minimum data, complete tomorrow when the cost center is confirmed.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Opening Create Incoming Invoices</span><span class="sec-title-es">Abrir la app de ingreso de facturas</span></div><div class="sec-desc">Jennifer abre la app Create Incoming Invoices desde su Launchpad y comienza a ingresar los datos disponibles.</div></div></div>
+  <div class="theory-box"><strong>El flujo empieza siempre en la misma app — la decisión Hold vs Park vs Post viene al final:</strong> Jennifer no necesita abrir una app diferente para Hold o Park. Usa la misma app que para contabilizar facturas normales. La diferencia está en el botón que elige al final: Post, Hold, o Park.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Create Incoming Invoices</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Incoming Invoices</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">New Supplier Invoice</span></div>
+        <div class="fiori-form">
+          <div class="form-row">
+            <div class="ffield"><label>Invoice Date *</label><div class="fval filled">15.07.2025</div></div>
+            <div class="ffield"><label>Invoicing Party *</label><div class="fval filled">100023 — Tireless Tires GmbH</div></div>
+            <div class="ffield"><label>Reference</label><div class="fval">TT-2025-07-4421</div></div>
+            <div class="ffield"><label>Company Code</label><div class="fval filled">DE01</div></div>
+          </div>
+          <div class="form-row">
+            <div class="ffield"><label>Amount</label><div class="fval">8.800,00 EUR</div></div>
+            <div class="ffield"><label>GL Account</label><div class="fval missing">?  — unknown</div><div class="fval-err">⚠ Need to ask cost controlling team</div></div>
+            <div class="ffield"><label>Cost Center</label><div class="fval missing">?  — unknown</div><div class="fval-err">⚠ Colleague not available</div></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button class="btn-hold">📌 Hold</button>
+          <button class="btn-park" style="opacity:0.5;">Park</button>
+          <button class="btn-primary" style="opacity:0.5;">Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Hold — Saving the Invoice Draft</span><span class="sec-title-es">Hold — guardar el borrador de la factura</span></div><div class="sec-desc">Jennifer hace click en Hold. SAP guarda el borrador con los mínimos datos y asigna un número de documento provisional.</div></div></div>
+  <div class="theory-box"><strong>Hold acepta el documento incompleto y lo guarda sin validar saldo ni campos completos:</strong> al hacer click en Hold, SAP no valida si el documento está balanceado ni si todos los campos están completos. Solo requiere la fecha y el proveedor — el resto puede estar vacío. El sistema asigna automáticamente un número provisional y muestra la confirmación.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Create Incoming Invoices</span><span class="trail-sep">›</span><span class="trail-current">Hold Document — Confirmation</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Incoming Invoices — Hold Confirmation</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:#FFF3E0;border-radius:8px;padding:14px 16px;border-left:4px solid #8B4513;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:700;color:#8B4513;margin-bottom:4px;">📌 Document Held Successfully</div>
+          <div style="font-size:11.5px;color:#5D4037;">Document number <strong>0020000145</strong> has been saved in Hold status.</div>
+          <div style="font-size:11.5px;color:#5D4037;margin-top:4px;">You can edit this document later from the Supplier Invoices List.</div>
+        </div>
+        <div style="background:white;border-radius:8px;padding:12px 14px;border:1px solid #E0E0E0;font-size:11.5px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><span style="color:#666;">Status:</span> <span class="fstatus fs-hold">Held</span></div>
+            <div><span style="color:#666;">Document:</span> <strong>0020000145</strong> (provisional)</div>
+            <div><span style="color:#666;">Supplier:</span> Tireless Tires GmbH</div>
+            <div><span style="color:#666;">Date:</span> 15.07.2025</div>
+            <div><span style="color:#666;">Visible in A/P Line Items:</span> <strong style="color:#C62828;">No</strong></div>
+            <div><span style="color:#666;">Account balances updated:</span> <strong style="color:#C62828;">No</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Finding the Held Invoice — Supplier Invoices List</span><span class="sec-title-es">Encontrar la factura retenida</span></div><div class="sec-desc">Al día siguiente, Jennifer abre Supplier Invoices List y filtra por status "Held" para encontrar la factura que guardó ayer.</div></div></div>
+  <div class="theory-box"><strong>La Supplier Invoices List es el punto de reingreso al proceso:</strong> Jennifer no necesita recordar el número de documento provisional. Abre la Supplier Invoices List, filtra por status "Held" y ve su factura de Tireless Tires GmbH esperando.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Supplier Invoices List — Status: Held</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Supplier Invoices List</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form" style="margin-bottom:8px;">
+          <div class="form-row">
+            <div class="ffield"><label>Status</label><div class="fval filled">Held</div></div>
+            <div class="ffield"><label>Company Code</label><div class="fval filled">DE01</div></div>
+            <div class="ffield"><label>Supplier</label><div class="fval">All</div></div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+          <table class="fiori-table">
+            <thead><tr><th>Status</th><th>Invoice Date</th><th>Supplier</th><th>Amount</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr style="background:rgba(139,69,19,0.04);">
+                <td><span class="fstatus fs-hold">Held</span></td>
+                <td>15.07.2025</td>
+                <td>Tireless Tires GmbH</td>
+                <td>— (incomplete)</td>
+                <td><button class="btn-secondary" style="font-size:10px;padding:3px 8px;">✏️ Edit</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:#8B4513;background:rgba(139,69,19,0.06);padding:8px 12px;border-radius:6px;">📌 Held invoices: only visible in Supplier Invoices List — not in Manage Supplier Line Items</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Edit a Held Invoice — Adding the Missing Data</span><span class="sec-title-es">Editar una factura retenida</span></div><div class="sec-desc">Jennifer hace click en Edit, agrega el centro de costo que obtuvo de su colega, y completa el documento.</div></div></div>
+  <div class="theory-box"><strong>Edit abre el borrador con los datos que se ingresaron antes — listos para completar:</strong> Jennifer ve todos los datos que ingresó ayer y los campos que dejó vacíos. Su colega le confirmó que el centro de costo es CC-MAINT-DE01 (Maintenance, DE01). Agrega la cuenta GL de gastos de mantenimiento y el cost center.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Supplier Invoices List</span><span class="trail-sep">›</span><span class="trail-current">Edit Held Invoice — Tireless Tires GmbH</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Incoming Invoices — Edit (from Hold 0020000145)</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:#FFF3E0;border-radius:6px;padding:6px 12px;margin-bottom:8px;font-size:11px;color:#8B4513;font-weight:600;">📌 Editing held document 0020000145 — add missing fields to post</div>
+        <div class="fiori-form">
+          <div class="form-row">
+            <div class="ffield"><label>Invoice Date *</label><div class="fval filled">15.07.2025</div></div>
+            <div class="ffield"><label>Invoicing Party *</label><div class="fval filled">100023 — Tireless Tires GmbH</div></div>
+            <div class="ffield"><label>Reference *</label><div class="fval filled">TT-2025-07-4421</div></div>
+            <div class="ffield"><label>Amount</label><div class="fval filled">8.800,00 EUR</div></div>
+          </div>
+          <div class="form-row">
+            <div class="ffield"><label>GL Account *</label><div class="fval filled" style="border-color:#2E7D32;">416000 — Maintenance Expenses</div></div>
+            <div class="ffield"><label>Cost Center *</label><div class="fval filled" style="border-color:#2E7D32;">CC-MAINT-DE01 ✓ confirmed by colleague</div></div>
+            <div class="ffield"><label>Tax Code</label><div class="fval filled">V2 (19% Input Tax)</div></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button class="btn-hold">📌 Hold Again</button>
+          <button class="btn-primary">Post ✓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Post After Completing — Creating the Accounting Document</span><span class="sec-title-es">Publicar después de completar</span></div><div class="sec-desc">Con todos los datos completos, Jennifer hace click en Post y SAP crea el Accounting Document definitivo.</div></div></div>
+  <div class="theory-box"><strong>El Post convierte el borrador en el documento contable permanente:</strong> al hacer click en Post, SAP crea el Accounting Document con un nuevo número definitivo, actualiza los saldos de las cuentas (AP account, GL account 416000), y la factura queda visible en Manage Supplier Line Items como partida abierta.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Edit Held Invoice</span><span class="trail-sep">›</span><span class="trail-current">Post → Accounting Document Created</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Incoming Invoices — Posting Confirmation</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:#E8F5E9;border-radius:8px;padding:14px 16px;border-left:4px solid #3D7A52;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:700;color:#3D7A52;margin-bottom:4px;">✅ Invoice Posted Successfully</div>
+          <div style="font-size:11.5px;color:#2E5738;">Accounting Document <strong>1900000025</strong> has been created.</div>
+        </div>
+        <div style="background:white;border-radius:8px;padding:12px 14px;border:1px solid #E0E0E0;font-size:11.5px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><span style="color:#666;">Status:</span> <span class="fstatus fs-posted">Posted</span></div>
+            <div><span style="color:#666;">Accounting Doc:</span> <strong>1900000025</strong> (final)</div>
+            <div><span style="color:#666;">Supplier A/P balance:</span> <strong>Updated ✓</strong></div>
+            <div><span style="color:#666;">GL 416000 balance:</span> <strong>Updated ✓</strong></div>
+            <div><span style="color:#666;">Visible in Line Items:</span> <strong style="color:#2E7D32;">Yes ✓</strong></div>
+            <div><span style="color:#666;">Available for payment:</span> <strong style="color:#2E7D32;">Yes ✓</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Park — When a Second Reviewer Is Required</span><span class="sec-title-es">Park — cuando se necesita revisión de otra persona</span></div><div class="sec-desc">Jennifer recibe otra factura — esta vez tiene todos los datos, pero la política de la empresa requiere aprobación de su supervisora antes de postear.</span></div></div></div>
+  <div class="theory-box"><strong>Park es para el control de cuatro ojos — todos los datos presentes, pero falta aprobación:</strong> Jennifer tiene una factura de Steel Parts AG por EUR 45.000. Tiene todos los datos (GL account, cost center, referencia), pero una factura de ese importe requiere aprobación de su supervisora según la política de la empresa. En ese caso, Park → Save as Complete activa el Workflow para enviar la aprobación automáticamente.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Create Incoming Invoices</span><span class="trail-sep">›</span><span class="trail-current">Park Invoice — Steel Parts AG</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Incoming Invoices — Park</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form">
+          <div class="form-row">
+            <div class="ffield"><label>Invoice Date *</label><div class="fval filled">18.07.2025</div></div>
+            <div class="ffield"><label>Invoicing Party *</label><div class="fval filled">200015 — Steel Parts AG</div></div>
+            <div class="ffield"><label>Reference *</label><div class="fval filled">SP-INV-2025-0892</div></div>
+            <div class="ffield"><label>Company Code *</label><div class="fval filled">DE01</div></div>
+          </div>
+          <div class="form-row">
+            <div class="ffield"><label>Amount</label><div class="fval filled">45.000,00 EUR</div></div>
+            <div class="ffield"><label>GL Account</label><div class="fval filled">420000 — Raw Materials</div></div>
+            <div class="ffield"><label>Cost Center</label><div class="fval filled">CC-PROD-DE01</div></div>
+          </div>
+        </div>
+        <div style="background:#EEF4FF;border-radius:6px;padding:8px 12px;margin-bottom:8px;font-size:11px;color:#1565C0;">ℹ EUR 45.000 exceeds Jennifer's posting authorization. Company policy requires supervisor approval for invoices above EUR 20.000.</div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button class="btn-park">🔵 Park</button>
+          <button class="btn-primary" style="opacity:0.4;">Post (not authorized)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Supplier Invoices List — All Statuses</span><span class="sec-title-es">Todos los estados en una sola pantalla</span></div><div class="sec-desc">Jennifer abre la Supplier Invoices List para ver el panorama completo de sus facturas en distintos estados.</div></div></div>
+  <div class="theory-box"><strong>La Supplier Invoices List como worklist diaria:</strong> Jennifer ve de un vistazo todo lo que tiene pendiente — qué está retenido, qué está estacionado, qué está completo esperando aprobación, y qué ya está contabilizado.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Supplier Invoices List — All Statuses</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Supplier Invoices List</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+          <table class="fiori-table">
+            <thead><tr><th>Status</th><th>Invoice Date</th><th>Supplier</th><th>Amount</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><span class="fstatus fs-hold">Held</span></td><td>10.07.2025</td><td>Clean Services AG</td><td>— (incomplete)</td><td><button class="btn-secondary" style="font-size:10px;padding:3px 8px;">Edit</button></td></tr>
+              <tr style="background:rgba(26,75,140,0.03);"><td><span class="fstatus fs-park">Parked</span></td><td>18.07.2025</td><td>Steel Parts AG</td><td>EUR 45.000</td><td><button class="btn-secondary" style="font-size:10px;padding:3px 8px;">Edit · Save as Complete</button></td></tr>
+              <tr><td><span class="fstatus fs-complete">Saved as Complete</span></td><td>12.07.2025</td><td>Immobilien GmbH</td><td>EUR 12.400</td><td><button class="btn-secondary" style="font-size:10px;padding:3px 8px;color:#888;border-color:#888;">Pending approval</button></td></tr>
+              <tr><td><span class="fstatus fs-posted">Posted</span></td><td>15.07.2025</td><td>Tireless Tires GmbH</td><td>EUR 8.800</td><td><button class="btn-secondary" style="font-size:10px;padding:3px 8px;">View · Reverse</button></td></tr>
+              <tr><td><span class="fstatus fs-draft">Draft (Personal)</span></td><td>22.07.2025</td><td>—</td><td>— (just started)</td><td><button class="btn-secondary" style="font-size:10px;padding:3px 8px;">Continue</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Save as Complete — Sending to Workflow</span><span class="sec-title-es">Guardar como completo — enviar al workflow</span></div><div class="sec-desc">Jennifer abre la factura parkeada de Steel Parts AG, la revisa, y la guarda como completa para que su supervisora reciba la tarea de aprobación.</div></div></div>
+  <div class="theory-box"><strong>Save as Complete es el momento en que Jennifer declara que su trabajo está listo:</strong> antes de elegir Save as Complete, Jennifer revisa una vez más todos los datos. Al confirmarlo, SAP valida que el documento está completo y balanceado, y activa el Workflow para enviar la notificación a la supervisora.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Supplier Invoices List</span><span class="trail-sep">›</span><span class="trail-current">Edit Parked Invoice → Save as Complete</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Incoming Invoices — Save as Complete</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:white;border-radius:8px;padding:12px 14px;margin-bottom:8px;border:1px solid #E0E0E0;font-size:11.5px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><span style="color:#666;">Supplier:</span> Steel Parts AG</div>
+            <div><span style="color:#666;">Amount:</span> EUR 45.000</div>
+            <div><span style="color:#666;">Document Balance:</span> <strong style="color:#2E7D32;">0,00 EUR ✓</strong></div>
+            <div><span style="color:#666;">All mandatory fields:</span> <strong style="color:#2E7D32;">Complete ✓</strong></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-bottom:8px;">
+          <button class="btn-complete">✅ Save as Complete</button>
+        </div>
+        <div style="background:#E8F5E9;border-radius:6px;padding:8px 12px;font-size:11.5px;color:#2E7D32;font-weight:600;">✅ Invoice saved as complete. Workflow notification sent to supervisor for approval.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Workflow — Supervisor Receives Approval Task</span><span class="sec-title-es">Workflow — la supervisora recibe la tarea de aprobación</span></div><div class="sec-desc">La supervisora de Jennifer recibe la notificación automática del Workflow con la tarea de revisar y aprobar la factura de Steel Parts AG.</div></div></div>
+  <div class="theory-box"><strong>El Workflow cierra el ciclo del four-eye principle:</strong> gracias al Workflow, la supervisora (o el revisor designado) recibe automáticamente la tarea en su bandeja de entrada SAP. No es necesario que Jennifer le avise manualmente. Desde la tarea, la supervisora puede ver todos los datos de la factura y decidir: aprobar (→ se contabiliza) o rechazar (→ vuelve a Jennifer para corrección).</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">SAP My Inbox</span><span class="trail-sep">›</span><span class="trail-current">Workflow Task: Approve Supplier Invoice</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">My Inbox — Workflow Tasks</span><span class="user-chip">Supervisor</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">My Inbox — 1 pending task</span></div>
+        <div style="background:white;border-radius:8px;padding:14px 16px;border:1px solid #0070F2;border-left:4px solid #3D7A52;margin-bottom:8px;">
+          <div style="font-size:12.5px;font-weight:700;color:#32363A;margin-bottom:6px;">✅ Approve Supplier Invoice — Steel Parts AG</div>
+          <div style="font-size:11.5px;color:#666;margin-bottom:8px;">Submitted by: Jennifer K. · Amount: EUR 45.000 · Date: 18.07.2025</div>
+          <div style="font-size:11.5px;color:#666;margin-bottom:10px;">GL: 420000 Raw Materials · CC: CC-PROD-DE01 · Ref: SP-INV-2025-0892</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-complete">✅ Approve — Post Invoice</button>
+            <button style="background:#C0392B;color:white;border:none;border-radius:4px;padding:6px 14px;font-size:11.5px;font-weight:600;">❌ Reject — Return to Jennifer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>T3 · Usuario Fiori — Invoice Holding &amp; Parking (AP) · Protagonista: Jennifer · Biblioteca de Guías SAP</footer>
+</body>
+</html>

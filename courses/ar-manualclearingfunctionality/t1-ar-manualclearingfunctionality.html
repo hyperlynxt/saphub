@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Manual Clearing Functionality — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F; --t1-dark:#3D7A52; --t1-pale:rgba(127,191,143,0.14); --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t1-pale); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:820px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; background:var(--t1-dark); }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.6px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:18px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; font-size:13px; color:var(--t1-dark); }
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g2{ grid-template-columns:repeat(2,1fr); }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .panel-diagram{ display:flex; flex-direction:column; gap:12px; min-width:640px; }
+  .panel-top{ background:#FFF3E0; border:1.5px solid #E0B368; border-radius:10px; padding:16px 20px; }
+  .panel-top .p-label{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:#8A6A1E; margin-bottom:6px; display:block; }
+  .panel-row{ display:flex; gap:12px; }
+  .panel-blue{ flex:1; background:#E6F1FB; border:1.5px solid #7BA8D6; border-radius:10px; padding:16px 20px; }
+  .panel-blue .p-label{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:#0C447C; margin-bottom:6px; display:block; }
+  .panel-green{ flex:1; background:#E3F7E6; border:1.5px solid #7BC48A; border-radius:10px; padding:16px 20px; }
+  .panel-green .p-label{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:#187A32; margin-bottom:6px; display:block; }
+  .panel-content{ font-size:0.82rem; color:var(--ink); line-height:1.5; }
+  .decision-flow{ display:flex; flex-direction:column; align-items:center; gap:8px; min-width:520px; }
+  .df-box{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:12px 20px; text-align:center; }
+  .df-box.decision{ border-color:var(--t1-dark); background:var(--t1-pale); font-weight:700; }
+  .df-arrow-down{ font-size:20px; color:var(--t1-dark); }
+  .df-branches{ display:flex; gap:60px; margin-top:6px; }
+  .df-branch{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .df-outcome{ border-radius:10px; padding:12px 16px; text-align:center; font-size:0.84rem; font-weight:600; min-width:180px; }
+  .df-outcome.ok{ background:rgba(127,191,143,0.18); border:1.5px solid var(--t1-dark); color:var(--t1-dark); }
+  .df-outcome.fallback{ background:#FFF3E0; border:1.5px solid #C9932E; color:#8A6A1E; }
+  .df-tag{ font-size:0.7rem; color:var(--muted); }
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:170px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t1-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t1-dark); font-weight:700; }
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  @media (max-width:720px){ .cards-grid.g2, .cards-grid.g3, .cards-grid.g4, .panel-row{ grid-template-columns:1fr; flex-direction:column; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">When Manual Clearing Is Needed</a>
+  <a href="#s2">The Reprocess App</a>
+  <a href="#s3">Filtering &amp; Not Completed</a>
+  <a href="#s4">Reprocessing an Item</a>
+  <a href="#s5">The Three-Panel Layout</a>
+  <a href="#s6">The Top Panel</a>
+  <a href="#s7">The Blue Panel</a>
+  <a href="#s8">The Green Panel</a>
+  <a href="#s9">Balancing to Zero</a>
+  <a href="#s10">After Posting</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Cash Management</span>
+      <span class="pill pill-secondary">Dispute Management</span>
+    </div>
+    <h1>Manual <span class="accent">Clearing</span></h1>
+    <h2>Funcionalidad de Compensación Manual</h2>
+    <p class="desc">Cómo compensar a mano un extracto bancario cuando ni las reglas de contabilización ni las de procesamiento encontraron un match: el layout de tres paneles de Reprocess Bank Statement Items, y cómo llevar el saldo a cero.</p>
+    <div class="hlbox">Resumen Visual — <b>Manual Clearing Functionality</b>, Tipo 1 (Básico). 10 secciones — cuándo hace falta la compensación manual, la app y su layout de tres paneles, y qué pasa después de contabilizar.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">When Manual Clearing Is Needed</span>
+          <span class="sec-title-es">Cuándo hace falta la compensación manual</span>
+        </div>
+        <div class="sec-desc">El último recurso, no el paso habitual.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> cuando las reglas de contabilización configuradas y las reglas de procesamiento no pueden determinar un match entre el pago entrante y la partida abierta, se necesita reprocesamiento manual. Este paso debe considerarse un último recurso, no una tarea regular desde el inicio del procesamiento de extractos.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Posting Rules</div><div class="t-es">reglas de contabilización</div></div>
+        <div class="chain-arrow">+</div>
+        <div class="chain-box"><div class="t-en">Processing Rules</div><div class="t-es">reglas de procesamiento</div></div>
+        <div class="chain-arrow">→ sin match →</div>
+        <div class="chain-box"><div class="t-en">Manual Clearing</div><div class="t-es">último recurso</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Reprocess Bank Statement Items App</span>
+          <span class="sec-title-es">La app Reprocess Bank Statement Items</span>
+        </div>
+        <div class="sec-desc">El lugar donde toda la compensación manual ocurre.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué se puede hacer acá?</strong> En esta app se puede reprocesar un ítem de extracto, marcarlo como reprocesado, ingresar un motivo de reprocesamiento, y agregar adjuntos a los ítems de extracto.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🔄</span><h6>Reprocess Item</h6><p>Retomar un ítem sin match para resolverlo manualmente.</p></div>
+        <div class="mini-card"><span class="icon">📝</span><h6>Reason for Reprocessing</h6><p>Documentar el motivo del reprocesamiento.</p></div>
+        <div class="mini-card"><span class="icon">📎</span><h6>Attachments</h6><p>Adjuntar archivos de respaldo al ítem.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Filtering and the "Not Completed" Status</span>
+          <span class="sec-title-es">Filtrando y el estado "No Completado"</span>
+        </div>
+        <div class="sec-desc">Cómo saber, de un vistazo, qué necesita atención.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> en la página de resumen de la app se pueden aplicar varios filtros para encontrar exactamente la información buscada. Los ítems de extracto con estado "Not Completed" se resaltan en rojo, indicando que necesitan atención adicional para contabilizar y compensar manualmente las partidas abiertas.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g2">
+        <div class="mini-card"><span class="icon">🎚️</span><h6>Apply Filters</h6><p>Reducir la vista exactamente a lo que se busca.</p></div>
+        <div class="mini-card"><span class="icon">🔴</span><h6>"Not Completed" in Red</h6><p>Resaltado visual de lo que necesita atención.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reprocessing an Individual Item</span>
+          <span class="sec-title-es">Reprocesando un ítem individual</span>
+        </div>
+        <div class="sec-desc">El botón que lleva del listado general al detalle de trabajo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Cómo se entra al detalle?</strong> Para realizar la tarea de reprocesamiento, se avanza al detalle del ítem de extracto individual con el botón Reprocess — ahí es donde vive el layout de tres paneles que vemos en las próximas secciones.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Overview List</div><div class="t-es">listado general</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Reprocess Button</div><div class="t-es">botón Reprocess</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Item Detail Screen</div><div class="t-es">pantalla de detalle</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Three-Panel Layout</span>
+          <span class="sec-title-es">El layout de tres paneles</span>
+        </div>
+        <div class="sec-desc">Cada zona de la pantalla tiene un propósito específico.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el layout de la app Reprocess Bank Statement Items usa cada área de la pantalla para un propósito específico — un panel superior (naranja) con la información de la transacción, y dos paneles inferiores: uno azul (izquierda) con las partidas disponibles, y uno verde (derecha) con las partidas propuestas a compensar.
+    </div>
+    <div class="visual-wrap">
+      <div class="panel-diagram">
+        <div class="panel-top">
+          <span class="p-label">Top Panel — Orange</span>
+          <div class="panel-content">Información de la transacción bancaria entrante</div>
+        </div>
+        <div class="panel-row">
+          <div class="panel-blue">
+            <span class="p-label">Lower Left — Blue</span>
+            <div class="panel-content">Partidas abiertas disponibles</div>
+          </div>
+          <div class="panel-green">
+            <span class="p-label">Lower Right — Green</span>
+            <div class="panel-content">Partidas propuestas a compensar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Top Panel — Transaction Information</span>
+          <span class="sec-title-es">El panel superior — información de la transacción</span>
+        </div>
+        <div class="sec-desc">Todo lo que el banco envió sobre este pago puntual.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué muestra?</strong> El panel superior muestra la sociedad, cuenta bancaria, monto, fecha, y la línea de memo — que contiene información del extracto proveniente del banco y de quien envía el pago. La línea de memo es muy útil para determinar a qué factura(s) corresponde el pago entrante.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="icon">🏢</span><h6>Company Code</h6></div>
+        <div class="mini-card"><span class="icon">🏦</span><h6>Bank Account</h6></div>
+        <div class="mini-card"><span class="icon">💰</span><h6>Amount &amp; Date</h6></div>
+        <div class="mini-card"><span class="icon">📝</span><h6>Memo Line</h6></div>
+      </div>
+      <div class="visual-caption">la línea de memo es la pista más útil para identificar la factura correcta</div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Blue Panel — Available Open Items</span>
+          <span class="sec-title-es">El panel azul — partidas abiertas disponibles</span>
+        </div>
+        <div class="sec-desc">Todo lo que se puede elegir para compensar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué muestra y qué se puede hacer?</strong> Muestra las partidas abiertas del cliente, y también todas las partidas abiertas disponibles en todo el sistema SAP S/4HANA Cloud. Con el botón Select More se puede filtrar qué partidas se muestran. Con el botón Clear en una partida, esa partida pasa a la lista de partidas que se van a compensar (el panel verde).
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Customer Open Items</div><div class="t-es">partidas del cliente</div></div>
+        <div class="chain-arrow">+</div>
+        <div class="chain-box"><div class="t-en">All System Open Items</div><div class="t-es">todas las partidas del sistema</div></div>
+        <div class="chain-arrow">→ Clear →</div>
+        <div class="chain-box"><div class="t-en">Moves to Green Panel</div><div class="t-es">pasa al panel verde</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Green Panel — Items Proposed for Clearing</span>
+          <span class="sec-title-es">El panel verde — partidas propuestas a compensar</span>
+        </div>
+        <div class="sec-desc">Lo que efectivamente se va a compensar contra el pago recibido.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué muestra y qué se puede hacer?</strong> Muestra las partidas propuestas para compensar con la transacción bancaria. Con el botón Remove en una partida, esa partida vuelve a la lista de partidas disponibles (el panel azul) — el proceso puede ajustarse en ambas direcciones hasta encontrar la combinación correcta.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Items to Be Cleared</div><div class="t-es">partidas a compensar</div></div>
+        <div class="chain-arrow">← Remove ←</div>
+        <div class="chain-box"><div class="t-en">Back to Blue Panel</div><div class="t-es">vuelve al panel azul</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Balancing the Amount to Zero</span>
+          <span class="sec-title-es">Llevando el monto a cero</span>
+        </div>
+        <div class="sec-desc">El objetivo final de mover partidas entre los paneles azul y verde.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Cuál es el objetivo?</strong> Llevar el monto del saldo a cero con las partidas que deben compensarse contra el monto entrante — esas son las partidas del panel verde. También pueden considerarse descuentos y reason codes en el área de partidas a compensar. Cuando el saldo total de la transacción da cero, es posible simular la contabilización, guardar sin contabilizar, o crear un caso de disputa.
+    </div>
+    <div class="visual-wrap">
+      <div class="decision-flow">
+        <div class="df-box">Partidas movidas entre paneles</div>
+        <div class="df-arrow-down">↓</div>
+        <div class="df-box decision">¿Saldo total = cero?</div>
+        <div class="df-arrow-down">↓</div>
+        <div class="df-branches">
+          <div class="df-branch">
+            <div class="df-outcome ok">Simular / Guardar / Contabilizar</div>
+            <span class="df-tag">balance en cero</span>
+          </div>
+          <div class="df-branch">
+            <div class="df-outcome fallback">Crear caso de disputa</div>
+            <span class="df-tag">no cuadra el saldo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">After Posting</span>
+          <span class="sec-title-es">Después de contabilizar</span>
+        </div>
+        <div class="sec-desc">Qué pasa una vez que el asiento ya quedó en firme.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> después de contabilizar el asiento, también es posible crear una regla basada en los parámetros usados en esa contabilización. Una vez procesado exitosamente, el extracto bancario queda con estado de contabilización "Completed" — esto también asegura la actualización correcta de todo el reporting relacionado con Cash Management, como la posición de caja o el pronóstico de liquidez.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">✅</span><span class="title-en">Journal Entry Posted</span><span class="title-es">Asiento contabilizado</span></div>
+          <div class="flow-step-body"><ul><li>Puede crearse una regla con estos parámetros</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">🏁</span><span class="title-en">Status: Completed</span><span class="title-es">Estado: Completado</span></div>
+          <div class="flow-step-body"><ul><li>El ítem de extracto queda cerrado</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">📊</span><span class="title-en">Cash Management Reporting Updated</span><span class="title-es">Reporting actualizado</span></div>
+          <div class="flow-step-body"><ul><li>Cash Position, Liquidity Forecast</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos clave de Manual Clearing Functionality — Tipo 1</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Manual Reprocessing</div><div class="term-es">Reprocesamiento Manual</div><div class="term-def">Compensación de un ítem de extracto cuando ninguna regla automática encontró un match.</div></div>
+      <div class="gcard"><div class="term-en">Reprocess Bank Statement Items</div><div class="term-es">Reprocesar Ítems de Extracto</div><div class="term-def">App Fiori donde se ejecuta la compensación manual de extractos bancarios.</div></div>
+      <div class="gcard"><div class="term-en">Not Completed Status</div><div class="term-es">Estado No Completado</div><div class="term-def">Estado resaltado en rojo que indica que un ítem necesita atención manual.</div></div>
+      <div class="gcard"><div class="term-en">Memo Line</div><div class="term-es">Línea de Memo</div><div class="term-def">Información del banco y del pagador sobre a qué corresponde el pago entrante.</div></div>
+      <div class="gcard"><div class="term-en">Select More</div><div class="term-es">Seleccionar Más</div><div class="term-def">Botón que filtra qué partidas abiertas se muestran para elegir.</div></div>
+      <div class="gcard"><div class="term-en">Clear Button</div><div class="term-es">Botón Clear</div><div class="term-def">Mueve una partida abierta del panel azul al panel verde, proponiéndola para compensar.</div></div>
+      <div class="gcard"><div class="term-en">Remove Button</div><div class="term-es">Botón Remove</div><div class="term-def">Devuelve una partida del panel verde al panel azul, sacándola de la propuesta.</div></div>
+      <div class="gcard"><div class="term-en">Reason Code</div><div class="term-es">Código de Motivo</div><div class="term-def">Código que puede considerarse en el área de partidas a compensar, junto a descuentos.</div></div>
+      <div class="gcard"><div class="term-en">Simulation</div><div class="term-es">Simulación</div><div class="term-def">Vista previa del resultado de la contabilización, sin generar el asiento aún.</div></div>
+      <div class="gcard"><div class="term-en">Dispute Case</div><div class="term-es">Caso de Disputa</div><div class="term-def">Registro creado cuando el saldo no puede llevarse a cero con las partidas disponibles.</div></div>
+      <div class="gcard"><div class="term-en">Completed Status</div><div class="term-es">Estado Completado</div><div class="term-def">Estado final de un extracto una vez procesado y contabilizado exitosamente.</div></div>
+      <div class="gcard"><div class="term-en">Cash Position</div><div class="term-es">Posición de Caja</div><div class="term-def">Reporte de Cash Management que se actualiza automáticamente tras la compensación.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Manual Clearing Functionality · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

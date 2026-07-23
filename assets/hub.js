@@ -102,6 +102,72 @@ const COURSE_META = {
   },
   "tr-cashmanagementbenefits": {
     desc: "The business case for SAP Cash Management: how visibility into liquidity, multi-bank connectivity, and working capital translate into measurable value for the organization."
+  },
+  "tr-advancedpaymentmanagement": {
+    desc: "The business case for Advanced Payment Management: streamlining outgoing payments, improving payment status visibility, and reducing manual effort in treasury operations."
+  },
+  "tr-treasuryriskmanagement": {
+    desc: "Where Treasury & Risk Management earns its keep: exposure visibility, risk mitigation, and how it ties financial instruments back to the treasury's day-to-day decisions."
+  },
+  "tr-processimprovements": {
+    desc: "What actually gets better moving to SAP S/4HANA for treasury: process simplification, automation gains, and where the new architecture removes old workarounds."
+  },
+  "ar-rulebasedclearing": {
+    desc: "How SAP automates payment matching with configurable clearing rules, reducing the manual effort behind reconciling incoming payments against open items."
+  },
+  "ar-manualclearingfunctionality": {
+    desc: "What happens when automated matching isn't enough: the manual clearing tools analysts use to resolve exceptions and close out open items by hand."
+  },
+  "ar-bankstatementuploadoptions": {
+    desc: "The different ways bank statement data gets into SAP — formats, upload methods, and the tradeoffs between them for keeping cash positions current."
+  },
+  "ar-cashreconciliationfunctionality": {
+    desc: "The mechanics of SAP's cash reconciliation engine: how it matches bank statement lines to postings and where it flags items for review."
+  },
+  "ap-balanceconfirmations": {
+    desc: "How and why AP teams confirm open balances with suppliers: the process, the documentation, and its role in period-end closing."
+  },
+  "ap-closingactivities": {
+    desc: "The checklist behind closing the books in Accounts Payable: what needs to happen, in what order, before the period can be locked."
+  },
+  "ap-foreigncurrencyvaluation": {
+    desc: "How SAP revalues open foreign-currency items at period-end, and why getting this step right matters for accurate financial statements."
+  },
+  "ap-grirreconciliation": {
+    desc: "Reconciling the Goods Receipt / Invoice Receipt account: why mismatches happen between procurement and invoicing, and how AP clears them."
+  },
+  "ap-holdpark": {
+    desc: "The difference between holding and parking a supplier invoice, and when each one is the right move before an invoice is ready to post."
+  },
+  "ap-kpis": {
+    desc: "The metrics that tell you whether Accounts Payable is healthy: what they measure, why they matter, and where to find them in SAP."
+  },
+  "ap-manageitems": {
+    desc: "Day-to-day management of open supplier items: reviewing, adjusting, and clearing the line items that make up the AP sub-ledger."
+  },
+  "ap-postinglogic": {
+    desc: "How a supplier transaction actually becomes a balanced posting in Accounts Payable — the accounts, document types, and logic behind it."
+  },
+  "ap-procuretopay": {
+    desc: "The Payables side of the procure-to-pay chain: how a purchase order and goods receipt flow into an invoice and, eventually, a payment."
+  },
+  "ap-regrouping": {
+    desc: "Why AP balances sometimes need to be regrouped at period-end for reporting purposes, and how SAP handles the reclassification."
+  },
+  "ap-streamlining": {
+    desc: "Where supplier invoice processing tends to slow down, and the tools SAP offers to cut manual touchpoints out of the workflow."
+  },
+  "ap-supplierkeyelements": {
+    desc: "The building blocks of supplier master data: what fields matter, why they exist, and how they drive downstream AP processing."
+  },
+  "ap-suppliermasterdata": {
+    desc: "How supplier master data actually gets created and maintained in SAP, and the methods available for keeping it accurate over time."
+  },
+  "ap-manualpaymentsprocessing": {
+    desc: "How outgoing supplier payments get processed manually: when it's necessary, how it works, and how it differs from the automated payment run."
+  },
+  "ap-supplierpaymentsmonitoring": {
+    desc: "The tools SAP provides to track supplier payments after they're issued — status visibility, monitoring mechanisms, and catching issues early."
   }
 };
 

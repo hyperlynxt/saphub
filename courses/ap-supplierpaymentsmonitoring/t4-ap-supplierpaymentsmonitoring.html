@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Supplier Payments Monitoring — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9; --t4-dark:#5D3E82; --t4-pale:rgba(167,139,201,0.14); --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+    --sscui-blue:#0070F2; --sscui-bg:#F5F6F7; --sscui-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241C33 55%, #3C2C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(93,62,130,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .spro-area-tag{ display:inline-flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t4-dark); color:white; margin-left:8px; vertical-align:middle; }
+  .theory-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t4-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .part-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--t4-dark); margin:0 0 8px; }
+  .part-label:not(:first-child){ margin-top:22px; }
+  .sscui-tree, .sscui-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'JetBrains Mono',monospace; font-size:11.5px; }
+  .sscui-tree ul{ padding-left:20px; border-left:1px dotted #B399D4; margin-left:7px; }
+  .sscui-tree li{ position:relative; padding:4px 0 4px 16px; color:var(--body); }
+  .sscui-tree li::before{ content:''; position:absolute; left:0; top:13px; width:12px; height:1px; background:#B399D4; }
+  .sscui-tree .folder{ font-weight:700; color:var(--ink); }
+  .sscui-tree .leaf{ color:var(--t4-dark); font-weight:700; }
+  .sscui-mock{ background:var(--sscui-bg); border:1px solid var(--sscui-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .sscui-shellbar{ background:var(--sscui-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .sscui-body{ padding:18px 20px; background:white; }
+  .sscui-page-title{ font-size:15px; font-weight:600; color:#1D2D3E; margin:0 0 4px; }
+  .sscui-page-sub{ font-size:11px; color:#5B738B; margin:0 0 14px; }
+  .sscui-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .sscui-field{ flex:1; min-width:160px; }
+  .sscui-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .sscui-field .ffval{ border:1px solid var(--sscui-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+  .sscui-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .sscui-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sscui-border); }
+  .sscui-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .sscui-toggle-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid #EDEFF1; font-size:12px; }
+  .sscui-toggle{ width:34px; height:18px; border-radius:20px; background:var(--sscui-blue); position:relative; flex-shrink:0; }
+  .sscui-toggle::after{ content:''; position:absolute; top:2px; right:2px; width:14px; height:14px; border-radius:50%; background:white; }
+  .sscui-toggle.off{ background:#C9CDD2; }
+  .sscui-toggle.off::after{ right:auto; left:2px; }
+  .sscui-btn{ background:var(--sscui-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .sscui-btn.ghost{ background:white; color:var(--sscui-blue); border:1px solid var(--sscui-blue); }
+  .sscui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E;
+    margin-top:12px; display:flex; align-items:center; gap:7px; }
+  .to-t3-note{ background:var(--t4-pale); border:1px dashed var(--t4-dark); border-radius:8px; padding:10px 14px;
+    margin-top:14px; font-size:0.8rem; color:var(--t4-dark); }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Activate BCM</a>
+  <a href="#s2">High Amount Threshold</a>
+  <a href="#s3">Approval Chain Setup</a>
+  <a href="#s4">Bank Acknowledgment Link</a>
+  <a href="#s5">Prior Day Statement Link</a>
+  <a href="#s6">Exception Notification Template</a>
+  <a href="#s7">Display Status Access</a>
+  <a href="#s8">Accounts Payable Overview Tiles</a>
+  <a href="#s9">Discount Utilization Calculation</a>
+  <a href="#s10">Business Role Authorizations</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Bank Communication Management</span>
+      <span class="pill pill-secondary">Situation Handling</span>
+    </div>
+    <h1>Supplier Payments Monitoring — <span class="accent">Customizing</span></h1>
+    <h2>Tangibilización Configurador (GUI)</h2>
+    <p class="desc">La base que hay que armar antes de que Jennifer vea los tabs de estado con sentido: el umbral de monto alto, la cadena de aprobación, y las conexiones que marcan un lote como enviado, completado, o en excepción.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Configure Your Solution — Bike GmbH (DE01)</div>
+        <div class="p-note">esto arma la base que Jennifer usa del otro lado, en Fiori</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Activating Bank Communication Management</span>
+          <span class="sec-title-es">Activando Bank Communication Management</span>
+          <span class="spro-area-tag">BCM</span>
+        </div>
+        <div class="sec-desc">Sin esto, no hay ciclo de aprobación disponible para ningún lote.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Punto de partida:</strong> se activa BCM, habilitando la capacidad de agregar aprobadores a pagos de monto alto antes de que se procesen.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Activate Bank Communication Management</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Configure Your Solution</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Activate Bank Communication Management</p>
+          <div class="sscui-toggle-row"><span>Enable Payment Approval Workflow</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Enable Monitor Payments App</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting the High Amount Threshold</span>
+          <span class="sec-title-es">Configurando el umbral de monto alto</span>
+          <span class="spro-area-tag">BCM</span>
+        </div>
+        <div class="sec-desc">El número que decide si un lote necesita aprobador o se procesa solo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se define, por sociedad y moneda, a partir de qué monto un pago requiere aprobación adicional antes de procesarse.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Define Approval Threshold for Payments</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Approval Threshold Configuration</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Threshold — Bike GmbH (EUR)</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Approval Required Above</label><div class="ffval">€50,000.00</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up the Approval Chain</span>
+          <span class="sec-title-es">Configurando la cadena de aprobación</span>
+          <span class="spro-area-tag">BCM</span>
+        </div>
+        <div class="sec-desc">El "Level 1 / Level 2" que Jennifer vio en T3 se define acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define cuántos niveles de aprobación necesita un lote según su monto, y qué rol de negocio corresponde a cada nivel.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Configure Multi-Level Approval Chain</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Approval Chain Configuration</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Approval Levels — Above €80,000</p>
+          <table class="sscui-table">
+            <tr><th>Level</th><th>Business Role</th></tr>
+            <tr><td>1</td><td>Payables Supervisor</td></tr>
+            <tr><td>2</td><td>Treasury Manager</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring the Bank Acknowledgment Link</span>
+          <span class="sec-title-es">Configurando la conexión del acuse de recibo</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">Que un lote pase a "Sent to Bank" en T3 depende de esta conexión.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define el canal de comunicación con el banco que recibe la confirmación de un lote enviado, y cómo esa confirmación actualiza el estado en Monitor Payments.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Bank Accounting
+                  <ul>
+                    <li class="leaf">Configure Bank Acknowledgment Processing</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Bank Acknowledgment Settings</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Acknowledgment Processing — Bike Company</p>
+          <div class="sscui-toggle-row"><span>Auto-Update Batch Status on Acknowledgment</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring the Prior Day Statement Link</span>
+          <span class="sec-title-es">Configurando la conexión con el extracto del día anterior</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">El paso final del ciclo de vida — "Completed" — depende de este vínculo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se conecta el proceso de carga de extractos bancarios (ya visto en otro curso de esta biblioteca) con la actualización automática del estado de los lotes a "Completed".
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Bank Accounting
+                  <ul>
+                    <li class="leaf">Link Bank Statement Import to Payment Lifecycle</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Statement-to-Lifecycle Link</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Payment Lifecycle — Statement Trigger</p>
+          <div class="sscui-toggle-row"><span>Mark Completed on Statement Import</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Exception Notification Template</span>
+          <span class="sec-title-es">Definiendo la plantilla de notificación de excepción</span>
+          <span class="spro-area-tag">Situation Handling</span>
+        </div>
+        <div class="sec-desc">La excepción que Jennifer vio en T3 necesita esta plantilla para notificar a tiempo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se configura qué dispara una notificación de excepción — un rechazo bancario, una falla de comunicación — y quién debe ser avisado.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Cross-Application Components
+              <ul>
+                <li class="folder">Situation Handling
+                  <ul>
+                    <li class="leaf">Define Situation Template — Payment Exception</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Situation Template Editor</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Template — Payment Exception</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Trigger Condition</label><div class="ffval">Bank rejection or communication failure</div></div>
+            <div class="sscui-field"><label>Notify Role</label><div class="ffval">Payables Management Specialist</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="sscui-btn">Save Template</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Granting Access to Display Status</span>
+          <span class="sec-title-es">Habilitando acceso a Display Status</span>
+          <span class="spro-area-tag">Authorizations</span>
+        </div>
+        <div class="sec-desc">Que Jennifer pueda buscar un documento puntual sin abrir el lote entero.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué habilita esto?</strong> Se asigna qué rol de negocio puede consultar Display Status of Payment Documents, la vista de consulta rápida a nivel de documento individual.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Assign Access to Display Status of Payment Documents</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>App Access Configuration</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Display Status — Access</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Business Role</label><div class="ffval">Payables Management Specialist</div></div>
+            <div class="sscui-field"><label>Access</label><div class="ffval">View Only</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring Accounts Payable Overview Tiles</span>
+          <span class="sec-title-es">Configurando los tiles de Accounts Payable Overview</span>
+          <span class="spro-area-tag">Embedded Analytics</span>
+        </div>
+        <div class="sec-desc">Que Jennifer vea el tile de Cash Discount Utilization depende de esta configuración.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se habilita qué indicadores de AP aparecen como tile en la app Accounts Payable Overview, incluyendo el de aprovechamiento de descuento.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Embedded Analytics
+                  <ul>
+                    <li class="leaf">Configure Accounts Payable Overview Tiles</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>AP Overview Tile Settings</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Enabled Tiles — Accounts Payable Overview</p>
+          <div class="sscui-toggle-row"><span>Cash Discount Utilization</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Overdue Payables</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up Discount Utilization Calculation</span>
+          <span class="sec-title-es">Configurando el cálculo de aprovechamiento</span>
+          <span class="spro-area-tag">Embedded Analytics</span>
+        </div>
+        <div class="sec-desc">Que el porcentaje se muestre por sociedad, como en T3, se define acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define sobre qué dimensiones se calcula la utilización — por sociedad, por ubicación — y con qué frecuencia se actualiza el indicador en tiempo real.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Embedded Analytics
+                  <ul>
+                    <li class="leaf">Configure Cash Discount Utilization Calculation</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Utilization Calculation Settings</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Discount Utilization — Configuration</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Group By</label><div class="ffval">Company Code</div></div>
+            <div class="sscui-field"><label>Refresh</label><div class="ffval">Real-time</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Authorizing Business Roles</span>
+          <span class="sec-title-es">Autorizando roles de negocio</span>
+          <span class="spro-area-tag">Authorizations</span>
+        </div>
+        <div class="sec-desc">Quién puede aprobar un lote, y quién solo puede exportarlo a CSV.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se asigna qué puede hacer cada rol de negocio dentro de las apps de este tema — desde aprobar lotes, hasta solo consultar el estado y exportar reportes.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Assign Business Roles to Payment Monitoring Apps</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Business Role Assignment</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Payment Monitoring Apps — Access</p>
+          <table class="sscui-table">
+            <tr><th>Business Role</th><th>Access Level</th></tr>
+            <tr><td>Payables Management Specialist</td><td>Monitor / Investigate / Export</td></tr>
+            <tr><td>Treasury Manager</td><td>Approve Level 2</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="to-t3-note">🔧 → 👤 esto es exactamente lo que determina qué botones ve Jennifer en cada app de este tema en T3.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Supplier Payments Monitoring · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

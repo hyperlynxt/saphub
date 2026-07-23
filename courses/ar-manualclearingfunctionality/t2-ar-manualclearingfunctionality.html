@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Manual Clearing Functionality — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585; --t2-dark:#A94444; --t2-pale:rgba(224,133,133,0.14); --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t2-pale); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t2-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .vert-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:440px; }
+  .vf-box{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:12px 20px; text-align:center; min-width:320px; }
+  .vf-box.tier1{ border-color:var(--t2-dark); background:var(--t2-pale); font-weight:700; }
+  .vf-box.tier2{ border-style:dashed; }
+  .vf-arrow{ font-size:20px; color:var(--t2-dark); }
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:150px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t2-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t2-dark); font-weight:700; }
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  @media (max-width:720px){ .compare-grid, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Attachments as Audit Evidence</a>
+  <a href="#s2">Reason for Reprocessing, Used Later</a>
+  <a href="#s3">Discounts in the Green Panel</a>
+  <a href="#s4">Simulation vs. Save Without Posting</a>
+  <a href="#s5">Escalating to Dispute Management</a>
+  <a href="#s6">The Memo Line, in Depth</a>
+  <a href="#s7">Why Any System Open Item Can Appear</a>
+  <a href="#s8">The Zero-Balance Rule, in Depth</a>
+  <a href="#s9">How a New Rule Gets Generalized</a>
+  <a href="#s10">The Completed Status, Downstream</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Dispute Management</span>
+      <span class="pill pill-secondary">Cash Management</span>
+      <span class="pill pill-secondary">Compliance</span>
+    </div>
+    <h1>Manual Clearing Functionality — <span class="accent">Profundización</span></h1>
+    <h2>Funcionalidad de Compensación Manual</h2>
+    <p class="desc">Lo que rodea al layout de tres paneles del T1 y no vimos ahí: por qué documentar el motivo importa más allá del momento, qué diferencia hay entre simular y guardar, y el mecanismo interno de cómo el sistema realmente valida el saldo en cero y generaliza una regla nueva.</p>
+    <div class="hlbox">Resumen Visual — <b>Manual Clearing Functionality</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 de profundidad sobre lo visto en el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Attachments as Audit Evidence</span>
+          <span class="sec-title-es">Adjuntos como evidencia de auditoría</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "agregar adjuntos" — acá vemos por qué eso importa más allá del día a día.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué adjuntar?</strong> Un adjunto — como una captura del e-mail del cliente confirmando qué factura cubre el pago — no solo ayuda a resolver el caso hoy. Queda vinculado al documento contable, dando a un auditor evidencia concreta de por qué se decidió esa compensación puntual, meses después.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Customer E-mail</div><div class="t-es">e-mail del cliente</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Attached to Item</div><div class="t-es">adjuntado al ítem</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Audit Evidence Later</div><div class="t-es">evidencia de auditoría después</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Reason for Reprocessing, Used Later</span>
+          <span class="sec-title-es">El motivo de reprocesamiento, usado después</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "ingresar un motivo" como un paso — acá vemos que ese dato se reutiliza en reportes de gestión.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Para qué sirve el motivo, más allá del caso puntual?</strong> Acumulado en el tiempo, el motivo de reprocesamiento permite identificar patrones — por ejemplo, si un cliente específico repetidamente envía pagos sin referencia clara, eso es una señal para ajustar el proceso con ese cliente, no solo para resolver el caso de hoy.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📝</span><h6>Single Reason</h6><p>Documenta por qué se necesitó intervención en este caso.</p></div>
+        <div class="mini-card"><span class="icon">📊</span><h6>Accumulated Reasons</h6><p>Reunidos, muestran patrones recurrentes por cliente.</p></div>
+        <div class="mini-card"><span class="icon">🎯</span><h6>Process Adjustment</h6><p>Base para ajustar el proceso con ese cliente específico.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Discounts Considered in the Green Panel</span>
+          <span class="sec-title-es">Descuentos considerados en el panel verde</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó que "pueden considerarse descuentos" — acá vemos un caso típico de por qué aparece uno.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Cuándo aparece un descuento acá?</strong> Un caso típico es el descuento por pronto pago (early payment discount) — si el cliente pagó antes de la fecha límite y descontó el porcentaje acordado, el contador de AR necesita reflejar ese descuento en el panel verde para que el saldo efectivamente cierre en cero, en vez de quedar una diferencia sin explicar.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Invoice Amount</div><div class="t-es">monto de factura</div></div>
+        <div class="chain-arrow">−</div>
+        <div class="chain-box"><div class="t-en">Early Payment Discount</div><div class="t-es">descuento por pronto pago</div></div>
+        <div class="chain-arrow">=</div>
+        <div class="chain-box"><div class="t-en">Amount Actually Received</div><div class="t-es">monto realmente recibido</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Simulation vs. Save Without Posting</span>
+          <span class="sec-title-es">Simulación vs. guardar sin contabilizar</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 los mostró como dos opciones — acá vemos que no son lo mismo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿En qué se diferencian?</strong> Simular muestra el resultado contable propuesto sin persistir nada — es una vista previa que se descarta al cerrarla. Guardar sin contabilizar sí conserva el trabajo hecho (las partidas ya movidas entre paneles) para que el contador retome exactamente donde lo dejó, sin generar todavía el asiento en firme.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Simulate</h5>
+          <span class="en">vista previa descartable</span>
+          <ul>
+            <li>Muestra el resultado, no persiste nada</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Save Without Posting</h5>
+          <span class="en">trabajo conservado</span>
+          <ul>
+            <li>Guarda el progreso para retomarlo después</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Escalating to Dispute Management</span>
+          <span class="sec-title-es">Escalando a Dispute Management</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "crear un caso de disputa" — acá vemos qué pasa una vez que ese caso se crea.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué pasa después de crear el caso?</strong> El caso de disputa no queda aislado en la app de compensación manual — se integra a Dispute Management, donde puede asignarse a un responsable, seguirse su estado de resolución, y eventualmente volver al ítem de extracto original una vez que se aclare la causa del desbalance.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Dispute Case Created</div><div class="t-es">caso creado</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Assigned &amp; Tracked</div><div class="t-es">asignado y seguido</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Resolution Returns to Item</div><div class="t-es">resolución vuelve al ítem</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Memo Line, in Depth</span>
+          <span class="sec-title-es">La línea de memo, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que la línea de memo "ayuda a determinar la factura" — acá vemos qué tan confiable es en la práctica.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> la calidad de la línea de memo varía enormemente según el banco y el cliente que envía el pago — algunos incluyen el número de factura exacto, otros solo un texto libre poco estructurado. El contador de AR aprende a reconocer patrones de clientes recurrentes incluso cuando el memo no trae una referencia clara.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Clear Memo Line</h5>
+          <span class="en">referencia exacta</span>
+          <ul>
+            <li>Incluye el número de factura</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Vague Memo Line</h5>
+          <span class="en">texto libre poco estructurado</span>
+          <ul>
+            <li>Requiere reconocer el patrón del cliente</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Any System Open Item Can Appear</span>
+          <span class="sec-title-es">Por qué puede aparecer cualquier partida del sistema</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que el panel azul muestra partidas del cliente "y también todas las del sistema" — acá vemos para qué sirve eso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué no limitarlo al cliente del pago?</strong> A veces un pago está mal identificado — llegó a nombre de un cliente pero en realidad corresponde a otro, o a una entidad relacionada. Tener acceso a todas las partidas abiertas del sistema, no solo las del cliente aparente, le da al contador la flexibilidad de encontrar el match correcto aunque la identificación inicial estuviera equivocada.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Pago llega identificado con un cliente</div>
+        <div class="vf-arrow">↓ pero el memo no coincide</div>
+        <div class="vf-box tier2">Contador busca en todo el sistema</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box">Encuentra el match en otra entidad relacionada</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Zero-Balance Rule, in Depth</span>
+          <span class="sec-title-es">La regla de saldo en cero, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró "saldo cero" como condición para contabilizar — acá vemos por qué esa regla es tan estricta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué tiene que ser exactamente cero?</strong> Si el sistema permitiera contabilizar con un saldo residual sin explicar, ese residuo quedaría como una diferencia fantasma en la cuenta — exigir cero fuerza a que toda diferencia real (un descuento, un reason code, o una disputa) quede explícitamente documentada, en vez de perderse silenciosamente en el asiento.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Sin exigir cero: diferencia queda sin explicar</div>
+        <div class="vf-arrow">≠</div>
+        <div class="vf-box tier2">Exigiendo cero: toda diferencia se documenta</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box">Descuento, reason code, o disputa — nunca "nada"</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How a New Rule Gets Generalized</span>
+          <span class="sec-title-es">Cómo se generaliza una regla nueva</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que "se puede crear una regla" tras contabilizar — acá vemos qué convierte un caso puntual en algo reutilizable.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué se generaliza y qué no?</strong> La regla toma los parámetros del match — por ejemplo, el patrón de la línea de memo o el tipo de transacción — pero no el monto exacto del caso puntual. Así, la próxima vez que llegue un pago con un patrón similar, la regla puede aplicar aunque el monto sea distinto al del caso original.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">One Manually Cleared Case</div><div class="t-es">un caso aclarado a mano</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Pattern Extracted (Not Amount)</div><div class="t-es">patrón extraído, no el monto</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Reusable Rule</div><div class="t-es">regla reutilizable</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Completed Status, Downstream</span>
+          <span class="sec-title-es">El estado Completado, aguas abajo</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que "asegura la actualización" de reporting — acá vemos qué reportes concretos dependen de eso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué depende exactamente del estado Completed?</strong> Mientras un ítem sigue en "Not Completed", el efectivo asociado queda fuera de la posición de caja consolidada y del pronóstico de liquidez — no es que el dinero no exista, es que el sistema todavía no sabe con certeza a qué corresponde. Recién al llegar a "Completed" ese monto se refleja correctamente en ambos reportes.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Not Completed</div><div class="t-es">fuera de la posición de caja</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Manually Cleared</div><div class="t-es">aclarado manualmente</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Completed → Reflected in Reports</div><div class="t-es">reflejado en reportes</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Manual Clearing Functionality — Tipo 2 (no repite T1)</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Audit Evidence</div><div class="term-es">Evidencia de Auditoría</div><div class="term-def">Documentación (como un adjunto) que respalda por qué se decidió una compensación puntual.</div></div>
+      <div class="gcard"><div class="term-en">Recurring Reason Pattern</div><div class="term-es">Patrón Recurrente de Motivo</div><div class="term-def">Tendencia identificada al acumular motivos de reprocesamiento a lo largo del tiempo.</div></div>
+      <div class="gcard"><div class="term-en">Early Payment Discount</div><div class="term-es">Descuento por Pronto Pago</div><div class="term-def">Reducción del monto adeudado cuando el cliente paga antes de la fecha límite.</div></div>
+      <div class="gcard"><div class="term-en">Save Without Posting</div><div class="term-es">Guardar sin Contabilizar</div><div class="term-def">Conservar el progreso de una compensación manual sin generar el asiento definitivo aún.</div></div>
+      <div class="gcard"><div class="term-en">Dispute Case Tracking</div><div class="term-es">Seguimiento de Caso de Disputa</div><div class="term-def">Proceso de asignación y monitoreo de un caso de disputa hasta su resolución.</div></div>
+      <div class="gcard"><div class="term-en">Vague Memo Line</div><div class="term-es">Línea de Memo Ambigua</div><div class="term-def">Información de pago con texto libre poco estructurado, sin referencia clara a factura.</div></div>
+      <div class="gcard"><div class="term-en">Misidentified Payment</div><div class="term-es">Pago Mal Identificado</div><div class="term-def">Pago que llega asociado a un cliente incorrecto, requiriendo búsqueda más amplia.</div></div>
+      <div class="gcard"><div class="term-en">Phantom Difference</div><div class="term-es">Diferencia Fantasma</div><div class="term-def">Residuo sin explicar que quedaría en una cuenta si no se exigiera saldo en cero.</div></div>
+      <div class="gcard"><div class="term-en">Rule Generalization</div><div class="term-es">Generalización de Regla</div><div class="term-def">Proceso de extraer un patrón reutilizable de un caso aclarado manualmente, sin fijar montos.</div></div>
+      <div class="gcard"><div class="term-en">Liquidity Forecast</div><div class="term-es">Pronóstico de Liquidez</div><div class="term-def">Reporte de Cash Management que depende de que los extractos lleguen a estado Completed.</div></div>
+      <div class="gcard"><div class="term-en">Not Completed Impact</div><div class="term-es">Impacto de No Completado</div><div class="term-def">Efecto de que un monto quede fuera de la posición de caja mientras el ítem sigue sin resolver.</div></div>
+      <div class="gcard"><div class="term-en">Pattern-Based Match</div><div class="term-es">Match Basado en Patrón</div><div class="term-def">Reconocimiento de un cliente recurrente aunque el memo no traiga referencia exacta.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Manual Clearing Functionality · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Manage Supplier Items — Usuario Fiori | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#7FC4E0;--t1-dark:#2E7096;--t1-pale:rgba(127,196,224,0.12);--navy-950:#0A0F1C;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#0C1C2E 55%,#0C2838 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(127,196,224,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(46,112,150,0.35);}
+  .actor-badge{width:36px;height:36px;border-radius:50%;background:var(--t1-dark);color:white;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(46,112,150,0.4);border:2px solid rgba(127,196,224,0.6);}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 26px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .nav-trail{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.82rem;}
+  .trail-step{color:var(--muted);font-weight:500;}
+  .trail-sep{color:var(--border);}
+  .trail-current{color:var(--t1-dark);font-weight:700;}
+  .screen-wrap{border:2px solid #C8D8E6;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(10,15,28,0.1);}
+  .screen-shell{background:#354A5E;padding:9px 16px;display:flex;align-items:center;gap:14px;}
+  .sap-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:white;letter-spacing:1px;flex-shrink:0;}
+  .app-title-bar{font-size:12.5px;font-weight:600;color:white;}
+  .user-chip{margin-left:auto;background:rgba(255,255,255,0.15);border-radius:20px;padding:3px 10px;font-size:11px;color:rgba(255,255,255,0.9);}
+  .screen-body{background:#F5F6F7;padding:14px 16px;}
+  .fiori-page-head{background:white;border-radius:8px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .fiori-page-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#32363A;}
+  .btn-primary{background:#0070F2;color:white;border:none;border-radius:4px;padding:6px 14px;font-size:11.5px;font-weight:600;}
+  .btn-secondary{background:white;color:#0070F2;border:1.5px solid #0070F2;border-radius:4px;padding:6px 14px;font-size:11.5px;font-weight:600;}
+  .btn-go{background:#0070F2;color:white;border:none;border-radius:4px;padding:5px 12px;font-size:12px;font-weight:700;}
+  .fiori-form{background:white;border-radius:8px;padding:12px 14px;margin-bottom:8px;}
+  .form-title{font-size:11px;font-weight:700;color:#32363A;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #F0F0F0;}
+  .form-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+  .ffield{flex:1;min-width:110px;}
+  .ffield label{font-size:10.5px;color:#666;display:block;margin-bottom:2px;}
+  .ffield .fval{border:1px solid #89919A;border-radius:4px;padding:5px 8px;font-size:11.5px;color:#32363A;background:white;width:100%;}
+  .ffield .fval.filled{border-color:#0070F2;background:rgba(0,112,242,0.03);}
+  .fiori-table{width:100%;border-collapse:collapse;font-size:11.5px;}
+  .fiori-table th{background:#F5F6F7;color:#666;padding:7px 10px;text-align:left;font-weight:600;border-bottom:2px solid #E0E0E0;font-size:10.5px;white-space:nowrap;}
+  .fiori-table td{padding:7px 10px;border-bottom:1px solid #F0F0F0;color:#32363A;vertical-align:middle;}
+  .fiori-table tr:last-child td{border-bottom:none;}
+  .status-open{color:#C62828;font-weight:700;font-size:14px;}
+  .status-cleared{color:#2E7D32;font-weight:700;font-size:14px;}
+  .doc-link{color:#0070F2;font-weight:600;text-decoration:underline;cursor:pointer;}
+  .fstatus{display:inline-block;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:600;}
+  .fs-green{background:#E8F5E9;color:#2E7D32;}
+  .fs-red{background:#FFEBEE;color:#C62828;}
+  .fs-orange{background:#FFF3E0;color:#E65100;}
+  .fs-blue{background:#E3F2FD;color:#1565C0;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO / FIORI</span>
+  <a href="#s1">Analysis Toolkit</a>
+  <a href="#s2">Display Supplier Balances — Filters</a>
+  <a href="#s3">Reading the Balances Table</a>
+  <a href="#s4">Drill-Down to Postings</a>
+  <a href="#s5">Manage Line Items — Open/Cleared</a>
+  <a href="#s6">Line Item Actions</a>
+  <a href="#s7">Manual Clearing</a>
+  <a href="#s8">Reverse an Open Invoice</a>
+  <a href="#s9">Reset Clearing + Reverse</a>
+  <a href="#s10">Related Documents</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+    </div>
+    <h1>Manage Supplier <span class="accent">Line Items</span></h1>
+    <h2>Tangibilización — Usuario Fiori</h2>
+    <p class="desc">Las apps de análisis y gestión de cuentas de proveedor vistas desde la pantalla de Jennifer: saldos, partidas, compensaciones y corrección de errores mediante reversiones.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">👤</span>
+      <b>Jennifer</b> · AP Accountant · Accounts Payable<br>
+      <span style="font-size:12.5px;opacity:0.85;">Objetivo: analizar la cuenta de sus proveedores, detectar discrepancias y corregir errores de contabilización.</span>
+    </div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Jennifer's Account Analysis Toolkit</span><span class="sec-title-es">Las dos apps de análisis de cuentas</span></div><div class="sec-desc">Las apps que Jennifer usa para analizar las cuentas de sus proveedores — una de saldos, otra de partidas detalladas.</div></div></div>
+  <div class="theory-box"><strong>El análisis empieza con los saldos y baja al detalle:</strong> Jennifer revisa primero la app de saldos para ver si algún período tiene actividad inusual. Cuando detecta algo, navega a las partidas individuales de ese período para entender qué documentos específicos están involucrados.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">AP Account Analysis</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Fiori Launchpad</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="font-size:11.5px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;padding:0 4px;">Supplier Account Management</div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;padding:14px;background:#F5F6F7;border-radius:8px;">
+          <div style="background:white;border:1px solid #E4E7E9;border-radius:8px;padding:16px 14px;text-align:center;flex:1;min-width:140px;">
+            <div style="font-size:24px;margin-bottom:8px;">📊</div>
+            <div style="font-size:11.5px;font-weight:600;color:#32363A;line-height:1.3;">Display Supplier Balances</div>
+          </div>
+          <div style="background:white;border:1px solid #E4E7E9;border-radius:8px;padding:16px 14px;text-align:center;flex:1;min-width:140px;">
+            <div style="font-size:24px;margin-bottom:8px;">📋</div>
+            <div style="font-size:11.5px;font-weight:600;color:#32363A;line-height:1.3;">Manage Supplier Line Items</div>
+          </div>
+          <div style="background:white;border:1px solid #E4E7E9;border-radius:8px;padding:16px 14px;text-align:center;flex:1;min-width:140px;">
+            <div style="font-size:24px;margin-bottom:8px;">📒</div>
+            <div style="font-size:11.5px;font-weight:600;color:#32363A;line-height:1.3;">Manage Journal Entries</div>
+          </div>
+          <div style="background:white;border:1px solid #E4E7E9;border-radius:8px;padding:16px 14px;text-align:center;flex:1;min-width:140px;">
+            <div style="font-size:24px;margin-bottom:8px;">🔄</div>
+            <div style="font-size:11.5px;font-weight:600;color:#32363A;line-height:1.3;">Clear Outgoing Payments</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Display Supplier Balances — Setting Filters</span><span class="sec-title-es">Configurar filtros de la app de saldos</span></div><div class="sec-desc">Jennifer configura los filtros para ver los saldos de un proveedor específico en el ejercicio actual.</div></div></div>
+  <div class="theory-box"><strong>Los filtros definen el scope del análisis:</strong> Jennifer ingresa el proveedor que quiere analizar, la sociedad y el ejercicio fiscal. Si planea comparar con el año anterior, también llena el campo de Comparison Fiscal Year — útil para detectar si el volumen de compras creció o bajó respecto al período anterior.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Display Supplier Balances</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Display Supplier Balances</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">Standard</span></div>
+        <div class="fiori-form">
+          <div class="form-row">
+            <div class="ffield"><label>Supplier *</label><div class="fval filled">100023 — Tireless Tires GmbH</div></div>
+            <div class="ffield"><label>Company Code *</label><div class="fval filled">DE01 — Bike GmbH</div></div>
+            <div class="ffield"><label>Fiscal Year *</label><div class="fval filled">2025</div></div>
+            <div class="ffield"><label>Comparison Fiscal Year</label><div class="fval">2024</div></div>
+            <button class="btn-go" style="align-self:flex-end;margin-bottom:1px;">Go</button>
+          </div>
+        </div>
+        <div style="background:rgba(0,112,242,0.05);border-radius:6px;padding:8px 12px;font-size:11px;color:#1565C0;">ℹ Tabs available: <strong>Balances</strong> (default) · Special G/L · Compare — Switch to "SAP-Clearing Data" view for clearing detail</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reading the Balances Table</span><span class="sec-title-es">Leer la tabla de saldos por período</span></div><div class="sec-desc">Jennifer interpreta la tabla de saldos período a período — basada en la pantalla real de Display Supplier Balances (image3).</div></div></div>
+  <div class="theory-box"><strong>Un saldo negativo en AP es normal — significa que la empresa debe dinero al proveedor:</strong> Jennifer ve que el período 08 tiene un crédito de 8.800 EUR (factura recibida) y el período 09 tiene un crédito de 88.000 EUR con un débito de 5.000 EUR (pagos parciales). El saldo acumulado de -91.800 EUR significa que la empresa todavía le debe EUR 91.800 al proveedor.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-step">Display Supplier Balances</span><span class="trail-sep">›</span><span class="trail-current">Balances Tab — Tireless Tires GmbH · FY 2023</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Display Supplier Balances — Balances Tab</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form" style="margin-bottom:8px;">
+          <div class="form-row" style="margin-bottom:0;">
+            <div class="ffield"><label>Supplier</label><div class="fval readonly" style="background:#F5F6F7;">S4C004 (S4C S4C004)</div></div>
+            <div class="ffield"><label>Company Code</label><div class="fval readonly" style="background:#F5F6F7;">1010 (Company Code 1010)</div></div>
+            <div class="ffield"><label>Fiscal Year</label><div class="fval readonly" style="background:#F5F6F7;">2023</div></div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+          <table class="fiori-table">
+            <thead><tr><th>Period</th><th style="text-align:right;">Debit (EUR)</th><th style="text-align:right;">Credit (EUR)</th><th style="text-align:right;">Balance (EUR)</th><th style="text-align:right;">Cumulative Balance</th></tr></thead>
+            <tbody>
+              <tr><td style="color:#888;">01–07</td><td style="text-align:right;color:#888;">0,00</td><td style="text-align:right;color:#888;">0,00</td><td style="text-align:right;color:#888;">0,00</td><td style="text-align:right;color:#888;">0,00</td></tr>
+              <tr><td>08</td><td style="text-align:right;">0,00</td><td style="text-align:right;color:#0070F2;text-decoration:underline;cursor:pointer;">8.800,00</td><td style="text-align:right;color:#0070F2;text-decoration:underline;cursor:pointer;">-8.800,00</td><td style="text-align:right;">-8.800,00</td></tr>
+              <tr style="background:rgba(46,112,150,0.05);"><td style="font-weight:700;">09</td><td style="text-align:right;font-weight:700;color:#0070F2;text-decoration:underline;cursor:pointer;">5.000,00</td><td style="text-align:right;font-weight:700;color:#0070F2;text-decoration:underline;cursor:pointer;">88.000,00</td><td style="text-align:right;font-weight:700;color:#0070F2;text-decoration:underline;cursor:pointer;">-83.000,00</td><td style="text-align:right;font-weight:700;">-91.800,00</td></tr>
+              <tr><td>10–16</td><td style="text-align:right;color:#888;">0,00</td><td style="text-align:right;color:#888;">0,00</td><td style="text-align:right;color:#888;">0,00</td><td style="text-align:right;color:#888;">-91.800,00</td></tr>
+              <tr style="background:#F5F6F7;font-weight:700;"><td>Total</td><td style="text-align:right;">5.000,00</td><td style="text-align:right;">96.800,00</td><td style="text-align:right;">-91.800,00</td><td style="text-align:right;">-91.800,00</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:8px;font-size:10.5px;color:#888;">💡 Click any blue value to navigate to the individual postings for that period</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Drill-Down: Click Balance → Individual Postings</span><span class="sec-title-es">Navegar del saldo a las partidas individuales</span></div><div class="sec-desc">Jennifer hace click en el saldo del período 09 para ver exactamente qué documentos generaron ese movimiento.</div></div></div>
+  <div class="theory-box"><strong>Click en el Balance = todos los movimientos del período de un solo golpe:</strong> al hacer click en el valor Balance de -83.000,00 del período 09, Jennifer pasa directamente a Manage Supplier Line Items con el filtro de período 09 ya aplicado. Ve todas las partidas que contribuyeron a ese saldo.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Display Supplier Balances</span><span class="trail-sep">›</span><span class="trail-step">Period 09 — Balance Click</span><span class="trail-sep">›</span><span class="trail-current">Manage Supplier Line Items — Period 09</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Manage Supplier Line Items — Period 09 (drilled from Balance)</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">Items (8) — S4C014 · Company 1010 · Period 09/2023</span></div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+          <table class="fiori-table">
+            <thead><tr><th>Status</th><th>Jrnl Entry Date</th><th>Journal Entry</th><th>Type</th><th>Amount (EUR)</th><th>Clearing Jrnl Entry</th></tr></thead>
+            <tbody>
+              <tr><td><span class="status-cleared">✓</span></td><td>06.09.2023</td><td class="doc-link">1500000006</td><td>KZ</td><td style="text-align:right;">4.400,00</td><td class="doc-link">1500000006</td></tr>
+              <tr><td><span class="status-cleared">✓</span></td><td>06.09.2023</td><td class="doc-link">1500000006</td><td>KZ</td><td style="text-align:right;">-4.400,00</td><td class="doc-link">1500000006</td></tr>
+              <tr><td><span class="status-cleared">✓</span></td><td>06.09.2023</td><td class="doc-link">1500000005</td><td>KZ</td><td style="text-align:right;">-4.400,00</td><td class="doc-link">1500000006</td></tr>
+              <tr><td><span class="status-cleared">✓</span></td><td>06.09.2023</td><td class="doc-link">1500000005</td><td>KZ</td><td style="text-align:right;">4.400,00</td><td class="doc-link">1500000006</td></tr>
+              <tr><td><span class="status-open">✗</span></td><td>02.09.2023</td><td class="doc-link">1700000005</td><td>KG</td><td style="text-align:right;">4.400,00</td><td style="color:#888;">—</td></tr>
+              <tr><td><span class="status-cleared">✓</span></td><td>01.09.2023</td><td class="doc-link">1900000022</td><td>KR</td><td style="text-align:right;">6.600,00</td><td class="doc-link">1900000022</td></tr>
+              <tr><td><span class="status-cleared">✓</span></td><td>01.09.2023</td><td class="doc-link">1900000021</td><td>KR</td><td style="text-align:right;">-6.600,00</td><td class="doc-link">1900000022</td></tr>
+              <tr><td><span class="status-open">✗</span></td><td>01.09.2023</td><td class="doc-link">1900000020</td><td>KR</td><td style="text-align:right;">-4.400,00</td><td style="color:#888;">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:6px;font-size:10.5px;color:#888;">✓ = Cleared (green) · ✗ = Open (red) · Blue numbers = navigable links to Journal Entry detail</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Manage Line Items — Filter by Status</span><span class="sec-title-es">Filtrar partidas por estado</span></div><div class="sec-desc">Jennifer usa el dropdown de Status para ver solo las partidas abiertas — las que necesitan atención.</div></div></div>
+  <div class="theory-box"><strong>El filtro de Status es la palanca más usada en el día a día:</strong> en una cuenta con muchas partidas históricas, ver "All Items" genera ruido. Jennifer filtra por "Open Items" para ver únicamente las obligaciones pendientes. Si necesita investigar qué se compensó en un período, cambia a "Cleared Items".</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Manage Supplier Line Items — Status Filter</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Manage Supplier Line Items</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form">
+          <div class="form-row">
+            <div class="ffield"><label>Supplier</label><div class="fval filled">S4C014</div></div>
+            <div class="ffield"><label>Company Code</label><div class="fval filled">1010</div></div>
+            <div class="ffield"><label>Status *</label>
+              <select style="border:1.5px solid #0070F2;border-radius:4px;padding:5px 8px;font-size:11.5px;background:white;color:#0070F2;font-weight:600;width:100%;">
+                <option>Open Items</option>
+                <option selected>All Items</option>
+                <option>Cleared Items</option>
+              </select>
+            </div>
+            <div class="ffield"><label>Fiscal Year</label><div class="fval filled">=2023</div></div>
+            <div class="ffield"><label>Period</label><div class="fval filled">=09</div></div>
+            <div class="ffield"><label>Item Type *</label><div class="fval filled">Normal Items</div></div>
+            <button class="btn-go" style="align-self:flex-end;margin-bottom:1px;">Go</button>
+          </div>
+        </div>
+        <div style="background:white;border-radius:6px;padding:8px 12px;font-size:11.5px;border:1px solid #E0E0E0;">
+          <strong>Open Items</strong> — shows only unpaid invoices and uncleared entries (red ✗)<br>
+          <strong>Cleared Items</strong> — shows paid/cleared entries only (green ✓)<br>
+          <strong>All Items</strong> — shows everything (default)
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Line Item Actions — Edit, Block, Correspond</span><span class="sec-title-es">Acciones sobre partidas individuales</span></div><div class="sec-desc">Jennifer selecciona una partida y accede a las acciones disponibles: editar campos, bloquear para pago, generar correspondencia.</div></div></div>
+  <div class="theory-box"><strong>El toolbar de acciones se activa al seleccionar una partida:</strong> al marcar una o más partidas en la lista, el toolbar en la parte superior muestra las acciones disponibles según el contexto. Para una partida abierta: Edit, Block for Payment, Create Individual Payment, Create Correspondence. Para una compensada: menos opciones disponibles.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Manage Supplier Line Items</span><span class="trail-sep">›</span><span class="trail-current">Partida seleccionada — Actions toolbar</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Manage Supplier Line Items — Actions</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:white;border-radius:8px;padding:8px 12px;margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;border:1px solid #E0E0E0;">
+          <button class="btn-secondary" style="font-size:10px;padding:4px 8px;">✏️ Edit Line Item</button>
+          <button class="btn-secondary" style="font-size:10px;padding:4px 8px;">📄 Create Correspondence</button>
+          <button class="btn-secondary" style="font-size:10px;padding:4px 8px;border-color:#C62828;color:#C62828;">🔒 Block for Payment</button>
+          <button class="btn-secondary" style="font-size:10px;padding:4px 8px;border-color:#2E7D32;color:#2E7D32;">🔓 Unblock for Payment</button>
+          <button class="btn-primary" style="font-size:10px;padding:4px 8px;">💰 Create Individual Payment</button>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+          <table class="fiori-table">
+            <thead><tr><th>☑</th><th>Status</th><th>Journal Entry</th><th>Type</th><th>Due Net Date</th><th>Amount (EUR)</th></tr></thead>
+            <tbody>
+              <tr style="background:rgba(0,112,242,0.04);">
+                <td><input type="checkbox" checked disabled style="accent-color:#0070F2;"></td>
+                <td><span class="status-open">✗</span></td>
+                <td class="doc-link">1900000020</td>
+                <td>KR</td>
+                <td style="color:#C62828;font-weight:600;">01.10.2023</td>
+                <td style="text-align:right;font-weight:600;">-4.400,00 EUR</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:8px;background:#FFF3E0;border-radius:6px;padding:8px 12px;font-size:11px;color:#E65100;">⚡ Invoice 1900000020 (KR) is open and overdue — available for Block for Payment or Edit Line Item actions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Manual Clearing — Matching Invoice with Credit Memo</span><span class="sec-title-es">Compensación manual — cruzar factura con nota de crédito</span></div><div class="sec-desc">Jennifer encuentra un par de partidas que se pueden compensar entre sí: una factura abierta y una nota de crédito por el mismo importe.</div></div></div>
+  <div class="theory-box"><strong>La compensación manual limpia la cuenta sin movimiento de efectivo:</strong> Jennifer detecta que el proveedor emitió una nota de crédito (KG) por el mismo importe de una factura abierta (KR). Las selecciona en Clear Outgoing Payments – Manual Clearing para compensarlas. Ambas pasan a estado "Cleared" y un nuevo Clearing Journal Entry las vincula.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Clear Outgoing Payments – Manual Clearing</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Clear Outgoing Payments – Manual Clearing</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form" style="margin-bottom:8px;">
+          <div class="form-row">
+            <div class="ffield"><label>Supplier</label><div class="fval filled">100023 — Tireless Tires GmbH</div></div>
+            <div class="ffield"><label>Company Code</label><div class="fval filled">DE01</div></div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;margin-bottom:8px;">
+          <table class="fiori-table">
+            <thead><tr><th>☑ Select</th><th>Type</th><th>Document</th><th>Date</th><th>Amount (EUR)</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" checked disabled style="accent-color:#0070F2;"></td>
+                <td>KR — Invoice</td>
+                <td class="doc-link">1900000020</td>
+                <td>01.09.2023</td>
+                <td style="text-align:right;color:#C62828;font-weight:600;">-4.400,00</td>
+                <td><span class="fstatus fs-red">OPEN</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" checked disabled style="accent-color:#0070F2;"></td>
+                <td>KG — Credit Memo</td>
+                <td class="doc-link">1700000005</td>
+                <td>02.09.2023</td>
+                <td style="text-align:right;color:#2E7D32;font-weight:600;">4.400,00</td>
+                <td><span class="fstatus fs-red">OPEN</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="background:white;border-radius:6px;padding:8px 12px;font-size:12px;border:1px solid #E0E0E0;display:flex;align-items:center;gap:12px;">
+          <span style="font-weight:700;">Selected Difference: EUR 0,00</span>
+          <span style="color:#2E7D32;font-weight:600;">✓ Can be cleared</span>
+          <button class="btn-primary" style="margin-left:auto;font-size:11px;padding:5px 12px;">Clear</button>
+        </div>
+        <div style="margin-top:8px;background:#E8F5E9;border-radius:6px;padding:8px 12px;font-size:11.5px;color:#2E7D32;font-weight:600;">✓ After clearing: both items will show status CLEARED with the same Clearing Journal Entry number</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reverse an Open Invoice — Full Flow</span><span class="sec-title-es">Reversar una factura abierta</span></div><div class="sec-desc">Jennifer descubre que una factura fue contabilizada con datos incorrectos que no puede cambiar. Inicia el proceso de reversión.</div></div></div>
+  <div class="theory-box"><strong>El flujo de reversión atraviesa dos apps:</strong> primero Manage Supplier Line Items para encontrar el documento, luego Manage Journal Entries para ejecutar la reversión. La partida debe estar en estado OPEN para poder reversarla directamente.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Manage Supplier Line Items</span><span class="trail-sep">›</span><span class="trail-step">Select Journal Entry 1500000005</span><span class="trail-sep">›</span><span class="trail-current">Manage Journal Entries — Reverse</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Manage Journal Entries — Journal Entry 1500000005</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head">
+          <span class="fiori-page-title">Journal Entry 1500000005 — Entry View</span>
+          <button class="btn-primary" style="font-size:11px;">Reverse</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div style="background:white;border:1px solid #E0E0E0;border-radius:6px;padding:10px 12px;font-size:11.5px;">
+            <div style="color:#666;font-size:10.5px;margin-bottom:2px;">Journal Entry Type</div>
+            <div style="font-weight:600;color:#32363A;">KZ (Vendor payment)</div>
+          </div>
+          <div style="background:white;border:1px solid #E0E0E0;border-radius:6px;padding:10px 12px;font-size:11.5px;">
+            <div style="color:#666;font-size:10.5px;margin-bottom:2px;">Company Code</div>
+            <div style="font-weight:600;color:#32363A;">1010 (Company Code 1010)</div>
+          </div>
+          <div style="background:white;border:1px solid #E0E0E0;border-radius:6px;padding:10px 12px;font-size:11.5px;">
+            <div style="color:#666;font-size:10.5px;margin-bottom:2px;">Status</div>
+            <div style="font-weight:600;color:#C62828;">OPEN — Ready to reverse</div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:8px;padding:14px;border:1px solid #0070F2;border-style:dashed;">
+          <div style="font-size:12.5px;font-weight:700;color:#32363A;margin-bottom:10px;">Reverse Document</div>
+          <div class="form-row">
+            <div class="ffield"><label>Reversal Reason *</label>
+              <select style="border:1.5px solid #0070F2;border-radius:4px;padding:5px 8px;font-size:11.5px;background:white;width:100%;color:#32363A;">
+                <option value="01" selected>01 — Wrong posting</option>
+                <option value="02">02 — Reversal in subsequent period</option>
+              </select>
+            </div>
+            <div class="ffield"><label>Posting Date *</label><div class="fval filled">06.09.2023</div></div>
+          </div>
+          <div style="margin-top:10px;display:flex;justify-content:flex-end;"><button class="btn-primary">Reverse</button></div>
+        </div>
+        <div style="margin-top:8px;background:#E8F5E9;border-radius:6px;padding:8px 12px;font-size:11.5px;color:#2E7D32;font-weight:600;">✓ Journal entry was reversed. Reversal document 1500000006 created.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reset Clearing + Reverse — Two-Step for Cleared Items</span><span class="sec-title-es">Resetear compensación y reversar — proceso de dos pasos</span></div><div class="sec-desc">Jennifer necesita corregir una factura que ya fue pagada. Primero debe resetear la compensación, luego reversar.</div></div></div>
+  <div class="theory-box"><strong>Un documento cleared no se puede reversar directamente — hay que deshacerlo primero:</strong> Jennifer intenta reversar doc 1900000022 (KR) pero el sistema le avisa que tiene ítems cleared. Primero necesita resetear la compensación para devolver la partida a estado "open", y solo entonces puede reversarla.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Manage Supplier Line Items</span><span class="trail-sep">›</span><span class="trail-step">Doc 1900000022</span><span class="trail-sep">›</span><span class="trail-current">Reset Clearing → Then Reverse</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Manage Journal Entries — Reset &amp; Reverse Workflow</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:#FFEBEE;border-radius:8px;padding:10px 14px;margin-bottom:10px;border-left:4px solid #C62828;font-size:11.5px;color:#C62828;font-weight:600;">⚠ Cannot reverse document 1900000022 — it contains cleared items. Reset clearing first.</div>
+        <div style="background:white;border-radius:8px;padding:12px;border:1px solid #E0E0E0;margin-bottom:8px;">
+          <div style="font-size:12px;font-weight:700;color:#32363A;margin-bottom:8px;">STEP 1 — Reset Clearing</div>
+          <div style="font-size:11px;color:#666;margin-bottom:8px;">Select the cleared document and choose "Reset Clearing" — this undoes the clearing and returns the item to OPEN status.</div>
+          <button class="btn-secondary" style="font-size:11px;">Reset Clearing on Doc 1900000022</button>
+          <div style="margin-top:8px;color:#2E7D32;font-size:11px;font-weight:600;">→ After reset: Document 1900000022 status = OPEN ✗</div>
+        </div>
+        <div style="background:white;border-radius:8px;padding:12px;border:1px solid #0070F2;border-style:dashed;">
+          <div style="font-size:12px;font-weight:700;color:#32363A;margin-bottom:8px;">STEP 2 — Reverse</div>
+          <div style="font-size:11px;color:#666;margin-bottom:8px;">Now the document is OPEN — proceed to Manage Journal Entries and execute the reversal normally.</div>
+          <div class="form-row">
+            <div class="ffield"><label>Reversal Reason *</label><div class="fval filled">01 — Wrong posting</div></div>
+            <div class="ffield"><label>Posting Date *</label><div class="fval filled">06.09.2023</div></div>
+          </div>
+          <div style="margin-top:8px;display:flex;justify-content:flex-end;"><button class="btn-primary">Reverse</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Related Documents — Viewing the Reversal Pair</span><span class="sec-title-es">Documentos relacionados — ver el par de reversión</span></div><div class="sec-desc">Jennifer abre el documento de reversión y verifica que el par original/reversión está correctamente vinculado.</div></div></div>
+  <div class="theory-box"><strong>La tab Related Documents confirma el ciclo completo de corrección:</strong> después de reversar, Jennifer abre el documento de reversión 1500000006 y navega a la tab Related Documents. Ahí ve que el documento lista a 1500000005 como "Reversed Document" — la cadena está completa y el audit trail es correcto.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Manage Supplier Line Items</span><span class="trail-sep">›</span><span class="trail-step">Doc 1500000006</span><span class="trail-sep">›</span><span class="trail-current">Manage Journal Entries — Related Documents Tab</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Manage Journal Entries — 1500000006 Entry View</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">Journal Entry (1500000006) — Entry View</span></div>
+        <div style="background:white;border-radius:8px;padding:8px 14px;margin-bottom:8px;border-bottom:2px solid #0070F2;display:flex;gap:20px;">
+          <span style="font-size:12px;color:#666;padding:6px 10px;">Header</span>
+          <span style="font-size:12px;color:#666;padding:6px 10px;">0 Attachments</span>
+          <span style="font-size:12px;color:#666;padding:6px 10px;">0 Notes</span>
+          <span style="font-size:12px;color:#0070F2;font-weight:700;border-bottom:2px solid #0070F2;padding:6px 10px;">1 Related Documents</span>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;margin-bottom:8px;">
+          <div style="padding:8px 12px;font-size:12px;font-weight:700;color:#32363A;border-bottom:1px solid #F0F0F0;">Items (1)</div>
+          <table class="fiori-table">
+            <thead><tr><th>Document Type</th><th>Document No.</th><th>Journal Entry Type</th><th>Reference Doc Type</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Accounting document</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr style="background:rgba(0,112,242,0.04);">
+                <td style="padding-left:24px;color:#5A6B8C;font-style:italic;">↳ Reversed Document</td>
+                <td class="doc-link">1500000005</td>
+                <td>KZ (Vendor payment)</td>
+                <td>BKPFF (Actg Doc.Direct Inpt)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="background:#E8F5E9;border-radius:6px;padding:8px 12px;font-size:11.5px;color:#2E7D32;font-weight:600;">✓ Reversal pair confirmed: 1500000006 (reversal) → 1500000005 (reversed original). Audit trail complete.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>T3 · Usuario Fiori — Manage Supplier Line Items (AP) · Protagonista: Jennifer · Biblioteca de Guías SAP</footer>
+</body>
+</html>

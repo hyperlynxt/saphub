@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Advanced Payment Management — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#5D3E82;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sscui-blue:#0070F2;
+    --sscui-bg:#F5F6F7;
+    --sscui-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241C33 55%, #3C2C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(93,62,130,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .spro-area-tag{ display:inline-flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t4-dark); color:white; margin-left:8px; vertical-align:middle; }
+
+  .theory-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .part-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--t4-dark); margin:0 0 8px; }
+  .part-label:not(:first-child){ margin-top:22px; }
+
+  .sscui-tree, .sscui-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'JetBrains Mono',monospace; font-size:11.5px; }
+  .sscui-tree ul{ padding-left:20px; border-left:1px dotted #B399D4; margin-left:7px; }
+  .sscui-tree li{ position:relative; padding:4px 0 4px 16px; color:var(--body); }
+  .sscui-tree li::before{ content:''; position:absolute; left:0; top:13px; width:12px; height:1px; background:#B399D4; }
+  .sscui-tree .folder{ font-weight:700; color:var(--ink); }
+  .sscui-tree .leaf{ color:var(--t4-dark); font-weight:700; }
+
+  .sscui-mock{ background:var(--sscui-bg); border:1px solid var(--sscui-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .sscui-shellbar{ background:var(--sscui-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .sscui-body{ padding:18px 20px; background:white; }
+  .sscui-page-title{ font-size:15px; font-weight:600; color:#1D2D3E; margin:0 0 4px; }
+  .sscui-page-sub{ font-size:11px; color:#5B738B; margin:0 0 14px; }
+  .sscui-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .sscui-field{ flex:1; min-width:160px; }
+  .sscui-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .sscui-field .ffval{ border:1px solid var(--sscui-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+  .sscui-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .sscui-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sscui-border); }
+  .sscui-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .sscui-toggle-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid #EDEFF1; font-size:12px; }
+  .sscui-toggle{ width:34px; height:18px; border-radius:20px; background:var(--sscui-blue); position:relative; flex-shrink:0; }
+  .sscui-toggle::after{ content:''; position:absolute; top:2px; right:2px; width:14px; height:14px; border-radius:50%; background:white; }
+  .sscui-toggle.off{ background:#C9CDD2; }
+  .sscui-toggle.off::after{ right:auto; left:2px; }
+  .sscui-btn{ background:var(--sscui-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .sscui-btn.ghost{ background:white; color:var(--sscui-blue); border:1px solid var(--sscui-blue); }
+  .sscui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E;
+    margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  .to-t3-note{ background:var(--t4-pale); border:1px dashed var(--t4-dark); border-radius:8px; padding:10px 14px;
+    margin-top:14px; font-size:0.8rem; color:var(--t4-dark); }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Activate APM</a>
+  <a href="#s2">In-House Bank Structure</a>
+  <a href="#s3">Virtual Account Setup</a>
+  <a href="#s4">Netting Group Configuration</a>
+  <a href="#s5">Payment Scenario Mapping</a>
+  <a href="#s6">Sanctions List Provider</a>
+  <a href="#s7">Account Approval Workflow</a>
+  <a href="#s8">Bank Communication Channels</a>
+  <a href="#s9">Screening Situation Template</a>
+  <a href="#s10">Business Role Authorizations</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Advanced Payment Management</span>
+      <span class="pill pill-secondary">In-House Banking</span>
+      <span class="pill pill-secondary">Multi-Bank Connectivity</span>
+      <span class="pill pill-secondary">Situation Handling</span>
+    </div>
+    <h1>Advanced Payment Management — <span class="accent">Customizing</span></h1>
+    <h2>Tangibilización Configurador (GUI)</h2>
+    <p class="desc">La base que hay que armar antes de que Sofía pueda correr un netting o aprobar una cuenta virtual: la estructura del banco interno, los grupos de netting, el mapeo de escenarios de pago, y la conexión al proveedor de listas de sanciones.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Configure Your Solution — Bike Company Group</div>
+        <div class="p-note">esto arma la base que Sofía usa del otro lado, en Fiori</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Activating Advanced Payment Management</span>
+          <span class="sec-title-es">Activando Advanced Payment Management</span>
+          <span class="spro-area-tag">APM</span>
+        </div>
+        <div class="sec-desc">El interruptor general — sin esto, no hay hub de pagos ni In-House Bank disponibles.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Punto de partida:</strong> SAP S/4HANA Cloud for Advanced Payment Management se activa como escenario de negocio a nivel de grupo, habilitando el hub central de pagos y la capacidad embebida de In-House Banking que Sofía usa en T3.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Advanced Payment Management
+                  <ul>
+                    <li class="leaf">Activate Advanced Payment Management</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Configure Your Solution</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Activate Advanced Payment Management</p>
+          <p class="sscui-page-sub">Bike Company Group</p>
+          <div class="sscui-toggle-row"><span>Enable Central Payment Factory</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Enable In-House Banking</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the In-House Bank Structure</span>
+          <span class="sec-title-es">Definiendo la estructura del banco interno</span>
+          <span class="spro-area-tag">In-House Banking</span>
+        </div>
+        <div class="sec-desc">La cuenta física maestra que sostiene todas las cuentas virtuales del T3.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se designa cuál sociedad opera como sede del In-House Bank y cuál es la cuenta física maestra donde efectivamente vive el efectivo consolidado del grupo.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">In-House Banking
+                  <ul>
+                    <li class="leaf">Define In-House Bank Structure</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>IHB Structure Configuration</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">In-House Bank — Bike Company Group</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Host Company Code</label><div class="ffval">DE01</div></div>
+            <div class="sscui-field"><label>Master Physical Account</label><div class="ffval">Deutsche Bank — IHB</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="sscui-btn">Save Structure</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up Virtual Accounts</span>
+          <span class="sec-title-es">Configurando cuentas virtuales</span>
+          <span class="spro-area-tag">In-House Banking</span>
+        </div>
+        <div class="sec-desc">La cuenta virtual de Bike Inc que Sofía rastreó en T3 se crea acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se crea un identificador de cuenta virtual por cada entidad del grupo, vinculado a la cuenta física maestra — sin que la entidad necesite abrir una cuenta bancaria real propia.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">In-House Banking
+                  <ul>
+                    <li class="leaf">Create Virtual Bank Accounts</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Virtual Account Creation</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">New Virtual Account — Bike Inc (US01)</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Virtual Account ID</label><div class="ffval">VA-US01</div></div>
+            <div class="sscui-field"><label>Linked Physical Account</label><div class="ffval">IHB Master — DE01</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="sscui-btn">Create Account</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring the Netting Group</span>
+          <span class="sec-title-es">Configurando el grupo de netting</span>
+          <span class="spro-area-tag">Intercompany Netting</span>
+        </div>
+        <div class="sec-desc">El ciclo de netting que Sofía corrió en T3 solo funciona entre entidades que estén en el mismo grupo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se define qué entidades participan del mismo ciclo de netting y con qué frecuencia corre (semanal, mensual) — solo las entidades incluidas en el grupo pueden compensarse entre sí.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Intercompany Netting
+                  <ul>
+                    <li class="leaf">Define Netting Group</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Netting Group Configuration</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Netting Group — Bike Company Group</p>
+          <table class="sscui-table">
+            <tr><th>Entity</th><th>Included</th></tr>
+            <tr><td>Bike GmbH (DE01)</td><td>Yes</td></tr>
+            <tr><td>Bike Inc (US01)</td><td>Yes</td></tr>
+          </table>
+          <div class="sscui-field-row" style="margin-top:12px;">
+            <div class="sscui-field"><label>Run Frequency</label><div class="ffval">Weekly</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Mapping Payment Scenarios</span>
+          <span class="sec-title-es">Mapeando escenarios de pago</span>
+          <span class="spro-area-tag">Payment Management</span>
+        </div>
+        <div class="sec-desc">El pago on-behalf-of que Sofía registró en T3 necesita saber qué reglas seguir.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define qué entidades pueden pagar "in-name-of" u "on-behalf-of" de cuáles otras, y qué reglas de compliance aplican a cada combinación.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Advanced Payment Management
+                  <ul>
+                    <li class="leaf">Configure Payment Scenario Rules</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Payment Scenario Rules</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Scenario Mapping — Bike Company Group</p>
+          <table class="sscui-table">
+            <tr><th>Paying Entity</th><th>Obligated Entity</th><th>Scenario</th></tr>
+            <tr><td>Bike GmbH</td><td>Bike Inc</td><td>On-Behalf-Of</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Connecting the Sanctions List Provider</span>
+          <span class="sec-title-es">Conectando el proveedor de listas de sanciones</span>
+          <span class="spro-area-tag">Compliance</span>
+        </div>
+        <div class="sec-desc">El bloqueo que Sofía vio en T3 depende de que esta conexión esté activa y actualizada.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se conecta el sistema con un proveedor de listas de sanciones internacionales, y se define qué tan sensible es el algoritmo de coincidencia — más sensible atrapa más casos reales, pero también genera más falsos positivos para revisar.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Advanced Payment Management
+                  <ul>
+                    <li class="leaf">Configure Sanctions Screening</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Sanctions Screening Settings</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Screening Configuration</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Match Sensitivity</label><div class="ffval">Medium</div></div>
+            <div class="sscui-field"><label>List Update Frequency</label><div class="ffval">Daily</div></div>
+          </div>
+          <div class="sscui-hint">⚠ mayor sensibilidad = más pagos bloqueados para revisión manual</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring the Account Approval Workflow</span>
+          <span class="sec-title-es">Configurando el workflow de aprobación de cuentas</span>
+          <span class="spro-area-tag">In-House Banking</span>
+        </div>
+        <div class="sec-desc">La aprobación de la cuenta de Bike Retail que Sofía dio en T3 sigue el flujo definido acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se define quién solicita, quién valida contra política interna, y quién da la aprobación final para crear o modificar una cuenta virtual — segregando responsabilidades entre roles.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">In-House Banking
+                  <ul>
+                    <li class="leaf">Configure Account Approval Workflow</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Workflow Configuration</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Virtual Account Approval — Steps</p>
+          <table class="sscui-table">
+            <tr><th>Step</th><th>Role</th></tr>
+            <tr><td>1. Request</td><td>Corporate Treasury</td></tr>
+            <tr><td>2. Approve</td><td>Treasury Analyst</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up Bank Communication Channels</span>
+          <span class="sec-title-es">Configurando canales de comunicación bancaria</span>
+          <span class="spro-area-tag">Multi-Bank Connectivity</span>
+        </div>
+        <div class="sec-desc">El seguimiento en tiempo real que Sofía vio en T3 depende de qué canal se elija por banco.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se asigna, banco por banco, si la comunicación sale vía EBICS o SWIFT — y se conecta ese canal a Multi-Bank Connectivity para no gestionar cada conexión por separado.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Multi-Bank Connectivity
+                  <ul>
+                    <li class="leaf">Assign Communication Channel to Bank</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Bank Communication Channels</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Channel Assignment — Bike Company Group</p>
+          <table class="sscui-table">
+            <tr><th>Bank</th><th>Channel</th></tr>
+            <tr><td>Deutsche Bank</td><td>SWIFT</td></tr>
+            <tr><td>Commerzbank</td><td>EBICS</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Screening Alert Situation Template</span>
+          <span class="sec-title-es">Definiendo la plantilla de alerta de screening</span>
+          <span class="spro-area-tag">Situation Handling</span>
+        </div>
+        <div class="sec-desc">El aviso de "beneficiario coincide parcialmente" que vio Sofía se dispara desde acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se conecta un hit del screening de sanciones con una notificación de situación real en el Launchpad, incluyendo a quién avisa y qué acciones sugiere (liberar o escalar).
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Cross-Application Components
+              <ul>
+                <li class="folder">Situation Handling
+                  <ul>
+                    <li class="leaf">Define Situation Template — Sanctions Screening Hit</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Situation Template Editor</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Template — Sanctions Screening Hit</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Trigger Condition</label><div class="ffval">Partial or full name match</div></div>
+            <div class="sscui-field"><label>Suggested Actions</label><div class="ffval">Release / Escalate</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="sscui-btn">Save Template</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Authorizing Payment Business Roles</span>
+          <span class="sec-title-es">Autorizando roles de negocio de pagos</span>
+          <span class="spro-area-tag">Authorizations</span>
+        </div>
+        <div class="sec-desc">Quién puede liberar un pago bloqueado, y quién solo puede solicitarlo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se asigna qué puede hacer cada rol de negocio en las apps de Payment Management e In-House Banking — desde solicitar pagos, hasta liberar un caso de screening o aprobar una cuenta virtual nueva.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Advanced Payment Management
+                  <ul>
+                    <li class="leaf">Assign Business Roles to Payment Apps</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Business Role Assignment</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Payment Apps — Access</p>
+          <table class="sscui-table">
+            <tr><th>Business Role</th><th>Access Level</th></tr>
+            <tr><td>Treasury Analyst</td><td>Request / Release / Approve Accounts</td></tr>
+            <tr><td>AP/AR Clerk</td><td>Request Only</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="to-t3-note">🔧 → 👤 esto es exactamente lo que determina qué botones ve Sofía en cada app de pagos en T3.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Advanced Payment Management · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

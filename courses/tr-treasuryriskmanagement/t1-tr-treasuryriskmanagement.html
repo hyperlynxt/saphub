@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Treasury &amp; Risk Management — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t1-pale); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:10px; min-width:980px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:10px 8px 8px; border-radius:12px 12px 0 0; color:white; text-align:center; background:var(--t1-dark); }
+  .flow-step-head .icon{ font-size:17px; display:block; margin-bottom:2px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:10.5px; display:block; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:10px 8px; flex:1; }
+  .flow-step-body p{ font-size:9.8px; color:var(--body); margin:0; line-height:1.4; text-align:center; }
+  .flow-connector{ position:absolute; top:16px; right:-16px; width:22px; height:22px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; font-size:11px; color:var(--t1-dark); }
+
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g2{ grid-template-columns:repeat(2,1fr); }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .cards-grid.g6{ grid-template-columns:repeat(6,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card.compact{ padding:12px 10px; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card.compact h6{ font-size:0.74rem; }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:170px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t1-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t1-dark); font-weight:700; }
+
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){
+    .cards-grid.g2, .cards-grid.g3, .cards-grid.g4, .cards-grid.g6{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">What Is Treasury &amp; Risk Mgmt.</a>
+  <a href="#s2">Smart Trading</a>
+  <a href="#s3">Deal Management</a>
+  <a href="#s4">Hedge Accounting &amp; Compliance</a>
+  <a href="#s5">Integrated Risk Management</a>
+  <a href="#s6">The Deal Lifecycle</a>
+  <a href="#s7">Financial Instruments</a>
+  <a href="#s8">Business Benefits</a>
+  <a href="#s9">Market Rates Management</a>
+  <a href="#s10">Trading Platform Integration</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Treasury &amp; Risk Management</span>
+      <span class="pill pill-secondary">Hedge Accounting</span>
+      <span class="pill pill-secondary">Market Rates Management</span>
+      <span class="pill pill-secondary">Trading Platforms</span>
+    </div>
+    <h1>Treasury &amp; Risk <span class="accent">Management</span></h1>
+    <h2>Gestión de Tesorería y Riesgo</h2>
+    <p class="desc">Las capacidades clave de SAP S/4HANA Cloud for Treasury and Risk Management: trading inteligente, gestión de deals de punta a punta, hedge accounting bajo IFRS/GAAP, y las dos piezas de integración que lo conectan con el mercado y las plataformas de trading.</p>
+    <div class="hlbox">Resumen Visual — <b>Treasury &amp; Risk Management</b>, Tipo 1 (Básico). 10 secciones — las capacidades clave, el ciclo de vida del deal, los instrumentos financieros soportados, los seis grandes beneficios de negocio, y las integraciones con datos de mercado y plataformas de trading.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Is Treasury and Risk Management?</span>
+          <span class="sec-title-es">¿Qué es Treasury and Risk Management?</span>
+        </div>
+        <div class="sec-desc">Una solución sofisticada, no solo un módulo de reporting.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Definición:</strong> SAP S/4HANA Cloud for Treasury and Risk Management revoluciona las operaciones de tesorería y la gestión de riesgo de una organización. Ofrece analítica y reporting en tiempo real, con insights instantáneos sobre posiciones, riesgos y valuaciones.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📊</span><h6>Real-Time Analytics</h6><p>Insights instantáneos sobre posiciones y riesgos.</p></div>
+        <div class="mini-card"><span class="icon">💹</span><h6>Valuations</h6><p>Valuación al momento de instrumentos financieros.</p></div>
+        <div class="mini-card"><span class="icon">🔍</span><h6>Drill-Downs</h6><p>De la vista general al detalle, sin salir del sistema.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Smart Trading Capabilities</span>
+          <span class="sec-title-es">Capacidades de trading inteligente</span>
+        </div>
+        <div class="sec-desc">La primera gran funcionalidad clave.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué incluye?</strong> Funcionalidades de trading inteligente con procesos automatizados e integración sin fricción con portales de trading, además de integración de datos de mercado para asegurar información precisa y oportuna.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g2">
+        <div class="mini-card"><span class="icon">⚙️</span><h6>Automated Processes</h6><p>Procesos de trading automatizados, no manuales.</p></div>
+        <div class="mini-card"><span class="icon">🔗</span><h6>Trading Portal Integration</h6><p>Integración sin fricción con portales externos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Comprehensive Deal Management</span>
+          <span class="sec-title-es">Gestión integral de deals</span>
+        </div>
+        <div class="sec-desc">Soporta la gestión del ciclo de vida completo, para una amplia variedad de instrumentos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el sistema soporta gestión de ciclo de vida de punta a punta para un amplio conjunto de instrumentos financieros: securities, instrumentos FX, instrumentos de tasa de interés, productos de money market, y herramientas de gestión de deuda.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card compact"><span class="icon">📜</span><h6>Securities</h6></div>
+        <div class="mini-card compact"><span class="icon">💱</span><h6>FX Instruments</h6></div>
+        <div class="mini-card compact"><span class="icon">📈</span><h6>Interest Rate</h6></div>
+        <div class="mini-card compact"><span class="icon">🏦</span><h6>Debt Mgmt.</h6></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Advanced Accounting &amp; Compliance</span>
+          <span class="sec-title-es">Contabilidad avanzada y compliance</span>
+        </div>
+        <div class="sec-desc">El hedge no sirve de mucho si no se puede contabilizar correctamente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué incluye?</strong> Capacidades de hedge accounting que cumplen tanto con IFRS como con GAAP, más funcionalidades robustas de gobierno, riesgo y compliance para cumplir requerimientos regulatorios.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📘</span><h6>IFRS Compliance</h6><p>Hedge accounting alineado a estándares internacionales.</p></div>
+        <div class="mini-card"><span class="icon">📗</span><h6>GAAP Compliance</h6><p>Alineado también a principios contables generalmente aceptados.</p></div>
+        <div class="mini-card"><span class="icon">🛡️</span><h6>Governance, Risk &amp; Compliance</h6><p>Funcionalidades robustas para requerimientos regulatorios.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Integrated Financial Risk Management</span>
+          <span class="sec-title-es">Gestión integrada de riesgo financiero</span>
+        </div>
+        <div class="sec-desc">Cuatro componentes que trabajan en sinergia, no por separado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el enfoque holístico combina Financial Transaction Manager, Hedge Accounting, Exposure Management y Hedge Management Cockpit — estos elementos consolidan datos de sistemas ERP, entradas manuales, datos de planificación/forecast, y otras fuentes de exposición de SAP.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="icon">💼</span><h6>Financial Transaction Manager</h6></div>
+        <div class="mini-card"><span class="icon">🛡️</span><h6>Hedge Accounting</h6></div>
+        <div class="mini-card"><span class="icon">📉</span><h6>Exposure Management</h6></div>
+        <div class="mini-card"><span class="icon">🎛️</span><h6>Hedge Management Cockpit</h6></div>
+      </div>
+      <div class="visual-caption">cuatro componentes que consolidan datos de ERP, entradas manuales, forecast y otras fuentes SAP</div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Deal Lifecycle</span>
+          <span class="sec-title-es">El ciclo de vida del deal</span>
+        </div>
+        <div class="sec-desc">Siete etapas que aplican a instrumentos tan distintos como FX trades o commodity trades.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> el sistema gestiona el ciclo de vida completo de una transacción financiera — desde el dato maestro hasta el reporting final — de forma consistente sin importar si el instrumento es un money market trade, un derivado, o un commodity trade.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step"><div class="flow-step-head"><span class="icon">🗂️</span><span class="title-en">Master Data</span></div><div class="flow-step-body"><p>Datos maestros</p></div><div class="flow-connector">→</div></div>
+        <div class="flow-step"><div class="flow-step-head"><span class="icon">📝</span><span class="title-en">Deal Request</span></div><div class="flow-step-body"><p>Solicitud de deal</p></div><div class="flow-connector">→</div></div>
+        <div class="flow-step"><div class="flow-step-head"><span class="icon">✅</span><span class="title-en">Execution &amp; Capture</span></div><div class="flow-step-body"><p>Ejecución y captura</p></div><div class="flow-connector">→</div></div>
+        <div class="flow-step"><div class="flow-step-head"><span class="icon">✉️</span><span class="title-en">Trade Correspondence</span></div><div class="flow-step-body"><p>Correspondencia del trade</p></div><div class="flow-connector">→</div></div>
+        <div class="flow-step"><div class="flow-step-head"><span class="icon">💹</span><span class="title-en">Valuation &amp; Accounting</span></div><div class="flow-step-body"><p>Valuación y contabilización</p></div><div class="flow-connector">→</div></div>
+        <div class="flow-step"><div class="flow-step-head"><span class="icon">💳</span><span class="title-en">Settlement &amp; Payment</span></div><div class="flow-step-body"><p>Liquidación y pago</p></div><div class="flow-connector">→</div></div>
+        <div class="flow-step"><div class="flow-step-head"><span class="icon">📊</span><span class="title-en">Reporting &amp; Analysis</span></div><div class="flow-step-body"><p>Reporting y análisis</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Financial Instruments Supported</span>
+          <span class="sec-title-es">Instrumentos financieros soportados</span>
+        </div>
+        <div class="sec-desc">Un número significativo de transacciones, distribuidas en seis categorías.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el sistema soporta un número significativo de transacciones financieras a través de seis categorías: securities, instrumentos FX, instrumentos de tasa de interés, money market, gestión de deuda, y trade finance.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g6">
+        <div class="mini-card compact"><span class="icon">📜</span><h6>Securities</h6><p>Bonos, stocks, zero bonds</p></div>
+        <div class="mini-card compact"><span class="icon">💱</span><h6>FX</h6><p>Spot, forwards, swaps, opciones</p></div>
+        <div class="mini-card compact"><span class="icon">📈</span><h6>Interest Rate</h6><p>Caps, floors, swaps, opciones</p></div>
+        <div class="mini-card compact"><span class="icon">💰</span><h6>Money Market</h6><p>Depósitos, floating notes, papel comercial</p></div>
+        <div class="mini-card compact"><span class="icon">🏦</span><h6>Debt Mgmt.</h6><p>Bonos emitidos, préstamos, facilities</p></div>
+        <div class="mini-card compact"><span class="icon">📄</span><h6>Trade Finance</h6><p>Garantías bancarias, cartas de crédito</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Six Business Benefits</span>
+          <span class="sec-title-es">Los seis beneficios de negocio</span>
+        </div>
+        <div class="sec-desc">De la solución completa, en su resumen ejecutivo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> los beneficios más grandes van desde tener una solución integral de punta a punta, hasta estar preparado para el futuro con IA y machine learning — pasando por mejor gestión de riesgo, mejor toma de decisiones, y compliance regulatorio.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🧩</span><h6>End-to-End Solution</h6><p>Sistema centralizado para caja, liquidez, riesgo e instrumentos.</p></div>
+        <div class="mini-card"><span class="icon">⚡</span><h6>Enhanced Efficiency</h6><p>Big data y analítica predictiva para procesos automatizados.</p></div>
+        <div class="mini-card"><span class="icon">🛡️</span><h6>Improved Risk Management</h6><p>Herramientas para riesgo de tasa, mercado, crédito y FX.</p></div>
+        <div class="mini-card"><span class="icon">🎯</span><h6>Better Decision-Making</h6><p>Transparencia e insights en tiempo real para monitorear KPIs.</p></div>
+        <div class="mini-card"><span class="icon">✅</span><h6>Regulatory Compliance</h6><p>Alineado a Basel III e IFRS 7.</p></div>
+        <div class="mini-card"><span class="icon">🚀</span><h6>Scalability &amp; Future-Readiness</h6><p>In-memory computing, listo para IA y ML.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">SAP Market Rates Management</span>
+          <span class="sec-title-es">SAP Market Rates Management</span>
+        </div>
+        <div class="sec-desc">El servicio que trae los datos de mercado hacia adentro del sistema.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es?</strong> Un servicio para integrar y gestionar datos de mercado dentro de SAP S/4HANA o S/4HANA Cloud, con dos opciones de datos: REFINITIV (antes Thomson Reuters) para tasas de cambio e interés, o Bring Your Own Rates para subir datos propios de otros proveedores.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g2">
+        <div class="mini-card"><span class="icon">📡</span><h6>REFINITIV Data Option</h6><p>Tasas de cambio e interés directo de un proveedor líder.</p></div>
+        <div class="mini-card"><span class="icon">📤</span><h6>Bring Your Own Rates</h6><p>Subida/descarga de tasas propias desde terceros.</p></div>
+      </div>
+      <div class="visual-caption">beneficios: onboarding simplificado, menos complejidad contractual, eficiencia operativa</div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">SAP Trading Platform Integration</span>
+          <span class="sec-title-es">SAP Trading Platform Integration</span>
+        </div>
+        <div class="sec-desc">La conexión sin fricción entre las plataformas de trading externas y Treasury & Risk Management.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> conecta con plataformas líderes como 360T y FXall mediante un único servicio sobre SAP BTP, habilitando straight-through processing — un flujo automatizado de punta a punta sin múltiples entradas de datos.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Inbound</div><div class="t-es">deals hacia S/4HANA</div></div>
+        <div class="chain-arrow">⇄</div>
+        <div class="chain-box"><div class="t-en">SAP BTP Service</div><div class="t-es">servicio único de conexión</div></div>
+        <div class="chain-arrow">⇄</div>
+        <div class="chain-box"><div class="t-en">Outbound</div><div class="t-es">requests hacia la plataforma</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos clave de Treasury &amp; Risk Management — Tipo 1</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Hedge Accounting</div><div class="term-es">Contabilidad de Coberturas</div><div class="term-def">Tratamiento contable de instrumentos de cobertura, compatible con IFRS y GAAP.</div></div>
+      <div class="gcard"><div class="term-en">Exposure Management</div><div class="term-es">Gestión de Exposición</div><div class="term-def">Componente que consolida datos de exposición financiera de múltiples fuentes.</div></div>
+      <div class="gcard"><div class="term-en">Financial Transaction Manager</div><div class="term-es">Gestor de Transacciones Financieras</div><div class="term-def">Componente central para gestionar transacciones financieras dentro del sistema.</div></div>
+      <div class="gcard"><div class="term-en">Hedge Management Cockpit</div><div class="term-es">Cockpit de Gestión de Coberturas</div><div class="term-def">Panel de control para gestionar estrategias y posiciones de cobertura.</div></div>
+      <div class="gcard"><div class="term-en">Straight-Through Processing (STP)</div><div class="term-es">Procesamiento Directo</div><div class="term-def">Flujo de trabajo automatizado de punta a punta, sin múltiples entradas manuales de datos.</div></div>
+      <div class="gcard"><div class="term-en">Deal Lifecycle</div><div class="term-es">Ciclo de Vida del Deal</div><div class="term-def">Las etapas por las que pasa una transacción financiera, desde el dato maestro hasta el reporting.</div></div>
+      <div class="gcard"><div class="term-en">Money Market Product</div><div class="term-es">Producto de Money Market</div><div class="term-def">Instrumento financiero de corto plazo, como depósitos a plazo fijo o papel comercial.</div></div>
+      <div class="gcard"><div class="term-en">Trade Finance</div><div class="term-es">Financiamiento del Comercio</div><div class="term-def">Instrumentos como garantías bancarias y cartas de crédito para respaldar operaciones comerciales.</div></div>
+      <div class="gcard"><div class="term-en">Basel III</div><div class="term-es">Basel III</div><div class="term-def">Marco regulatorio internacional de requerimientos de capital y riesgo para instituciones financieras.</div></div>
+      <div class="gcard"><div class="term-en">IFRS 7</div><div class="term-es">IFRS 7</div><div class="term-def">Norma internacional de reporting financiero sobre divulgación de instrumentos financieros.</div></div>
+      <div class="gcard"><div class="term-en">REFINITIV</div><div class="term-es">REFINITIV</div><div class="term-def">Proveedor líder de datos de mercado (antes Thomson Reuters), con tasas de cambio e interés.</div></div>
+      <div class="gcard"><div class="term-en">Bring Your Own Rates</div><div class="term-es">Traé tus Propias Tasas</div><div class="term-def">Opción para subir y descargar tasas de mercado propias desde proveedores externos.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Treasury &amp; Risk Management · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

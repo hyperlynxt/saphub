@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Procure-to-Pay — Configurador GUI | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#A78BC9;--t1-dark:#6B4C8F;--t1-pale:rgba(167,139,201,0.12);--t1-pale-border:rgba(167,139,201,0.38);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-secondary:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-co:#1A6B99;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-sales:#E07B39;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#160C24 55%,#200E32 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;letter-spacing:.2px;}
+  .pill-primary{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-secondary{border:1.5px solid var(--pill-secondary);color:var(--pill-secondary);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.5rem);color:rgba(255,255,255,0.62);margin:0 0 18px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(167,139,201,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(107,76,143,0.35);}
+  .area-tag{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);color:var(--t1-dark);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;white-space:nowrap;align-self:center;}
+  .sec-titles{display:flex;flex-direction:column;gap:2px;flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;margin-top:2px;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  /* SPRO Tree */
+  .spro-tree{background:#FAFAFA;border:1px solid #D0D4DC;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:12px;}
+  .spro-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--t1-dark);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+  .spro-node{display:flex;align-items:center;gap:6px;padding:2px 0;color:var(--body);}
+  .spro-node .sn-icon{flex-shrink:0;font-size:12px;}
+  .spro-node .sn-text{font-size:11.5px;}
+  .spro-node.active .sn-text{font-weight:700;color:var(--t1-dark);background:rgba(167,139,201,0.15);border-radius:4px;padding:1px 6px;}
+  .i1{padding-left:18px;}.i2{padding-left:36px;}.i3{padding-left:54px;}.i4{padding-left:72px;}.i5{padding-left:90px;}
+  /* SAP GUI */
+  .sapgui{border:2px solid #A8B0BC;border-radius:4px;overflow:hidden;box-shadow:0 4px 14px rgba(10,15,28,0.1);}
+  .gui-bar{background:linear-gradient(180deg,#3A5A80,#2A4060);padding:7px 14px;display:flex;align-items:center;gap:12px;}
+  .tcode{font-family:'JetBrains Mono',monospace;font-size:11px;color:white;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:3px;padding:3px 8px;flex-shrink:0;}
+  .gui-title{font-size:12.5px;font-weight:600;color:white;}
+  .gui-tools{background:#C8D0DA;padding:5px 10px;display:flex;gap:6px;border-bottom:1px solid #A8B0BC;}
+  .gbtn{background:#D8E0E8;border:1px solid #9AA0AA;border-radius:2px;padding:3px 8px;font-size:10.5px;color:#2A2A2A;}
+  .gui-body{background:white;padding:14px 16px;}
+  .gui-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .gui-table th{background:#C8D0DA;color:#1A1A1A;padding:6px 10px;text-align:left;border:1px solid #A8B0BC;font-weight:700;font-size:11px;}
+  .gui-table td{padding:5px 10px;border:1px solid #D4D8DC;color:#2A2A2A;vertical-align:middle;}
+  .gui-table tr:nth-child(even) td{background:#F5F7FA;}
+  .gui-table .hi td{background:#CCE0F5;border-left:2px solid #0070C8;}
+  .gui-status{background:#C8D0DA;border-top:1px solid #A8B0BC;padding:4px 12px;font-size:10.5px;color:#444;}
+  .gui-field{margin-bottom:10px;}
+  .gui-field label{font-size:11px;color:#444;display:block;margin-bottom:3px;}
+  .gui-field .gfv{border:1px solid #A8B0BC;padding:5px 8px;font-size:12px;color:#2A2A2A;background:white;width:200px;}
+  .gui-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR / GUI</span>
+  <a href="#s1">Purchasing Org.</a>
+  <a href="#s2">CC–PurchOrg</a>
+  <a href="#s3">Vendor Acct Group</a>
+  <a href="#s4">OBYC</a>
+  <a href="#s5">Tolerance Keys</a>
+  <a href="#s6">Document Types</a>
+  <a href="#s7">Number Ranges</a>
+  <a href="#s8">Payment Program</a>
+  <a href="#s9">House Banks</a>
+  <a href="#s10">Tax Codes</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1>Procure-<span class="accent">to-Pay</span></h1>
+    <h2>Tangibilización — Configurador SAP GUI</h2>
+    <p class="desc">Las 10 parametrizaciones clave del ciclo P2P: estructura empresarial, determinación automática de cuentas, tolerancias, tipos de documento, programa de pagos y códigos de impuesto.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">🔧</span>
+      <b>Vos, en el rol de Configurador</b> · SAP Consultant<br>
+      <span style="font-size:12.5px;opacity:0.85;">Estas parametrizaciones hacen posible lo que Jennifer ejecuta en Fiori. La base técnica de todo el ciclo P2P — lo que el usuario nunca ve pero siempre necesita.</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- S1 — PURCHASING ORGANIZATION -->
+<section class="section" id="s1">
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <div class="area-tag">Enterprise Structure</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Define Purchasing Organization</span><span class="sec-title-es">Definir organización de compras</span></div>
+      <div class="sec-desc">La unidad organizativa de MM que negocia condiciones con proveedores y sirve de referencia para las POs.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Sin Purchasing Org. no hay PO:</strong> la <strong>Purchasing Organization</strong> es la unidad de MM que negocia con los proveedores. Toda Purchase Order lleva la Purchasing Org. como referencia, y el Vendor Master almacena datos específicos por esta unidad (payment terms, Incoterms, ERS flag). Sin esta entidad configurada, el ciclo P2P no puede comenzar.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Implementation Guide</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Enterprise Structure</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Definition</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Materials Management</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Maintain Purchasing Organization</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Maintain Purchasing Organization</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Purch.Org</th><th>Description</th><th>Comp.Code</th><th>Plant</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>1000</strong></td><td>Purchasing Org Germany</td><td>DE01</td><td>1000</td></tr>
+            <tr><td>2000</td><td>Purchasing Org USA</td><td>US01</td><td>2000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Purchasing Organization 1000 active for Company Code DE01</div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 — CC–PURCH.ORG ASSIGNMENT -->
+<section class="section" id="s2">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <div class="area-tag">Enterprise Structure</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Assign Purchasing Org. to Company Code</span><span class="sec-title-es">Asignar Org. de Compras a Sociedad</span></div>
+      <div class="sec-desc">El vínculo que permite que los eventos de MM (GR) generen documentos FI en la sociedad correcta.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>La asignación es la bisagra MM-FI:</strong> sin este vínculo, SAP no sabe a qué <strong>Company Code</strong> atribuir los documentos financieros que genera un Goods Receipt. La asignación de <strong>Purchasing Org. → Company Code</strong> garantiza que los posteos del GR (BSX, WRX) se registren en DE01 cuando la PO lleva la Purch.Org. 1000.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Implementation Guide</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Enterprise Structure</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Assignment</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Materials Management</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Assign Purchasing Organization to Company Code</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Assign Purchasing Organization to Company Code</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Purch. Org.</th><th>Description</th><th>Company Code</th><th>Company Name</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>1000</strong></td><td>Purchasing Org Germany</td><td><strong>DE01</strong></td><td>Bike GmbH</td></tr>
+            <tr><td>2000</td><td>Purchasing Org USA</td><td>US01</td><td>Bike Inc</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">✔ Assignment saved</div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 — VENDOR ACCOUNT GROUP -->
+<section class="section" id="s3">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <div class="area-tag">FI — Accounts Payable</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Vendor Account Group</span><span class="sec-title-es">Grupo de cuentas de proveedor</span></div>
+      <div class="sec-desc">Define el rango de numeración del proveedor y qué campos son obligatorios en el Vendor Master.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>El Account Group estructura el Vendor Master:</strong> cada proveedor pertenece a un <strong>Account Group</strong> que determina el rango de números de proveedor (interno o externo), los campos obligatorios vs. opcionales del Vendor Master, y si es un proveedor de una sola vez (one-time). El configurador define el <strong>field status</strong> para cada bloque de datos — General, Purchasing Org. y Company Code — garantizando que AP siempre tenga los datos mínimos necesarios.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Vendor Accounts</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Master Data</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Account Groups with Screen Layout (Vendors)</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Define Account Groups — Vendors</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">📋 Detail</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Acct Group</th><th>Name</th><th>One-time</th><th>Number range</th><th>Int./Ext.</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>LIEF</strong></td><td>Vendors — Standard</td><td></td><td>01 (100000–199999)</td><td>Internal</td></tr>
+            <tr><td>KRED</td><td>Vendors — One-time</td><td>✔</td><td>02 (200000–299999)</td><td>Internal</td></tr>
+            <tr><td>INTE</td><td>Intercompany Vendors</td><td></td><td>03 (300000–399999)</td><td>Internal</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:12px;background:#F5F7FA;border:1px solid #C8D0DA;border-radius:4px;padding:10px 12px;">
+          <div style="font-size:11px;font-weight:700;color:#444;margin-bottom:6px;">Field Status Detail — Group LIEF · Bank Data section</div>
+          <div style="display:flex;gap:20px;font-size:11.5px;align-items:center;">
+            <label style="display:flex;align-items:center;gap:4px;"><input type="radio" checked disabled style="accent-color:#6B4C8F;"> Required</label>
+            <label style="display:flex;align-items:center;gap:4px;"><input type="radio" disabled> Optional</label>
+            <label style="display:flex;align-items:center;gap:4px;"><input type="radio" disabled> Suppressed</label>
+          </div>
+        </div>
+      </div>
+      <div class="gui-status">Account Group LIEF selected</div>
+    </div>
+  </div>
+</section>
+
+<!-- S4 — OBYC -->
+<section class="section" id="s4">
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <div class="area-tag">Materials Management</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">OBYC — Configure Automatic Postings</span><span class="sec-title-es">Determinación automática de cuentas GL</span></div>
+      <div class="sec-desc">La configuración que mapea cada evento logístico (GR, Invoice) a las cuentas GL correctas sin intervención manual.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>OBYC es la columna vertebral de la integración MM-FI:</strong> mapea cada <strong>Transaction/Event Key</strong> a cuentas GL específicas. Cuando se postea un GR, SAP usa <strong>BSX</strong> para determinar la cuenta de inventario (Dr) y <strong>WRX</strong> para la cuenta GR/IR (Cr). Al registrar la Invoice, WRX se debita (compensando el Cr del GR). Sin OBYC bien configurado, los eventos de MM no generarían documentos FI correctos.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path · T-code: OBYC</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Materials Management</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Valuation and Account Assignment</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Account Determination</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Account Determination Without Wizard</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Configure Automatic Postings</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">OBYC</span><span class="gui-title">Configure Automatic Postings — Chart of Accounts: BIKE</span></div>
+      <div class="gui-tools"><button class="gbtn">Valuation Class</button><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Trans.Key</th><th>Description</th><th>Valuation Class</th><th>GL Account Dr</th><th>GL Account Cr</th><th>Usage P2P</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>BSX</strong></td><td>Inventory Posting</td><td>3000 Raw Mat.</td><td><strong>790000</strong></td><td>—</td><td>GR → Inventory Dr</td></tr>
+            <tr class="hi"><td><strong>WRX</strong></td><td>GR/IR Clearing</td><td>—</td><td>—</td><td><strong>191100</strong></td><td>GR → GR/IR Cr · Invoice → GR/IR Dr</td></tr>
+            <tr><td>PRD</td><td>Price Difference</td><td>3000</td><td>895000</td><td>895000</td><td>Price variance on invoice</td></tr>
+            <tr><td>KBS</td><td>Account-assigned PO</td><td>—</td><td>varies</td><td>—</td><td>Non-stock GR (consumo)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">BSX/WRX: Account determination active · Chart BIKE</div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 — TOLERANCE KEYS -->
+<section class="section" id="s5">
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <div class="area-tag">Materials Management</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Tolerance Keys — Invoice Verification</span><span class="sec-title-es">Claves de tolerancia para verificación de facturas</span></div>
+      <div class="sec-desc">Los límites que definen cuándo una diferencia de precio o cantidad dispara un bloqueo automático de pago.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Tolerancias = margen aceptable antes del bloqueo:</strong> al verificar una factura, SAP compara precio (vs PO) y cantidad (vs GR). Si la diferencia supera los límites de las <strong>tolerance keys</strong>, el sistema bloquea el pago automáticamente. El configurador define límites por porcentaje y/o importe absoluto, por company code. Diferencias dentro del límite se postean a cuentas de variación sin bloqueo.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Materials Management</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Logistics Invoice Verification</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Invoice Block</span></div>
+      <div class="spro-node i3 active"><span class="sn-icon">🔷</span><span class="sn-text">Set Tolerance Limits</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Set Tolerance Limits — Company Code: DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Key</th><th>Description</th><th>Check</th><th>Upper % Limit</th><th>Upper Abs. (EUR)</th><th>Lower % Limit</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>DW</strong></td><td>Exceed amount small diffs</td><td>Price</td><td>3.00%</td><td>50.00</td><td>—</td></tr>
+            <tr><td>BD</td><td>Form small differences</td><td>Price/Qty</td><td>—</td><td>10.00</td><td>—</td></tr>
+            <tr><td>BW</td><td>Qty variance (order unit)</td><td>Qty</td><td>5.00%</td><td>—</td><td>5.00%</td></tr>
+            <tr><td>ST</td><td>Date variance (days)</td><td>Date</td><td>10 days</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Company Code DE01 · Currency EUR · 4 entries</div>
+    </div>
+  </div>
+</section>
+
+<!-- S6 — DOCUMENT TYPES AP -->
+<section class="section" id="s6">
+  <div class="sec-head">
+    <div class="sec-num">06</div>
+    <div class="area-tag">FI Global Settings</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Document Types for Accounts Payable</span><span class="sec-title-es">Tipos de documento para Cuentas por Pagar</span></div>
+      <div class="sec-desc">Categorizan cada transacción FI del ciclo P2P y controlan qué tipos de cuenta pueden usarse.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Document types clasifican las transacciones FI:</strong> cada asiento tiene un <strong>Document Type</strong> que define qué tipos de cuenta pueden usarse (proveedor, GL, activo), el rango de numeración asignado, y si se genera manual o automáticamente. Los tipos más frecuentes en P2P son <strong>RE</strong> (Invoice Receipt — factura del proveedor con referencia a PO, generado por LIV), <strong>KR</strong> (Vendor Invoice — factura manual), <strong>KZ</strong> (Vendor Payment) y <strong>ZP</strong> (Payment Posting).</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Document Types</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Document Types for Entry View</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Define Document Types for Entry View</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">📋 Detail</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>DocType</th><th>Description</th><th>Account Types</th><th>Net document type</th><th>Usage</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>RE</strong></td><td>Invoice — Gross</td><td>K, S, M, A</td><td>KG</td><td>Invoice Verification (from PO)</td></tr>
+            <tr><td>KR</td><td>Vendor Invoice</td><td>K, S</td><td>KG</td><td>Manual vendor invoice entry</td></tr>
+            <tr><td>KZ</td><td>Vendor Payment</td><td>K, S, B</td><td>—</td><td>Manual outgoing payment</td></tr>
+            <tr><td>ZP</td><td>Payment Posting</td><td>K, S, B</td><td>—</td><td>Automatic payment program output</td></tr>
+            <tr><td>KG</td><td>Vendor Credit Memo</td><td>K, S</td><td>—</td><td>Credit memo / return to vendor</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:10.5px;color:#666;margin-top:8px;">Account Types: K=Vendor · S=GL · M=Material · A=Asset · B=Bank</div>
+      </div>
+      <div class="gui-status">5 document types displayed</div>
+    </div>
+  </div>
+</section>
+
+<!-- S7 — NUMBER RANGES -->
+<section class="section" id="s7">
+  <div class="sec-head">
+    <div class="sec-num">07</div>
+    <div class="area-tag">FI Global Settings</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Document Number Ranges for AP</span><span class="sec-title-es">Rangos de numeración de documentos AP</span></div>
+      <div class="sec-desc">Define qué números asigna SAP a los documentos FI de cada tipo en el ciclo P2P.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Los number ranges controlan la secuencia de documentos FI:</strong> cada Document Type lleva asignado un <strong>number range interval</strong> que define el rango de números disponibles para ese tipo. La numeración puede ser <strong>interna</strong> (SAP asigna el número automáticamente al postear) o <strong>externa</strong> (el usuario ingresa el número manualmente). En AP, la mayoría de los document types usan numeración interna por ejercicio fiscal.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Document Number Ranges</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Document Number Ranges for Entry View</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Number Range Maintenance — Company Code: DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Intervals</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>No.</th><th>From Number</th><th>To Number</th><th>Current No.</th><th>Int/Ext</th><th>Doc Types</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>19</strong></td><td>5100000000</td><td>5199999999</td><td>5105600001</td><td>Internal</td><td>RE, KR, KG</td></tr>
+            <tr><td>15</td><td>1500000000</td><td>1599999999</td><td>1500012345</td><td>Internal</td><td>KZ, ZP</td></tr>
+            <tr><td>X2</td><td>—</td><td>—</td><td>—</td><td>External</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Number ranges for Company Code DE01</div>
+    </div>
+  </div>
+</section>
+
+<!-- S8 — PAYMENT PROGRAM (FBZP) -->
+<section class="section" id="s8">
+  <div class="sec-head">
+    <div class="sec-num">08</div>
+    <div class="area-tag">FI — Accounts Payable</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Payment Program Configuration (FBZP)</span><span class="sec-title-es">Configuración del programa de pagos</span></div>
+      <div class="sec-desc">Las reglas que definen cómo, cuándo y a través de qué medio el programa de pagos paga al proveedor.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>FBZP centraliza la configuración del pago automático:</strong> la transacción <strong>FBZP</strong> configura todos los parámetros del programa de pagos: qué Company Codes participan, qué métodos de pago (transferencia, cheque) están disponibles, qué bancos propios se usan y en qué orden. Sin esta configuración, el programa de pagos no puede procesar las facturas de AP y ejecutar el pago al proveedor.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path · T-code: FBZP</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Business Transactions</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Outgoing Payments</span></div>
+      <div class="spro-node i4"><span class="sn-icon">📁</span><span class="sn-text">Automatic Outgoing Payments</span></div>
+      <div class="spro-node i5 active"><span class="sn-icon">🔷</span><span class="sn-text">Set Up Payment Program</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">FBZP</span><span class="gui-title">Maintain Payment Program Configuration</span></div>
+      <div class="gui-tools"><button class="gbtn">All Company Codes</button><button class="gbtn">Payment Methods in Country</button><button class="gbtn">Bank Determination</button></div>
+      <div class="gui-body">
+        <div style="font-size:11px;font-weight:700;color:#444;margin-bottom:8px;">All Company Codes — DE01</div>
+        <table class="gui-table">
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Sending Company Code</td><td>DE01</td></tr>
+            <tr class="hi"><td>Paying Company Code</td><td><strong>DE01</strong></td></tr>
+            <tr><td>Separate Payment for Each Ref.</td><td>☑ Yes</td></tr>
+            <tr><td>Payment methods for outgoing payments</td><td>T (Bank Transfer), C (Check)</td></tr>
+            <tr><td>Minimum amount for outgoing payment</td><td>EUR 1.00</td></tr>
+            <tr><td>Vendors — Bill of exchange limit</td><td>EUR 0.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Payment program set up for DE01</div>
+    </div>
+  </div>
+</section>
+
+<!-- S9 — HOUSE BANKS -->
+<section class="section" id="s9">
+  <div class="sec-head">
+    <div class="sec-num">09</div>
+    <div class="area-tag">FI — Accounts Payable</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Define House Banks &amp; Bank Accounts</span><span class="sec-title-es">Definir bancos propios y cuentas bancarias</span></div>
+      <div class="sec-desc">Los bancos de la empresa que el programa de pagos puede usar para ejecutar transferencias al proveedor.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Los House Banks son los bancos propios de la empresa:</strong> para que el programa de pagos pueda transferir fondos al proveedor, SAP necesita conocer qué <strong>House Banks</strong> tiene la sociedad y qué cuentas bancarias (IBAN/Acct Number) corresponden a cada uno. Cada House Bank tiene al menos una <strong>Bank Account ID</strong> vinculada a una cuenta GL de bancos. El programa de pagos selecciona el banco según las reglas de Bank Determination en FBZP.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Bank Accounting</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Bank Accounts</span></div>
+      <div class="spro-node i3 active"><span class="sn-icon">🔷</span><span class="sn-text">Define House Banks</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Define House Banks — Company Code: DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">📋 Bank Accounts</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>House Bank</th><th>Bank Country</th><th>Bank Key</th><th>Bank Name</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>DEUT1</strong></td><td>DE</td><td>20070024</td><td>Deutsche Bank Frankfurt</td></tr>
+            <tr><td>COMM1</td><td>DE</td><td>20041133</td><td>Commerzbank Hamburg</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:12px;background:#F5F7FA;border:1px solid #C8D0DA;border-radius:4px;padding:10px 12px;">
+          <div style="font-size:11px;font-weight:700;color:#444;margin-bottom:6px;">Bank Accounts — House Bank DEUT1</div>
+          <table class="gui-table">
+            <thead><tr><th>Account ID</th><th>Account Number</th><th>Currency</th><th>GL Account</th></tr></thead>
+            <tbody>
+              <tr class="hi"><td><strong>EUR_CHK</strong></td><td>DE89 2007 0024 0111 2233 44</td><td>EUR</td><td>113100</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="gui-status">House Bank DEUT1 active · 1 bank account</div>
+    </div>
+  </div>
+</section>
+
+<!-- S10 — TAX CODES -->
+<section class="section" id="s10">
+  <div class="sec-head">
+    <div class="sec-num">10</div>
+    <div class="area-tag">FI Global Settings</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Tax Codes for Invoice Verification</span><span class="sec-title-es">Códigos de impuesto para verificación de facturas</span></div>
+      <div class="sec-desc">Los tax codes que Jennifer selecciona al registrar la factura para que SAP calcule el IVA automáticamente.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Los tax codes conectan la factura con el cálculo fiscal:</strong> al registrar la factura del proveedor, Jennifer selecciona un <strong>Tax Code</strong> (ej. V1 — Input Tax 19%). SAP calcula automáticamente el importe de impuesto y genera la partida de impuesto en el documento FI. El configurador define los tax codes con el <strong>porcentaje de impuesto</strong>, el tipo (input/output), y las cuentas GL donde se contabiliza el impuesto (Input Tax Payable Account).</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Tax on Sales/Purchases</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Calculation</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Tax Codes for Sales and Purchases</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Define Tax Codes — Country: DE</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">📊 Rates</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Tax Code</th><th>Description</th><th>Type</th><th>Tax %</th><th>GL Acct (Input Tax)</th><th>Used in P2P</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>V1</strong></td><td>Input Tax 19%</td><td>V (Input)</td><td>19.00%</td><td>154000</td><td>Standard goods purchase</td></tr>
+            <tr><td>V2</td><td>Input Tax 7%</td><td>V (Input)</td><td>7.00%</td><td>154100</td><td>Reduced rate goods</td></tr>
+            <tr><td>V0</td><td>Input Tax 0% / Exempt</td><td>V (Input)</td><td>0.00%</td><td>—</td><td>Tax-exempt supplies</td></tr>
+            <tr><td>IG</td><td>Input Tax Intracomm.</td><td>V (Input)</td><td>0.00%</td><td>154200</td><td>EU intra-community supply</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:10.5px;color:#666;margin-top:8px;">Type V = Input Tax (Vorsteuer) · Type A = Output Tax · GL Account 154000 = Vorsteuer 19%</div>
+      </div>
+      <div class="gui-status">Tax codes for Country DE · 4 entries</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>T4 · Configurador SAP GUI — Procure-to-Pay (AP + MM) · 🔧 Rol: Configurador · Biblioteca de Guías SAP</footer>
+</body>
+</html>

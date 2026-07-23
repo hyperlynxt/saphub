@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Manual Payments Processing — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9; --t4-dark:#5D3E82; --t4-pale:rgba(167,139,201,0.14); --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+    --sscui-blue:#0070F2; --sscui-bg:#F5F6F7; --sscui-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241C33 55%, #3C2C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(93,62,130,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .spro-area-tag{ display:inline-flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t4-dark); color:white; margin-left:8px; vertical-align:middle; }
+  .theory-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t4-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .part-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--t4-dark); margin:0 0 8px; }
+  .part-label:not(:first-child){ margin-top:22px; }
+  .sscui-tree, .sscui-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'JetBrains Mono',monospace; font-size:11.5px; }
+  .sscui-tree ul{ padding-left:20px; border-left:1px dotted #B399D4; margin-left:7px; }
+  .sscui-tree li{ position:relative; padding:4px 0 4px 16px; color:var(--body); }
+  .sscui-tree li::before{ content:''; position:absolute; left:0; top:13px; width:12px; height:1px; background:#B399D4; }
+  .sscui-tree .folder{ font-weight:700; color:var(--ink); }
+  .sscui-tree .leaf{ color:var(--t4-dark); font-weight:700; }
+  .sscui-mock{ background:var(--sscui-bg); border:1px solid var(--sscui-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .sscui-shellbar{ background:var(--sscui-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .sscui-body{ padding:18px 20px; background:white; }
+  .sscui-page-title{ font-size:15px; font-weight:600; color:#1D2D3E; margin:0 0 4px; }
+  .sscui-page-sub{ font-size:11px; color:#5B738B; margin:0 0 14px; }
+  .sscui-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .sscui-field{ flex:1; min-width:160px; }
+  .sscui-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .sscui-field .ffval{ border:1px solid var(--sscui-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+  .sscui-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .sscui-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sscui-border); }
+  .sscui-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .sscui-toggle-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid #EDEFF1; font-size:12px; }
+  .sscui-toggle{ width:34px; height:18px; border-radius:20px; background:var(--sscui-blue); position:relative; flex-shrink:0; }
+  .sscui-toggle::after{ content:''; position:absolute; top:2px; right:2px; width:14px; height:14px; border-radius:50%; background:white; }
+  .sscui-toggle.off{ background:#C9CDD2; }
+  .sscui-toggle.off::after{ right:auto; left:2px; }
+  .sscui-btn{ background:var(--sscui-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .sscui-btn.ghost{ background:white; color:var(--sscui-blue); border:1px solid var(--sscui-blue); }
+  .sscui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E;
+    margin-top:12px; display:flex; align-items:center; gap:7px; }
+  .to-t3-note{ background:var(--t4-pale); border:1px dashed var(--t4-dark); border-radius:8px; padding:10px 14px;
+    margin-top:14px; font-size:0.8rem; color:var(--t4-dark); }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Payment Terms Master Data</a>
+  <a href="#s2">Payment Method per Country</a>
+  <a href="#s3">Tolerance Groups</a>
+  <a href="#s4">Cash Discount G/L Accounts</a>
+  <a href="#s5">Tax Code Configuration</a>
+  <a href="#s6">Cost Center &amp; Profit Center Assignment</a>
+  <a href="#s7">Manual Payment Authorization Limits</a>
+  <a href="#s8">SEPA Mandate Setup</a>
+  <a href="#s9">Payment Advice Template</a>
+  <a href="#s10">Business Role Authorizations</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Payables Management</span>
+      <span class="pill pill-secondary">Materials Management</span>
+    </div>
+    <h1>Manual Payments Processing — <span class="accent">Customizing</span></h1>
+    <h2>Tangibilización Configurador (GUI)</h2>
+    <p class="desc">La base que hay que armar antes de que Jennifer pueda crear una factura con todos sus parámetros: condiciones de pago, métodos de pago por país, tolerancias, y los límites de aprobación para un pago manual urgente.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Configure Your Solution — Bike GmbH (DE01)</div>
+        <div class="p-note">esto arma la base que Jennifer usa del otro lado, en Fiori</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Maintaining Payment Terms Master Data</span>
+          <span class="sec-title-es">Manteniendo el maestro de condiciones de pago</span>
+          <span class="spro-area-tag">Accounts Payable</span>
+        </div>
+        <div class="sec-desc">Sin esto, Jennifer no tendría "2% 10 Days / Net 30" para elegir en T3.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué se configura?</strong> Se define cada término de pago disponible — los días de vencimiento, el porcentaje de descuento por pronto pago, y si el término puede marcarse como fijo.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Maintain Terms of Payment</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Terms of Payment</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Payment Terms — Bike GmbH</p>
+          <table class="sscui-table">
+            <tr><th>Term</th><th>Discount Days</th><th>Discount %</th><th>Net Days</th></tr>
+            <tr><td>2% 10 / Net 30</td><td>10</td><td>2%</td><td>30</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring Payment Methods per Country</span>
+          <span class="sec-title-es">Configurando métodos de pago por país</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">Que Jennifer vea "Bank Transfer" o "SEPA Direct Debit" como opción depende de esta configuración.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se habilitan los métodos de pago permitidos por país — transferencia bancaria, cheque, o débito directo SEPA solo dentro del área correspondiente.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Set Up Payment Methods per Country</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Payment Methods — Country</span><span>DE</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Payment Methods — Germany</p>
+          <div class="sscui-toggle-row"><span>Bank Transfer</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Check</span><div class="sscui-toggle off"></div></div>
+          <div class="sscui-toggle-row"><span>SEPA Direct Debit</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Tolerance Groups</span>
+          <span class="sec-title-es">Definiendo grupos de tolerancia</span>
+          <span class="spro-area-tag">Accounts Payable</span>
+        </div>
+        <div class="sec-desc">Cuánta diferencia de monto se acepta antes de bloquear una factura.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se establece el margen de diferencia (absoluto o porcentual) que el sistema tolera entre el monto de la orden de compra y el de la factura recibida, antes de exigir revisión manual.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Define Tolerance Groups for Invoice Verification</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Tolerance Group Configuration</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Tolerance Group — DE01</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Permitted Price Variance</label><div class="ffval">2.0%</div></div>
+            <div class="sscui-field"><label>Permitted Amount Variance</label><div class="ffval">€5.00</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning Cash Discount G/L Accounts</span>
+          <span class="sec-title-es">Asignando cuentas de mayor para descuentos</span>
+          <span class="spro-area-tag">Accounts Payable</span>
+        </div>
+        <div class="sec-desc">Dónde se registra el ahorro cuando Bike Company toma un descuento por pronto pago.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se asigna qué cuenta de mayor recibe el monto del descuento tomado al pagar dentro de la ventana de pronto pago.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Assign G/L Accounts for Cash Discount Taken</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Cash Discount Account Mapping</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Cash Discount Taken — G/L Account</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>G/L Account</label><div class="ffval">51500000 — Cash Discount Received</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring Tax Codes</span>
+          <span class="sec-title-es">Configurando códigos de impuesto</span>
+          <span class="spro-area-tag">Financial Accounting</span>
+        </div>
+        <div class="sec-desc">El "V1 — 19%" que Jennifer eligió en T3 se define acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define cada código de impuesto con su porcentaje y la cuenta de mayor donde se registra el impuesto correspondiente.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Financial Accounting
+                  <ul>
+                    <li class="leaf">Define Tax Codes for Sales and Purchases</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Tax Code Configuration</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Tax Codes — Germany</p>
+          <table class="sscui-table">
+            <tr><th>Code</th><th>Percentage</th><th>G/L Account</th></tr>
+            <tr><td>V1</td><td>19%</td><td>15400000 — Input Tax</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning Cost Centers and Profit Centers</span>
+          <span class="sec-title-es">Asignando centros de costo y de beneficio</span>
+          <span class="spro-area-tag">Controlling</span>
+        </div>
+        <div class="sec-desc">Que el centro de costo 10101301 aparezca disponible para Jennifer depende de este maestro.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué se configura?</strong> Se crean y asignan los centros de costo y centros de beneficio que van a estar disponibles como opción al imputar una línea de factura de proveedor.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Controlling
+                  <ul>
+                    <li class="leaf">Create Cost Centers and Profit Centers</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Cost/Profit Center Master Data</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Available for Invoice Assignment</p>
+          <table class="sscui-table">
+            <tr><th>Cost Center</th><th>Profit Center</th></tr>
+            <tr><td>10101301 — Manufacturing</td><td>YB110 — Product A</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Manual Payment Authorization Limits</span>
+          <span class="sec-title-es">Configurando límites de autorización para pagos manuales</span>
+          <span class="spro-area-tag">Authorizations</span>
+        </div>
+        <div class="sec-desc">A partir de qué monto un pago manual como el de Jennifer necesita aprobación adicional.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define un monto límite por rol de negocio — por encima de ese límite, el pago manual requiere aprobación de un supervisor antes de ejecutarse.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Define Approval Limits for Manual Payments</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Approval Limit Configuration</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Manual Payment Approval Limits</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Business Role</label><div class="ffval">Payables Management Specialist</div></div>
+            <div class="sscui-field"><label>Approval Required Above</label><div class="ffval">€5,000.00</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up SEPA Mandates</span>
+          <span class="sec-title-es">Configurando mandatos SEPA</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">Sin un mandato válido, el débito directo SEPA no está disponible como método de pago.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se registra el mandato de autorización que habilita a un proveedor específico a debitar directamente la cuenta de Bike Company vía SEPA.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Bank Accounting
+                  <ul>
+                    <li class="leaf">Maintain SEPA Mandates</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>SEPA Mandate Registration</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">SEPA Mandate — Supplier</div>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Mandate ID</label><div class="ffval">DE01-MND-0042</div></div>
+            <div class="sscui-field"><label>Status</label><div class="ffval">Active</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Payment Advice Template</span>
+          <span class="sec-title-es">Definiendo la plantilla de aviso de pago</span>
+          <span class="spro-area-tag">Payables Management</span>
+        </div>
+        <div class="sec-desc">El aviso de pago que Jennifer necesita entender cuándo se genera, se configura acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define el formato y contenido del aviso de pago que se genera automáticamente al ejecutar el programa de pagos, para que el proveedor sepa qué facturas cubre cada pago.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Configure Payment Advice Template</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Payment Advice Template</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Payment Advice — Content Settings</p>
+          <div class="sscui-toggle-row"><span>Include Invoice Number</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Include Discount Taken</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Authorizing Business Roles</span>
+          <span class="sec-title-es">Autorizando roles de negocio</span>
+          <span class="spro-area-tag">Authorizations</span>
+        </div>
+        <div class="sec-desc">Quién puede crear un pago manual, y quién solo puede consultar saldos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se asigna qué puede hacer cada rol de negocio en las apps de este tema — desde solo consultar saldos y partidas, hasta crear facturas y pagos manuales.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Payable
+                  <ul>
+                    <li class="leaf">Assign Business Roles to Payables Apps</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Business Role Assignment</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Payables Apps — Access</p>
+          <table class="sscui-table">
+            <tr><th>Business Role</th><th>Access Level</th></tr>
+            <tr><td>Payables Management Specialist</td><td>Create Invoice / Manual Payment</td></tr>
+            <tr><td>AP Trainee</td><td>View Balances Only</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="to-t3-note">🔧 → 👤 esto es exactamente lo que determina qué botones ve Jennifer en cada app de este tema en T3.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Manual Payments Processing · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Key Elements of Supplier Master Data — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A1F1F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:680px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,133,133,0.14); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px; max-width:680px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .kind-tag{ display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase; padding:3px 9px; border-radius:20px; margin-left:2px; }
+  .kind-adjacent{ background:rgba(26,107,153,0.1); color:#1A6B99; }
+  .kind-depth{ background:var(--t2-pale); color:var(--t2-dark); }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+  .badge-alert{ background:#FDE8E8; color:#B23A3A; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:760px){ .cmp-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Withholding Tax Data</a>
+  <a href="#s2">Dunning Data</a>
+  <a href="#s3">Purchasing Org. View</a>
+  <a href="#s4">Language &amp; Correspondence</a>
+  <a href="#s5">Payment Advice</a>
+  <a href="#s6">Grouping, in Practice</a>
+  <a href="#s7">Why Address Matters for Checks</a>
+  <a href="#s8">Warning vs Error, Configured</a>
+  <a href="#s9">Two Ways to Set an Alt. Payee</a>
+  <a href="#s10">How the Bank Gets Chosen</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Business Partner</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Key</span> Elements of Supplier Master Data</h1>
+    <h2>Elementos Clave de Datos Maestros — Profundización</h2>
+    <p class="desc">Cinco temas adyacentes que el Tipo 1 no cubrió — retención de impuestos, gestión de reclamos, la vista de organización de compras, cómo el idioma conecta con la correspondencia, y el aviso de pago — más el mecanismo interno de lo ya visto: el grouping en la práctica, por qué la dirección importa para cheques, warning vs. error, y cómo se elige el banco.</p>
+    <div class="hlbox">Resumen Visual — <b>Key Elements of Supplier Master Data</b>, Tipo 2 (Profundización). 10 secciones — 5 de temas adyacentes, 5 de mayor profundidad sobre lo visto en T1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Withholding Tax Data</span>
+          <span class="sec-title-es">Datos de retención de impuestos</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">La pestaña Finance de T1 no incluyó este campo — pero vive en el mismo nivel de sociedad.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Además de los siete campos de la pestaña Finance (T1, sección 8), muchas sociedades también mantienen <strong>datos de retención de impuestos</strong> a nivel de sociedad — determinando si, y cuánto, se retiene al pagarle a ese proveedor en esa jurisdicción específica.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Dunning Data</span>
+          <span class="sec-title-es">Datos de gestión de reclamos</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Otro dato de sociedad relevante, aunque para proveedores se usa con menos frecuencia que para clientes.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los <strong>datos de dunning</strong> (gestión de reclamos) también se configuran a nivel de sociedad — aunque en Accounts Payable se usan con menor frecuencia que en Accounts Receivable, pueden ser relevantes cuando la empresa necesita seguimiento formal de partidas propias frente a un proveedor.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Purchasing Organization View</span>
+          <span class="sec-title-es">La vista de organización de compras</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">T1 se enfocó en General Data y Company Code Data — hay un tercer nivel que este curso no desarrolló.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Además de los datos generales y de sociedad, existe un tercer nivel: los <strong>datos de organización de compras</strong>, que incluyen condiciones de negociación y moneda de compra — relevantes para Compras, aunque este curso se centró en los dos primeros niveles por su relevancia para AP.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How Language Connects to Correspondence Types</span>
+          <span class="sec-title-es">Cómo el idioma se conecta con los tipos de correspondencia</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El campo Language de T1 no es solo informativo — determina en qué idioma sale cada carta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El campo <strong>Language</strong> de datos generales (T1, sección 2) determina en qué idioma se generan las cartas de correspondencia con el proveedor — incluidas las cartas de <strong>Balance Confirmation</strong> vistas en un curso anterior, que se imprimen en el idioma configurado para ese business partner.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Advice Transmission</span>
+          <span class="sec-title-es">Transmisión del aviso de pago</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Una vez que el banco correcto está definido, alguien tiene que avisarle al proveedor que el pago salió.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Una vez que el sistema eligió el banco correcto (T1, sección 6) y ejecutó el pago, puede generarse un <strong>aviso de pago</strong> — que informa al proveedor qué facturas fueron pagadas y con qué monto, muchas veces transmitido electrónicamente.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Grouping in Practice: One Field, Three Behaviors</span>
+          <span class="sec-title-es">El grouping en la práctica: un campo, tres comportamientos</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 dijo que el grouping decide el estado de cada zona — acá se ve un ejemplo concreto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un mismo campo, como el <strong>número de VAT</strong>, puede ser <strong>obligatorio</strong> para proveedores nacionales, <strong>opcional</strong> para proveedores ocasionales, y quedar <strong>oculto</strong> para proveedores intercompañía — todo depende del grouping asignado al crear el registro (T1, sección 1).
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Grouping</th><th>Estado del campo VAT Number</th></tr></thead>
+        <tbody>
+          <tr><td>Proveedor nacional estándar</td><td><span class="badge badge-accent">Obligatorio</span></td></tr>
+          <tr><td>Proveedor ocasional</td><td><span class="badge badge-neutral">Opcional</span></td></tr>
+          <tr><td>Proveedor intercompañía</td><td><span class="badge badge-alert">Oculto</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Address Completeness Matters for Check Payments</span>
+          <span class="sec-title-es">Por qué la dirección completa importa para pagos con cheque</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 lo mencionó de pasada — acá se ve la razón física detrás.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un <strong>cheque</strong> es un instrumento físico que necesita llegar por correo postal a una dirección válida — a diferencia de una transferencia bancaria, que solo necesita datos electrónicos correctos. Por eso la <strong>completitud de la dirección</strong> (T1, sección 2) es un requisito específico para este método de pago, y no tanto para otros.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Warning vs. Error: Who Decides, and Why</span>
+          <span class="sec-title-es">Warning vs. Error: quién decide, y por qué</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 mencionó las dos opciones — acá se ve qué implica elegir una u otra.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La elección entre <strong>Warning</strong> y <strong>Error</strong> para la verificación de factura duplicada (T1, sección 9) la define cada empresa según su tolerancia al riesgo: un <strong>Warning</strong> permite continuar tras validar manualmente, mientras que un <strong>Error</strong> bloquea el guardado hasta corregir el dato — una empresa con alto volumen de facturas legítimamente similares puede preferir Warning, mientras que una con historial de fraude puede preferir Error.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4>Warning</h4>
+        <p>El usuario puede validar y continuar. Más flexible, pero depende del juicio del usuario.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4>Error</h4>
+        <p>Bloquea el guardado hasta corregir. Más estricto, reduce el margen de error humano.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Two Ways to Set an Alternative Payee, and the Risk Trade-Off</span>
+          <span class="sec-title-es">Dos formas de definir un pagador alternativo, y el trade-off de riesgo</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 mostró el caso de la casa matriz — hay una segunda forma, más flexible pero más riesgosa.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Más allá de definir un pagador alternativo fijo en el maestro (T1, sección 10), es posible autorizar el <strong>ingreso manual</strong> de datos de pago (dirección y banco) directamente en cada documento — pero el curso advierte que esta opción debe usarse con <strong>precaución</strong> por su impacto en seguridad. Una alternativa más controlada es especificar una <strong>lista de pagadores alternativos permitidos</strong>, de la que el usuario elige durante el ingreso del documento — limitando el riesgo de error o uso indebido.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card neutral">
+        <h4>Ingreso manual por documento</h4>
+        <p>Máxima flexibilidad, máximo riesgo — cualquier dato de pago puede ingresarse libremente.</p>
+      </div>
+      <div class="cmp-card accent">
+        <h4>Lista de pagadores permitidos</h4>
+        <p>Flexibilidad acotada — el usuario elige entre opciones ya validadas, reduciendo el riesgo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How the Payment Program Actually Chooses a Bank</span>
+          <span class="sec-title-es">Cómo elige realmente el programa de pago un banco</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 dijo "según la personalización" — acá se ve qué tipo de criterio suele aplicarse.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando un proveedor tiene varios bancos asociados (T1, sección 6), el programa de pago suele aplicar un <strong>orden de prioridad</strong> configurado — por ejemplo, preferir el banco marcado como principal, o el que coincide con la moneda del pago a realizar — antes de recurrir a los demás bancos disponibles.
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos introducidos en este archivo (Tipo 2 — Profundización). No repite los ya vistos en el glosario de Tipo 1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Withholding Tax Data</div><div class="term-es">Datos de Retención de Impuestos</div><div class="term-def">Configuración de sociedad que determina si y cuánto se retiene al pagar a un proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Dunning Data</div><div class="term-es">Datos de Gestión de Reclamos</div><div class="term-def">Configuración de sociedad para el seguimiento formal de partidas propias frente a un proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Purchasing Organization Data</div><div class="term-es">Datos de Organización de Compras</div><div class="term-def">Tercer nivel de datos del proveedor, con condiciones de negociación y moneda de compra.</div></div>
+      <div class="gcard"><div class="term-en">Correspondence Type</div><div class="term-es">Tipo de Correspondencia</div><div class="term-def">Categoría de carta formal generada hacia un proveedor, en el idioma configurado en su registro.</div></div>
+      <div class="gcard"><div class="term-en">Payment Advice</div><div class="term-es">Aviso de Pago</div><div class="term-def">Notificación al proveedor detallando qué facturas fueron pagadas y por qué monto.</div></div>
+      <div class="gcard"><div class="term-en">VAT Number</div><div class="term-es">Número de IVA</div><div class="term-def">Identificador fiscal cuyo estado de obligatoriedad varía según el grouping del proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Bank Priority Order</div><div class="term-es">Orden de Prioridad Bancaria</div><div class="term-def">Secuencia configurada que el programa de pago usa para elegir entre varios bancos de un proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Manual Payment Data Entry</div><div class="term-es">Ingreso Manual de Datos de Pago</div><div class="term-def">Opción de alto riesgo que permite ingresar dirección y banco directamente en cada documento.</div></div>
+      <div class="gcard"><div class="term-en">Allowed Payee List</div><div class="term-es">Lista de Pagadores Permitidos</div><div class="term-def">Conjunto acotado de pagadores alternativos válidos, seleccionable durante el ingreso de documentos.</div></div>
+      <div class="gcard"><div class="term-en">Risk Tolerance Configuration</div><div class="term-es">Configuración de Tolerancia al Riesgo</div><div class="term-def">Decisión de cada empresa sobre usar Warning o Error frente a posibles facturas duplicadas.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Key Elements of Supplier Master Data · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

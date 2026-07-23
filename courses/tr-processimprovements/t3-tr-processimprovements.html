@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Treasury Process Improvements — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-blue:#0070F2;
+    --sap-bg:#F5F6F7;
+    --sap-tile-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #132A36 55%, #1C4A5F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .actor-badge{ display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t3-dark); color:white; margin-left:8px; vertical-align:middle; }
+  .improvement-tag{ display:inline-flex; align-items:center; font-size:9px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+
+  .theory-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .breadcrumb-nav{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
+  .breadcrumb-nav .sep{ color:var(--t3-pale-border); }
+  .breadcrumb-nav .current{ color:var(--t3-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .fiori-mock{ background:var(--sap-bg); border:1px solid var(--sap-tile-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .fiori-shellbar{ background:var(--sap-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .fiori-shellbar .fs-title{ font-size:12.5px; }
+  .fiori-shellbar .fs-user{ width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:10px; }
+  .fiori-body{ padding:18px 20px; background:white; }
+  .fiori-page-title{ font-size:16px; font-weight:600; color:#1D2D3E; margin:0 0 12px; }
+
+  .fiori-tiles{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .fiori-tile{ background:white; border:1px solid var(--sap-tile-border); border-radius:6px; padding:14px; }
+  .fiori-tile .tile-num{ font-size:20px; font-weight:700; color:var(--sap-blue); }
+  .fiori-tile .tile-label{ font-size:11px; color:#5B738B; margin-top:4px; }
+  .fiori-tile.highlight{ border-color:var(--sap-blue); background:#EBF5FF; }
+  .fiori-tile.good .tile-num{ color:#187A32; }
+  .fiori-tile.warn .tile-num{ color:#8A6A1E; }
+
+  .fiori-list{ border:1px solid var(--sap-tile-border); border-radius:6px; overflow:hidden; }
+  .fiori-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid #EDEFF1; font-size:12.5px; background:white; }
+  .fiori-row:last-child{ border-bottom:none; }
+  .fiori-row .fr-main{ font-weight:600; color:#1D2D3E; }
+  .fiori-row .fr-sub{ font-size:10.5px; color:#5B738B; margin-top:2px; }
+  .fr-badge{ font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fr-badge.high{ background:#E3F7E6; color:#187A32; }
+  .fr-badge.medium{ background:#FFF3D6; color:#8A6A1E; }
+  .fr-badge.open{ background:#E6F1FB; color:#0C447C; }
+  .fr-badge.ai{ background:#EDE7FB; color:#5D3E82; }
+
+  .fiori-btn{ background:var(--sap-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .fiori-btn.ghost{ background:white; color:var(--sap-blue); border:1px solid var(--sap-blue); }
+
+  .fiori-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .fiori-field{ flex:1; min-width:140px; }
+  .fiori-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .fiori-field .ffval{ border:1px solid var(--sap-tile-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+
+  .fiori-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .fiori-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sap-tile-border); }
+  .fiori-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .fiori-table td.neg{ color:#A32D2D; }
+  .fiori-table td.pos{ color:#187A32; }
+
+  .fiori-kpi-row{ display:flex; gap:14px; }
+  .fiori-kpi{ flex:1; background:white; border:1px solid var(--sap-tile-border); border-radius:6px; padding:14px; text-align:center; }
+  .fiori-kpi .kv{ font-size:20px; font-weight:700; color:var(--sap-blue); }
+  .fiori-kpi .kl{ font-size:10.5px; color:#5B738B; margin-top:3px; }
+  .fiori-kpi.good .kv{ color:#187A32; }
+
+  .situation-banner{ background:#FFF8E8; border:1px solid #E0D48A; border-radius:6px; padding:10px 14px; margin-bottom:12px;
+    display:flex; align-items:center; gap:10px; font-size:11.5px; color:#5C4A1E; }
+  .situation-banner .sb-icon{ font-size:16px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){ .fiori-tiles{ grid-template-columns:1fr; } .fiori-kpi-row{ flex-direction:column; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Consolidated Global Dashboard</a>
+  <a href="#s2">FX Exposure Auto-Captured</a>
+  <a href="#s3">A Hedging Proposal</a>
+  <a href="#s4">Running a Stress Test</a>
+  <a href="#s5">One Standardized Process</a>
+  <a href="#s6">A Role-Based Dashboard</a>
+  <a href="#s7">Trading Platform, Direct</a>
+  <a href="#s8">Onboarding a New Subsidiary Fast</a>
+  <a href="#s9">Adjusting to a Market Shift</a>
+  <a href="#s10">Quarter-End Reflection</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Treasury Portfolio</span>
+      <span class="pill pill-secondary">Cash Management</span>
+      <span class="pill pill-secondary">Treasury &amp; Risk Management</span>
+      <span class="pill pill-secondary">Embedded Analytics</span>
+    </div>
+    <h1>Treasury Process Improvements — <span class="accent">En la Práctica</span></h1>
+    <h2>Tangibilización Usuario (Fiori)</h2>
+    <p class="desc">Un cierre de trimestre donde las siete mejoras del proceso dejan de ser conceptos y se convierten en pantallas concretas: visibilidad, automatización, riesgo, centralización, analítica, integración y escalabilidad — todas en el mismo día de Sofía.</p>
+    <div class="protagonist">
+      <div class="avatar">S</div>
+      <div>
+        <div class="p-name">Sofía</div>
+        <div class="p-role">Treasury Analyst — Bike GmbH (DE01) / Bike Inc (US01)</div>
+        <div class="p-note">tesorería global del grupo Bike Company</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Consolidated Global Dashboard</span>
+          <span class="sec-title-es">El dashboard global consolidado</span>
+          <span class="actor-badge">S</span>
+          <span class="improvement-tag">Visibilidad</span>
+        </div>
+        <div class="sec-desc">La primera mejora, en su forma más visible: todo el grupo, en una sola pantalla al minuto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes, Sofía tenía que abrir el portal de cada banco por separado. Hoy ve la posición global consolidada, actualizada al minuto, sin salir de una sola pantalla.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Fiori Launchpad <span class="sep">›</span> <span class="current">Global Treasury Position</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">SAP Fiori · Bike Company Group</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">My Home — Global Treasury Position</p>
+          <div class="fiori-tiles">
+            <div class="fiori-tile good"><div class="tile-num">€4.3M</div><div class="tile-label">Consolidated Cash</div></div>
+            <div class="fiori-tile highlight"><div class="tile-num">Live</div><div class="tile-label">Data Freshness</div></div>
+            <div class="fiori-tile"><div class="tile-num">3</div><div class="tile-label">Entities Consolidated</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">FX Exposure Captured Automatically</span>
+          <span class="sec-title-es">Exposición FX capturada sin intervención</span>
+          <span class="actor-badge">S</span>
+          <span class="improvement-tag">Automatización</span>
+        </div>
+        <div class="sec-desc">La segunda mejora: Sofía no tuvo que ir a buscar esta exposición, ya la tiene esperando.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Una nueva orden de venta en dólares generó exposición cambiaria automáticamente detectada — sin que nadie la tenga que ingresar a mano.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Exposure Management <span class="sep">›</span> <span class="current">Auto-Captured Exposures</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Exposure Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">New FX Exposures — Today</p>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Sales Order SO-88214 — $145,000</div><div class="fr-sub">Auto-captured from Sales and Distribution</div></div><span class="fr-badge ai">Auto-Captured</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing a Hedging Proposal</span>
+          <span class="sec-title-es">Revisando una propuesta de cobertura</span>
+          <span class="actor-badge">S</span>
+          <span class="improvement-tag">Gestión de riesgo</span>
+        </div>
+        <div class="sec-desc">La exposición de la sección anterior no queda ahí — el sistema ya sugiere cómo cubrirla.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía no tuvo que armar el hedge desde cero — el sistema le propone un forward específico para esa exposición, y ella solo confirma.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Hedge Management Cockpit <span class="sep">›</span> <span class="current">Proposed Hedge</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Hedge Management Cockpit</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Automated Hedging Proposal</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Exposure</label><div class="ffval">SO-88214 — $145,000</div></div>
+            <div class="fiori-field"><label>Proposed Instrument</label><div class="ffval">FX Forward</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Accept Proposal</button> <button class="fiori-btn ghost">Modify</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running a Stress Test</span>
+          <span class="sec-title-es">Corriendo un stress test</span>
+          <span class="actor-badge">S</span>
+          <span class="improvement-tag">Gestión de riesgo</span>
+        </div>
+        <div class="sec-desc">Antes de decidir si el hedge es suficiente, Sofía prueba un escenario adverso hipotético.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía simula una devaluación abrupta del euro para ver si la posición actual, ya con el hedge aplicado, resiste ese escenario extremo.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Exposure Management <span class="sep">›</span> <span class="current">Stress Test Scenario</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Exposure Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Stress Scenario — EUR Devaluation 8%</p>
+          <table class="fiori-table">
+            <tr><th>Metric</th><th>Base Case</th><th>Stress Case</th></tr>
+            <tr><td>Net FX Exposure</td><td>€12,000</td><td class="neg">€96,000</td></tr>
+            <tr><td>Liquidity Impact</td><td>€0</td><td class="neg">−€84,000</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">One Standardized Process, Two Entities</span>
+          <span class="sec-title-es">Un proceso estandarizado, dos entidades</span>
+          <span class="actor-badge">S</span>
+          <span class="improvement-tag">Centralización</span>
+        </div>
+        <div class="sec-desc">Bike GmbH y Bike Inc ya no siguen procesos distintos para lo mismo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía aprueba una transferencia siguiendo exactamente los mismos pasos, sin importar si es para Bike GmbH o Bike Inc — el proceso está estandarizado en todo el grupo.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Cash Management <span class="sep">›</span> <span class="current">Standardized Approval</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Cash Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Approval Queue — Bike Company Group</p>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Transfer — Bike GmbH (DE01)</div><div class="fr-sub">Same approval workflow</div></div><span class="fr-badge high">Same Process</span></div>
+            <div class="fiori-row"><div><div class="fr-main">Transfer — Bike Inc (US01)</div><div class="fr-sub">Same approval workflow</div></div><span class="fr-badge high">Same Process</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">A Role-Based Dashboard</span>
+          <span class="sec-title-es">Un dashboard según el rol</span>
+          <span class="actor-badge">S</span>
+          <span class="improvement-tag">Analítica</span>
+        </div>
+        <div class="sec-desc">Sofía ve algo distinto a lo que ve su manager — cada rol tiene su propia vista.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Su dashboard prioriza operaciones del día; el de su manager prioriza tendencias y KPIs de todo el trimestre — mismo dato, distinta presentación según el rol.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Embedded Analytics <span class="sep">›</span> <span class="current">My Dashboard</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Embedded Analytics — Treasury Analyst View</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Today's Operations Focus</p>
+          <div class="fiori-kpi-row">
+            <div class="fiori-kpi good"><div class="kv">3</div><div class="kl">Deals Pending</div></div>
+            <div class="fiori-kpi"><div class="kv">1</div><div class="kl">Hedges to Confirm</div></div>
+            <div class="fiori-kpi good"><div class="kv">€4.3M</div><div class="kl">Cash Today</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="visual-caption">el dashboard de su manager mostraría tendencias trimestrales, no operaciones del día</div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Straight From the Trading Platform</span>
+          <span class="sec-title-es">Directo desde la plataforma de trading</span>
+          <span class="actor-badge">S</span>
+          <span class="improvement-tag">Integración</span>
+        </div>
+        <div class="sec-desc">El forward de la sección 3 llegó ejecutado, sin que Sofía tenga que re-tipear nada.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El forward que Sofía aceptó se ejecutó en 360T y llegó automáticamente estructurado al sistema — la conexión directa elimina el paso de registrarlo a mano.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Deal Management <span class="sep">›</span> <span class="current">Straight-Through Deal</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Deal Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Deal FX-20470 — Received via 360T</p>
+          <table class="fiori-table">
+            <tr><th>Field</th><th>Source</th></tr>
+            <tr><td>Notional</td><td>Direct from trading platform</td></tr>
+            <tr><td>Rate</td><td>Direct from trading platform</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Onboarding a New Subsidiary, Fast</span>
+          <span class="sec-title-es">Sumando una subsidiaria nueva, rápido</span>
+          <span class="actor-badge">S</span>
+          <span class="improvement-tag">Escalabilidad</span>
+        </div>
+        <div class="sec-desc">Bike Company creció — y la infraestructura de tesorería no fue el cuello de botella.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El grupo adquirió una entidad nueva. Gracias al despliegue cloud, Sofía la incorpora al portfolio de tesorería sin esperar un proyecto de meses.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Cash Management <span class="sep">›</span> <span class="current">Onboard New Entity</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Cash Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Onboard — Bike Retail (New Subsidiary)</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Setup Time</label><div class="ffval">Same day</div></div>
+            <div class="fiori-field"><label>Included In</label><div class="ffval">Global consolidated view</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Finish Onboarding</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Adjusting to a Sudden Market Shift</span>
+          <span class="sec-title-es">Adaptándose a un cambio de mercado repentino</span>
+          <span class="actor-badge">S</span>
+          <span class="improvement-tag">Escalabilidad</span>
+        </div>
+        <div class="sec-desc">Flexibilidad, puesta a prueba en tiempo real, no en teoría.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un cambio abrupto en las tasas de interés lleva a Sofía a activar una capacidad de cobertura que antes no usaba — el sistema se adapta sin requerir una reconfiguración mayor.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Fiori Launchpad <span class="sep">›</span> <span class="current">Notifications</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">SAP Fiori · Bike Company Group</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <div class="situation-banner"><span class="sb-icon">⚠️</span> Situation detected: interest rate shift affects existing loan exposure</div>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Consider Interest Rate Swap</div><div class="fr-sub">Newly relevant instrument for current conditions</div></div><span class="fr-badge open">Review</span></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Explore Instrument</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Quarter-End Reflection</span>
+          <span class="sec-title-es">Reflexión de cierre de trimestre</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">Las siete mejoras, resumidas en lo que Sofía realmente hizo distinto este trimestre.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía no dedicó su trimestre a perseguir datos dispersos ni a re-tipear deals — lo dedicó a decidir sobre coberturas, escenarios de riesgo, y crecimiento del grupo. Ese es, en la práctica, el paso de tarea transaccional a socio estratégico.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Embedded Analytics <span class="sep">›</span> <span class="current">Quarter Summary</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Embedded Analytics</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Q2 Summary — Treasury Analyst</p>
+          <div class="fiori-kpi-row">
+            <div class="fiori-kpi good"><div class="kv">92%</div><div class="kl">Touchless Rate</div></div>
+            <div class="fiori-kpi good"><div class="kv">1 day</div><div class="kl">New Entity Onboarding</div></div>
+            <div class="fiori-kpi"><div class="kv">6</div><div class="kl">Hedging Decisions Made</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Treasury Process Improvements · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

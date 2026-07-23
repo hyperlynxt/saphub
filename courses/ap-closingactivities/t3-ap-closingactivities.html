@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Closing Activities in Accounts Payable — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-blue-dark:#0040A0;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-appbar .tag{ background:#FFF3CD; color:#8A6A1E; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-body{ padding:22px 20px; }
+  .fiori-tabs{ display:flex; gap:22px; border-bottom:1px solid #EAEAEA; margin-bottom:18px; }
+  .fiori-tab{ padding:7px 2px; font-size:0.8rem; color:var(--sap-muted); border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px 22px; margin-bottom:6px; }
+  .fiori-field label{ display:block; font-size:0.7rem; color:var(--sap-muted); margin-bottom:4px; }
+  .fiori-field .val{ font-size:0.83rem; color:var(--sap-text); padding:7px 10px; background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; }
+  .fiori-field .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-table td.num{ text-align:right; font-family:'JetBrains Mono',monospace; }
+  .fiori-table tr.total td{ font-weight:700; border-top:1.5px solid var(--sap-border); border-bottom:none; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .fiori-btn.text{ border:none; color:var(--sap-blue); background:none; padding:7px 4px; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.open{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-status.warn{ background:#FDE8E8; color:#B23A3A; }
+  .fiori-list-item{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border:1px solid var(--sap-border); border-radius:6px; margin-bottom:8px; }
+  .fiori-list-item .li-title{ font-size:0.85rem; font-weight:600; color:var(--sap-text); }
+  .fiori-list-item .li-sub{ font-size:0.72rem; color:var(--sap-muted); margin-top:2px; }
+
+  .kpi-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .kpi-tile{ background:white; border:1px solid var(--sap-border); border-radius:8px; padding:18px 16px; }
+  .kpi-tile .kpi-icon{ font-size:19px; margin-bottom:9px; display:block; }
+  .kpi-tile .kpi-val{ font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem; color:var(--sap-text); }
+  .kpi-tile .kpi-trend{ font-size:0.68rem; font-weight:700; margin-left:3px; }
+  .kpi-tile .kpi-trend.up{ color:#1D7A3E; }
+  .kpi-tile .kpi-trend.warn{ color:#8A6A1E; }
+  .kpi-tile .kpi-label{ font-size:0.72rem; color:var(--sap-muted); margin-top:7px; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:760px){ .kpi-grid{ grid-template-columns:1fr 1fr; } .fiori-field-grid{ grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Closing Cockpit</a>
+  <a href="#s2">GR/IR Open Items</a>
+  <a href="#s3">Clearing GR/IR</a>
+  <a href="#s4">Balance Confirmation</a>
+  <a href="#s5">Confirmation Status</a>
+  <a href="#s6">Run FX Valuation</a>
+  <a href="#s7">Valuation Results</a>
+  <a href="#s8">Run Regrouping</a>
+  <a href="#s9">Regrouping Results</a>
+  <a href="#s10">Period Status</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Closing</span> Activities in Accounts Payable</h1>
+    <h2>Actividades de Cierre en Cuentas por Pagar — Vividas por el Usuario</h2>
+    <p class="desc">Cómo se vive el cierre de período en AP desde Fiori: conciliar GR/IR, confirmar saldos de proveedores, correr la valoración de moneda extranjera y el regrouping — pantalla por pantalla.</p>
+    <div class="protagonist">
+      <div class="avatar">J</div>
+      <div>
+        <div class="p-name">José</div>
+        <div class="p-role">Accounts Payable · Bike GmbH (DE01) · Proveedor: Tireless Tires</div>
+        <div class="p-note">Guía principal de este recorrido — key user de AP durante la ventana de cierre.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Opening the Closing Cockpit</span>
+          <span class="sec-title-es">Abriendo el cockpit de cierre</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">El punto de partida: un vistazo a las cuatro actividades pendientes antes de que cierre el período.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Es la última semana del período. José abre su <strong>Fiori Launchpad</strong> para ver de un vistazo cuántas partidas GR/IR quedan abiertas, cuántos proveedores todavía no confirmaron saldo, y si ya corrieron la valoración de moneda y el regrouping.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb current">Accounts Payable — Closing Overview</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Accounts Payable — Closing Overview</div>
+      <div class="fiori-appbar"><div><h6>Period-End Status</h6><span class="sub">Bike GmbH · DE01 · Período 12</span></div></div>
+      <div class="fiori-body">
+        <div class="kpi-grid">
+          <div class="kpi-tile"><span class="kpi-icon">🔄</span><span class="kpi-val">18<span class="kpi-trend warn">abiertas</span></span><div class="kpi-label">Partidas GR/IR sin conciliar</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">✅</span><span class="kpi-val">7<span class="kpi-trend warn">pendientes</span></span><div class="kpi-label">Confirmaciones de saldo sin responder</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">💱</span><span class="kpi-val">— <span class="kpi-trend warn">no corrida</span></span><div class="kpi-label">Foreign Currency Valuation</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">🔁</span><span class="kpi-val">— <span class="kpi-trend warn">no corrida</span></span><div class="kpi-label">Regrouping/Reclassification</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing Open GR/IR Items</span>
+          <span class="sec-title-es">Revisando partidas GR/IR abiertas</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">18 partidas abiertas: hay que distinguir cuáles son diferencias de timing normales.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      José abre el monitor de la cuenta GR/IR filtrado por Tireless Tires. Encuentra una entrada de mercadería sin su factura correspondiente todavía.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Accounts Payable</div><span class="sep">›</span>
+      <div class="crumb current">Manage GR/IR Clearing Account</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage GR/IR Clearing Account</div>
+      <div class="fiori-appbar"><div><h6>Tireless Tires — Open Items</h6><span class="sub">Company Code DE01</span></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Material Doc.</th><th>PO Reference</th><th>Qty. GR</th><th>Qty. Invoiced</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>5000001234</td><td>4500018001</td><td class="num">100</td><td class="num">0</td><td class="num">€1.780,00</td><td><span class="fiori-status open">Invoice pending</span></td></tr>
+            <tr><td>5000001235</td><td>4500018002</td><td class="num">0</td><td class="num">50</td><td class="num">€620,00</td><td><span class="fiori-status open">Goods pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Clearing the Matched Items</span>
+          <span class="sec-title-es">Compensando las partidas que sí coinciden</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">Cuando la mercadería y la factura ya llegaron, se compensan y la cuenta GR/IR queda limpia.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Una tercera partida de Tireless Tires ya tiene mercadería <strong>y</strong> factura registradas. José la selecciona y contabiliza la compensación — esa partida deja de estar abierta.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage GR/IR Clearing Account</div>
+      <div class="fiori-appbar"><div><h6>Clear Selected Items</h6><span class="sub">1 item selected</span></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Material Doc.</th><th>PO Reference</th><th>Qty. GR</th><th>Qty. Invoiced</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>5000001210</td><td>4500017998</td><td class="num">80</td><td class="num">80</td><td class="num">€1.120,00</td><td><span class="fiori-status ok">Matched</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Simulate</button>
+          <button class="fiori-btn primary">Post Clearing</button>
+        </div>
+      </div>
+    </div>
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>GR/IR Clearing Account → Debe:</b> se cierra la cuenta puente que estaba abierta desde la entrada de mercadería. <b>Accounts Payable — Tireless Tires → Haber:</b> ya reflejaba la factura; no cambia, solo queda confirmada la compensación.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Sending Supplier Balance Confirmations</span>
+          <span class="sec-title-es">Enviando confirmaciones de saldo</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">Antes de cerrar, hay que preguntarle al proveedor si está de acuerdo con lo que el sistema dice que se le debe.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      José selecciona los proveedores a confirmar en este período — incluido Tireless Tires — y dispara el envío de la solicitud de confirmación de saldo.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Accounts Payable</div><span class="sep">›</span>
+      <div class="crumb current">Confirm Supplier Balances</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Confirm Supplier Balances</div>
+      <div class="fiori-appbar"><div><h6>Balance Confirmation Run</h6><span class="sub">Company Code DE01 · Período 12</span></div></div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Company Code</label><div class="val filled">DE01</div></div>
+          <div class="fiori-field"><label>Key Date</label><div class="val filled">31.12.2026</div></div>
+          <div class="fiori-field"><label>Supplier Range</label><div class="val filled">Todos con saldo &gt; €500</div></div>
+        </div>
+        <div class="fiori-btnbar"><button class="fiori-btn primary">Send Confirmation Requests</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing Confirmation Status</span>
+          <span class="sec-title-es">Revisando el estado de las confirmaciones</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">Tireless Tires respondió — con una diferencia de €80 que hay que investigar antes de cerrar.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Unos días después, José vuelve a la app para ver quién respondió. Tireless Tires confirma €8.370, pero el sistema tenía €8.450 — una diferencia de €80 que José debe investigar antes del cierre.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Monitor Supplier Balance Confirmations</div>
+      <div class="fiori-appbar"><div><h6>Confirmation Status</h6><span class="sub">7 pendientes → 5 recibidas</span></div></div>
+      <div class="fiori-body">
+        <div class="fiori-list-item">
+          <div><div class="li-title">Tireless Tires</div><div class="li-sub">Sistema: €8.450,00 · Confirmado: €8.370,00</div></div>
+          <span class="fiori-status warn">Diferencia €80</span>
+        </div>
+        <div class="fiori-list-item">
+          <div><div class="li-title">Otro proveedor (ejemplo)</div><div class="li-sub">Sistema: €3.200,00 · Confirmado: €3.200,00</div></div>
+          <span class="fiori-status ok">Match</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running Foreign Currency Valuation</span>
+          <span class="sec-title-es">Corriendo la valoración de moneda extranjera</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">Con los saldos ya conciliados y confirmados, toca revalorizar las partidas en moneda extranjera.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      José corre la valoración para todas las partidas abiertas de proveedores en USD, usando el tipo de cambio de cierre del período.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Accounts Payable</div><span class="sep">›</span>
+      <div class="crumb current">Foreign Currency Valuation</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Foreign Currency Valuation</div>
+      <div class="fiori-appbar"><div><h6>Valuation Run</h6><span class="sub">Open Items — Vendors</span></div></div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Company Code</label><div class="val filled">DE01</div></div>
+          <div class="fiori-field"><label>Valuation Key Date</label><div class="val filled">31.12.2026</div></div>
+          <div class="fiori-field"><label>Exchange Rate Type</label><div class="val filled">Closing Rate</div></div>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Test Run</button>
+          <button class="fiori-btn primary">Execute</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Valuation Posting</span>
+          <span class="sec-title-es">Revisando la contabilización de la valoración</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">La factura de Tireless Tires en USD se revaluó al tipo de cambio de cierre.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      La ejecución generó una diferencia de valoración sobre una factura de Tireless Tires en USD. José revisa el resultado antes de que se libere para el reporte.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Foreign Currency Valuation — Results</div>
+      <div class="fiori-appbar"><div><h6>Posting Journal 4900001122</h6><span class="sub">Tireless Tires · USD 10.000</span></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Account</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>Exchange Rate Loss</td><td class="num">€500,00</td><td class="num">—</td></tr>
+            <tr><td>Accounts Payable — Tireless Tires</td><td class="num">—</td><td class="num">€500,00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Exchange Rate Loss → Debe:</b> es un gasto que reconoce que la deuda en USD ahora vale más en EUR. <b>Accounts Payable — Tireless Tires → Haber:</b> el pasivo aumenta, reflejando el nuevo tipo de cambio de cierre.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running Regrouping/Reclassification</span>
+          <span class="sec-title-es">Corriendo el regrouping/reclasificación</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">La última actividad antes de que el balance quede listo: revisar si algún proveedor quedó con saldo debe.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      José corre el programa de regrouping sobre todos los proveedores de DE01. El sistema detecta que Tireless Tires quedó con saldo <strong>debe</strong> tras una devolución de mercadería.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Accounts Payable</div><span class="sep">›</span>
+      <div class="crumb current">Regroup Payables/Receivables</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Regroup Payables/Receivables</div>
+      <div class="fiori-appbar"><div><h6>Regrouping Run</h6><span class="sub">Company Code DE01 · Período 12</span></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Supplier</th><th>Balance Type</th><th>Amount</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>Tireless Tires</td><td>Debit balance</td><td class="num">€300,00</td><td><span class="fiori-status warn">Reclassify</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar"><button class="fiori-btn primary">Post Reclassification</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Reclassification Posting</span>
+          <span class="sec-title-es">Revisando la contabilización de la reclasificación</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">El saldo deudor de Tireless Tires ya no aparece como pasivo en el balance.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      José confirma que el ajuste se contabilizó correctamente: el saldo de Tireless Tires se movió a una cuenta de tipo activo, sin tocar la cuenta original del proveedor.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Regroup Payables/Receivables — Results</div>
+      <div class="fiori-appbar"><div><h6>Posting Journal 4900001188</h6><span class="sub">Tireless Tires — Reclassification</span></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Account</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>Accounts Payable — Tireless Tires</td><td class="num">€300,00</td><td class="num">—</td></tr>
+            <tr><td>Other Receivables (Reclassified)</td><td class="num">—</td><td class="num">€300,00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Accounts Payable — Tireless Tires → Debe:</b> se reduce el pasivo original, que en realidad ya no representa una deuda. <b>Other Receivables (Reclassified) → Haber:</b> nace la partida de activo que sí representa correctamente la situación real ante Tireless Tires.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Confirming the Period Is Ready to Close</span>
+          <span class="sec-title-es">Confirmando que el período está listo para cerrar</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">Las cuatro actividades quedaron completas — José vuelve al mismo cockpit donde empezó.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      José vuelve al cockpit de cierre. Las cuatro actividades ahora muestran estado completo — su parte del cierre de AP está lista para que General Ledger Accounting continúe con el resto del proceso.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Accounts Payable — Closing Overview</div>
+      <div class="fiori-appbar"><div><h6>Period-End Status</h6><span class="sub">Bike GmbH · DE01 · Período 12</span></div></div>
+      <div class="fiori-body">
+        <div class="kpi-grid">
+          <div class="kpi-tile"><span class="kpi-icon">🔄</span><span class="kpi-val">0<span class="kpi-trend up">✓</span></span><div class="kpi-label">Partidas GR/IR sin conciliar</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">✅</span><span class="kpi-val">0<span class="kpi-trend up">✓</span></span><div class="kpi-label">Confirmaciones sin resolver</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">💱</span><span class="kpi-val">✓<span class="kpi-trend up">hecha</span></span><div class="kpi-label">Foreign Currency Valuation</div></div>
+          <div class="kpi-tile"><span class="kpi-icon">🔁</span><span class="kpi-val">✓<span class="kpi-trend up">hecha</span></span><div class="kpi-label">Regrouping/Reclassification</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Closing Activities in Accounts Payable · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

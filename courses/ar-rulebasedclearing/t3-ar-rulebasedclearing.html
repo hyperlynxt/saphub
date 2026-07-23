@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Rule-Based Clearing — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0; --t3-dark:#2E7096; --t3-pale:rgba(127,196,224,0.14); --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+    --sap-blue:#0070F2; --sap-bg:#F5F6F7; --sap-tile-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #132A36 55%, #1C4A5F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .actor-badge{ display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t3-dark); color:white; margin-left:8px; vertical-align:middle; }
+  .theory-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t3-dark); font-weight:700; }
+  .breadcrumb-nav{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
+  .breadcrumb-nav .sep{ color:var(--t3-pale-border); }
+  .breadcrumb-nav .current{ color:var(--t3-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .fiori-mock{ background:var(--sap-bg); border:1px solid var(--sap-tile-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .fiori-shellbar{ background:var(--sap-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .fiori-shellbar .fs-title{ font-size:12.5px; }
+  .fiori-shellbar .fs-user{ width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:10px; }
+  .fiori-body{ padding:18px 20px; background:white; }
+  .fiori-page-title{ font-size:16px; font-weight:600; color:#1D2D3E; margin:0 0 12px; }
+  .fiori-tiles{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .fiori-tile{ background:white; border:1px solid var(--sap-tile-border); border-radius:6px; padding:14px; }
+  .fiori-tile .tile-num{ font-size:20px; font-weight:700; color:var(--sap-blue); }
+  .fiori-tile .tile-label{ font-size:11px; color:#5B738B; margin-top:4px; }
+  .fiori-tile.highlight{ border-color:var(--sap-blue); background:#EBF5FF; }
+  .fiori-tile.alert{ border-color:#C9932E; background:#FFF8E8; }
+  .fiori-tile.alert .tile-num{ color:#8A6A1E; }
+  .fiori-tile.good .tile-num{ color:#187A32; }
+  .fiori-list{ border:1px solid var(--sap-tile-border); border-radius:6px; overflow:hidden; }
+  .fiori-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid #EDEFF1; font-size:12.5px; background:white; }
+  .fiori-row:last-child{ border-bottom:none; }
+  .fiori-row .fr-main{ font-weight:600; color:#1D2D3E; }
+  .fiori-row .fr-sub{ font-size:10.5px; color:#5B738B; margin-top:2px; }
+  .fr-badge{ font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fr-badge.high{ background:#E3F7E6; color:#187A32; }
+  .fr-badge.medium{ background:#FFF3D6; color:#8A6A1E; }
+  .fr-badge.low{ background:#FDE7E7; color:#A32D2D; }
+  .fr-badge.open{ background:#E6F1FB; color:#0C447C; }
+  .fr-badge.ai{ background:#EDE7FB; color:#5D3E82; }
+  .fiori-btn{ background:var(--sap-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .fiori-btn.ghost{ background:white; color:var(--sap-blue); border:1px solid var(--sap-blue); }
+  .fiori-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .fiori-field{ flex:1; min-width:140px; }
+  .fiori-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .fiori-field .ffval{ border:1px solid var(--sap-tile-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+  .fiori-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .fiori-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sap-tile-border); }
+  .fiori-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px;
+    font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  @media (max-width:720px){ .fiori-tiles{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Morning Reconciliation Queue</a>
+  <a href="#s2">A Posting Rule Match</a>
+  <a href="#s3">Building a New Processing Rule</a>
+  <a href="#s4">Sharing the Rule</a>
+  <a href="#s5">Automating the Rule</a>
+  <a href="#s6">A Template Suggestion</a>
+  <a href="#s7">Uploading a Payment Advice</a>
+  <a href="#s8">Reviewing Extracted Data</a>
+  <a href="#s9">Posting the Cleared Item</a>
+  <a href="#s10">End-of-Day Touchless Rate</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Cash Application</span>
+      <span class="pill pill-secondary">SAP Business AI</span>
+    </div>
+    <h1>Rule-Based Clearing — <span class="accent">Día a Día</span></h1>
+    <h2>Tangibilización Usuario (Fiori)</h2>
+    <p class="desc">Un día real aclarando pagos entrantes: lo que aclaran solas las reglas de contabilización, lo que Linda resuelve armando su propia regla de procesamiento, y lo que un payment advice bien leído le ahorra tipear.</p>
+    <div class="protagonist">
+      <div class="avatar">L</div>
+      <div>
+        <div class="p-name">Linda</div>
+        <div class="p-role">Accounts Receivable Accountant — Bike GmbH (DE01)</div>
+        <div class="p-note">cliente de ejemplo: Velotics</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Morning Reconciliation Queue</span>
+          <span class="sec-title-es">La cola de conciliación de la mañana</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">Cuánto le quedó pendiente después de que las reglas ya aclararon lo suyo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Linda ve cuántos ítems de extracto ya se aclararon solos con las reglas de contabilización, y cuántos quedaron para que ella revise.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Fiori Launchpad <span class="sep">›</span> <span class="current">Cash Application</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">SAP Fiori · Bike GmbH (DE01)</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">My Home — Cash Application</p>
+          <div class="fiori-tiles">
+            <div class="fiori-tile good"><div class="tile-num">62</div><div class="tile-label">Cleared by Posting Rules</div></div>
+            <div class="fiori-tile highlight"><div class="tile-num">9</div><div class="tile-label">Needs Review</div></div>
+            <div class="fiori-tile"><div class="tile-num">1</div><div class="tile-label">Payment Advice Pending</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">A Posting Rule Match, Already Done</span>
+          <span class="sec-title-es">Un match de posting rule, ya resuelto</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">El caso más simple: Linda no tuvo que hacer nada.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Velotics pagó con el número de factura exacto en la referencia — la regla de contabilización predefinida encontró el match sola y ya generó la propuesta interina.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Cash Application <span class="sep">›</span> <span class="current">Cleared Items</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Cash Application</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Item 88214 — €4,280.00 — Velotics</p>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Invoice 90015 — €4,280.00</div><div class="fr-sub">Matched by document number search</div></div><span class="fr-badge high">Posting Rule</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Building a New Processing Rule</span>
+          <span class="sec-title-es">Armando una regla de procesamiento nueva</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">Un ítem que las reglas fijas no pudieron resolver — Linda arma su propia regla, sin llamar a IT.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Velotics siempre paga con un formato de referencia distinto al esperado. En vez de resolverlo a mano cada vez, Linda crea una regla de procesamiento propia en Manage Processing Rules.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Manage Processing Rules - For Bank Statements <span class="sep">›</span> <span class="current">New Rule</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Manage Processing Rules — For Bank Statements</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">New Rule — Velotics Reference Format</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Condition</label><div class="ffval">Memo contains "VLT-"</div></div>
+            <div class="fiori-field"><label>Action</label><div class="ffval">Match to open invoice by amount</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Save Rule</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Sharing the Rule With the Team</span>
+          <span class="sec-title-es">Compartiendo la regla con el equipo</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">Otro compañero de AR también procesa pagos de Velotics — la regla no debería quedar solo para Linda.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Linda marca la regla como pública para que el resto del equipo de Accounts Receivable la use también, sin tener que rearmarla cada uno por su cuenta.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Manage Processing Rules <span class="sep">›</span> <span class="current">Rule Visibility</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Manage Processing Rules</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Velotics Reference Format</p>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Visibility</div><div class="fr-sub">Currently: Private</div></div><span class="fr-badge open">Change to Public</span></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Share With Team</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Automating the Rule</span>
+          <span class="sec-title-es">Automatizando la regla</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">Después de un par de semanas confiando en la regla, Linda deja que corra sola.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La regla de Velotics ya viene funcionando bien hace semanas. Linda la automatiza — a partir de ahora corre en segundo plano, sin que nadie tenga que aplicarla manualmente.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Manage Processing Rules <span class="sep">›</span> <span class="current">Automate Rule</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Manage Processing Rules</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Velotics Reference Format</p>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Run automatically in background</div><div class="fr-sub">Once automated, cannot be applied manually</div></div><span class="fr-badge medium">Confirm</span></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Automate Rule</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">A Template Suggestion Appears</span>
+          <span class="sec-title-es">Aparece una sugerencia de plantilla</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">El sistema notó un patrón que Linda no había codificado explícitamente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El sistema analizó el historial de compensaciones y detectó que otro cliente paga siempre con un patrón similar — sugiere una plantilla de regla nueva, lista para revisar.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Manage Processing Rules <span class="sep">›</span> <span class="current">Suggested Templates</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Manage Processing Rules</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Suggested Rule Template</p>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">North Wheels Co. — reference pattern detected</div><div class="fr-sub">Based on last 12 clearings</div></div><span class="fr-badge ai">Template</span></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Review &amp; Create Rule</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Uploading a Payment Advice</span>
+          <span class="sec-title-es">Cargando un payment advice</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">Velotics mandó el aviso de pago por PDF, como siempre.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El PDF de Velotics detalla qué facturas cubre el pago de hoy. Linda lo sube para que SAP Cash Application lo lea.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Cash Application <span class="sep">›</span> <span class="current">Upload Payment Advice</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Cash Application</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Upload Payment Advice — Velotics</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>File</label><div class="ffval">Velotics_advice_july.pdf</div></div>
+            <div class="fiori-field"><label>Format</label><div class="ffval">Unstructured PDF</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Upload &amp; Extract</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Extracted Data</span>
+          <span class="sec-title-es">Revisando el dato extraído</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">Linda no tipea nada — solo confirma lo que el modelo ya leyó por ella.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El sistema extrajo automáticamente las facturas y montos del PDF de Velotics — Linda compara contra el documento original antes de confirmar.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Cash Application <span class="sep">›</span> <span class="current">Extracted Data Review</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Cash Application</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Extracted From Payment Advice — Velotics</p>
+          <table class="fiori-table">
+            <tr><th>Invoice</th><th>Amount</th><th>Source</th></tr>
+            <tr><td>90028</td><td>€1,600.00</td><td>ML extraction</td></tr>
+            <tr><td>90029</td><td>€2,300.00</td><td>ML extraction</td></tr>
+          </table>
+          <div style="margin-top:12px;"><button class="fiori-btn">Confirm Extraction</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Cleared Item</span>
+          <span class="sec-title-es">Contabilizando el ítem aclarado</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">Confirmada la extracción, el sistema genera el asiento real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Con el payment advice confirmado, el sistema compensa las facturas 90028 y 90029 contra el pago recibido.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Cash Application <span class="sep">›</span> <span class="current">Posting Result</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Cash Application</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Posted Document — Velotics Payment</p>
+          <table class="fiori-table">
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Bank Clearing</td><td>€3,900.00</td><td>—</td></tr>
+            <tr><td>Accounts Receivable — Velotics</td><td>—</td><td>€3,900.00</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="dc-note">
+        <span class="dc-label">Debe / Haber</span>
+        Se <b>debita</b> Bank Clearing por el monto recibido (€3.900) y se <b>acredita</b> Accounts Receivable de Velotics por el mismo importe — las dos facturas quedan compensadas gracias al dato que el payment advice ya trajo extraído.
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking the End-of-Day Touchless Rate</span>
+          <span class="sec-title-es">Revisando la tasa sin intervención al cierre</span>
+          <span class="actor-badge">L</span>
+        </div>
+        <div class="sec-desc">Cuánto de lo de hoy se resolvió solo, gracias a las reglas que ya existían y a la que Linda creó.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de cerrar, Linda revisa cuánto se aclaró sin intervención — la nueva regla de Velotics ya está sumando a ese número.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Cash Application Analytics <span class="sep">›</span> <span class="current">Touchless Rate</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Cash Application Analytics</span><span class="fs-user">L</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Bike GmbH (DE01) — End of Day</p>
+          <div class="fiori-tiles">
+            <div class="fiori-tile good"><div class="tile-num">91%</div><div class="tile-label">Touchless Rate Today</div></div>
+            <div class="fiori-tile"><div class="tile-num">86%</div><div class="tile-label">Touchless Rate Last Week</div></div>
+            <div class="fiori-tile good"><div class="tile-num">1</div><div class="tile-label">New Rule Automated</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Rule-Based Clearing · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

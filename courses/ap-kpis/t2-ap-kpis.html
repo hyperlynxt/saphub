@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Payables KPIs — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E08585;--t1-dark:#A94444;--t1-pale:rgba(224,133,133,0.12);--t1-pale-border:rgba(224,133,133,0.38);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-co:#1A6B99;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-sales:#E07B39;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#28100C 55%,#3B1818 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;letter-spacing:.2px;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,133,133,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:640px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.5;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(169,68,68,0.35);}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(10,15,28,0.04);}
+  .card h4{font-family:'Syne',sans-serif;font-size:1rem;margin:0 0 6px;color:var(--ink);}
+  .card .sub{font-size:0.72rem;color:var(--muted);font-style:italic;}
+  .card p{font-size:0.84rem;color:var(--body);line-height:1.6;margin:8px 0 0;}
+  .card ul{margin:8px 0 0;padding-left:18px;}
+  .card ul li{font-size:0.82rem;color:var(--body);line-height:1.7;}
+  .card.acc{border-top:4px solid var(--t1-dark);}
+  .card.b{border-top:4px solid var(--cat-fi);}
+  .card.t{border-top:4px solid var(--cat-log);}
+  .card.p{border-top:4px solid var(--cat-purchase);}
+  .card.g{border-top:4px solid #3D7A52;}
+  .card.o{border-top:4px solid var(--cat-sales);}
+  .card.gold{border-top:4px solid var(--cat-legal);}
+  .card.steel{border-top:4px solid var(--cat-steel);}
+  .icon-big{font-size:26px;display:block;margin-bottom:6px;}
+  .data-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:0.85rem;}
+  .data-table th{background:var(--navy-900);color:white;padding:11px 14px;text-align:left;font-size:0.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+  .data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:nth-child(even) td{background:#FAFBFD;}
+  .data-table .strong{font-weight:700;color:var(--ink);}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;white-space:nowrap;}
+  .badge-red{background:rgba(192,57,43,0.1);color:#C0392B;}
+  .badge-green{background:rgba(0,168,150,0.1);color:#00A896;}
+  .badge-gold{background:rgba(201,147,46,0.09);color:#C9932E;}
+  .badge-blue{background:rgba(26,75,140,0.08);color:#1A4B8C;}
+  .formula-box{background:#F8F9FA;border:1px solid var(--border);border-radius:10px;padding:18px 20px;text-align:center;margin:12px 0;}
+  .formula-box .formula{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--ink);font-weight:600;}
+  .formula-box .formula-desc{font-size:0.8rem;color:var(--muted);margin-top:6px;}
+  .glossary{background:var(--navy-950);padding:64px 40px 72px;scroll-margin-top:64px;}
+  .glossary-inner{max-width:1100px;margin:0 auto;}
+  .glossary h2{font-family:'Syne',sans-serif;color:white;font-size:1.6rem;margin:0 0 6px;}
+  .gloss-sub{color:rgba(255,255,255,0.55);font-size:0.9rem;margin:0 0 30px;}
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .gcard{background:var(--navy-800);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 18px;}
+  .term-en{font-family:'Syne',sans-serif;font-weight:700;color:var(--t1);font-size:1rem;}
+  .term-es{color:rgba(255,255,255,0.5);font-size:0.78rem;margin:2px 0 8px;}
+  .term-def{color:rgba(255,255,255,0.82);font-size:0.83rem;line-height:1.5;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Working Capital</a>
+  <a href="#s2">DSO vs DPO</a>
+  <a href="#s3">Supplier Dunning</a>
+  <a href="#s4">Cash Discount Mechanics</a>
+  <a href="#s5">AP KPIs &amp; Supplier Relations</a>
+  <a href="#s6">DPO Formula Deep</a>
+  <a href="#s7">Critical Threshold Config</a>
+  <a href="#s8">Aging Bucket Analysis</a>
+  <a href="#s9">AP Overview Filters &amp; Drill-Down</a>
+  <a href="#s10">KPI-to-Action Chain</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+      <span class="pill pill-sec">Treasury</span>
+      <span class="pill pill-sec">Analytics</span>
+    </div>
+    <h1>Payables <span class="accent">KPIs</span></h1>
+    <h2>Profundización — Adyacentes y Mecanismos</h2>
+    <p class="desc">Cinco temas adyacentes (working capital, DSO vs DPO, dunning, descuento por pronto pago, relación con proveedores) y cinco mecanismos en mayor profundidad (fórmula DPO, umbral crítico, aging buckets, filtros de la app Overview, cadena KPI-acción).</p>
+    <div class="hlbox">Profundización — <b>Payables KPIs (AP)</b>, Tipo 2. Glosario con términos distintos a T1.</div>
+  </div>
+</header>
+
+<main>
+
+<!-- S1 -->
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">AP KPIs and Working Capital Management</span><span class="sec-title-es">KPIs de AP y gestión del capital de trabajo</span></div><div class="sec-desc">Cómo los KPIs de Cuentas por Pagar se conectan con la gestión del capital de trabajo y la liquidez de la empresa.</div></div></div>
+  <div class="theory-box"><strong>AP es la mitad de la ecuación del working capital:</strong> el capital de trabajo (<strong>Working Capital</strong>) es la diferencia entre activos corrientes y pasivos corrientes. AP forma parte de los pasivos corrientes — las facturas de proveedores pendientes de pago. Una AP bien gestionada (DPO óptimo, descuentos capturados, vencidos bajo control) contribuye directamente a maximizar el working capital disponible. Los KPIs de AP son, en esencia, KPIs de gestión del capital de trabajo.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card b"><span class="icon-big">📈</span><h4>Cash / AR / Inventory <span class="sub">· Current Assets</span></h4><p>Activos corrientes: lo que la empresa tiene disponible o puede convertir en efectivo en el corto plazo.</p></div>
+      <div class="card acc"><span class="icon-big">⚖️</span><h4>Working Capital <span class="sub">· Capital de trabajo</span></h4><p><strong>Current Assets − Current Liabilities.</strong> AP tiene impacto directo: cuanto más se optimizan los plazos de pago, más eficiente es el capital de trabajo.</p></div>
+      <div class="card t"><span class="icon-big">📉</span><h4>AP / Accruals <span class="sub">· Current Liabilities</span></h4><p>Pasivos corrientes: facturas de proveedores pendientes de pago. El DPO alto extiende el pasivo — mejora liquidez pero puede dañar al proveedor.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 -->
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">DSO vs DPO — Mirror KPIs</span><span class="sec-title-es">DSO vs DPO — indicadores espejo</span></div><div class="sec-desc">La relación complementaria entre el indicador de cobros de AR (DSO) y el indicador de pagos de AP (DPO).</div></div></div>
+  <div class="theory-box"><strong>DSO y DPO son los dos lados del ciclo de efectivo:</strong> el <strong>Days Sales Outstanding (DSO)</strong> mide cuántos días tarda la empresa en cobrar de sus clientes (AR), mientras que el <strong>Days Payable Outstanding (DPO)</strong> mide cuántos días tarda en pagar a sus proveedores (AP). En términos de liquidez, una empresa prefiere un DSO bajo (cobrar rápido) y un DPO alto (pagar tarde), pero siempre dentro de los límites que no dañen relaciones comerciales.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>Métrica</th><th>Mide</th><th>Módulo SAP</th><th>Ideal para liquidez</th><th>Riesgo si extremo</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">DSO — Days Sales Outstanding</td><td>Días para cobrar de clientes</td><td>Accounts Receivable (AR)</td><td><span class="badge badge-green">Bajo</span> — cobrar rápido</td><td>Alto DSO = cliente tarda en pagar</td></tr>
+        <tr><td class="strong">DPO — Days Payable Outstanding</td><td>Días para pagar a proveedores</td><td>Accounts Payable (AP)</td><td><span class="badge badge-gold">Equilibrado</span></td><td>Muy alto = daño a proveedor · Muy bajo = liquidez perdida</td></tr>
+        <tr><td class="strong">DIO — Days Inventory Outstanding</td><td>Días que los inventarios permanecen antes de venderse</td><td>Materials Management (MM)</td><td><span class="badge badge-green">Bajo</span> — rotar rápido</td><td>Alto DIO = capital atrapado en inventario</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;background:rgba(224,133,133,0.1);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:10px 14px;font-size:0.82rem;color:var(--ink);">
+      💡 El <strong>Cash Conversion Cycle (CCC) = DSO + DIO − DPO</strong>. Un DPO alto reduce el CCC, mejorando la eficiencia del ciclo de efectivo de la empresa.
+    </div>
+  </div>
+</section>
+
+<!-- S3 -->
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Supplier Dunning — When Suppliers Chase Payment</span><span class="sec-title-es">Reclamación del proveedor por pagos vencidos</span></div><div class="sec-desc">Qué sucede del lado del proveedor cuando los pagos se retrasan — y por qué los KPIs de AP existen para prevenir esto.</div></div></div>
+  <div class="theory-box"><strong>El proveedor también tiene sus propios procesos de cobro:</strong> así como la empresa tiene un proceso de dunning (cobranza) para sus clientes en AR, los proveedores tienen el mismo proceso para cobrar a sus compradores. Si los vencidos de AP no se gestionan, el proveedor puede enviar recordatorios formales de pago. Los KPIs de AP — especialmente Overdue Payables y Due Invoices Free for Payment — existen precisamente para detectar estos riesgos antes de que escalen.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card acc">
+        <h4>📬 Escalation Ladder <span class="sub">· Escalada del proveedor</span></h4>
+        <ul>
+          <li>Nivel 1: <strong>Reminder</strong> — recordatorio informal de pago</li>
+          <li>Nivel 2: <strong>Formal notice</strong> — carta formal con intereses de mora</li>
+          <li>Nivel 3: <strong>Stop of supply</strong> — suspensión del suministro</li>
+          <li>Nivel 4: <strong>Legal action</strong> — gestión judicial de la deuda</li>
+        </ul>
+      </div>
+      <div class="card g">
+        <h4>🛡 AP KPIs as Prevention <span class="sub">· KPIs como escudo preventivo</span></h4>
+        <p>Monitorear <strong>Overdue Payables</strong> y <strong>Critically Overdue Amount</strong> permite al contador de AP intervenir antes de que el proveedor escale. La app permite también notificar a las personas responsables para tomar acción.</p>
+        <p style="margin-top:8px;">Detectar el problema en Nivel 0 (vencido pero no notificado) evita escalar al Nivel 1+.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4 -->
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Cash Discount Mechanics — How Early Payment Discounts Work</span><span class="sec-title-es">Mecanismo del descuento por pronto pago</span></div><div class="sec-desc">Cómo funcionan los descuentos por pronto pago: la ventana de tiempo, el porcentaje, y el cálculo del ahorro.</div></div></div>
+  <div class="theory-box"><strong>La ventana de descuento es estrecha — y vale dinero real:</strong> cuando un proveedor ofrece condiciones de pago como "2/10 net 30" (2% descuento si se paga en 10 días, vencimiento normal a 30 días), está ofreciendo un descuento significativo. El KPI de <strong>Cash Discount Utilization</strong> mide qué fracción de estas oportunidades se captura. No aprovecharlas equivale a pagar más por los mismos bienes o servicios.</div>
+  <div class="visual-wrap">
+    <div class="formula-box" style="margin-bottom:16px;">
+      <div class="formula">Annual Effective Rate ≈ (Discount % / (1 − Discount%)) × (365 / (Net Days − Discount Days))</div>
+      <div class="formula-desc">Ej: 2/10 net 30 → tasa efectiva anual ≈ 36.7% — equivale a un préstamo muy caro si no se aprovecha</div>
+    </div>
+    <div class="g2">
+      <div class="card b">
+        <h4>📅 Timeline — Payment Terms "2/10 Net 30" <span class="sub">· Ejemplo típico</span></h4>
+        <div style="position:relative;height:50px;background:#F5F7FA;border-radius:8px;overflow:hidden;margin:8px 0;">
+          <div style="position:absolute;left:0;top:0;width:33.3%;height:100%;background:#3D7A52;display:flex;align-items:center;justify-content:center;color:white;font-size:10.5px;font-weight:700;">Day 1–10: 2% DISCOUNT</div>
+          <div style="position:absolute;left:33.3%;top:0;width:66.7%;height:100%;background:#C9932E;display:flex;align-items:center;justify-content:center;color:white;font-size:10.5px;font-weight:700;">Day 11–30: FULL AMOUNT DUE</div>
+        </div>
+        <p style="font-size:0.8rem;color:var(--muted);">Pagar antes del día 10 = ahorro del 2%. Pagar entre día 11-30 = importe completo.</p>
+      </div>
+      <div class="card gold">
+        <h4>💰 Financial Impact <span class="sub">· Impacto en números</span></h4>
+        <p>Factura de EUR 100.000 con términos 2/10 Net 30:</p>
+        <ul>
+          <li>Pago dentro de 10 días → <strong>EUR 98.000</strong> (ahorro EUR 2.000)</li>
+          <li>Pago en día 30 → <strong>EUR 100.000</strong> (sin ahorro)</li>
+          <li>A escala de toda la cartera de AP: el ahorro acumulado puede ser significativo</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 -->
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">AP KPIs and Supplier Relationship Management</span><span class="sec-title-es">KPIs de AP y gestión de la relación con proveedores</span></div><div class="sec-desc">Por qué el pago oportuno no es solo una obligación financiera sino también una herramienta de gestión de relaciones.</div></div></div>
+  <div class="theory-box"><strong>El proveedor que recibe pagos a tiempo negocia mejor:</strong> la puntualidad en los pagos es uno de los factores que los proveedores consideran al negociar condiciones futuras — precios, plazos de entrega, exclusividades. Una empresa con DPO saludable y bajo índice de vencidos críticos tiene poder de negociación. Una empresa con pagos sistemáticamente tardíos puede encontrar que sus proveedores ajustan condiciones, eliminan descuentos, o priorizan a otros clientes. Los KPIs de AP, correctamente monitoreados, son también un indicador de la salud de la relación comercial.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card g">
+        <h4>🤝 Good Payer Profile <span class="sub">· Perfil de buen pagador</span></h4>
+        <ul>
+          <li>DPO dentro de los términos negociados</li>
+          <li>Cash Discount Utilization alta → ambas partes satisfechas</li>
+          <li>Overdue Payables bajo o cero</li>
+          <li>Resultado: proveedor ofrece mejores precios, prioridad de entrega, flexibilidad</li>
+        </ul>
+      </div>
+      <div class="card acc">
+        <h4>⚠️ Poor Payer Profile <span class="sub">· Perfil de mal pagador</span></h4>
+        <ul>
+          <li>DPO excesivamente alto (pagos sistemáticamente tardíos)</li>
+          <li>Cash Discount Utilization baja → descuentos perdidos</li>
+          <li>Overdue Payables / Critically Overdue altos</li>
+          <li>Resultado: proveedor sube precios, elimina descuentos, puede suspender crédito</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S6 -->
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">DPO Formula — How It's Calculated</span><span class="sec-title-es">Fórmula del DPO — cómo se calcula</span></div><div class="sec-desc">El mecanismo matemático del Days Payable Outstanding y cómo interpretarlo correctamente.</div></div></div>
+  <div class="theory-box"><strong>DPO relaciona el saldo de AP con el volumen de compras:</strong> para calcular el DPO, se necesitan dos datos: el saldo actual de Accounts Payable y el volumen de compras del período (o COGS). La fórmula divide el saldo de AP por el promedio diario de compras para obtener los días promedio que la deuda con proveedores permanece impaga. Un DPO de 45 días significa que, en promedio, las facturas se pagan 45 días después de ser registradas.</div>
+  <div class="visual-wrap">
+    <div class="formula-box" style="margin-bottom:16px;">
+      <div class="formula">DPO = (Accounts Payable Balance ÷ Cost of Goods Sold) × Number of Days</div>
+      <div class="formula-desc">Ej: AP Balance = EUR 900.000 · COGS anual = EUR 7.300.000 · Days = 365 → DPO = (900.000 / 7.300.000) × 365 = 45 days</div>
+    </div>
+    <div class="g3">
+      <div class="card b">
+        <h4>📊 Input: AP Balance</h4>
+        <p>El saldo total de cuentas por pagar (facturas contabilizadas no pagadas). A mayor saldo, mayor DPO — puede reflejar alto volumen de compras, términos largos, o pagos tardíos.</p>
+      </div>
+      <div class="card gold">
+        <h4>📦 Input: COGS / Purchases</h4>
+        <p>El costo de bienes vendidos o el volumen de compras del período. Normaliza el saldo de AP por el volumen de actividad — permite comparar empresas de distintos tamaños.</p>
+      </div>
+      <div class="card g">
+        <h4>✅ Output: Days</h4>
+        <p>El resultado en días es comparable con los términos de pago negociados. Si DPO ≈ average payment terms: eficiente. Si DPO >> terms: tardíos. Si DPO &lt;&lt; terms: pagando antes de lo necesario.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S7 -->
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Critical Overdue Threshold — Configuration Logic</span><span class="sec-title-es">El umbral de criticidad — lógica de configuración</span></div><div class="sec-desc">Cómo SAP determina si un importe vencido es "crítico" o "no crítico" — y cómo se parametriza esa línea.</div></div></div>
+  <div class="theory-box"><strong>El umbral de criticidad es configurable por empresa:</strong> en la app Overdue Payables, el campo <strong>Critical Overdue Threshold</strong> define cuántos días de atraso hacen que un vencido sea considerado "crítico". Este valor se configura en los filtros de la app y puede ajustarse según las políticas de cada empresa o industria. Si el umbral es 60 días, un vencido de 45 días sería "uncritically overdue" y uno de 75 días sería "critically overdue". La app también permite especificar la <strong>Key Date</strong> de análisis, que puede ser "hoy" o una fecha futura para análisis prospectivo.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>⚙️ Filter Parameters <span class="sub">· Parámetros de la app</span></h4>
+        <ul>
+          <li><strong>Open on Key Date:</strong> fecha de análisis (hoy o una fecha futura)</li>
+          <li><strong>Number of Days:</strong> número de días de referencia para el análisis de intervalos</li>
+          <li><strong>Critical Overdue Threshold:</strong> días de atraso a partir de los cuales el vencido se considera crítico (ej. 60 días)</li>
+          <li><strong>Display Currency:</strong> moneda para la visualización de importes</li>
+        </ul>
+      </div>
+      <div class="card acc">
+        <h4>📊 Visualization Options <span class="sub">· Opciones de análisis</span></h4>
+        <ul>
+          <li><strong>By Company Code:</strong> comparar vencidos entre sociedades</li>
+          <li><strong>By Supplier Group:</strong> identificar grupos de proveedores problemáticos</li>
+          <li><strong>By Reason of Block:</strong> entender por qué las facturas no se pudieron pagar</li>
+          <li><strong>By Supplier — Intervals:</strong> distribución en 4 intervalos de días antes de hoy</li>
+          <li><strong>By Supplier — Critical/Uncritical:</strong> clasificación por urgencia</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8 -->
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Aging Bucket Analysis — Deeper Reading</span><span class="sec-title-es">Lectura profunda del análisis de antigüedad</span></div><div class="sec-desc">Cómo interpretar los resultados del Aging Report para tomar decisiones concretas de planificación de pagos.</div></div></div>
+  <div class="theory-box"><strong>Cada bucket del aging report cuenta una historia diferente:</strong> el aging report no es solo estadística — cada intervalo tiene implicaciones de gestión concretas. Los vencidos pasados exigen acción inmediata. Los del mes actual necesitan planificarse en el próximo run de pagos. Los del próximo mes permiten preparar la liquidez necesaria. Los más lejanos permiten planificar a largo plazo. Un análisis regular del aging previene la acumulación de vencidos y anticipa necesidades de caja.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>Aging Bucket</th><th>Significado</th><th>Acción recomendada</th><th>KPI relacionado</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">Past Due (Vencido)</td><td>Fecha de vencimiento ya pasó. Pago no realizado.</td><td>Acción inmediata: identificar razón del atraso, liberar si hay bloqueo, ejecutar pago urgente</td><td><span class="badge badge-red">Overdue Payables</span></td></tr>
+        <tr><td class="strong">Current Month</td><td>Vencimiento en el mes actual.</td><td>Incluir en el próximo payment run. Priorizar si tiene descuento activo.</td><td><span class="badge badge-gold">Due Invoices Free for Payment</span></td></tr>
+        <tr><td class="strong">Next Month</td><td>Vencimiento en los próximos 30 días.</td><td>Planificar disponibilidad de caja. Verificar si hay descuentos que conviene aprovechar antes.</td><td><span class="badge badge-blue">Aging / DPO</span></td></tr>
+        <tr><td class="strong">+2 Months</td><td>Vencimiento en 31–60 días.</td><td>Incluir en forecast de liquidez. Sin acción operativa urgente.</td><td><span class="badge badge-blue">Aging</span></td></tr>
+        <tr><td class="strong">Future / No Due Date</td><td>Sin fecha definida o vencimiento lejano.</td><td>Verificar si las facturas sin fecha de vencimiento tienen configuración correcta.</td><td><span class="badge badge-green">Posted Invoices</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S9 -->
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">AP Overview App — Filters, Drill-Down and Navigation</span><span class="sec-title-es">La app Overview en profundidad — filtros, drill y navegación</span></div><div class="sec-desc">Cómo sacar el máximo provecho de la app Accounts Payable Overview: filtros, personalización y navegación entre apps.</div></div></div>
+  <div class="theory-box"><strong>La app Overview es tanto un agregado como un punto de entrada:</strong> no se limita a mostrar números — permite filtrar y personalizar la vista por responsabilidad (el contador filtra por su área, sus proveedores), y desde cada KPI se puede navegar directamente a las apps analíticas detalladas. El área de filtro admite Company Code, Accounting Clerk, región y grupo de proveedor. Los KPIs son interactivos — hacer click en uno lleva a su app específica.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card t">
+        <h4>🔍 Filter Area <span class="sub">· Área de filtros</span></h4>
+        <ul>
+          <li><strong>Company Code(s):</strong> limitar el análisis a una o varias sociedades</li>
+          <li><strong>Region:</strong> análisis por localización geográfica de la operación</li>
+          <li><strong>Accounting Clerk:</strong> filtrar solo los proveedores a cargo del contador actual</li>
+          <li><strong>Supplier:</strong> un proveedor específico para análisis puntual</li>
+        </ul>
+        <div style="margin-top:8px;background:rgba(0,168,150,0.08);border-radius:6px;padding:8px 10px;font-size:0.8rem;color:#00A896;">Si la responsabilidad está definida en el Vendor Master (campo Accounting Clerk), el contador ve exactamente sus proveedores.</div>
+      </div>
+      <div class="card b">
+        <h4>🧭 Drill-Down Navigation <span class="sub">· Navegación en cascada</span></h4>
+        <ul>
+          <li>Desde el KPI tile → se accede a la app analítica específica (ej. Overdue Payables)</li>
+          <li>Desde Overdue Payables → <strong>Jump To: Manage Supplier Line Items</strong></li>
+          <li>Desde Overdue Payables → <strong>Jump To: Display Supplier Balances</strong></li>
+          <li>Desde Cash Discount Utilization → detalle por sociedad o período</li>
+          <li>Desde cualquier app → posibilidad de exportar o cambiar entre vista de gráfico y tabla</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S10 -->
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">KPI-to-Action Chain — Closing the Loop</span><span class="sec-title-es">La cadena KPI-acción — cerrar el ciclo</span></div><div class="sec-desc">Cómo cada KPI de AP está vinculado a una acción operativa concreta — el ciclo completo del monitoring a la resolución.</div></div></div>
+  <div class="theory-box"><strong>Monitorear sin actuar no crea valor — el ciclo debe cerrarse:</strong> el propósito de los KPIs de AP no termina con la visualización del dato. Cada KPI apunta a una acción operativa concreta: un vencido crítico → liberar el bloqueo o ejecutar el pago; un descuento no capturado → revisar el proceso de aprobación; una factura estacionada → completarla y contabilizarla. Las apps analíticas de SAP Fiori están diseñadas para que el contador pueda ir directamente desde el KPI a la acción transaccional en el menor número de clics.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>KPI alarmante</th><th>Causa probable</th><th>Acción operativa en SAP</th><th>App de acción</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">Critically Overdue Payables ↑</td><td>Facturas bloqueadas o no procesadas que vencieron</td><td>Liberar bloqueo de pago · ejecutar payment run urgente</td><td>Manage Supplier Line Items</td></tr>
+        <tr><td class="strong">Cash Discount Utilization ↓</td><td>Proceso de aprobación lento · payment run infrecuente</td><td>Revisar facturas con descuento próximo a vencer · ajustar frecuencia del run</td><td>Manage Supplier Line Items</td></tr>
+        <tr><td class="strong">Parked Invoices ↑</td><td>Facturas estacionadas sin completar</td><td>Completar datos faltantes · contabilizar</td><td>Manage Supplier Invoices</td></tr>
+        <tr><td class="strong">Blocked Invoices ↑</td><td>Discrepancias de precio/cantidad vs PO · bloqueo manual</td><td>Investigar discrepancia · liberar o reversar · ajustar PO</td><td>Manage Supplier Invoices · Manage POs</td></tr>
+        <tr><td class="strong">DPO deviating from target</td><td>Procesos lentos o muy rápidos vs términos negociados</td><td>Revisar payment terms en Vendor Master · ajustar scheduling</td><td>Supplier Master Data</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de T2 — Profundización. Complementan al glosario de T1 (sin repetir).</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Working Capital</div><div class="term-es">Capital de trabajo</div><div class="term-def">Diferencia entre activos corrientes y pasivos corrientes. Indica la liquidez disponible para operaciones del día a día. AP bien gestionada contribuye a maximizarlo.</div></div>
+      <div class="gcard"><div class="term-en">Days Sales Outstanding (DSO)</div><div class="term-es">Días de cuentas a cobrar pendientes</div><div class="term-def">Métrica espejo del DPO en Accounts Receivable. Mide cuántos días tarda la empresa en cobrar de sus clientes. Bajo DSO = cobra rápido.</div></div>
+      <div class="gcard"><div class="term-en">Cash Conversion Cycle</div><div class="term-es">Ciclo de conversión del efectivo</div><div class="term-def">Métrica de liquidez calculada como DSO + DIO − DPO. Mide cuántos días tarda el efectivo en completar el ciclo operativo completo.</div></div>
+      <div class="gcard"><div class="term-en">Critical Overdue Threshold</div><div class="term-es">Umbral de criticidad de vencidos</div><div class="term-def">Valor configurable en la app Overdue Payables que define cuántos días de atraso convierten un vencido en "crítico". Permite personalizar las alertas según la política de la empresa.</div></div>
+      <div class="gcard"><div class="term-en">Key Date</div><div class="term-es">Fecha clave de análisis</div><div class="term-def">Fecha de referencia usada en las apps analíticas de AP para determinar qué es vencido y qué no. Puede ser "hoy" (TODAY) o una fecha futura para análisis prospectivo.</div></div>
+      <div class="gcard"><div class="term-en">Aging Bucket</div><div class="term-es">Intervalo de antigüedad</div><div class="term-def">Rango de tiempo en el que se agrupan las facturas según su antigüedad o proximidad al vencimiento. Ej: Past Due · Current Month · Next Month · +2 Months.</div></div>
+      <div class="gcard"><div class="term-en">Drill-Down</div><div class="term-es">Desglose en cascada</div><div class="term-def">Función de las apps analíticas que permite ir desde un dato agregado (ej. total vencido) a un nivel de detalle mayor (ej. por proveedor, por intervalo de días). Base de la navegación en KPI apps.</div></div>
+      <div class="gcard"><div class="term-en">Jump To</div><div class="term-es">Navegación directa</div><div class="term-def">Función de las apps analíticas de SAP Fiori que permite navegar directamente a la app transaccional relevante (ej. desde Overdue Payables a Manage Supplier Line Items).</div></div>
+      <div class="gcard"><div class="term-en">Payment Run</div><div class="term-es">Ejecución del programa de pagos</div><div class="term-def">Proceso automático de SAP que selecciona las facturas vencidas y libres de bloqueo y genera los documentos de pago. Su frecuencia afecta el Cash Discount Utilization.</div></div>
+      <div class="gcard"><div class="term-en">Dunning (Supplier)</div><div class="term-es">Reclamación de pago del proveedor</div><div class="term-def">Proceso por el que un proveedor persigue el cobro de facturas impagadas. Escalada desde recordatorios hasta suspensión del suministro. Los KPIs de AP buscan prevenirlo.</div></div>
+      <div class="gcard"><div class="term-en">Payment Terms</div><div class="term-es">Condiciones de pago</div><div class="term-def">Acuerdo comercial que define plazos de pago y posibles descuentos (ej. "2/10 Net 30"). Son la referencia contra la que se evalúa el DPO real.</div></div>
+      <div class="gcard"><div class="term-en">Analytical App</div><div class="term-es">App analítica</div><div class="term-def">Aplicación Fiori diseñada para monitorear KPIs y visualizar datos (gráficos, tablas). Se diferencia de las apps transaccionales, que sirven para registrar o modificar datos.</div></div>
+    </div>
+  </div>
+</section>
+<footer>T2 · Profundización — Payables KPIs (AP) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

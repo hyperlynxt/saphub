@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Manage Supplier Items — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E08585;--t1-dark:#A94444;--t1-pale:rgba(224,133,133,0.12);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-co:#1A6B99;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-sales:#E07B39;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#28100C 55%,#3B1818 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,133,133,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:640px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.5;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(169,68,68,0.35);}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(10,15,28,0.04);}
+  .card h4{font-family:'Syne',sans-serif;font-size:1rem;margin:0 0 6px;color:var(--ink);}
+  .card .sub{font-size:0.72rem;color:var(--muted);font-style:italic;}
+  .card p{font-size:0.84rem;color:var(--body);line-height:1.6;margin:8px 0 0;}
+  .card ul{margin:8px 0 0;padding-left:18px;}
+  .card ul li{font-size:0.82rem;color:var(--body);line-height:1.7;}
+  .card.acc{border-top:4px solid var(--t1-dark);}
+  .card.b{border-top:4px solid var(--cat-fi);}
+  .card.t{border-top:4px solid var(--cat-log);}
+  .card.p{border-top:4px solid var(--cat-purchase);}
+  .card.g{border-top:4px solid #3D7A52;}
+  .card.o{border-top:4px solid var(--cat-sales);}
+  .card.gold{border-top:4px solid var(--cat-legal);}
+  .card.steel{border-top:4px solid var(--cat-steel);}
+  .icon-big{font-size:26px;display:block;margin-bottom:6px;}
+  .data-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:0.85rem;}
+  .data-table th{background:var(--navy-900);color:white;padding:11px 14px;text-align:left;font-size:0.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+  .data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:nth-child(even) td{background:#FAFBFD;}
+  .data-table .strong{font-weight:700;color:var(--ink);}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;white-space:nowrap;}
+  .badge-red{background:rgba(192,57,43,0.1);color:#C0392B;}
+  .badge-green{background:rgba(0,168,150,0.1);color:#00A896;}
+  .badge-gold{background:rgba(201,147,46,0.09);color:#C9932E;}
+  .badge-blue{background:rgba(26,75,140,0.08);color:#1A4B8C;}
+  .glossary{background:var(--navy-950);padding:64px 40px 72px;scroll-margin-top:64px;}
+  .glossary-inner{max-width:1100px;margin:0 auto;}
+  .glossary h2{font-family:'Syne',sans-serif;color:white;font-size:1.6rem;margin:0 0 6px;}
+  .gloss-sub{color:rgba(255,255,255,0.55);font-size:0.9rem;margin:0 0 30px;}
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .gcard{background:var(--navy-800);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 18px;}
+  .term-en{font-family:'Syne',sans-serif;font-weight:700;color:var(--t1);font-size:1rem;}
+  .term-es{color:rgba(255,255,255,0.5);font-size:0.78rem;margin:2px 0 8px;}
+  .term-def{color:rgba(255,255,255,0.82);font-size:0.83rem;line-height:1.5;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">AP Sub-ledger Reconciliation</a>
+  <a href="#s2">Document Flow / Audit Trail</a>
+  <a href="#s3">Reversal vs Credit Memo</a>
+  <a href="#s4">Correspondence</a>
+  <a href="#s5">Special G/L Transactions</a>
+  <a href="#s6">How Clearing Works Technically</a>
+  <a href="#s7">Reversal Dates &amp; Periods</a>
+  <a href="#s8">Views and Layouts</a>
+  <a href="#s9">Document Types KR / KZ / KG</a>
+  <a href="#s10">Individual Payment from Line Items</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+    </div>
+    <h1>Manage Supplier <span class="accent">Line Items</span></h1>
+    <h2>Profundización — Adyacentes y Mecanismos</h2>
+    <p class="desc">Cinco temas adyacentes (conciliación subledger-GL, document flow, reversión vs nota de crédito, correspondencia, Special G/L) y cinco mecanismos en mayor profundidad (compensación técnica, fechas de reversión, vistas, tipos de documento, pago individual).</p>
+    <div class="hlbox">Profundización — <b>Manage Supplier Line Items (AP)</b>, Tipo 2. Glosario con términos distintos a T1.</div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">AP Sub-Ledger and GL Reconciliation</span><span class="sec-title-es">Reconciliación subledger AP y GL</span></div><div class="sec-desc">La relación entre las partidas del subledger de AP (cuenta de proveedor) y los saldos en la cuenta de reconciliación del GL.</div></div></div>
+  <div class="theory-box"><strong>Cada partida de AP actualiza simultáneamente el GL:</strong> la cuenta de proveedor en AP es un <strong>sub-ledger</strong> (libro auxiliar). Cada vez que se contabiliza una factura, SAP actualiza en paralelo la <strong>cuenta de reconciliación</strong> correspondiente en el GL (cuenta 191100 o similar). El saldo de la cuenta de proveedor en AP siempre debe coincidir con el saldo de esa cuenta en el GL — si no coinciden, hay un error de configuración. El análisis de las apps Display Supplier Balances y Manage Supplier Line Items trabaja sobre el subledger.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>📚 AP Sub-Ledger <span class="sub">· Libro auxiliar de AP</span></h4>
+        <ul>
+          <li>Nivel de <strong>proveedor individual</strong> — cada proveedor tiene su propia cuenta</li>
+          <li>Contiene cada partida individual con su estado (abierta/compensada)</li>
+          <li>Apps de análisis: Display Supplier Balances + Manage Supplier Line Items</li>
+          <li>No contabilizable directamente — se alimenta de documentos FI</li>
+        </ul>
+      </div>
+      <div class="card acc">
+        <h4>📒 GL Reconciliation Account <span class="sub">· Cuenta de reconciliación en GL</span></h4>
+        <ul>
+          <li>Nivel de <strong>cuenta colectiva</strong> — todos los proveedores suman aquí</li>
+          <li>El saldo debe coincidir con la suma de todos los saldos de AP</li>
+          <li>Visible en: Display G/L Account Balances · Journal Entry</li>
+          <li>No se puede contabilizar directamente — solo a través del subledger</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Document Flow and Audit Trail</span><span class="sec-title-es">Flujo de documentos y pista de auditoría</span></div><div class="sec-desc">La cadena de documentos relacionados que SAP mantiene automáticamente para cada transacción.</div></div></div>
+  <div class="theory-box"><strong>SAP mantiene un grafo de relaciones entre documentos:</strong> cada documento FI (factura, pago, reversión) puede estar relacionado con otros. La tab <strong>Related Documents</strong> en Manage Journal Entries muestra estas relaciones — por ejemplo, una factura (KR) relacionada con el pago que la compensó (KZ), o el par original/reversión. Este grafo es el <strong>audit trail</strong> de la transacción completa y permite a auditores reconstruir el historial sin necesidad de buscar en múltiples apps.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>🔗 Related Documents Tab <span class="sub">· Documentos relacionados</span></h4>
+        <p>La tab Related Documents en Manage Journal Entries muestra:</p>
+        <ul>
+          <li>Tipo de relación: "Reversed Document", "Clearing Document"</li>
+          <li>Número del documento relacionado (clickable)</li>
+          <li>Tipo de asiento del documento relacionado</li>
+          <li>Tipo de documento de referencia</li>
+        </ul>
+      </div>
+      <div class="card acc">
+        <h4>📋 Audit Trail Examples <span class="sub">· Ejemplos de rastro</span></h4>
+        <ul>
+          <li><strong>Invoice + Payment:</strong> KR relacionado con KZ que lo compensó</li>
+          <li><strong>Invoice + Reversal:</strong> KR original "Reversed By" el documento reversal</li>
+          <li><strong>Reversal:</strong> muestra "Reversed Document: [original]"</li>
+          <li>Toda la cadena queda visible desde cualquier documento del par</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reversal vs Credit Memo — When to Use Each</span><span class="sec-title-es">Reversión vs nota de crédito — cuándo usar cada una</span></div><div class="sec-desc">La diferencia operativa entre corregir un error con una reversión vs recibir una nota de crédito del proveedor.</div></div></div>
+  <div class="theory-box"><strong>Son herramientas distintas para situaciones distintas:</strong> una <strong>reversión</strong> es iniciada por el contador de AP para corregir un error interno (campo incorrecto, importe mal ingresado). Una <strong>nota de crédito</strong> (credit memo, KG) es un documento que envía el proveedor para reducir la deuda — por ejemplo, porque hubo una devolución o un descuento post-factura. Aunque ambos reducen el saldo del proveedor, tienen orígen, propósito y lógica contable distintos.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th></th><th>Reversal</th><th>Credit Memo (KG)</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">Iniciado por</td><td>El contador de AP (corrección interna)</td><td>El proveedor (envía nota de crédito)</td></tr>
+        <tr><td class="strong">Motivo</td><td>Error en el documento original (campo no modificable)</td><td>Devolución, descuento posterior, ajuste del proveedor</td></tr>
+        <tr><td class="strong">Documento SAP</td><td>Nuevo asiento con importes opuestos al original</td><td>Documento KG — partida separada con importe negativo</td></tr>
+        <tr><td class="strong">Relación con original</td><td>Linked via "Reversed By" / "Reversal Reference"</td><td>Partida independiente — se puede compensar manualmente con la factura</td></tr>
+        <tr><td class="strong">Resultado en cuenta</td><td>Par de documentos que se netan a cero</td><td>Saldo acreedor que reduce la deuda con el proveedor</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Correspondence — Account Statements</span><span class="sec-title-es">Correspondencia — extractos de cuenta</span></div><div class="sec-desc">La funcionalidad de generar correspondencia formal (extractos de cuenta, confirmaciones) directamente desde las partidas de proveedor.</div></div></div>
+  <div class="theory-box"><strong>La correspondencia conecta el sistema contable con la comunicación formal:</strong> desde la app Manage Supplier Line Items, el contador de AP puede generar <strong>correspondencia formal</strong> — por ejemplo, un extracto de cuenta que muestra las partidas abiertas y su estado. Esta correspondencia puede enviarse al proveedor como confirmación de saldo. Es una funcionalidad de gestión de la relación con el proveedor que no requiere salir de SAP.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card b"><span class="icon-big">📄</span><h4>Account Statement <span class="sub">· Extracto de cuenta</span></h4><p>Listado formal de las partidas abiertas y compensadas del proveedor en un período. Sirve como confirmación de saldo.</p></div>
+      <div class="card acc"><span class="icon-big">✅</span><h4>Balance Confirmation <span class="sub">· Confirmación de saldo</span></h4><p>Documento que confirma el saldo de la cuenta a una fecha determinada. Usado en auditorías y conciliaciones con proveedores.</p></div>
+      <div class="card steel"><span class="icon-big">🔗</span><h4>From Line Items App <span class="sub">· Acción directa</span></h4><p>La correspondencia se genera seleccionando las partidas relevantes y eligiendo "Create Correspondence" — sin salir de Manage Supplier Line Items.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Special G/L Transactions</span><span class="sec-title-es">Transacciones de GL especial</span></div><div class="sec-desc">Qué son las transacciones de GL especial y por qué aparecen como una tab separada en Display Supplier Balances.</div></div></div>
+  <div class="theory-box"><strong>Las transacciones de GL especial registran en cuentas distintas a la cuenta estándar del proveedor:</strong> algunas operaciones con proveedores no se contabilizan en la cuenta normal de AP sino en cuentas especiales — por ejemplo, los <strong>anticipos</strong> (down payments) a proveedores. Estas partidas se procesan con un <strong>Special G/L Indicator</strong> y aparecen en la tab "Special G/L" de Display Supplier Balances, separadas de las partidas normales. Esto evita que los anticipos distorsionen el saldo regular de AP.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>📊 Normal Tab <span class="sub">· Transacciones normales</span></h4>
+        <ul>
+          <li>Facturas (KR) y pagos (KZ) estándar</li>
+          <li>Notas de crédito (KG)</li>
+          <li>Todas contabilizadas en la cuenta de reconciliación estándar del GL</li>
+          <li>Son las partidas típicas del subledger de AP</li>
+        </ul>
+      </div>
+      <div class="card acc">
+        <h4>⭐ Special G/L Tab <span class="sub">· Transacciones especiales</span></h4>
+        <ul>
+          <li><strong>Down Payments (anticipos)</strong> — contabilizados en cuenta separada</li>
+          <li><strong>Guarantees (garantías)</strong></li>
+          <li>Identificadas por el <strong>Special G/L Indicator</strong> (ej. "A" para anticipos)</li>
+          <li>Visibles en tab separada para no mezclar con el saldo normal de AP</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">How Clearing Works Technically</span><span class="sec-title-es">Cómo funciona la compensación técnicamente</span></div><div class="sec-desc">El mecanismo interno de SAP para compensar partidas — el Clearing Journal Entry y cómo vincula los documentos.</div></div></div>
+  <div class="theory-box"><strong>La compensación crea un documento de clearing que vincula las partidas:</strong> cuando se compensa una partida (por pago o clearing manual), SAP asigna un <strong>Clearing Journal Entry Number</strong> que queda registrado en ambas partidas (en la factura y en el pago/nota de crédito). Este número es el vínculo que identifica qué documentos se compensaron entre sí. En Manage Supplier Line Items, la columna "Clearing Journal Entry" muestra este número — las partidas sin número en esa columna son las abiertas.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>🔗 Clearing Document Number <span class="sub">· Número de documento de compensación</span></h4>
+        <p>Al compensar, SAP asigna el mismo número de clearing a todas las partidas involucradas. Este número aparece en la columna "Clearing Journal Entry" de Manage Supplier Line Items. Permite identificar de un vistazo qué pago compensó qué factura.</p>
+      </div>
+      <div class="card acc">
+        <h4>📊 Cleared Item = Two Entries, One Number <span class="sub">· Estructura técnica</span></h4>
+        <p>El par de partidas compensadas (ej. factura KR + pago KZ) comparten el mismo Clearing Journal Entry number. Ambas muestran el mismo número en esa columna. Haciendo click en el número azul se accede al documento de clearing que detalla la compensación.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reversal Dates and Posting Periods</span><span class="sec-title-es">Fechas de reversión y períodos contables</span></div><div class="sec-desc">Cómo la fecha de posting del documento de reversión afecta al período contable y al cierre mensual.</div></div></div>
+  <div class="theory-box"><strong>La fecha de posting de la reversión determina en qué período se registra:</strong> al reversar, el contador debe especificar una <strong>Posting Date</strong> para el documento de reversión. Esta fecha determina en qué período contable impactará el asiento. Si el período original está cerrado, puede ser necesario usar una fecha en el período actual. Algunas Reversal Reasons obligan a usar una fecha específica — por ejemplo, en el mismo período del original o en el período siguiente.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card b">
+        <h4>📅 Same Period Reversal <span class="sub">· Mismo período</span></h4>
+        <p>La reversión impacta en el mismo período que el original. Recomendado cuando el error se detecta en el mismo mes. Requiere que el período esté abierto.</p>
+        <p style="margin-top:8px;"><strong>Resultado:</strong> el período muestra el error y su corrección — saldo neto = 0.</p>
+      </div>
+      <div class="card acc">
+        <h4>📅 Subsequent Period <span class="sub">· Período siguiente</span></h4>
+        <p>La reversión se contabiliza en el período actual aunque el original fuera anterior. Usado cuando el período del error está cerrado.</p>
+        <p style="margin-top:8px;"><strong>Resultado:</strong> el período del error muestra el importe original; el período actual muestra la corrección.</p>
+      </div>
+      <div class="card steel">
+        <h4>⚠️ Period-End Sensitivity <span class="sub">· Sensibilidad en cierre</span></h4>
+        <p>Reversar documentos justo antes o después del cierre mensual puede afectar los estados financieros del mes. La coordinación con el equipo de GL es clave para no alterar reportes ya enviados.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Views and Layouts in Manage Supplier Line Items</span><span class="sec-title-es">Vistas y layouts de la app de partidas</span></div><div class="sec-desc">Las distintas vistas disponibles en la app y cómo el equipo de proyecto puede crear vistas personalizadas.</div></div></div>
+  <div class="theory-box"><strong>La vista determina qué columnas y datos se muestran:</strong> la app Manage Supplier Line Items permite cambiar el <strong>Layout</strong> de visualización. El layout "Standard" muestra las columnas más habituales. El layout "SAP-Clearing Data" está orientado a ver información de compensación (quién compensó qué y cuándo). El equipo de implementación del proyecto puede crear <strong>layouts personalizados</strong> para la organización, adaptados a las necesidades específicas del negocio.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>📊 Standard Layout <span class="sub">· Vista estándar</span></h4>
+        <ul>
+          <li>Supplier, Company Code</li>
+          <li>Clearing status (✓/✗)</li>
+          <li>Assignment, Journal Entry Date</li>
+          <li>Journal Entry Number (azul/navigable)</li>
+          <li>Journal Entry Type (KR/KZ/KG)</li>
+          <li>Amount, Currency</li>
+          <li>Clearing Journal Entry</li>
+        </ul>
+      </div>
+      <div class="card acc">
+        <h4>🔍 SAP-Clearing Data Layout <span class="sub">· Vista de compensaciones</span></h4>
+        <ul>
+          <li>Muestra datos adicionales de la compensación</li>
+          <li>Clearing Date (fecha en que se compensó)</li>
+          <li>Clearing User (quién compensó)</li>
+          <li>Clearing Document Type</li>
+          <li>Ideal para auditorías de compensaciones</li>
+          <li>+ Layouts del proyecto (personalizados por organización)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Document Types: KR, KZ, KG — What Each Means</span><span class="sec-title-es">Tipos de documento KR, KZ, KG — qué significa cada uno</span></div><div class="sec-desc">Los tipos de documento más comunes en las partidas de proveedores y lo que indica cada uno sobre la naturaleza del asiento.</div></div></div>
+  <div class="theory-box"><strong>El tipo de documento identifica la naturaleza de cada asiento en AP:</strong> en la columna "Journal Entry Type" de Manage Supplier Line Items, cada partida muestra un código de dos letras que indica qué tipo de transacción representa. Estos códigos son fundamentales para entender el estado de una cuenta y diagnosticar situaciones: ¿es una factura? ¿un pago? ¿una nota de crédito? ¿una reversión? Los tipos de documento también controlan los rangos de numeración y las cuentas permitidas en la contabilización.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>Type</th><th>Description</th><th>Typical Use</th><th>Effect on Vendor Account</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">KR</td><td>Vendor Invoice</td><td>Factura de proveedor recibida</td><td>Crédit entry — increases AP balance (company owes supplier)</td></tr>
+        <tr><td class="strong">KZ</td><td>Vendor Payment</td><td>Pago realizado al proveedor</td><td>Debit entry — decreases AP balance (reduces what's owed)</td></tr>
+        <tr><td class="strong">KG</td><td>Vendor Credit Memo</td><td>Nota de crédito del proveedor (devolución, descuento)</td><td>Debit entry — reduces AP balance</td></tr>
+        <tr><td class="strong">RE</td><td>Invoice – Gross (PO referenced)</td><td>Factura con referencia a Orden de Compra</td><td>Credit entry — increases AP balance</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Individual Payment — Bypassing the Payment Run</span><span class="sec-title-es">Pago individual — fuera del programa de pagos</span></div><div class="sec-desc">La funcionalidad de crear un pago individual directamente desde la partida, sin esperar al programa de pagos automático.</div></div></div>
+  <div class="theory-box"><strong>El pago individual es la vía de urgencia fuera del ciclo automático:</strong> el proceso normal de AP es que el <strong>Payment Program</strong> (F110) corra periódicamente y pague todas las facturas que vencen. Sin embargo, desde Manage Supplier Line Items el contador puede crear un <strong>Individual Payment</strong> directamente sobre una partida específica — sin esperar al próximo run del programa. Esto es útil para pagos urgentes, proveedores estratégicos que no pueden esperar, o situaciones donde la cadena de pago normal no es viable.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>⚡ When to Use Individual Payment <span class="sub">· Cuándo usarlo</span></h4>
+        <ul>
+          <li>Proveedor requiere pago urgente antes del próximo run</li>
+          <li>Factura con descuento por pronto pago que vence antes del payment run</li>
+          <li>Corrección de una situación de vencido crítico</li>
+          <li>Proveedor específico excluido del programa de pagos automático</li>
+        </ul>
+      </div>
+      <div class="card acc">
+        <h4>⚠️ Considerations <span class="sub">· Consideraciones</span></h4>
+        <ul>
+          <li>Requiere autorización — no todos los usuarios pueden crear pagos individuales</li>
+          <li>No pasa por las validaciones y aprobaciones del Payment Program</li>
+          <li>El pago queda compensado con la factura igual que un pago automático</li>
+          <li>Genera el mismo tipo de documento KZ y el mismo audit trail</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de T2 — Profundización. No repiten los de T1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">AP Sub-Ledger</div><div class="term-es">Subledger de AP / Libro auxiliar</div><div class="term-def">Registro detallado por proveedor que forma parte del sistema contable. Cada proveedor tiene su propia cuenta en el subledger, cuyo saldo se consolida en la cuenta de reconciliación del GL.</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Account</div><div class="term-es">Cuenta de reconciliación</div><div class="term-def">Cuenta del GL que refleja el saldo agregado de todos los proveedores. Se actualiza automáticamente con cada contabilización en el subledger de AP. No se contabiliza directamente.</div></div>
+      <div class="gcard"><div class="term-en">Credit Memo (KG)</div><div class="term-es">Nota de crédito del proveedor</div><div class="term-def">Documento emitido por el proveedor para reducir una deuda previa (devolución, descuento posterior). Se registra como tipo KG en SAP y reduce el saldo de AP.</div></div>
+      <div class="gcard"><div class="term-en">Clearing Journal Entry Number</div><div class="term-es">Número de asiento de compensación</div><div class="term-def">Número asignado por SAP a las partidas cuando se compensan entre sí. Aparece en la columna "Clearing Journal Entry" de Manage Supplier Line Items — las partidas abiertas no tienen este número.</div></div>
+      <div class="gcard"><div class="term-en">Related Documents Tab</div><div class="term-es">Pestaña de documentos relacionados</div><div class="term-def">Tab dentro de Manage Journal Entries que muestra los documentos vinculados a un asiento: el documento que lo compensó, el original si es una reversión, etc.</div></div>
+      <div class="gcard"><div class="term-en">Special G/L Indicator</div><div class="term-es">Indicador de GL especial</div><div class="term-def">Código que redirige la contabilización a una cuenta distinta de la cuenta estándar del proveedor. Usado para anticipos, garantías y otros movimientos especiales visibles en la tab "Special G/L".</div></div>
+      <div class="gcard"><div class="term-en">Document Layout / View</div><div class="term-es">Layout / Vista de la lista</div><div class="term-def">Configuración de columnas y campos visibles en Manage Supplier Line Items. El equipo de proyecto puede crear layouts personalizados para la organización.</div></div>
+      <div class="gcard"><div class="term-en">Correspondence</div><div class="term-es">Correspondencia contable</div><div class="term-def">Documentos formales generados desde SAP para comunicación con el proveedor: extractos de cuenta, confirmaciones de saldo. Se pueden crear directamente desde Manage Supplier Line Items.</div></div>
+      <div class="gcard"><div class="term-en">Individual Payment</div><div class="term-es">Pago individual</div><div class="term-def">Pago creado manualmente para una partida específica, sin pasar por el Payment Program automático. Opción de urgencia disponible en Manage Supplier Line Items.</div></div>
+      <div class="gcard"><div class="term-en">Document Type</div><div class="term-es">Tipo de documento</div><div class="term-def">Código de dos letras (KR, KZ, KG, RE...) que identifica la naturaleza de un documento FI. Controla los rangos de numeración, cuentas permitidas y comportamiento del asiento.</div></div>
+      <div class="gcard"><div class="term-en">Down Payment</div><div class="term-es">Anticipo / Pago por adelantado</div><div class="term-def">Pago realizado al proveedor antes de recibir la factura. Se contabiliza en una cuenta especial (Special G/L) para evitar mezclarla con las deudas normales de AP.</div></div>
+      <div class="gcard"><div class="term-en">Backdated Posting</div><div class="term-es">Contabilización retroactiva</div><div class="term-def">Documento FI contabilizado con una fecha de posting anterior al período actual. Puede afectar reportes ya cerrados — requiere que el período esté abierto o autorización especial.</div></div>
+    </div>
+  </div>
+</section>
+<footer>T2 · Profundización — Manage Supplier Line Items (AP) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

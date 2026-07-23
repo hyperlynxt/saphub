@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Treasury Process Improvements — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#5D3E82;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sscui-blue:#0070F2;
+    --sscui-bg:#F5F6F7;
+    --sscui-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241C33 55%, #3C2C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(93,62,130,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .spro-area-tag{ display:inline-flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t4-dark); color:white; margin-left:8px; vertical-align:middle; }
+  .improvement-tag{ display:inline-flex; align-items:center; font-size:9px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t4-pale); color:var(--t4-dark); margin-left:8px; vertical-align:middle; }
+
+  .theory-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .part-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--t4-dark); margin:0 0 8px; }
+  .part-label:not(:first-child){ margin-top:22px; }
+
+  .sscui-tree, .sscui-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'JetBrains Mono',monospace; font-size:11.5px; }
+  .sscui-tree ul{ padding-left:20px; border-left:1px dotted #B399D4; margin-left:7px; }
+  .sscui-tree li{ position:relative; padding:4px 0 4px 16px; color:var(--body); }
+  .sscui-tree li::before{ content:''; position:absolute; left:0; top:13px; width:12px; height:1px; background:#B399D4; }
+  .sscui-tree .folder{ font-weight:700; color:var(--ink); }
+  .sscui-tree .leaf{ color:var(--t4-dark); font-weight:700; }
+
+  .sscui-mock{ background:var(--sscui-bg); border:1px solid var(--sscui-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .sscui-shellbar{ background:var(--sscui-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .sscui-body{ padding:18px 20px; background:white; }
+  .sscui-page-title{ font-size:15px; font-weight:600; color:#1D2D3E; margin:0 0 4px; }
+  .sscui-page-sub{ font-size:11px; color:#5B738B; margin:0 0 14px; }
+  .sscui-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .sscui-field{ flex:1; min-width:160px; }
+  .sscui-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .sscui-field .ffval{ border:1px solid var(--sscui-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+  .sscui-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .sscui-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sscui-border); }
+  .sscui-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .sscui-toggle-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid #EDEFF1; font-size:12px; }
+  .sscui-toggle{ width:34px; height:18px; border-radius:20px; background:var(--sscui-blue); position:relative; flex-shrink:0; }
+  .sscui-toggle::after{ content:''; position:absolute; top:2px; right:2px; width:14px; height:14px; border-radius:50%; background:white; }
+  .sscui-toggle.off{ background:#C9CDD2; }
+  .sscui-toggle.off::after{ right:auto; left:2px; }
+  .sscui-btn{ background:var(--sscui-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .sscui-btn.ghost{ background:white; color:var(--sscui-blue); border:1px solid var(--sscui-blue); }
+  .sscui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E;
+    margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  .to-t3-note{ background:var(--t4-pale); border:1px dashed var(--t4-dark); border-radius:8px; padding:10px 14px;
+    margin-top:14px; font-size:0.8rem; color:var(--t4-dark); }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Unified Exposure Sources</a>
+  <a href="#s2">FX Auto-Capture Rules</a>
+  <a href="#s3">Hedging Proposal Engine</a>
+  <a href="#s4">Stress Test Parameters</a>
+  <a href="#s5">Group-Wide Process Templates</a>
+  <a href="#s6">Role-Based Dashboard Setup</a>
+  <a href="#s7">Trading Platform Connectivity</a>
+  <a href="#s8">Rapid Entity Onboarding Template</a>
+  <a href="#s9">Connection Authentication</a>
+  <a href="#s10">Business Role Authorizations</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Treasury Portfolio</span>
+      <span class="pill pill-secondary">Embedded Analytics</span>
+      <span class="pill pill-secondary">Trading Platform Integration</span>
+      <span class="pill pill-secondary">Cybersecurity</span>
+    </div>
+    <h1>Treasury Process Improvements — <span class="accent">Customizing</span></h1>
+    <h2>Tangibilización Configurador (GUI)</h2>
+    <p class="desc">La base que sostiene las siete mejoras que Sofía vive en T3: fuentes de datos unificadas, reglas de auto-captura, motores de propuesta de cobertura, plantillas de proceso estandarizado, y la autenticación robusta que protege cada conexión nueva.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Configure Your Solution — Bike Company Group</div>
+        <div class="p-note">esto arma la base que Sofía usa del otro lado, en Fiori</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Unifying the Data Model Across Sources</span>
+          <span class="sec-title-es">Unificando el modelo de datos entre fuentes</span>
+          <span class="spro-area-tag">Cash Management</span>
+          <span class="improvement-tag">Visibilidad</span>
+        </div>
+        <div class="sec-desc">El dashboard global que Sofía ve en T3 solo es posible si cada fuente habla el mismo idioma de datos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se asignan las fuentes internas (Financial Accounting, AP, AR, Treasury & Risk Management) al modelo de datos unificado que consolida la posición de caja — sin este mapeo, cada sistema seguiría reportando cifras que no se pueden comparar entre sí.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Cash Management
+                  <ul>
+                    <li class="leaf">Assign Source Applications to Unified Data Model</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Unified Data Model — Sources</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Source Applications — Bike Company Group</p>
+          <table class="sscui-table">
+            <tr><th>Source</th><th>Data Type</th></tr>
+            <tr><td>Financial Accounting</td><td>Confirmed</td></tr>
+            <tr><td>Treasury &amp; Risk Management</td><td>Confirmed</td></tr>
+            <tr><td>Sales and Distribution</td><td>Projected</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring FX Auto-Capture Rules</span>
+          <span class="sec-title-es">Configurando reglas de auto-captura FX</span>
+          <span class="spro-area-tag">Treasury &amp; Risk</span>
+          <span class="improvement-tag">Automatización</span>
+        </div>
+        <div class="sec-desc">La exposición que Sofía vio aparecer sola en T3 depende de que estas reglas estén definidas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se define qué tipos de documento (órdenes de venta, facturas en moneda extranjera) generan automáticamente una exposición FX detectada, sin que nadie tenga que ingresarla a mano.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Treasury and Risk Management
+                  <ul>
+                    <li class="leaf">Configure Automated FX Exposure Capture</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>FX Exposure Capture Rules</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Auto-Capture Sources — Bike Company Group</p>
+          <div class="sscui-toggle-row"><span>Capture from Sales Orders (Foreign Currency)</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Capture from Purchase Orders (Foreign Currency)</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up the Hedging Proposal Engine</span>
+          <span class="sec-title-es">Configurando el motor de propuestas de cobertura</span>
+          <span class="spro-area-tag">Hedge Management</span>
+          <span class="improvement-tag">Gestión de riesgo</span>
+        </div>
+        <div class="sec-desc">La propuesta de forward que Sofía solo tuvo que confirmar en T3 se genera según estas reglas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define qué instrumento se propone por defecto para cada tipo de exposición, y a partir de qué monto mínimo el sistema genera una propuesta automática en vez de esperar que alguien la solicite.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Hedge Management
+                  <ul>
+                    <li class="leaf">Configure Automated Hedging Proposals</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Hedging Proposal Rules</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Default Instrument Mapping</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Exposure Type</label><div class="ffval">FX Receivable</div></div>
+            <div class="sscui-field"><label>Default Instrument</label><div class="ffval">FX Forward</div></div>
+            <div class="sscui-field"><label>Minimum Amount</label><div class="ffval">$50,000.00</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Stress Test Parameters</span>
+          <span class="sec-title-es">Definiendo parámetros de stress test</span>
+          <span class="spro-area-tag">Exposure Management</span>
+          <span class="improvement-tag">Gestión de riesgo</span>
+        </div>
+        <div class="sec-desc">El escenario de devaluación del 8% que Sofía corrió en T3 usa un parámetro predefinido acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se definen escenarios de estrés predefinidos (variaciones porcentuales de FX, tasa o commodities) que el usuario puede aplicar con un clic, en vez de armar cada simulación desde cero.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Exposure Management
+                  <ul>
+                    <li class="leaf">Define Stress Test Scenarios</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Stress Scenario Library</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Predefined Scenarios — Bike Company Group</p>
+          <table class="sscui-table">
+            <tr><th>Scenario</th><th>Shock</th></tr>
+            <tr><td>EUR Devaluation</td><td>−8%</td></tr>
+            <tr><td>Interest Rate Spike</td><td>+150 bps</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Standardizing Process Templates Across the Group</span>
+          <span class="sec-title-es">Estandarizando plantillas de proceso en el grupo</span>
+          <span class="spro-area-tag">Group Policy</span>
+          <span class="improvement-tag">Centralización</span>
+        </div>
+        <div class="sec-desc">El "mismo workflow" que Sofía usó para dos sociedades distintas en T3 viene de una sola plantilla, no de dos configuraciones separadas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define una plantilla de proceso (workflow de aprobación, umbrales) a nivel de grupo, y se asigna a cada sociedad — evitando que cada entidad configure su propia variante del mismo proceso.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Group Treasury Policy
+                  <ul>
+                    <li class="leaf">Define Standardized Process Templates</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Process Template Assignment</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Approval Template — Standard Group Workflow</p>
+          <table class="sscui-table">
+            <tr><th>Company Code</th><th>Template Assigned</th></tr>
+            <tr><td>DE01</td><td>Standard Group Workflow</td></tr>
+            <tr><td>US01</td><td>Standard Group Workflow</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up Role-Based Dashboards</span>
+          <span class="sec-title-es">Configurando dashboards según el rol</span>
+          <span class="spro-area-tag">Embedded Analytics</span>
+          <span class="improvement-tag">Analítica</span>
+        </div>
+        <div class="sec-desc">La vista distinta que Sofía y su manager tenían en T3 se define acá, no en cada Launchpad individual.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se asigna qué conjunto de KPIs y tiles corresponde a cada rol de negocio — operaciones del día para el analista, tendencias trimestrales para el manager — de forma centralizada.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Embedded Analytics
+                  <ul>
+                    <li class="leaf">Assign KPI Sets to Business Roles</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Role-Based KPI Assignment</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">KPI Sets — Business Roles</p>
+          <table class="sscui-table">
+            <tr><th>Business Role</th><th>KPI Set</th></tr>
+            <tr><td>Treasury Analyst</td><td>Daily Operations</td></tr>
+            <tr><td>Treasury Manager</td><td>Quarterly Trends</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Connecting the Trading Platform, Once</span>
+          <span class="sec-title-es">Conectando la plataforma de trading, una sola vez</span>
+          <span class="spro-area-tag">Trading Platform Integration</span>
+          <span class="improvement-tag">Integración</span>
+        </div>
+        <div class="sec-desc">El deal que llegó "directo desde 360T" en T3 depende de esta conexión, hecha una sola vez para todo el grupo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se establece la conexión vía SAP BTP con la plataforma de trading elegida — configurada a nivel de grupo, no sociedad por sociedad, evitando duplicar el trabajo de integración.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Trading Platform Integration
+                  <ul>
+                    <li class="leaf">Connect Trading Platform at Group Level</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Trading Platform Connection</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Connected Platforms — Bike Company Group</p>
+          <div class="sscui-toggle-row"><span>360T — Straight-Through Processing</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Applies to All Company Codes</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Preparing the Rapid Onboarding Template</span>
+          <span class="sec-title-es">Preparando la plantilla de onboarding rápido</span>
+          <span class="spro-area-tag">Scalability</span>
+          <span class="improvement-tag">Escalabilidad</span>
+        </div>
+        <div class="sec-desc">La entidad nueva que Sofía sumó "el mismo día" en T3 no fue improvisación — fue una plantilla preparada de antemano.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué prepara esto?</strong> Se define una plantilla de configuración estándar (roles, cuentas por defecto, políticas de riesgo) que se aplica automáticamente cuando se agrega una nueva sociedad al grupo, en vez de configurar cada aspecto desde cero.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Group Treasury Policy
+                  <ul>
+                    <li class="leaf">Define Rapid Onboarding Template</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Onboarding Template Editor</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">New Entity Onboarding Template</p>
+          <table class="sscui-table">
+            <tr><th>Included in Template</th><th>Applies Automatically</th></tr>
+            <tr><td>Default Business Roles</td><td>Yes</td></tr>
+            <tr><td>Group Risk Policy</td><td>Yes</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Enforcing Authentication on Every Connection</span>
+          <span class="sec-title-es">Exigiendo autenticación en cada conexión</span>
+          <span class="spro-area-tag">Cybersecurity</span>
+          <span class="improvement-tag">Integración</span>
+        </div>
+        <div class="sec-desc">Cada integración nueva del T1 (bancos, plataformas de trading, proveedores de datos) trae consigo este control.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué exige esto?</strong> Se obliga a que toda conexión externa nueva — banco, plataforma de trading, proveedor de datos de mercado — pase por autenticación robusta antes de activarse, sin excepciones por conveniencia.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Cross-Application Components
+              <ul>
+                <li class="folder">Connectivity Security
+                  <ul>
+                    <li class="leaf">Enforce Strong Authentication on External Connections</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Connectivity Security Policy</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Authentication Requirements — All External Connections</p>
+          <div class="sscui-toggle-row"><span>Require Strong Authentication (Bank Channels)</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Require Strong Authentication (Trading Platforms)</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-hint">⚠ ninguna conexión nueva se activa sin pasar este control</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Authorizing Treasury Business Roles, Group-Wide</span>
+          <span class="sec-title-es">Autorizando roles de tesorería en todo el grupo</span>
+          <span class="spro-area-tag">Authorizations</span>
+          <span class="improvement-tag">Centralización</span>
+        </div>
+        <div class="sec-desc">Quién puede confirmar un hedge o aprobar una entidad nueva, con el mismo criterio en toda la organización.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se asignan los permisos de negocio a nivel de grupo — el mismo rol de Treasury Analyst tiene el mismo alcance en cada sociedad, evitando que cada entidad defina sus propias reglas de acceso por separado.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Group Treasury Policy
+                  <ul>
+                    <li class="leaf">Assign Business Roles Group-Wide</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Group-Wide Role Assignment</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Treasury Business Roles — Bike Company Group</p>
+          <table class="sscui-table">
+            <tr><th>Business Role</th><th>Scope</th></tr>
+            <tr><td>Treasury Analyst</td><td>All Company Codes</td></tr>
+            <tr><td>Treasury Manager</td><td>All Company Codes</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="to-t3-note">🔧 → 👤 esto es exactamente lo que le permite a Sofía usar el mismo proceso, sin importar la sociedad, en T3.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Treasury Process Improvements · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

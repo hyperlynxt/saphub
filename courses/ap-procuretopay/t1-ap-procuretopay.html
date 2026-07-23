@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Procure-to-Pay — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t1);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #122A1C 55%, #1B4028 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:640px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(127,191,143,0.14);
+    border-left:4px solid var(--t1);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:640px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t1-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(61,122,82,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{
+    background:var(--t1-pale);
+    border-left:4px solid var(--t1-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  /* FLOW (S1) */
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:900px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{
+    position:absolute; top:20px; right:-21px; width:28px; height:28px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card.navy{ border-top:4px solid var(--cat-fi); }
+  .cmp-card.purple{ border-top:4px solid var(--cat-purchase); }
+  .cmp-card.teal{ border-top:4px solid var(--cat-log); }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .sub-tag{ font-size:0.72rem; color:var(--muted); font-weight:400; font-style:italic; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:8px 0 0; padding-left:18px; }
+  .cmp-card ul li{ font-size:0.82rem; color:var(--body); line-height:1.6; padding:1px 0; }
+
+  /* DOC STATUS badge */
+  .doc-status{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .doc-tag{ display:flex; align-items:center; gap:6px; border-radius:8px; padding:7px 14px; font-size:0.8rem; font-weight:600; }
+  .doc-tag.yes{ background:rgba(0,168,150,0.1); color:#00A896; border:1.5px solid rgba(0,168,150,0.3); }
+  .doc-tag.no{ background:rgba(192,57,43,0.08); color:#C0392B; border:1.5px solid rgba(192,57,43,0.25); }
+
+  /* T-ACCOUNT LAYOUT */
+  .t-account-wrap{ display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+  .t-account{ flex:1; min-width:200px; max-width:280px; }
+  .t-account-title{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; text-align:center; color:var(--ink); margin-bottom:8px; }
+  .t-account-title .sub{ font-size:0.72rem; color:var(--muted); font-weight:400; display:block; }
+  .t-account-body{ border:2px solid var(--border); border-radius:8px; overflow:hidden; }
+  .t-account-header{ display:grid; grid-template-columns:1fr 1fr; }
+  .t-account-col-head{ background:var(--navy-900); color:white; text-align:center; padding:6px 4px; font-size:0.7rem; font-weight:700; letter-spacing:.5px; }
+  .t-account-col-head.debit{ border-right:1px solid rgba(255,255,255,0.15); }
+  .t-account-rows{ display:grid; grid-template-columns:1fr 1fr; }
+  .t-account-cell{ padding:8px 10px; font-size:0.78rem; color:var(--body); line-height:1.4; min-height:40px; }
+  .t-account-cell.debit{ border-right:1px solid var(--border); background:rgba(26,75,140,0.04); }
+  .t-account-cell.credit{ background:rgba(0,168,150,0.04); }
+  .t-account-cell .amount{ font-weight:700; color:var(--ink); font-size:0.85rem; }
+  .t-account-cell .label{ display:block; font-size:0.7rem; color:var(--muted); }
+  .t-account-balance{ display:grid; grid-template-columns:1fr 1fr; border-top:2px solid var(--border); }
+  .t-account-balance .bal{ padding:6px 10px; font-size:0.72rem; font-weight:700; }
+  .t-account-balance .bal.zero{ color:var(--t1-dark); background:var(--t1-pale); }
+  .t-account-balance .bal.debit-side{ color:var(--cat-fi); border-right:1px solid var(--border); }
+  .t-account-balance .bal.credit-side{ color:var(--cat-log); }
+
+  /* 3-WAY MATCH */
+  .match-grid{ display:grid; grid-template-columns:1fr 40px 1fr 40px 1fr; gap:0; align-items:center; min-width:700px; }
+  .match-card{ background:white; border:2px solid var(--border); border-radius:12px; padding:18px 16px; }
+  .match-card.highlighted{ border-color:var(--t1-dark); }
+  .match-card h5{ font-family:'Syne',sans-serif; font-size:0.95rem; margin:0 0 4px; color:var(--ink); }
+  .match-card .match-sub{ font-size:0.72rem; color:var(--muted); margin-bottom:12px; }
+  .match-check{ display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .match-check .check-icon{ font-size:22px; }
+  .match-check .check-label{ font-size:0.65rem; font-weight:600; color:var(--muted); text-align:center; }
+  .match-row{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .match-row .m-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .match-row .m-text{ font-size:0.8rem; color:var(--body); }
+
+  /* LINE ITEMS TABLE */
+  .lineitems{ width:100%; border-collapse:separate; border-spacing:0; font-size:0.85rem; }
+  .lineitems th{ background:var(--navy-900); color:white; padding:9px 14px; text-align:left; font-size:0.7rem; letter-spacing:.4px; text-transform:uppercase; font-weight:600; }
+  .lineitems th:first-child{ border-radius:8px 0 0 0; }
+  .lineitems th:last-child{ border-radius:0 8px 0 0; }
+  .lineitems td{ padding:11px 14px; border-bottom:1px solid var(--border); color:var(--body); vertical-align:middle; }
+  .lineitems tr:last-child td{ border-bottom:none; }
+  .lineitems tr:nth-child(even) td{ background:#FAFBFD; }
+  .lineitems .acct{ font-weight:700; color:var(--ink); }
+  .lineitems .dr{ color:var(--cat-fi); font-weight:700; }
+  .lineitems .cr{ color:var(--cat-log); font-weight:700; }
+  .lineitems .note{ font-size:0.75rem; color:var(--muted); display:block; }
+
+  /* DOCUMENT CHAIN */
+  .docchain{ display:flex; align-items:stretch; gap:0; min-width:900px; overflow-x:auto; }
+  .docchain-step{ display:flex; flex-direction:column; align-items:center; flex:1; }
+  .docchain-box{ border-radius:10px; padding:14px 12px; text-align:center; color:white; width:100%; }
+  .docchain-label{ font-family:'Syne',sans-serif; font-weight:700; font-size:11px; display:block; }
+  .docchain-sub{ font-size:9px; font-weight:400; color:rgba(255,255,255,0.7); display:block; margin-top:3px; }
+  .docchain-arrow{ display:flex; align-items:center; padding:0 6px; font-size:18px; color:#94A3B8; flex-shrink:0; }
+  .docchain-below{ margin-top:10px; width:100%; }
+  .docchain-doc{ background:var(--bg); border:1.5px solid var(--border); border-radius:8px; padding:8px 10px; margin-top:6px; text-align:center; }
+  .docchain-doc .dtype{ font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; }
+  .docchain-doc .dname{ font-size:9px; color:var(--muted); display:block; margin-top:2px; }
+
+  /* APPS GRID */
+  .apps-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:24px; }
+  .app-card{ background:white; border:1.5px solid var(--border); border-radius:12px; padding:18px 16px; text-align:center; }
+  .app-card .app-icon{ font-size:28px; display:block; margin-bottom:8px; }
+  .app-card h5{ font-family:'Syne',sans-serif; font-size:0.88rem; margin:0 0 2px; color:var(--ink); }
+  .app-card .app-sub{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-bottom:8px; }
+  .app-card p{ margin:0; font-size:0.77rem; color:var(--body); line-height:1.5; }
+
+  /* CYCLE VISUAL (S2) */
+  .cycle-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .cycle-item{ border-radius:10px; padding:14px 12px; color:white; text-align:center; }
+  .cycle-item .c-num{ font-family:'JetBrains Mono',monospace; font-size:0.7rem; opacity:0.7; display:block; margin-bottom:4px; }
+  .cycle-item .c-title{ font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:700; display:block; }
+  .cycle-item .c-sub{ font-size:0.68rem; color:rgba(255,255,255,0.72); display:block; margin-top:3px; }
+  .cycle-item.dim{ opacity:0.5; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">P2P Process</a>
+  <a href="#s2">Source to Pay Context</a>
+  <a href="#s3">MM + FI Integration</a>
+  <a href="#s4">Purchase Order</a>
+  <a href="#s5">Goods Receipt</a>
+  <a href="#s6">GR/IR Account</a>
+  <a href="#s7">Three-Step Verification</a>
+  <a href="#s8">Invoice Verification</a>
+  <a href="#s9">Payment Processing</a>
+  <a href="#s10">Document Flow &amp; Apps</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1>Procure-<span class="accent">to-Pay</span></h1>
+    <h2>Del Pedido al Pago</h2>
+    <p class="desc">Fundamentos teóricos del proceso Procure-to-Pay en SAP: cómo se integran Logística (MM) y Finanzas (FI-AP), qué documentos genera cada etapa, y cómo la cuenta GR/IR actúa como mecanismo de control entre la recepción de mercancías y la verificación de facturas.</p>
+    <div class="hlbox">Resumen Visual — <b>Procure-to-Pay (AP + MM)</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — P2P PROCESS FLOW -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Procure-to-Pay Process</span>
+          <span class="sec-title-es">El proceso de compra al pago</span>
+        </div>
+        <div class="sec-desc">Las cinco etapas que integran la cadena de aprovisionamiento con la contabilidad financiera.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es P2P?</strong> El proceso <strong>Procure-to-Pay</strong> comienza con una solicitud de compra y termina con el <strong>pago final al proveedor</strong>. Integra los módulos <strong>Materials Management (MM)</strong> y <strong>Financial Accounting (FI-AP)</strong> para garantizar un flujo ininterrumpido de aprovisionamiento. El foco del curso está en la etapa de <strong>procesamiento de facturas</strong>, donde FI-AP asume el protagonismo.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">📋</span>
+            <span class="title-en">Demand Determination</span>
+            <span class="title-es">Determinación de demanda</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>El departamento solicita bienes o servicios</li>
+            <li>Se evalúan fuentes de aprovisionamiento disponibles</li>
+            <li>Se identifica un proveedor adecuado</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">📄</span>
+            <span class="title-en">Purchase Order</span>
+            <span class="title-es">Orden de compra</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>El comprador crea la Purchase Order (PO)</li>
+            <li>Solo genera un documento en <strong>MM/Logística</strong></li>
+            <li>No genera documento financiero (FI)</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">📦</span>
+            <span class="title-en">Goods Receipt</span>
+            <span class="title-es">Recepción de mercancías</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>El proveedor entrega; se registra la entrada</li>
+            <li>Genera doc. de materiales (MM) <strong>+ doc. FI</strong></li>
+            <li>Impacto contable: inventario deudor / GR/IR acreedor</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🧾</span>
+            <span class="title-en">Invoice Verification</span>
+            <span class="title-es">Verificación de facturas</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Se recibe y registra la factura del proveedor</li>
+            <li>Genera documento FI (impacto AP)</li>
+            <li>El sistema verifica cantidad (GR) y precio (PO)</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">💳</span>
+            <span class="title-en">Payment Processing</span>
+            <span class="title-es">Procesamiento de pagos</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>No hay diferencias ni bloqueo de pago</li>
+            <li>El programa de pagos ejecuta el pago al proveedor</li>
+            <li>Se cancela la cuenta del proveedor (AP subledger)</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — SOURCE TO PAY CONTEXT -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Source to Pay — Broader Context</span>
+          <span class="sec-title-es">El ciclo completo Source to Pay</span>
+        </div>
+        <div class="sec-desc">Cómo el proceso P2P se inserta dentro del ciclo más amplio Source to Pay.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Ciclo más amplio:</strong> El Procure-to-Pay forma parte del proceso <strong>Source to Pay (S2P)</strong>, que cubre desde la determinación de la demanda hasta el pago final. Este ciclo completo incluye 8 etapas. El curso y el rol de <strong>AP (Cuentas por Pagar)</strong> se concentran en las últimas tres: recepción, verificación y pago — donde los <strong>documentos financieros (FI)</strong> tienen su impacto.
+    </div>
+    <div class="visual-wrap">
+      <div class="cycle-grid">
+        <div class="cycle-item dim" style="background:#7E4FBF;">
+          <span class="c-num">01</span>
+          <span class="c-title">Demand Determination</span>
+          <span class="c-sub">Determinación de demanda</span>
+        </div>
+        <div class="cycle-item dim" style="background:#7E4FBF;">
+          <span class="c-num">02</span>
+          <span class="c-title">Source of Supply</span>
+          <span class="c-sub">Fuente de aprovisionamiento</span>
+        </div>
+        <div class="cycle-item dim" style="background:#7E4FBF;">
+          <span class="c-num">03</span>
+          <span class="c-title">Supplier Selection</span>
+          <span class="c-sub">Selección de proveedor</span>
+        </div>
+        <div class="cycle-item dim" style="background:#7E4FBF;">
+          <span class="c-num">04</span>
+          <span class="c-title">PO Handling</span>
+          <span class="c-sub">Gestión de orden de compra</span>
+        </div>
+        <div class="cycle-item dim" style="background:#7E4FBF;">
+          <span class="c-num">05</span>
+          <span class="c-title">PO Monitoring</span>
+          <span class="c-sub">Seguimiento de la orden</span>
+        </div>
+        <div class="cycle-item" style="background:#00A896;">
+          <span class="c-num">06 ★ FI</span>
+          <span class="c-title">Goods Receipt</span>
+          <span class="c-sub">Recepción + doc. contable</span>
+        </div>
+        <div class="cycle-item" style="background:#1A4B8C;">
+          <span class="c-num">07 ★ AP</span>
+          <span class="c-title">Invoice Verification</span>
+          <span class="c-sub">Verificación + contabilización</span>
+        </div>
+        <div class="cycle-item" style="background:#1A4B8C;">
+          <span class="c-num">08 ★ AP</span>
+          <span class="c-title">Payment Processing</span>
+          <span class="c-sub">Programa de pagos</span>
+        </div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--muted);margin:16px 0 0;text-align:center;">★ Etapas con impacto en <strong>FI / Accounts Payable</strong>. Las primeras 5 son competencia de Logística (MM). Las sombreadas no generan documento financiero.</p>
+    </div>
+  </section>
+
+  <!-- S3 — MM + FI INTEGRATION -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">MM + FI Integration Architecture</span>
+          <span class="sec-title-es">Arquitectura de integración MM y FI</span>
+        </div>
+        <div class="sec-desc">Cómo los dos módulos trabajan en paralelo y qué genera cada uno en el proceso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Dos módulos, un proceso:</strong> el P2P requiere que <strong>Materials Management (MM)</strong> y <strong>Financial Accounting (FI)</strong> trabajen en tándem. MM gestiona la parte logística (órdenes, recepción de materiales), mientras que FI registra el <strong>impacto económico</strong> mediante documentos contables. Una misma transacción de negocio —como una recepción de mercancías— puede generar documentos en <strong>ambos módulos simultáneamente</strong>.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+          </marker>
+        </defs>
+
+        <!-- MM Column -->
+        <rect x="30" y="20" width="340" height="240" rx="12" fill="rgba(126,79,191,0.06)" stroke="#7E4FBF" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="200" y="48" text-anchor="middle" fill="#7E4FBF" font-family="Syne" font-weight="700" font-size="13">📦 Materials Management (MM)</text>
+        <text x="200" y="64" text-anchor="middle" fill="#7E4FBF" font-family="Inter" font-size="10" opacity="0.8">Logística / Purchasing</text>
+
+        <rect x="60" y="80" width="280" height="50" rx="8" fill="#7E4FBF"/>
+        <text x="200" y="102" text-anchor="middle" fill="white" font-family="Inter" font-weight="600" font-size="12">Purchase Order (PO)</text>
+        <text x="200" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="10">Doc. logístico · sin impacto FI</text>
+
+        <rect x="60" y="155" width="280" height="50" rx="8" fill="#00A896"/>
+        <text x="200" y="177" text-anchor="middle" fill="white" font-family="Inter" font-weight="600" font-size="12">Materials Document</text>
+        <text x="200" y="193" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="10">Generado en GR · actualiza historial PO</text>
+
+        <!-- FI Column -->
+        <rect x="530" y="20" width="340" height="240" rx="12" fill="rgba(26,75,140,0.06)" stroke="#1A4B8C" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="700" y="48" text-anchor="middle" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="13">📒 Financial Accounting (FI-AP)</text>
+        <text x="700" y="64" text-anchor="middle" fill="#1A4B8C" font-family="Inter" font-size="10" opacity="0.8">Finanzas / Accounts Payable</text>
+
+        <rect x="560" y="80" width="280" height="50" rx="8" fill="#1A4B8C"/>
+        <text x="700" y="102" text-anchor="middle" fill="white" font-family="Inter" font-weight="600" font-size="12">FI Document — Goods Receipt</text>
+        <text x="700" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="10">Inventario Dr · GR/IR Cr</text>
+
+        <rect x="560" y="155" width="280" height="50" rx="8" fill="#1A4B8C"/>
+        <text x="700" y="177" text-anchor="middle" fill="white" font-family="Inter" font-weight="600" font-size="12">FI Document — Invoice</text>
+        <text x="700" y="193" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="10">GR/IR Dr · Proveedor Cr · Impuesto Cr</text>
+
+        <!-- Center connector -->
+        <rect x="388" y="108" width="124" height="30" rx="8" fill="#0A0F1C"/>
+        <text x="450" y="126" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Goods Receipt</text>
+
+        <line x1="370" y1="123" x2="388" y2="123" stroke="#3D7A52" stroke-width="2" marker-end="url(#arr1)"/>
+        <line x1="512" y1="123" x2="530" y2="123" stroke="#3D7A52" stroke-width="2" marker-end="url(#arr1)"/>
+
+        <rect x="388" y="175" width="124" height="30" rx="8" fill="#0A0F1C"/>
+        <text x="450" y="193" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Invoice Verif.</text>
+
+        <line x1="540" y1="190" x2="530" y2="190" stroke="#3D7A52" stroke-width="2" marker-end="url(#arr1)"/>
+
+        <text x="450" y="265" text-anchor="middle" fill="#64748B" font-size="10">Evento de negocio → genera doc. simultáneos en MM y/o FI</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- S4 — PURCHASE ORDER -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Purchase Order — Logistic Step, No FI Impact</span>
+          <span class="sec-title-es">Orden de compra — solo logística</span>
+        </div>
+        <div class="sec-desc">El primer documento del ciclo: qué contiene y por qué no genera asiento contable.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La PO es un compromiso, no una transacción financiera:</strong> cuando el departamento de compras crea una <strong>Purchase Order (Orden de Compra)</strong>, el sistema registra un documento <strong>exclusivamente en MM/Logística</strong>. No se genera ningún documento de <strong>Financial Accounting (FI)</strong>, porque aún no hubo entrega de bienes ni obligación económica exigible. La PO sirve de referencia para los pasos posteriores.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card purple">
+          <h4>📄 Purchase Order <span class="sub-tag">· Orden de Compra</span></h4>
+          <p>Documento creado por el <strong>departamento de compras</strong> con los parámetros del pedido: proveedor, material, cantidad y precio acordado. Es la base de referencia para la verificación posterior.</p>
+          <ul>
+            <li>Proveedor seleccionado</li>
+            <li>Cantidad y precio acordados</li>
+            <li>Condiciones y fecha de entrega</li>
+            <li>Historial de la PO se actualiza en cada etapa siguiente</li>
+          </ul>
+          <div class="doc-status">
+            <span class="doc-tag yes">✔ Materials Document (MM)</span>
+            <span class="doc-tag no">✘ Finance Document (FI)</span>
+          </div>
+        </div>
+        <div class="cmp-card neutral">
+          <h4>🔍 ¿Por qué no hay doc. FI? <span class="sub-tag">· Concepto clave</span></h4>
+          <p>Un documento financiero solo se genera cuando existe un <strong>hecho económico registrable</strong>: la entrega de bienes (Goods Receipt) o la obligación legal frente al proveedor (Invoice). La simple existencia de una orden de compra no transfiere valor ni crea obligación contable — es un compromiso interno del área de compras.</p>
+          <p style="margin-top:10px;">La PO actúa como <strong>referencia de precio y cantidad</strong> que el sistema usa automáticamente al verificar la factura en el paso de Invoice Verification.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — GOODS RECEIPT -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Goods Receipt — Dual Document Creation</span>
+          <span class="sec-title-es">Recepción de mercancías — dos documentos simultáneos</span>
+        </div>
+        <div class="sec-desc">El primer paso que impacta en Financial Accounting: qué registra cada documento.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El GR es el punto de cruce entre logística y finanzas:</strong> cuando se registra la recepción de mercancías con referencia a la PO, SAP genera <strong>dos documentos simultáneos</strong>: un <strong>Materials Document</strong> en MM (que actualiza el stock o la cuenta de consumo) y un <strong>Finance Document</strong> en FI (que impacta en el Libro Mayor). Las partidas del documento FI son: <strong>Material / Inventario en el debe</strong> y la cuenta <strong>GR/IR en el haber</strong>.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+          </marker>
+        </defs>
+
+        <!-- PO reference -->
+        <rect x="30" y="110" width="160" height="80" rx="10" fill="#7E4FBF"/>
+        <text x="110" y="142" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="13">Purchase Order</text>
+        <text x="110" y="158" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">con referencia a PO</text>
+        <text x="110" y="179" text-anchor="middle" fill="#DDD4F7" font-family="Inter" font-size="9">cantidad · precio · proveedor</text>
+
+        <!-- arrow to GR trigger -->
+        <line x1="190" y1="150" x2="240" y2="150" stroke="#3D7A52" stroke-width="2.5" marker-end="url(#a5)"/>
+
+        <!-- GR trigger center -->
+        <rect x="240" y="118" width="160" height="64" rx="10" fill="#0A0F1C"/>
+        <text x="320" y="144" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Goods Receipt</text>
+        <text x="320" y="162" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Registro de la entrega</text>
+
+        <!-- two arrows to documents -->
+        <line x1="400" y1="138" x2="460" y2="100" stroke="#3D7A52" stroke-width="2" marker-end="url(#a5)"/>
+        <line x1="400" y1="162" x2="460" y2="205" stroke="#3D7A52" stroke-width="2" marker-end="url(#a5)"/>
+
+        <!-- Materials Document -->
+        <rect x="460" y="50" width="210" height="80" rx="10" fill="#00A896"/>
+        <text x="565" y="79" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Materials Document</text>
+        <text x="565" y="97" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">MM · Logistics</text>
+        <text x="565" y="116" text-anchor="middle" fill="#C8F0E6" font-family="Inter" font-size="9">actualiza historial de PO</text>
+
+        <!-- FI Document -->
+        <rect x="460" y="160" width="210" height="90" rx="10" fill="#1A4B8C"/>
+        <text x="565" y="186" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Finance Document</text>
+        <text x="565" y="203" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">FI · Accounts Payable</text>
+        <text x="565" y="221" text-anchor="middle" fill="#B8D4F0" font-family="Inter" font-size="9">Inventario / Material Dr</text>
+        <text x="565" y="238" text-anchor="middle" fill="#B8D4F0" font-family="Inter" font-size="9">GR/IR Cr</text>
+
+        <!-- T-accounts on right -->
+        <text x="720" y="40" text-anchor="middle" fill="#64748B" font-family="Syne" font-weight="700" font-size="11">T-Accounts</text>
+
+        <!-- Inventory T-acc -->
+        <rect x="680" y="50" width="180" height="58" rx="8" fill="white" stroke="#E3E7EE" stroke-width="1.5"/>
+        <text x="770" y="68" text-anchor="middle" fill="#1A4B8C" font-family="Inter" font-weight="700" font-size="10">Material / Inventory</text>
+        <line x1="770" y1="72" x2="770" y2="106" stroke="#E3E7EE" stroke-width="1.5"/>
+        <text x="720" y="88" text-anchor="middle" fill="#1A4B8C" font-family="Inter" font-weight="600" font-size="10">Dr ➜ 1</text>
+        <text x="820" y="88" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="9">—</text>
+
+        <!-- GR/IR T-acc -->
+        <rect x="680" y="120" width="180" height="58" rx="8" fill="white" stroke="#E3E7EE" stroke-width="1.5"/>
+        <text x="770" y="138" text-anchor="middle" fill="#00A896" font-family="Inter" font-weight="700" font-size="10">GR/IR Account</text>
+        <line x1="770" y1="142" x2="770" y2="176" stroke="#E3E7EE" stroke-width="1.5"/>
+        <text x="720" y="158" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="9">—</text>
+        <text x="820" y="158" text-anchor="middle" fill="#00A896" font-family="Inter" font-weight="600" font-size="10">Cr ➜ 1</text>
+
+        <text x="450" y="280" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">El número 1 en los T-accounts representa la entrada del GR en la cuenta</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- S6 — GR/IR CLEARING ACCOUNT -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">GR/IR Clearing Account</span>
+          <span class="sec-title-es">Cuenta de compensación GR/IR</span>
+        </div>
+        <div class="sec-desc">El instrumento de control que reconcilia las entregas con las facturas recibidas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La cuenta GR/IR es el puente entre logística y finanzas:</strong> "GR/IR" significa <strong>Goods Receipt / Invoice Receipt</strong>. Es la cuenta del Libro Mayor (GL) que registra la diferencia temporal entre la recepción de bienes y la recepción de la factura. Idealmente debe mantenerse en <strong>saldo cero</strong>, porque cada entrada de GR debería compensarse con una factura correspondiente. Si hay saldo, indica discrepancias en el proceso.
+    </div>
+    <div class="visual-wrap">
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; min-width:640px;">
+
+        <!-- State 1: After GR -->
+        <div>
+          <div style="text-align:center;font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--ink);margin-bottom:6px;">
+            Después del Goods Receipt
+          </div>
+          <div class="t-account-body">
+            <div class="t-account-header">
+              <div class="t-account-col-head debit">DEBE</div>
+              <div class="t-account-col-head">HABER</div>
+            </div>
+            <div class="t-account-rows">
+              <div class="t-account-cell debit" style="color:var(--muted);font-size:0.75rem;">—</div>
+              <div class="t-account-cell credit">
+                <span class="amount" style="color:var(--cat-log);">GR</span>
+                <span class="label">Bienes recibidos</span>
+              </div>
+            </div>
+            <div class="t-account-balance">
+              <div class="bal debit-side">Saldo: Cr</div>
+              <div class="bal credit-side" style="font-size:0.68rem;color:var(--muted);">Obligación pendiente</div>
+            </div>
+          </div>
+          <p style="font-size:0.75rem;color:var(--muted);margin-top:8px;text-align:center;">La cuenta está en haber — hay una entrega sin factura.</p>
+        </div>
+
+        <!-- State 2: After Invoice -->
+        <div>
+          <div style="text-align:center;font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--ink);margin-bottom:6px;">
+            Después de la Factura
+          </div>
+          <div class="t-account-body">
+            <div class="t-account-header">
+              <div class="t-account-col-head debit">DEBE</div>
+              <div class="t-account-col-head">HABER</div>
+            </div>
+            <div class="t-account-rows">
+              <div class="t-account-cell debit">
+                <span class="amount" style="color:var(--cat-fi);">INV</span>
+                <span class="label">Verificación factura</span>
+              </div>
+              <div class="t-account-cell credit">
+                <span class="amount" style="color:var(--cat-log);">GR</span>
+                <span class="label">Bienes recibidos</span>
+              </div>
+            </div>
+            <div class="t-account-balance">
+              <div class="bal zero" style="grid-column:1/-1;text-align:center;border-right:none;">✔ Saldo = 0 (ideal)</div>
+            </div>
+          </div>
+          <p style="font-size:0.75rem;color:var(--muted);margin-top:8px;text-align:center;">GR y factura se compensan — proceso completo.</p>
+        </div>
+
+        <!-- State 3: Discrepancy -->
+        <div>
+          <div style="text-align:center;font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--ink);margin-bottom:6px;">
+            Con Discrepancia
+          </div>
+          <div class="t-account-body">
+            <div class="t-account-header">
+              <div class="t-account-col-head debit">DEBE</div>
+              <div class="t-account-col-head">HABER</div>
+            </div>
+            <div class="t-account-rows">
+              <div class="t-account-cell debit">
+                <span class="amount" style="color:var(--cat-fi);">INV parcial</span>
+                <span class="label">Factura recibida</span>
+              </div>
+              <div class="t-account-cell credit">
+                <span class="amount" style="color:var(--cat-log);">GR completo</span>
+                <span class="label">Bienes recibidos</span>
+              </div>
+            </div>
+            <div class="t-account-balance">
+              <div class="bal debit-side" style="border-right:1px solid var(--border);">—</div>
+              <div class="bal credit-side" style="color:var(--cat-alert);font-size:0.68rem;">⚠ Saldo Cr abierto</div>
+            </div>
+          </div>
+          <p style="font-size:0.75rem;color:var(--muted);margin-top:8px;text-align:center;">Factura faltante o diferencia de cantidad — requiere acción.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — THREE-STEP VERIFICATION -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Three-Step Verification</span>
+          <span class="sec-title-es">Verificación en tres pasos</span>
+        </div>
+        <div class="sec-desc">El proceso de comparación cruzada entre PO, GR y factura antes de aprobar el pago.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Verificación en tres pasos (3-way match):</strong> antes de aprobar una factura, el sistema compara tres documentos para asegurar consistencia: la <strong>Purchase Order</strong> (precio y condiciones pactadas), el <strong>Goods Receipt</strong> (cantidad realmente entregada) y la <strong>Supplier Invoice</strong> (cantidad y precio facturado). El <strong>Paso 2</strong> verifica cantidad; el <strong>Paso 3</strong> verifica precio. Solo si ambos coinciden el pago puede procesarse sin bloqueo.
+    </div>
+    <div class="visual-wrap">
+      <div class="match-grid">
+        <div class="match-card highlighted">
+          <h5>📄 Purchase Order</h5>
+          <div class="match-sub">Paso 1 · Referencia</div>
+          <div class="match-row"><div class="m-dot" style="background:#7E4FBF;"></div><div class="m-text">Proveedor y material acordados</div></div>
+          <div class="match-row"><div class="m-dot" style="background:#7E4FBF;"></div><div class="m-text"><strong>Precio</strong> pactado por unidad</div></div>
+          <div class="match-row"><div class="m-dot" style="background:#7E4FBF;"></div><div class="m-text"><strong>Cantidad</strong> ordenada</div></div>
+          <div class="match-row"><div class="m-dot" style="background:#7E4FBF;"></div><div class="m-text">Doc. logístico (MM) — sin doc. FI</div></div>
+        </div>
+        <div class="match-check">
+          <div class="check-icon">🔄</div>
+          <div class="check-label">Paso 2<br/>Verifica<br/>CANTIDAD</div>
+        </div>
+        <div class="match-card highlighted">
+          <h5>📦 Goods Receipt</h5>
+          <div class="match-sub">Paso 2 · Cantidad entregada</div>
+          <div class="match-row"><div class="m-dot" style="background:#00A896;"></div><div class="m-text">Actualiza historial de la PO</div></div>
+          <div class="match-row"><div class="m-dot" style="background:#00A896;"></div><div class="m-text"><strong>¿Cantidad entregada = cantidad PO?</strong></div></div>
+          <div class="match-row"><div class="m-dot" style="background:#00A896;"></div><div class="m-text">Doc. logístico (MM) + doc. FI (GL)</div></div>
+          <div class="match-row"><div class="m-dot" style="background:#00A896;"></div><div class="m-text">GR/IR acreditado en GL</div></div>
+        </div>
+        <div class="match-check">
+          <div class="check-icon">💲</div>
+          <div class="check-label">Paso 3<br/>Verifica<br/>PRECIO</div>
+        </div>
+        <div class="match-card highlighted">
+          <h5>🧾 Supplier Invoice</h5>
+          <div class="match-sub">Paso 3 · Precio facturado</div>
+          <div class="match-row"><div class="m-dot" style="background:#1A4B8C;"></div><div class="m-text">El contador de AP ingresa la factura</div></div>
+          <div class="match-row"><div class="m-dot" style="background:#1A4B8C;"></div><div class="m-text"><strong>¿Precio facturado = precio PO?</strong></div></div>
+          <div class="match-row"><div class="m-dot" style="background:#1A4B8C;"></div><div class="m-text">Sistema toma precio de la PO automáticamente</div></div>
+          <div class="match-row"><div class="m-dot" style="background:#1A4B8C;"></div><div class="m-text">Doc. FI: GR/IR Dr · Proveedor Cr</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — INVOICE VERIFICATION -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Invoice Verification — FI Document</span>
+          <span class="sec-title-es">Verificación de facturas — documento contable</span>
+        </div>
+        <div class="sec-desc">Qué genera la contabilización de la factura del proveedor con referencia a la PO.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La factura cierra el ciclo contable:</strong> al registrar la factura del proveedor con referencia a la PO, el sistema genera automáticamente un <strong>documento de FI</strong>. Las partidas contables son: la cuenta <strong>GR/IR en el debe</strong> (compensando lo acreditado en el Goods Receipt), la cuenta del <strong>proveedor (AP) en el haber</strong> (creando la obligación de pago) y, si aplica, la cuenta de <strong>impuestos en el haber</strong>. El sistema verifica precio e importe automáticamente.
+    </div>
+    <div class="visual-wrap">
+      <table class="lineitems">
+        <thead>
+          <tr>
+            <th>Cuenta GL</th>
+            <th>Tipo</th>
+            <th>Debe / Haber</th>
+            <th>Lógica del asiento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="acct">GR/IR Account</span><span class="note">Goods Receipt / Invoice Receipt</span></td>
+            <td><span style="background:rgba(0,168,150,0.1);color:#00A896;border:1px solid rgba(0,168,150,0.3);border-radius:6px;padding:3px 10px;font-size:0.72rem;font-weight:600;">GL Account</span></td>
+            <td><span class="dr">DEBE ➜</span></td>
+            <td>Compensa el haber registrado al recibir la mercancía (GR). Cierra la posición abierta en la cuenta de tránsito.</td>
+          </tr>
+          <tr>
+            <td><span class="acct">Vendor Account</span><span class="note">Cuenta del proveedor (AP Sub-Ledger)</span></td>
+            <td><span style="background:rgba(26,75,140,0.08);color:#1A4B8C;border:1px solid rgba(26,75,140,0.2);border-radius:6px;padding:3px 10px;font-size:0.72rem;font-weight:600;">AP Subledger</span></td>
+            <td><span class="cr">⬅ HABER</span></td>
+            <td>Registra la obligación de pago frente al proveedor. Actualiza el sub-libro de Cuentas por Pagar.</td>
+          </tr>
+          <tr>
+            <td><span class="acct">Tax Account</span><span class="note">Cuenta de impuesto (donde aplique)</span></td>
+            <td><span style="background:rgba(201,147,46,0.09);color:#C9932E;border:1px solid rgba(201,147,46,0.3);border-radius:6px;padding:3px 10px;font-size:0.72rem;font-weight:600;">GL Account</span></td>
+            <td><span class="cr">⬅ HABER</span></td>
+            <td>Recoge el IVA / impuesto indirecto de la factura. Cálculo automático al contabilizar o al simular.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:14px;background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:12px 16px;font-size:0.82rem;color:var(--ink);">
+        💡 El sistema extrae el <strong>precio de la PO</strong> automáticamente al contabilizar la factura. El contador de AP ingresa los datos de cabecera y el importe; SAP verifica si coincide con la PO y el GR.
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PAYMENT PROCESSING -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Processing</span>
+          <span class="sec-title-es">Procesamiento de pagos</span>
+        </div>
+        <div class="sec-desc">La etapa final del ciclo: cómo el programa de pagos cancela la obligación con el proveedor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El programa de pagos cierra el ciclo:</strong> una vez verificada y contabilizada la factura sin diferencias ni <strong>bloqueo de pago</strong>, el programa de pagos automático de SAP ejecuta el pago al proveedor. El documento de pago <strong>cancela (compensa) la partida abierta</strong> en la cuenta del proveedor en el sub-libro de AP, y registra la salida de fondos en la cuenta bancaria de la sociedad.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+          </marker>
+        </defs>
+
+        <rect x="20" y="60" width="170" height="80" rx="10" fill="#1A4B8C"/>
+        <text x="105" y="92" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Supplier Invoice</text>
+        <text x="105" y="110" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Contabilizada · Partida abierta</text>
+        <text x="105" y="125" text-anchor="middle" fill="#B8D4F0" font-family="Inter" font-size="9">Proveedor Cr (AP subledger)</text>
+
+        <line x1="190" y1="100" x2="230" y2="100" stroke="#3D7A52" stroke-width="2.5" marker-end="url(#a9)"/>
+
+        <rect x="230" y="60" width="180" height="80" rx="10" fill="#0A0F1C"/>
+        <text x="320" y="89" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">Payment Program</text>
+        <text x="320" y="107" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Sin diferencias · Sin payment block</text>
+        <text x="320" y="123" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-family="Inter" font-size="9">Programa de pagos automático</text>
+
+        <line x1="410" y1="100" x2="450" y2="100" stroke="#3D7A52" stroke-width="2.5" marker-end="url(#a9)"/>
+
+        <rect x="450" y="40" width="200" height="60" rx="10" fill="#00A896"/>
+        <text x="550" y="65" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Outgoing Payment</text>
+        <text x="550" y="83" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Vendor Dr · Bank Cr</text>
+
+        <rect x="450" y="120" width="200" height="60" rx="10" fill="#1A6B99"/>
+        <text x="550" y="145" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Clearing Entry</text>
+        <text x="550" y="163" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Partida abierta → compensada</text>
+
+        <line x1="650" y1="70" x2="700" y2="70" stroke="#3D7A52" stroke-width="2" marker-end="url(#a9)"/>
+        <line x1="650" y1="150" x2="700" y2="130" stroke="#3D7A52" stroke-width="2" marker-end="url(#a9)"/>
+
+        <rect x="700" y="55" width="180" height="90" rx="10" fill="#3D7A52"/>
+        <text x="790" y="82" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">✔ Ciclo P2P</text>
+        <text x="790" y="100" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="10">Completo</text>
+        <text x="790" y="118" text-anchor="middle" fill="#C8F0E6" font-family="Inter" font-size="9">Proveedor pagado · AP = 0</text>
+
+      </svg>
+    </div>
+  </section>
+
+  <!-- S10 — DOCUMENT FLOW & APPS -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Document Flow &amp; Monitoring Apps</span>
+          <span class="sec-title-es">Flujo de documentos y herramientas de seguimiento</span>
+        </div>
+        <div class="sec-desc">La cadena completa de documentos del ciclo y las apps Fiori para trazabilidad.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Trazabilidad integrada:</strong> el proceso P2P genera una <strong>cadena de documentos interconectados</strong> que arranca en la PO y termina en el asiento de pago. SAP permite navegar este flujo completo mediante apps Fiori especializadas. Esto permite al <strong>contador de AP</strong> comprender de dónde vienen los documentos que contabiliza, sin necesidad de crear manualmente las etapas logísticas.
+    </div>
+    <div class="visual-wrap">
+      <!-- Document Chain -->
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:.4px;font-size:0.72rem;">Cadena de documentos del ciclo P2P</div>
+      <div style="display:flex;align-items:center;gap:6px;min-width:860px;overflow-x:auto;padding-bottom:8px;">
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+          <div style="background:#7E4FBF;border-radius:8px;padding:10px 8px;text-align:center;color:white;width:100%;">
+            <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:10.5px;display:block;">Purchase Order</span>
+            <span style="font-size:8.5px;color:rgba(255,255,255,0.7);display:block;margin-top:2px;">MM · Solo logística</span>
+          </div>
+          <div style="margin-top:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;text-align:center;width:100%;">
+            <span style="font-size:9px;font-weight:700;color:var(--cat-purchase);">MM DOC</span>
+            <span style="font-size:8px;color:var(--muted);display:block;">sin doc. FI</span>
+          </div>
+        </div>
+
+        <div style="font-size:18px;color:#94A3B8;flex-shrink:0;">›</div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1.2;">
+          <div style="background:#00A896;border-radius:8px;padding:10px 8px;text-align:center;color:white;width:100%;">
+            <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:10.5px;display:block;">Goods Receipt</span>
+            <span style="font-size:8.5px;color:rgba(255,255,255,0.7);display:block;margin-top:2px;">MM + FI · Doble doc.</span>
+          </div>
+          <div style="margin-top:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;text-align:center;width:100%;">
+            <span style="font-size:9px;font-weight:700;color:var(--cat-log);">MM DOC + FI DOC</span>
+            <span style="font-size:8px;color:var(--muted);display:block;">Inv Dr · GR/IR Cr</span>
+          </div>
+        </div>
+
+        <div style="font-size:18px;color:#94A3B8;flex-shrink:0;">›</div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1.2;">
+          <div style="background:#1A4B8C;border-radius:8px;padding:10px 8px;text-align:center;color:white;width:100%;">
+            <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:10.5px;display:block;">Invoice Verification</span>
+            <span style="font-size:8.5px;color:rgba(255,255,255,0.7);display:block;margin-top:2px;">FI · Documento contable</span>
+          </div>
+          <div style="margin-top:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;text-align:center;width:100%;">
+            <span style="font-size:9px;font-weight:700;color:var(--cat-fi);">FI DOC (IV)</span>
+            <span style="font-size:8px;color:var(--muted);display:block;">GR/IR Dr · Vendor Cr</span>
+          </div>
+        </div>
+
+        <div style="font-size:18px;color:#94A3B8;flex-shrink:0;">›</div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+          <div style="background:#3D7A52;border-radius:8px;padding:10px 8px;text-align:center;color:white;width:100%;">
+            <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:10.5px;display:block;">Payment</span>
+            <span style="font-size:8.5px;color:rgba(255,255,255,0.7);display:block;margin-top:2px;">FI · Cancelación</span>
+          </div>
+          <div style="margin-top:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;text-align:center;width:100%;">
+            <span style="font-size:9px;font-weight:700;color:var(--t1-dark);">FI DOC (PAY)</span>
+            <span style="font-size:8px;color:var(--muted);display:block;">Vendor Dr · Bank Cr</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Apps -->
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.72rem;color:var(--muted);margin:28px 0 12px;text-transform:uppercase;letter-spacing:.4px;">Fiori apps para monitoreo y trazabilidad</div>
+      <div class="apps-grid">
+        <div class="app-card">
+          <span class="app-icon">🔗</span>
+          <h5>Display Document Flow</h5>
+          <span class="app-sub">Flujo de documentos</span>
+          <p>Muestra todos los documentos y asientos de diario relacionados con una transacción de negocio. Permite seguir las flechas que conectan cada documento del ciclo.</p>
+        </div>
+        <div class="app-card">
+          <span class="app-icon">📊</span>
+          <h5>Display T-Account</h5>
+          <span class="app-sub">Visualización de cuentas T</span>
+          <p>Permite explorar el impacto de un flujo de documentos en cuentas del GL. Cada cuenta se muestra como una cuenta T con partidas deudoras a la izquierda y acreedoras a la derecha.</p>
+        </div>
+        <div class="app-card">
+          <span class="app-icon">🖥️</span>
+          <h5>Display Process Flow — AP</h5>
+          <span class="app-sub">Flujo de proceso · Accounts Payable</span>
+          <p>Muestra las relaciones entre documentos de AP: órdenes de compra, movimientos de mercancías, facturas de proveedor, asientos de diario y partidas de compensación.</p>
+        </div>
+        <div class="app-card">
+          <span class="app-icon">📋</span>
+          <h5>My Purchasing Document Items — Professional</h5>
+          <span class="app-sub">Mis documentos de compras</span>
+          <p>Vista consolidada de los ítems de documentos de compras por proveedor: solicitudes, órdenes, recepciones y facturas. Permite monitorear el ciclo completo por proveedor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Procure-to-Pay (P2P)</div><div class="term-es">Del pedido al pago</div><div class="term-def">Proceso integrado que va desde la requisición de compra hasta el pago al proveedor, combinando los módulos MM y FI-AP.</div></div>
+      <div class="gcard"><div class="term-en">Source to Pay (S2P)</div><div class="term-es">De la fuente al pago</div><div class="term-def">Proceso más amplio que incluye P2P; abarca también la determinación de demanda, selección de proveedor y gestión del pedido desde su origen.</div></div>
+      <div class="gcard"><div class="term-en">Purchase Order (PO)</div><div class="term-es">Orden de compra</div><div class="term-def">Documento logístico creado por el área de compras que formaliza el pedido a un proveedor. No genera documento financiero.</div></div>
+      <div class="gcard"><div class="term-en">Goods Receipt (GR)</div><div class="term-es">Recepción de mercancías</div><div class="term-def">Registro de la entrega de bienes por parte del proveedor. Genera simultáneamente un Materials Document (MM) y un Finance Document (FI).</div></div>
+      <div class="gcard"><div class="term-en">Materials Document</div><div class="term-es">Documento de materiales</div><div class="term-def">Documento generado en MM que actualiza el stock de material o la cuenta de consumo y el historial de la Purchase Order.</div></div>
+      <div class="gcard"><div class="term-en">GR/IR Account</div><div class="term-es">Cuenta GR/IR</div><div class="term-def">Cuenta GL de compensación entre la recepción de mercancías (GR) y la recepción de la factura (IR). Su saldo ideal es cero.</div></div>
+      <div class="gcard"><div class="term-en">Invoice Verification</div><div class="term-es">Verificación de facturas</div><div class="term-def">Paso del proceso P2P donde se registra la factura del proveedor con referencia a la PO; genera el documento FI en AP.</div></div>
+      <div class="gcard"><div class="term-en">Three-Step Verification</div><div class="term-es">Verificación en tres pasos</div><div class="term-def">Comparación cruzada entre PO (precio), GR (cantidad) y factura del proveedor (cantidad y precio) antes de aprobar el pago.</div></div>
+      <div class="gcard"><div class="term-en">Payment Program</div><div class="term-es">Programa de pagos</div><div class="term-def">Herramienta automática de SAP que procesa los pagos a proveedores, cancela partidas abiertas en el AP subledger y registra la salida bancaria.</div></div>
+      <div class="gcard"><div class="term-en">Payment Block</div><div class="term-es">Bloqueo de pago</div><div class="term-def">Indicador en la factura que impide que el programa de pagos la procese; se activa cuando hay diferencias de cantidad o precio no resueltas.</div></div>
+      <div class="gcard"><div class="term-en">Clearing Entry</div><div class="term-es">Partida de compensación</div><div class="term-def">Asiento que cancela una partida abierta (ej. la obligación con el proveedor) al ejecutar el pago.</div></div>
+      <div class="gcard"><div class="term-en">AP Subledger</div><div class="term-es">Sub-libro de Cuentas por Pagar</div><div class="term-def">Registro detallado por proveedor dentro de FI-AP que se sincroniza en tiempo real con el GL a través de cuentas de enlace (reconciliation accounts).</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Procure-to-Pay (AP + MM) · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

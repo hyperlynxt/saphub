@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · Invoice Holding &amp; Parking — Holístico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E0A56F;--t1-dark:#A85F2B;--t1-pale:rgba(224,165,111,0.12);--t1-pale-border:rgba(224,165,111,0.38);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#1C1206 55%,#2A1A08 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,165,111,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .sec-tags{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .orbit-tag{background:rgba(10,15,28,0.07);border:1px solid #CBD5E1;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--muted);}
+  .type-tag-pos{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--t1-dark);}
+  .type-tag-flow{background:rgba(26,75,140,0.08);border:1.5px solid rgba(26,75,140,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:#1A4B8C;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">Hold/Park in AP Invoice Lifecycle</a>
+  <a href="#s2">Parking within Internal Controls</a>
+  <a href="#s3">Hold vs Park — Parallel Paths</a>
+  <a href="#s4">Supplier Invoices List as Worklist Hub</a>
+  <a href="#s5">Hold Lifecycle Flow</a>
+  <a href="#s6">Park + Workflow Flow</a>
+  <a href="#s7">Status Data Requirements &amp; Capabilities</a>
+  <a href="#s8">Cross-Process Connections</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+      <span class="pill pill-sec">Workflow</span>
+    </div>
+    <h1>Invoice <span class="accent">Holding &amp; Parking</span></h1>
+    <h2>Holístico — Ecosistema y Posicionamiento</h2>
+    <p class="desc">Dónde viven el Hold y el Park dentro del ciclo de vida de las facturas de AP, cómo el Parking implementa los controles internos, y qué fluye hacia adentro y hacia afuera de cada estado.</p>
+    <div class="hlbox">Holístico — <b>Invoice Holding &amp; Parking (AP)</b>, Tipo 5. 4 secciones de posicionamiento + 4 secciones de flujos. Sin glosario.</div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Hold and Park within the AP Invoice Lifecycle</span><span class="sec-title-es">Hold y Park dentro del ciclo de vida de AP</span></div><div class="sec-desc">Hold y Park son estados intermedios — viven entre la recepción del documento y su contabilización definitiva.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; FI — Accounts Payable</span><span class="type-tag-pos">&#128205; Posicionamiento — Stack</span></div>
+  <div class="theory-box"><strong>Hold y Park son la capa intermedia entre la recepción y el posteo:</strong> el ciclo de vida de una factura de AP tiene capas. Hold y Park son los estados de "zona gris" donde la factura existe en SAP pero no tiene impacto contable pleno. Todo el ecosistema de reporting, pagos y KPIs opera sobre el Accounting Document — no sobre borradores.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg">
+      <rect x="240" y="12" width="380" height="40" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="29" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">Payment Program · AP KPIs · FI Reporting</text>
+      <text x="430" y="45" text-anchor="middle" fill="rgba(255,255,255,0.60)" font-family="Inter" font-size="9.5">Only operates on Accounting Documents</text>
+      <rect x="120" y="66" width="620" height="46" rx="8" fill="#3D7A52"/>
+      <text x="430" y="88" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13.5">Accounting Document (Posted)</text>
+      <text x="430" y="104" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="Inter" font-size="10">FI impact · AP balance updated · Visible in line items · Payable to supplier</text>
+      <rect x="40" y="126" width="780" height="56" rx="8" fill="#A85F2B"/>
+      <text x="430" y="150" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">HOLD &#9733;  and  PARK &#9733; — Incomplete Draft States</text>
+      <text x="430" y="170" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="Inter" font-size="10">Hold: min. data, no GL impact · Park: more data, visible in A/P list, supports workflow</text>
+      <rect x="20" y="196" width="820" height="44" rx="8" fill="#1A4B8C"/>
+      <text x="430" y="215" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Invoice Data Entry (Create Incoming Invoices)</text>
+      <text x="430" y="232" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="10">Where Hold and Park originate — same app as Post</text>
+      <rect x="20" y="254" width="820" height="38" rx="8" fill="#5A6B8C"/>
+      <text x="430" y="270" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Invoice Receipt</text>
+      <text x="430" y="284" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Trigger: supplier sends invoice · AP accountant starts entry</text>
+      <text x="28" y="160" fill="#A85F2B" font-family="JetBrains Mono" font-size="8" font-weight="700">This course</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Parking within Internal Controls</span><span class="sec-title-es">El Parking dentro del control interno</span></div><div class="sec-desc">El Parking no es solo una comodidad técnica — es la implementación SAP del principio de control más importante de AP.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; Internal Controls</span><span class="type-tag-pos">&#128205; Posicionamiento — Mamushka</span></div>
+  <div class="theory-box"><strong>Park &#8834; Four-Eye &#8834; Segregation of Duties &#8834; Internal Controls:</strong> el Parking es la implementación técnica de un principio de gobierno que existe a un nivel mucho más amplio. La cadena de contención explica por qué el Park fue diseñado así — responde a requerimientos de gobernanza corporativa independientes de SAP.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 268" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="18" width="820" height="230" rx="14" fill="none" stroke="#0A0F1C" stroke-width="2.5"/>
+      <text x="56" y="42" fill="#0A0F1C" font-family="Syne" font-weight="800" font-size="12.5">Corporate Governance &amp; Regulatory Compliance</text>
+      <rect x="50" y="56" width="760" height="168" rx="12" fill="none" stroke="#1A4B8C" stroke-width="2"/>
+      <text x="72" y="76" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="12">Internal Controls (SOX / Local regulations)</text>
+      <rect x="80" y="90" width="700" height="110" rx="10" fill="rgba(168,95,43,0.06)" stroke="#A85F2B" stroke-width="1.8" stroke-dasharray="6,3"/>
+      <text x="100" y="110" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="11.5">Segregation of Duties — No one creates AND approves AND posts</text>
+      <rect x="110" y="122" width="660" height="62" rx="9" fill="rgba(168,95,43,0.12)" stroke="#A85F2B" stroke-width="1.8"/>
+      <text x="440" y="142" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="11">Four-Eye Principle — Two people must review</text>
+      <rect x="230" y="155" width="420" height="22" rx="7" fill="#A85F2B"/>
+      <text x="440" y="170" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="11">SAP Park + Save as Complete + Workflow &#9733;</text>
+      <text x="440" y="238" text-anchor="middle" fill="#5A6B8C" font-family="Inter" font-size="10">Hold does NOT implement four-eye — it is a personal draft with no approval flow</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Hold vs Park — Two Parallel Incomplete Paths</span><span class="sec-title-es">Hold vs Park — dos ramas paralelas</span></div><div class="sec-desc">Desde el mismo origen, Hold y Park toman caminos distintos con propósito y destino diferente.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; AP Invoice Processing</span><span class="type-tag-pos">&#128205; Posicionamiento — Bifurcación</span></div>
+  <div class="theory-box"><strong>Mismo origen, dos caminos completamente distintos en propósito:</strong> Hold es para "me falta información, vuelvo mañana". Park es para "tengo la información pero otra persona debe aprobar antes de contabilizar". Confundirlos lleva a usar la herramienta incorrecta para el problema correcto.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 270" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a3t5hpx" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker>
+        <marker id="a3t5hpxg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker>
+      </defs>
+      <rect x="280" y="12" width="300" height="52" rx="10" fill="#0A0F1C"/>
+      <text x="430" y="34" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Invoice received — data incomplete</text>
+      <text x="430" y="52" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Missing GL/Cost Center  —OR—  needs 2nd reviewer</text>
+      <line x1="430" y1="64" x2="430" y2="82" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="160" y1="82" x2="700" y2="82" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="160" y1="82" x2="160" y2="100" stroke="#8B4513" stroke-width="2" marker-end="url(#a3t5hpx)"/>
+      <line x1="700" y1="82" x2="700" y2="100" stroke="#1A4B8C" stroke-width="2" marker-end="url(#a3t5hpx)"/>
+      <rect x="40" y="100" width="240" height="64" rx="10" fill="#8B4513"/>
+      <text x="160" y="124" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">HOLD</text>
+      <text x="160" y="142" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Missing info · personal · no A/P visibility</text>
+      <text x="160" y="156" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Min: Date + Invoicing Party</text>
+      <rect x="580" y="100" width="240" height="64" rx="10" fill="#1A4B8C"/>
+      <text x="700" y="124" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">PARK</text>
+      <text x="700" y="142" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Four-eye · team-visible · workflow-ready</text>
+      <text x="700" y="156" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Min: Date + Party + Reference + Company Code</text>
+      <line x1="160" y1="164" x2="160" y2="186" stroke="#3D7A52" stroke-width="1.5" marker-end="url(#a3t5hpxg)"/>
+      <rect x="90" y="186" width="140" height="36" rx="7" fill="#3D7A52"/>
+      <text x="160" y="202" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Edit → Post</text>
+      <text x="160" y="216" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Accounting Document</text>
+      <line x1="700" y1="164" x2="630" y2="186" stroke="#A85F2B" stroke-width="1.5" marker-end="url(#a3t5hpx)"/>
+      <line x1="700" y1="164" x2="770" y2="186" stroke="#A85F2B" stroke-width="1.5" marker-end="url(#a3t5hpx)"/>
+      <rect x="558" y="186" width="130" height="36" rx="7" fill="#A85F2B"/>
+      <text x="623" y="202" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10">Save as Complete</text>
+      <text x="623" y="216" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Workflow activates</text>
+      <rect x="698" y="186" width="130" height="36" rx="7" fill="#3D7A52"/>
+      <text x="763" y="202" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10">Approve → Post</text>
+      <text x="763" y="216" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Accounting Document</text>
+      <text x="160" y="248" text-anchor="middle" fill="#8B4513" font-family="Syne" font-weight="700" font-size="10">Purpose: personal draft</text>
+      <text x="700" y="248" text-anchor="middle" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="10">Purpose: four-eye control</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Supplier Invoices List as AP Worklist Hub</span><span class="sec-title-es">La Lista de Facturas como hub de gestión</span></div><div class="sec-desc">La Supplier Invoices List es la base sobre la que se apoyan todos los flujos de gestión de borradores.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; AP Operations</span><span class="type-tag-pos">&#128205; Posicionamiento — Fundación + Pilares</span></div>
+  <div class="theory-box"><strong>La Supplier Invoices List es la fundación operativa de todo el proceso de AP incomplete documents:</strong> todos los estados (Hold, Park, Save as Complete, Posted, Draft Personal) se acceden y gestionan desde esta app central. Sin ella, el contador de AP no puede gestionar su cola de borradores.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="192" width="820" height="40" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="210" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Supplier Invoices List (Foundation)</text>
+      <text x="430" y="226" text-anchor="middle" fill="rgba(255,255,255,0.62)" font-family="Inter" font-size="9.5">Single entry point for all invoice statuses · search · filter · act · AP worklist hub</text>
+      <line x1="100" y1="50" x2="100" y2="192" stroke="#D0D4DC" stroke-width="1.5"/>
+      <line x1="250" y1="50" x2="250" y2="192" stroke="#8B4513" stroke-width="3"/>
+      <line x1="430" y1="50" x2="430" y2="192" stroke="#1A4B8C" stroke-width="3"/>
+      <line x1="610" y1="50" x2="610" y2="192" stroke="#3D7A52" stroke-width="3"/>
+      <line x1="760" y1="50" x2="760" y2="192" stroke="#D0D4DC" stroke-width="1.5"/>
+      <rect x="20" y="12" width="160" height="38" rx="8" fill="#5A6B8C" opacity="0.8"/>
+      <text x="100" y="28" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Draft Personal</text>
+      <text x="100" y="43" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Only you see it</text>
+      <rect x="170" y="4" width="160" height="46" rx="8" fill="#8B4513"/>
+      <text x="250" y="26" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">Hold &#9733;</text>
+      <text x="250" y="42" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Edit · Post · Delete</text>
+      <rect x="350" y="4" width="160" height="46" rx="8" fill="#1A4B8C"/>
+      <text x="430" y="26" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">Park &#9733;</text>
+      <text x="430" y="42" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Edit · Save as Complete</text>
+      <rect x="530" y="4" width="160" height="46" rx="8" fill="#3D7A52"/>
+      <text x="610" y="22" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="11">Saved as Complete &#9733;</text>
+      <text x="610" y="38" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Pending Workflow approval</text>
+      <rect x="680" y="12" width="160" height="38" rx="8" fill="#2E5738" opacity="0.8"/>
+      <text x="760" y="28" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Posted</text>
+      <text x="760" y="43" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">View · Reverse</text>
+      <text x="430" y="175" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="10.5">The three states of this course</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Hold Lifecycle Flow</span><span class="sec-title-es">Flujo del ciclo de vida del Hold</span></div><div class="sec-desc">El recorrido completo de una factura desde que se recibe hasta que se contabiliza o elimina, pasando por Hold.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; AP Invoice — Hold Path</span><span class="type-tag-flow">&#128260; Flujo — Hold Lifecycle</span></div>
+  <div class="theory-box"><strong>Hold crea una pausa personal antes del posting definitivo:</strong> el flujo de Hold es el más simple — no involucra otras personas ni workflow. Es una pausa individual que puede resolverse de tres maneras: post, re-hold, o delete.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 190" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a5t5hpq" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker>
+        <marker id="a5t5hpr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C0392B"/></marker>
+        <marker id="a5t5hpo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8B4513"/></marker>
+      </defs>
+      <rect x="14" y="56" width="110" height="70" rx="9" fill="#1A4B8C"/>
+      <text x="69" y="88" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Invoice</text>
+      <text x="69" y="104" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Received</text>
+      <text x="69" y="118" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Missing data</text>
+      <line x1="124" y1="91" x2="160" y2="91" stroke="#3D7A52" stroke-width="2" marker-end="url(#a5t5hpq)"/>
+      <rect x="160" y="46" width="130" height="90" rx="9" fill="#8B4513"/>
+      <text x="225" y="82" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">HOLD</text>
+      <text x="225" y="99" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="9.5">Min: Date + Party</text>
+      <text x="225" y="115" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Auto number assigned</text>
+      <line x1="290" y1="91" x2="338" y2="91" stroke="#3D7A52" stroke-width="2" marker-end="url(#a5t5hpq)"/>
+      <text x="313" y="83" text-anchor="middle" fill="#3D7A52" font-family="Inter" font-size="9.5" font-weight="600">Edit</text>
+      <rect x="338" y="56" width="120" height="70" rx="9" fill="#1A6B99"/>
+      <text x="398" y="86" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Edit</text>
+      <text x="398" y="103" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Add missing data</text>
+      <line x1="458" y1="80" x2="518" y2="58" stroke="#3D7A52" stroke-width="1.8" marker-end="url(#a5t5hpq)"/>
+      <text x="483" y="56" text-anchor="middle" fill="#3D7A52" font-family="Inter" font-size="9" font-weight="600">Post</text>
+      <rect x="518" y="22" width="150" height="52" rx="8" fill="#3D7A52"/>
+      <text x="593" y="46" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Accounting Doc</text>
+      <text x="593" y="63" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Posted · FI impact</text>
+      <line x1="458" y1="98" x2="518" y2="110" stroke="#8B4513" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#a5t5hpo)"/>
+      <text x="490" y="120" text-anchor="middle" fill="#8B4513" font-family="Inter" font-size="9" font-weight="600">Still incomplete</text>
+      <rect x="518" y="100" width="130" height="36" rx="8" fill="#8B4513" opacity="0.7"/>
+      <text x="583" y="120" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10">Hold Again</text>
+      <line x1="225" y1="136" x2="225" y2="162" stroke="#C0392B" stroke-width="1.5" marker-end="url(#a5t5hpr)"/>
+      <rect x="150" y="162" width="150" height="22" rx="5" fill="#C0392B"/>
+      <text x="225" y="177" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10">Delete (if no longer needed)</text>
+      <text x="720" y="88" text-anchor="middle" fill="#64748B" font-family="Syne" font-weight="700" font-size="11">Re-entry via</text>
+      <text x="720" y="104" text-anchor="middle" fill="#64748B" font-family="Syne" font-weight="700" font-size="11">Supplier Invoices List</text>
+      <text x="720" y="120" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="9.5">Filter: Status = Held</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Park + Workflow Lifecycle Flow</span><span class="sec-title-es">Flujo Park + Workflow</span></div><div class="sec-desc">El flujo más completo — Park involucra a dos personas y el Workflow como orquestador del proceso de aprobación.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; AP Invoice — Park + Workflow</span><span class="type-tag-flow">&#128260; Flujo — Park + Workflow</span></div>
+  <div class="theory-box"><strong>Park + Workflow es el flujo de control interno — dos personas, notificacion automatica, audit trail completo:</strong> a diferencia del Hold (personal), el flujo de Park involucra al menos dos personas. El Workflow conecta los actores — sin él, el Park solo cambia el estado sin notificar a nadie.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 220" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a6t5hpq" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker>
+        <marker id="a6t5hpr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C0392B"/></marker>
+        <marker id="a6t5hpo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker>
+      </defs>
+      <!-- Actor labels -->
+      <text x="10" y="26" fill="#8B4513" font-family="Syne" font-weight="700" font-size="10">AP Accountant</text>
+      <text x="10" y="126" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="10">Supervisor</text>
+      <!-- Line separator -->
+      <line x1="0" y1="76" x2="860" y2="76" stroke="#E3E7EE" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <!-- Step 1: Invoice Received -->
+      <rect x="90" y="30" width="110" height="36" rx="7" fill="#1A4B8C"/>
+      <text x="145" y="50" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Invoice Received</text>
+      <text x="145" y="62" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">All data available</text>
+      <line x1="200" y1="48" x2="240" y2="48" stroke="#3D7A52" stroke-width="2" marker-end="url(#a6t5hpq)"/>
+      <!-- Step 2: Park -->
+      <rect x="240" y="30" width="100" height="36" rx="7" fill="#1A4B8C"/>
+      <text x="290" y="52" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">PARK</text>
+      <line x1="340" y1="48" x2="380" y2="48" stroke="#3D7A52" stroke-width="2" marker-end="url(#a6t5hpq)"/>
+      <!-- Step 3: Save as Complete -->
+      <rect x="380" y="24" width="130" height="48" rx="7" fill="#A85F2B"/>
+      <text x="445" y="46" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Save as</text>
+      <text x="445" y="60" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Complete</text>
+      <!-- Workflow fires -->
+      <line x1="445" y1="72" x2="445" y2="100" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6t5hpo)"/>
+      <text x="460" y="92" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="9.5">Workflow fires</text>
+      <!-- Supervisor layer -->
+      <rect x="360" y="100" width="170" height="46" rx="7" fill="#0A0F1C"/>
+      <text x="445" y="122" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">SAP My Inbox</text>
+      <text x="445" y="138" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Supervisor receives task</text>
+      <!-- Approve -->
+      <line x1="530" y1="123" x2="580" y2="110" stroke="#3D7A52" stroke-width="2" marker-end="url(#a6t5hpq)"/>
+      <text x="550" y="105" fill="#3D7A52" font-family="Inter" font-size="9" font-weight="600">Approve</text>
+      <rect x="580" y="86" width="120" height="50" rx="7" fill="#3D7A52"/>
+      <text x="640" y="109" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Post</text>
+      <text x="640" y="126" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Accounting Document</text>
+      <!-- Reject -->
+      <line x1="530" y1="138" x2="580" y2="155" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#a6t5hpr)"/>
+      <text x="550" y="170" fill="#C0392B" font-family="Inter" font-size="9" font-weight="600">Reject</text>
+      <rect x="580" y="150" width="120" height="36" rx="7" fill="#C0392B"/>
+      <text x="640" y="170" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10">Return to</text>
+      <text x="640" y="182" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">AP Accountant</text>
+      <!-- Time annotation -->
+      <text x="430" y="202" text-anchor="middle" fill="#5A6B8C" font-family="Inter" font-size="10">Workflow deadline configurable (e.g. 48h) · Full audit trail in ACDOCA · SAP My Inbox notification</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Status Data Requirements and Capabilities</span><span class="sec-title-es">Requisitos y capacidades por estado</span></div><div class="sec-desc">Qué datos requiere cada estado como entrada y qué funciones habilita como salida — el mapa completo de inputs y outputs.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; AP Document States</span><span class="type-tag-flow">&#128260; Flujo — Status I/O Map</span></div>
+  <div class="theory-box"><strong>Cada estado tiene su propia combinación de requisitos y capacidades:</strong> el progreso de Hold hacia Park hacia Save as Complete hacia Posted es un progresivo aumento de exigencia de datos a cambio de un aumento proporcional en las capacidades y visibilidad del documento.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a7t5hpq" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker></defs>
+      <!-- Column headers -->
+      <rect x="20" y="10" width="178" height="30" rx="6" fill="#8B4513"/>
+      <text x="109" y="29" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">HOLD</text>
+      <rect x="214" y="10" width="178" height="30" rx="6" fill="#1A4B8C"/>
+      <text x="303" y="29" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">PARK</text>
+      <rect x="408" y="10" width="178" height="30" rx="6" fill="#A85F2B"/>
+      <text x="497" y="29" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">SAVE AS COMPLETE</text>
+      <rect x="602" y="10" width="240" height="30" rx="6" fill="#3D7A52"/>
+      <text x="722" y="29" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">POSTED (Accounting Doc)</text>
+      <!-- Arrows between states -->
+      <line x1="198" y1="25" x2="212" y2="25" stroke="#A85F2B" stroke-width="2" marker-end="url(#a7t5hpq)"/>
+      <line x1="392" y1="25" x2="406" y2="25" stroke="#A85F2B" stroke-width="2" marker-end="url(#a7t5hpq)"/>
+      <line x1="586" y1="25" x2="600" y2="25" stroke="#A85F2B" stroke-width="2" marker-end="url(#a7t5hpq)"/>
+      <!-- Row: Min fields -->
+      <text x="10" y="60" fill="#64748B" font-family="Inter" font-size="9.5" font-weight="700">MIN. FIELDS</text>
+      <text x="20" y="74" fill="#8B4513" font-family="Inter" font-size="10">Date + Invoicing Party</text>
+      <text x="214" y="74" fill="#1A4B8C" font-family="Inter" font-size="10">+ Reference + Company Code</text>
+      <text x="408" y="74" fill="#A85F2B" font-family="Inter" font-size="10">All mandatory fields</text>
+      <text x="602" y="74" fill="#3D7A52" font-family="Inter" font-size="10">All fields + Balance = 0</text>
+      <!-- Row: Balance -->
+      <text x="10" y="98" fill="#64748B" font-family="Inter" font-size="9.5" font-weight="700">BALANCE = 0?</text>
+      <text x="20" y="112" fill="#C0392B" font-family="Inter" font-size="10">Not required</text>
+      <text x="214" y="112" fill="#C0392B" font-family="Inter" font-size="10">Not required</text>
+      <text x="408" y="112" fill="#3D7A52" font-family="Inter" font-size="10">Required</text>
+      <text x="602" y="112" fill="#3D7A52" font-family="Inter" font-size="10">Required</text>
+      <!-- Row: Visible in A/P -->
+      <text x="10" y="136" fill="#64748B" font-family="Inter" font-size="9.5" font-weight="700">VISIBLE IN A/P LIST?</text>
+      <text x="20" y="150" fill="#C0392B" font-family="Inter" font-size="10">No</text>
+      <text x="214" y="150" fill="#3D7A52" font-family="Inter" font-size="10">Yes</text>
+      <text x="408" y="150" fill="#3D7A52" font-family="Inter" font-size="10">Yes</text>
+      <text x="602" y="150" fill="#3D7A52" font-family="Inter" font-size="10">Yes (as Open Item)</text>
+      <!-- Row: Workflow -->
+      <text x="10" y="174" fill="#64748B" font-family="Inter" font-size="9.5" font-weight="700">WORKFLOW?</text>
+      <text x="20" y="188" fill="#C0392B" font-family="Inter" font-size="10">No</text>
+      <text x="214" y="188" fill="#C0392B" font-family="Inter" font-size="10">No (not yet)</text>
+      <text x="408" y="188" fill="#3D7A52" font-family="Inter" font-size="10">Yes — fires on Save</text>
+      <text x="602" y="188" fill="#3D7A52" font-family="Inter" font-size="10">N/A (already posted)</text>
+      <!-- Row: GL impact -->
+      <text x="10" y="212" fill="#64748B" font-family="Inter" font-size="9.5" font-weight="700">GL IMPACT?</text>
+      <text x="20" y="226" fill="#C0392B" font-family="Inter" font-size="10">No</text>
+      <text x="214" y="226" fill="#C0392B" font-family="Inter" font-size="10">No</text>
+      <text x="408" y="226" fill="#C0392B" font-family="Inter" font-size="10">No</text>
+      <text x="602" y="226" fill="#3D7A52" font-family="Inter" font-size="10">Yes — ACDOCA updated</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Cross-Process Connections</span><span class="sec-title-es">Conexiones con otros procesos</span></div><div class="sec-desc">Qué otros módulos, procesos y sistemas se conectan con el Hold, Park y la Supplier Invoices List.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; Finance Ecosystem</span><span class="type-tag-flow">&#128260; Flujo — Cross-Process</span></div>
+  <div class="theory-box"><strong>Hold y Park no son islas — se conectan con cuatro áreas del ecosistema financiero:</strong> aunque son estados "pre-contables", sus conexiones definen el impacto que tienen en el proceso completo: si no se procesan antes del cierre de período, afectan los reportes; si el workflow no está configurado, el Park pierde su propósito de control; si los campos requeridos no están bien configurados, el Save as Complete no se puede completar.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 260" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a8t5hpq" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker>
+        <marker id="a8t5hpo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1A6B99"/></marker>
+      </defs>
+      <!-- Central -->
+      <rect x="310" y="96" width="240" height="68" rx="12" fill="#A85F2B"/>
+      <text x="430" y="120" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13.5">Hold / Park</text>
+      <text x="430" y="138" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">Draft states before Accounting Document</text>
+      <text x="430" y="154" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Supplier Invoices List as the management hub</text>
+      <!-- Period-End Closing (top) -->
+      <rect x="310" y="14" width="240" height="50" rx="9" fill="#1A4B8C"/>
+      <text x="430" y="37" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Period-End Close</text>
+      <text x="430" y="55" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Unprocessed Hold/Park = missing expense recognition</text>
+      <line x1="430" y1="64" x2="430" y2="96" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5hpq)"/>
+      <text x="436" y="84" fill="#A85F2B" font-family="Inter" font-size="9" font-weight="700">risk if not resolved</text>
+      <!-- Workflow (left) -->
+      <rect x="20" y="106" width="200" height="50" rx="9" fill="#1A6B99"/>
+      <text x="120" y="130" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">SAP Workflow</text>
+      <text x="120" y="148" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Routes Park for approval → activates on Save as Complete</text>
+      <line x1="220" y1="131" x2="308" y2="131" stroke="#1A6B99" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5hpo)"/>
+      <text x="258" y="123" fill="#1A6B99" font-family="Inter" font-size="9.5" font-weight="700">feeds into</text>
+      <!-- Field Status / Config (right) -->
+      <rect x="640" y="106" width="200" height="50" rx="9" fill="#6B4C8F" opacity="0.85"/>
+      <text x="740" y="130" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Config Layer</text>
+      <text x="740" y="148" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Field Status · Tolerance Groups · Number Ranges</text>
+      <line x1="550" y1="131" x2="638" y2="131" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5hpq)"/>
+      <text x="588" y="123" fill="#6B4C8F" font-family="Inter" font-size="9.5" font-weight="700">defined by</text>
+      <!-- Posting / Accounting (bottom) -->
+      <rect x="310" y="196" width="240" height="50" rx="9" fill="#5A6B8C" opacity="0.85"/>
+      <text x="430" y="220" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Accounting Document</text>
+      <text x="430" y="238" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Final destination · GL updated · A/P balance · Payment-ready</text>
+      <line x1="430" y1="164" x2="430" y2="196" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5hpq)"/>
+      <text x="436" y="184" fill="#A85F2B" font-family="Inter" font-size="9" font-weight="700">resolves into</text>
+    </svg>
+  </div>
+</section>
+
+</main>
+<footer>T5 · Holístico — Invoice Holding &amp; Parking (AP) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

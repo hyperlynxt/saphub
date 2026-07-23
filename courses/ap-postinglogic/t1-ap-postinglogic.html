@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · AP Posting Logic — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#7FBF8F;--t1-dark:#3D7A52;--t1-pale:rgba(127,191,143,0.14);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--c-fi:#1A4B8C;--c-log:#00A896;--c-pur:#7E4FBF;--c-ap:#E07B39;--c-cr:#C9932E;--c-alert:#C0392B;--c-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#122A1C 55%,#1B4028 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(127,191,143,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:640px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.5;}
+  .hlbox b{color:var(--t1);}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(61,122,82,0.35);}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;}
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(10,15,28,0.04);}
+  .card h4{font-family:'Syne',sans-serif;font-size:1rem;margin:0 0 6px;color:var(--ink);}
+  .card .sub{font-size:0.72rem;color:var(--muted);font-style:italic;}
+  .card p{font-size:0.84rem;color:var(--body);line-height:1.6;margin:8px 0 0;}
+  .card ul{margin:8px 0 0;padding-left:18px;}
+  .card ul li{font-size:0.82rem;color:var(--body);line-height:1.75;}
+  .card.g{border-top:4px solid var(--t1-dark);}
+  .card.b{border-top:4px solid var(--c-fi);}
+  .card.t{border-top:4px solid var(--c-log);}
+  .card.p{border-top:4px solid var(--c-pur);}
+  .card.o{border-top:4px solid var(--c-ap);}
+  .card.cr{border-top:4px solid var(--c-cr);}
+  .card.r{border-top:4px solid var(--c-alert);}
+  .card.steel{border-top:4px solid var(--c-steel);}
+  .icon-big{font-size:26px;display:block;margin-bottom:6px;}
+  .data-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:0.85rem;}
+  .data-table th{background:var(--navy-900);color:white;padding:11px 14px;text-align:left;font-size:0.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+  .data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--body);vertical-align:middle;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:nth-child(even) td{background:#FAFBFD;}
+  .data-table .strong{font-weight:700;color:var(--ink);}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;white-space:nowrap;}
+  .badge-cr{background:rgba(61,122,82,0.1);color:#3D7A52;}
+  .badge-dr{background:rgba(192,57,43,0.1);color:#C0392B;}
+  .badge-ap{background:rgba(224,123,57,0.12);color:#8B4513;}
+  .badge-mm{background:rgba(0,168,150,0.1);color:#00A896;}
+  .taccount{display:flex;gap:0;border:1.5px solid;border-radius:8px;overflow:hidden;font-size:0.82rem;}
+  .ta-dr{flex:1;padding:10px 12px;border-right:1.5px solid;}
+  .ta-cr{flex:1;padding:10px 12px;}
+  .ta-head{font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;}
+  .glossary{background:var(--navy-950);padding:64px 40px 72px;scroll-margin-top:64px;}
+  .glossary-inner{max-width:1100px;margin:0 auto;}
+  .glossary h2{font-family:'Syne',sans-serif;color:white;font-size:1.6rem;margin:0 0 6px;}
+  .gloss-sub{color:rgba(255,255,255,0.55);font-size:0.9rem;margin:0 0 30px;}
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .gcard{background:var(--navy-800);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 18px;}
+  .term-en{font-family:'Syne',sans-serif;font-weight:700;color:var(--t1);font-size:1rem;}
+  .term-es{color:rgba(255,255,255,0.5);font-size:0.78rem;margin:2px 0 8px;}
+  .term-def{color:rgba(255,255,255,0.82);font-size:0.83rem;line-height:1.5;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Source to Pay</a>
+  <a href="#s2">Invoice to Pay</a>
+  <a href="#s3">Invoice Lifecycle</a>
+  <a href="#s4">Invoice as Journal Entry</a>
+  <a href="#s5">4 Transaction Types</a>
+  <a href="#s6">Posting Logic — Debit &amp; Credit</a>
+  <a href="#s7">Invoice vs Credit Memo</a>
+  <a href="#s8">Two Entry Apps</a>
+  <a href="#s9">Foreign Currency Invoices</a>
+  <a href="#s10">From Invoice to Accounting Document</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+      <span class="pill pill-sec">Procurement</span>
+    </div>
+    <h1>AP <span class="accent">Posting Logic</span></h1>
+    <h2>Lógica de Contabilización en Cuentas por Pagar</h2>
+    <p class="desc">El proceso Invoice to Pay de Jennifer: los cuatro tipos de transacción (Invoice, Credit Memo, Subsequent Debit/Credit), su lógica Debe/Haber en la cuenta del proveedor, las apps de ingreso, y el manejo de facturas en moneda extranjera.</p>
+    <div class="hlbox">Resumen Visual — <b>AP Posting Logic (AP)</b>, Tipo 1. 10 secciones basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+<main>
+
+<!-- S1 -->
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Source to Pay — Jennifer's Place in the Process</span><span class="sec-title-es">Source to Pay — la posición de AP en el proceso</span></div><div class="sec-desc">El proceso macro Source to Pay y el subproceso donde trabaja el contador de AP.</div></div></div>
+  <div class="theory-box"><strong>Source to Pay es el macro-proceso de compras — AP vive dentro de "Invoice to Pay":</strong> el proceso completo que va desde la búsqueda de un proveedor hasta el pago de la factura se denomina <strong>Source to Pay</strong>. Dentro de él hay cinco sub-procesos. El contador de AP como Jennifer trabaja principalmente en el cuarto: <strong>Invoice to Pay</strong>, que incluye la gestión de facturas de proveedor y la contabilización de las cuentas por pagar.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="330" y="10" width="200" height="36" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="33" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Source to Pay</text>
+      <line x1="430" y1="46" x2="430" y2="62" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="84" y1="62" x2="776" y2="62" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="84" y1="62" x2="84" y2="76" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="238" y1="62" x2="238" y2="76" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="430" y1="62" x2="430" y2="76" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="622" y1="62" x2="622" y2="76" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="776" y1="62" x2="776" y2="76" stroke="#94A3B8" stroke-width="1.5"/>
+      <rect x="20" y="76" width="128" height="44" rx="7" fill="#1A6B99"/>
+      <text x="84" y="95" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Source to</text>
+      <text x="84" y="111" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Contract</text>
+      <rect x="174" y="76" width="128" height="44" rx="7" fill="#1A6B99"/>
+      <text x="238" y="95" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Procure to</text>
+      <text x="238" y="111" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Receipt</text>
+      <rect x="366" y="76" width="128" height="44" rx="7" fill="#1A6B99"/>
+      <text x="430" y="95" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Request to</text>
+      <text x="430" y="111" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Resolution</text>
+      <rect x="558" y="70" width="128" height="56" rx="7" fill="#E07B39" stroke="#D4AF37" stroke-width="2"/>
+      <text x="622" y="92" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="11">Invoice to</text>
+      <text x="622" y="107" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="11">Pay &#9733;</text>
+      <text x="622" y="120" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Jennifer's area</text>
+      <rect x="712" y="76" width="128" height="44" rx="7" fill="#1A6B99"/>
+      <text x="776" y="92" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10">Manage</text>
+      <text x="776" y="107" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Supplier &amp; Collab.</text>
+      <text x="430" y="168" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Bike Company produces bicycles and e-scooters from sustainable materials · Jennifer: AP Accountant · Focus: invoice processing</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S2 -->
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Invoice to Pay — Two Core Tasks</span><span class="sec-title-es">Invoice to Pay — las dos tareas principales</span></div><div class="sec-desc">Los dos componentes del sub-proceso Invoice to Pay y las tareas diarias del contador de AP.</div></div></div>
+  <div class="theory-box"><strong>Invoice to Pay tiene dos ramas: gestión de facturas y gestión de pagos:</strong> dentro de <strong>Invoice to Pay</strong>, existen dos áreas: <strong>Supplier Invoice Management</strong> (proceso de facturas de proveedor) y <strong>Payables Management</strong> (gestión de cuentas por pagar). Las tareas principales del contador de AP son: procesar facturas de proveedor y procesar cuentas por pagar. Los pagos también pertenecen a este sub-proceso.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card o">
+        <span class="icon-big">📄</span>
+        <h4>Process Supplier Invoices <span class="sub">· Supplier Invoice Management</span></h4>
+        <ul>
+          <li>Recibir e ingresar facturas al sistema SAP</li>
+          <li>Identificar el tipo de transacción correcto</li>
+          <li>Postear la factura como asiento de diario</li>
+          <li>Corregir si es necesario (credit memo, reversión)</li>
+        </ul>
+      </div>
+      <div class="card b">
+        <span class="icon-big">💼</span>
+        <h4>Process Accounts Payable <span class="sub">· Payables Management</span></h4>
+        <ul>
+          <li>Gestionar las partidas abiertas con proveedores</li>
+          <li>Monitorear vencimientos y estados de pago</li>
+          <li>Preparar y ejecutar pagos a proveedores</li>
+          <li>Reconciliar saldos del subledger de AP</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 -->
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Supplier Invoice Lifecycle — 6 Stages</span><span class="sec-title-es">Ciclo de vida de la factura — 6 etapas</span></div><div class="sec-desc">Las seis etapas por las que pasa una factura de proveedor desde su llegada hasta la correspondencia con el proveedor.</div></div></div>
+  <div class="theory-box"><strong>La factura recorre seis etapas antes de cerrarse por completo:</strong> el <strong>Supplier Invoice Lifecycle</strong> cubre el camino completo de una factura de proveedor. Este curso se enfoca en las primeras tres: Arrival (llegada), Processing (procesamiento en SAP) y Correction (corrección si es necesario). Las tres etapas siguientes — Payment Preparation, Payment y Correspondence — son el resultado de haber procesado correctamente las primeras tres.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
+      <!-- Highlighted stages (1-3) -->
+      <rect x="14" y="30" width="380" height="80" rx="10" fill="rgba(224,123,57,0.12)" stroke="#E07B39" stroke-width="2"/>
+      <text x="204" y="20" text-anchor="middle" fill="#E07B39" font-family="Syne" font-weight="700" font-size="10">This course — Arrival, Processing, Correction</text>
+      <rect x="22" y="42" width="105" height="58" rx="8" fill="#E07B39"/>
+      <text x="74" y="68" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Arrival</text>
+      <text x="74" y="84" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Invoice received</text>
+      <polygon points="127,71 140,62 140,80" fill="#E07B39"/>
+      <rect x="140" y="42" width="105" height="58" rx="8" fill="#E07B39"/>
+      <text x="192" y="68" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Processing</text>
+      <text x="192" y="84" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Posted in SAP</text>
+      <polygon points="245,71 258,62 258,80" fill="#E07B39"/>
+      <rect x="258" y="42" width="130" height="58" rx="8" fill="#E07B39"/>
+      <text x="323" y="68" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Correction*</text>
+      <text x="323" y="84" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Credit memo/fix</text>
+      <polygon points="388,71 400,62 400,80" fill="#1A6B99"/>
+      <!-- Non-highlighted stages (4-6) -->
+      <rect x="400" y="42" width="115" height="58" rx="8" fill="#1A6B99"/>
+      <text x="457" y="65" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Payment</text>
+      <text x="457" y="81" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Preparation</text>
+      <polygon points="515,71 527,62 527,80" fill="#1A6B99"/>
+      <rect x="527" y="42" width="105" height="58" rx="8" fill="#1A6B99"/>
+      <text x="579" y="74" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Payment</text>
+      <polygon points="632,71 644,62 644,80" fill="#1A6B99"/>
+      <rect x="644" y="42" width="142" height="58" rx="8" fill="#1A6B99"/>
+      <text x="715" y="74" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Correspondence</text>
+      <text x="430" y="128" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="9.5">*Correction only if necessary</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S4 -->
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Supplier Invoice as Journal Entry</span><span class="sec-title-es">La factura como asiento de diario</span></div><div class="sec-desc">Cómo los datos de la factura física se transforman en un asiento de diario FI en SAP.</div></div></div>
+  <div class="theory-box"><strong>Una factura de proveedor es, contablemente, un asiento de diario:</strong> cuando una factura entra al sistema, SAP la convierte en un <strong>Journal Entry</strong> (asiento de diario). Los datos que aparecen en la factura física del proveedor (importe, fecha, número de referencia) se mapean a los campos del asiento. Adicionalmente, hay información que no viene de la factura sino del <strong>Supplier Master Record</strong> — como el número de cuenta del proveedor, las condiciones de pago, o el banco del proveedor.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card o">
+        <h4>📄 From the Supplier Invoice <span class="sub">· De la factura física</span></h4>
+        <ul>
+          <li><strong>Invoice Date</strong> — fecha de la factura del proveedor</li>
+          <li><strong>Invoice Amount</strong> — importe total</li>
+          <li><strong>Reference Number</strong> — número de factura del proveedor</li>
+          <li><strong>Tax Amount</strong> — importe del IVA / impuesto</li>
+          <li><strong>Line Items</strong> — detalle de los productos/servicios</li>
+          <li><strong>Currency</strong> — moneda de la factura</li>
+        </ul>
+      </div>
+      <div class="card b">
+        <h4>📚 From Supplier Master Record <span class="sub">· Del maestro del proveedor</span></h4>
+        <ul>
+          <li><strong>Supplier Account Number</strong> — número de cuenta en AP</li>
+          <li><strong>Reconciliation Account</strong> — cuenta de reconciliación en GL</li>
+          <li><strong>Payment Terms</strong> — condiciones de pago (plazos, descuentos)</li>
+          <li><strong>Bank Details</strong> — datos bancarios para el pago</li>
+          <li><strong>Tax Information</strong> — datos fiscales del proveedor</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 -->
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">4 Supplier Transaction Types</span><span class="sec-title-es">Los 4 tipos de transacción de proveedor</span></div><div class="sec-desc">Los cuatro tipos de transacción disponibles al contabilizar documentos de proveedor en SAP y cuándo aplica cada uno.</div></div></div>
+  <div class="theory-box"><strong>SAP define cuatro tipos de transacción para documentos de proveedor:</strong> al ingresar un documento de proveedor, el contador debe elegir el <strong>Transaction Type</strong> correcto. Cada uno representa una situación comercial distinta y genera un impacto diferente en la cuenta del proveedor. Los más frecuentes para el contador de AP son Invoice y Credit Memo. Los Subsequent Debit/Credit son procesados mayormente por el área de logística.</div>
+  <div class="visual-wrap">
+    <div class="g4">
+      <div class="card o"><span class="icon-big">📄</span><h4>Invoice <span class="sub">· Factura</span></h4><p>Factura inicial del proveedor. La más frecuente en el trabajo diario de AP. El proveedor nos cobra por bienes o servicios entregados.</p></div>
+      <div class="card g"><span class="icon-big">📝</span><h4>Credit Memo <span class="sub">· Nota de crédito</span></h4><p>El proveedor nos emite un crédito — nos debe dinero. Refund por devolución, descuento por buena relación comercial, o corrección de una factura anterior.</p></div>
+      <div class="card cr"><span class="icon-big">➕</span><h4>Subsequent Debit <span class="sub">· Cargo adicional</span></h4><p>Cargos extras posteriores a la factura original, ej. costos de flete adicionales no incluidos en la factura inicial.</p></div>
+      <div class="card b"><span class="icon-big">➖</span><h4>Subsequent Credit <span class="sub">· Crédito adicional</span></h4><p>Créditos adicionales posteriores a una nota de crédito existente. Poco frecuente en AP — generado mayormente desde logística.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- S6 -->
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Posting Logic — Debit and Credit per Transaction Type</span><span class="sec-title-es">Lógica de contabilización — Debe y Haber por tipo</span></div><div class="sec-desc">El impacto de cada tipo de transacción en la cuenta del proveedor — qué lado del T-account recibe cada contabilización.</div></div></div>
+  <div class="theory-box"><strong>La cuenta del proveedor es de naturaleza acreedora — los cargos van al Haber (Credit):</strong> en contabilidad, la cuenta de un proveedor (pasivo) normalmente tiene saldo acreedor. Cuando la empresa debe dinero al proveedor (factura), se registra en el <strong>Haber (Credit)</strong>. Cuando el proveedor nos debe dinero o se reduce la deuda (credit memo, pago), se registra en el <strong>Debe (Debit)</strong>.</div>
+  <div class="visual-wrap">
+    <table class="data-table" style="min-width:600px;">
+      <thead><tr><th>Transaction Type</th><th>Situación comercial</th><th>Supplier Account</th><th>Typical Source</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">Invoice</td><td>Proveedor entrega y cobra</td><td><span class="badge badge-cr">CREDIT ↑</span> Increases AP balance</td><td>AP Accountant (Jennifer)</td></tr>
+        <tr><td class="strong">Credit Memo</td><td>Proveedor emite reembolso/crédito</td><td><span class="badge badge-dr">DEBIT ↓</span> Decreases AP balance</td><td>AP Accountant (Jennifer)</td></tr>
+        <tr><td class="strong">Subsequent Debit</td><td>Cargo extra después de la factura</td><td><span class="badge badge-cr">CREDIT ↑</span> Increases AP balance</td><td>Logistics department (mostly)</td></tr>
+        <tr><td class="strong">Subsequent Credit</td><td>Crédito extra después del credit memo</td><td><span class="badge badge-dr">DEBIT ↓</span> Decreases AP balance</td><td>Logistics department (mostly)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S7 -->
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Invoice vs Credit Memo — The Key Distinction</span><span class="sec-title-es">Factura vs nota de crédito — la distinción clave</span></div><div class="sec-desc">La diferencia fundamental entre los dos tipos de documento que el contador de AP procesa con mayor frecuencia.</div></div></div>
+  <div class="theory-box"><strong>Invoice y Credit Memo son los dos documentos del día a día de AP — y son opuestos:</strong> una <strong>Invoice</strong> (factura) representa que la empresa debe dinero al proveedor. Una <strong>Credit Memo</strong> (nota de crédito) representa que el proveedor debe dinero a la empresa. El Credit Memo de este curso es "sin referencia" — no está vinculado a una factura específica, sino que representa un gesto de buena voluntad del proveedor por su buena relación comercial.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div style="border:1.5px solid #E07B39;border-radius:10px;overflow:hidden;">
+        <div style="background:#E07B39;padding:10px 14px;"><span style="font-family:Syne;font-weight:800;color:white;font-size:13px;">INVOICE — Factura</span></div>
+        <div style="padding:16px 18px;background:white;">
+          <div style="display:flex;gap:0;border:1.5px solid #CBD5E1;border-radius:7px;overflow:hidden;margin-bottom:10px;font-size:12px;">
+            <div style="flex:1;padding:10px;border-right:1.5px solid #CBD5E1;"><div style="font-weight:700;font-size:10px;color:#C0392B;margin-bottom:4px;">DEBIT</div><div style="color:#888;font-size:10px;">Expense Account<br>516000 – Purchases</div></div>
+            <div style="flex:1;padding:10px;background:rgba(224,123,57,0.06);"><div style="font-weight:700;font-size:10px;color:#3D7A52;margin-bottom:4px;">CREDIT &#9733;</div><div style="font-weight:600;font-size:11px;color:#E07B39;">Supplier Account<br>AP sub-ledger</div></div>
+          </div>
+          <ul style="font-size:0.82rem;color:var(--body);padding-left:18px;margin:0;">
+            <li>Company owes money to supplier</li>
+            <li>AP balance <strong>increases</strong> (credit side)</li>
+            <li>Creates open item in supplier account</li>
+          </ul>
+        </div>
+      </div>
+      <div style="border:1.5px solid #3D7A52;border-radius:10px;overflow:hidden;">
+        <div style="background:#3D7A52;padding:10px 14px;"><span style="font-family:Syne;font-weight:800;color:white;font-size:13px;">CREDIT MEMO — Nota de crédito</span></div>
+        <div style="padding:16px 18px;background:white;">
+          <div style="display:flex;gap:0;border:1.5px solid #CBD5E1;border-radius:7px;overflow:hidden;margin-bottom:10px;font-size:12px;">
+            <div style="flex:1;padding:10px;border-right:1.5px solid #CBD5E1;background:rgba(61,122,82,0.06);"><div style="font-weight:700;font-size:10px;color:#C0392B;margin-bottom:4px;">DEBIT &#9733;</div><div style="font-weight:600;font-size:11px;color:#3D7A52;">Supplier Account<br>AP sub-ledger</div></div>
+            <div style="flex:1;padding:10px;"><div style="font-weight:700;font-size:10px;color:#3D7A52;margin-bottom:4px;">CREDIT</div><div style="color:#888;font-size:10px;">Income/Discount Acc.<br>or Expense reversal</div></div>
+          </div>
+          <ul style="font-size:0.82rem;color:var(--body);padding-left:18px;margin:0;">
+            <li>Supplier owes us money (refund)</li>
+            <li>AP balance <strong>decreases</strong> (debit side)</li>
+            <li>Creates open item that reduces AP</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8 -->
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Two Apps for Invoice Entry</span><span class="sec-title-es">Dos apps para ingresar facturas</span></div><div class="sec-desc">Las dos aplicaciones Fiori disponibles para contabilizar facturas y credit memos de proveedor en SAP S/4HANA.</div></div></div>
+  <div class="theory-box"><strong>SAP ofrece dos apps distintas para el mismo resultado — la empresa elige cuál usar:</strong> tanto facturas como credit memos de proveedor pueden ingresarse con dos apps distintas: <strong>Create Supplier Invoice</strong> y <strong>Create Incoming Invoices</strong>. Ambas generan el mismo tipo de documento FI. La elección depende de la configuración y las preferencias de la empresa. El contador de AP debe consultar con sus colegas cuál es el estándar en su organización.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card o">
+        <h4>&#128196; Create Supplier Invoice <span class="sub">· App opción 1</span></h4>
+        <ul>
+          <li>App Fiori para contabilizar facturas de proveedor</li>
+          <li>Permite ingreso de facturas (<strong>Invoice</strong>)</li>
+          <li>Permite ingreso de credit memos (<strong>Credit Memo</strong>)</li>
+          <li>Misma app para ambos — se cambia el Transaction Type</li>
+        </ul>
+        <div style="margin-top:8px;background:rgba(224,123,57,0.1);border-radius:6px;padding:6px 10px;font-size:0.8rem;color:#8B4513;">App ID: disponible en el Fiori Launchpad de AP</div>
+      </div>
+      <div class="card b">
+        <h4>&#128203; Create Incoming Invoices <span class="sub">· App opción 2</span></h4>
+        <ul>
+          <li>Alternativa a Create Supplier Invoice</li>
+          <li>Mismo resultado: genera el mismo Accounting Document</li>
+          <li>También permite facturas y credit memos</li>
+          <li>La app preferida puede variar por empresa/equipo</li>
+        </ul>
+        <div style="margin-top:8px;background:rgba(26,75,140,0.08);border-radius:6px;padding:6px 10px;font-size:0.8rem;color:#1A4B8C;">Preguntar a colegas cuál usa el equipo — ambas coexisten en el sistema</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S9 -->
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Foreign Currency Invoices</span><span class="sec-title-es">Facturas en moneda extranjera</span></div><div class="sec-desc">Cómo SAP maneja las facturas de proveedores internacionales que llegan en monedas distintas a la moneda local.</div></div></div>
+  <div class="theory-box"><strong>Los proveedores del mundo facturan en su moneda local — SAP convierte automáticamente:</strong> Bike Company tiene proveedores en todo el mundo. Un proveedor de EE.UU. factura en USD, uno de Australia en AUD, uno de Alemania en EUR. Al ingresar la factura, se especifica el <strong>Currency Key</strong> (ej. USD). SAP almacena el importe en la moneda de la factura y simultáneamente lo convierte a la moneda local usando el tipo de cambio vigente en la <strong>Posting Date</strong>.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card o">
+        <h4>&#127482;&#127480; US Supplier <span class="sub">· Currency Key: USD</span></h4>
+        <p>Factura llega en dólares estadounidenses. Se ingresa USD en el campo Currency Key. SAP convierte a EUR (o la moneda local de la sociedad) usando el tipo de cambio del día.</p>
+      </div>
+      <div class="card cr">
+        <h4>&#127462;&#127482; Australian Supplier <span class="sub">· Currency Key: AUD</span></h4>
+        <p>Factura en dólares australianos. Mismo proceso — el tipo de cambio AUD/EUR se aplica automáticamente. SAP guarda ambos importes.</p>
+      </div>
+      <div class="card b">
+        <h4>&#127465;&#127466; German Supplier <span class="sub">· Currency Key: EUR</span></h4>
+        <p>Si la sociedad es en EUR y el proveedor es alemán, la moneda coincide con la local. No hay conversión necesaria — es el caso más simple.</p>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:10px 14px;font-size:0.84rem;">SAP guarda <strong>ambos importes</strong> por partida: el importe en moneda extranjera Y el importe en moneda local. Usa el tipo de cambio válido a la <strong>Posting Date</strong>. Las mismas apps de ingreso (Create Supplier Invoice / Create Incoming Invoices) se usan para moneda local y extranjera.</div>
+  </div>
+</section>
+
+<!-- S10 -->
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">From Invoice to Accounting Document — Complete Flow</span><span class="sec-title-es">De la factura al documento contable — flujo completo</span></div><div class="sec-desc">El recorrido completo de una factura de proveedor desde su llegada hasta la creación del asiento FI definitivo.</div></div></div>
+  <div class="theory-box"><strong>El posting convierte la factura del proveedor en un asiento FI permanente en ACDOCA:</strong> el flujo completo combina los datos de la factura física, los datos del Supplier Master, y la elección del Transaction Type para crear el Accounting Document definitivo. Este documento actualiza el subledger de AP, la cuenta de reconciliación del GL, y la cuenta de gasto o activo correspondiente.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 180" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a10pl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker></defs>
+      <rect x="14" y="60" width="120" height="60" rx="9" fill="#1A6B99"/>
+      <text x="74" y="87" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Supplier</text>
+      <text x="74" y="103" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Invoice</text>
+      <text x="74" y="116" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="8.5">Physical/electronic</text>
+      <line x1="134" y1="90" x2="165" y2="90" stroke="#3D7A52" stroke-width="2" marker-end="url(#a10pl)"/>
+      <rect x="165" y="44" width="130" height="90" rx="9" fill="#E07B39"/>
+      <text x="230" y="70" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Fiori App</text>
+      <text x="230" y="86" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Create Supplier Invoice</text>
+      <text x="230" y="100" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">or</text>
+      <text x="230" y="114" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Create Incoming Invoices</text>
+      <text x="230" y="128" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="8.5">Select Transaction Type</text>
+      <line x1="295" y1="90" x2="325" y2="90" stroke="#3D7A52" stroke-width="2" marker-end="url(#a10pl)"/>
+      <rect x="325" y="60" width="130" height="60" rx="9" fill="#5A6B8C"/>
+      <text x="390" y="86" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Supplier Master</text>
+      <text x="390" y="102" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">+ Pymt terms, Recon. Acct.</text>
+      <line x1="455" y1="90" x2="490" y2="90" stroke="#3D7A52" stroke-width="2" marker-end="url(#a10pl)"/>
+      <rect x="490" y="44" width="155" height="90" rx="9" fill="#0A0F1C"/>
+      <text x="567" y="72" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">Accounting</text>
+      <text x="567" y="88" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">Document</text>
+      <text x="567" y="106" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9.5">Posted to ACDOCA</text>
+      <text x="567" y="122" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Open item in AP sub-ledger</text>
+      <line x1="645" y1="76" x2="690" y2="56" stroke="#3D7A52" stroke-width="1.5" marker-end="url(#a10pl)"/>
+      <rect x="690" y="22" width="155" height="34" rx="7" fill="#3D7A52"/>
+      <text x="767" y="43" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">AP Subledger updated</text>
+      <line x1="645" y1="90" x2="690" y2="90" stroke="#3D7A52" stroke-width="1.5" marker-end="url(#a10pl)"/>
+      <rect x="690" y="74" width="155" height="34" rx="7" fill="#1A4B8C"/>
+      <text x="767" y="95" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">GL Recon. Acct updated</text>
+      <line x1="645" y1="104" x2="690" y2="124" stroke="#3D7A52" stroke-width="1.5" marker-end="url(#a10pl)"/>
+      <rect x="690" y="108" width="155" height="34" rx="7" fill="#00A896"/>
+      <text x="767" y="129" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Expense/Asset Acct. Dr.</text>
+    </svg>
+  </div>
+</section>
+
+</main>
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (T1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Source to Pay</div><div class="term-es">Fuente a pago</div><div class="term-def">Macro-proceso empresarial que abarca desde la identificación de un proveedor hasta el pago de la factura. Tiene 5 sub-procesos; AP trabaja en "Invoice to Pay".</div></div>
+      <div class="gcard"><div class="term-en">Invoice to Pay</div><div class="term-es">Factura a pago</div><div class="term-def">Sub-proceso de Source to Pay que cubre la gestión de facturas de proveedor y los pagos. Contiene: Supplier Invoice Management + Payables Management.</div></div>
+      <div class="gcard"><div class="term-en">Transaction Type</div><div class="term-es">Tipo de transacción</div><div class="term-def">Clasificación del documento de proveedor en SAP: Invoice, Credit Memo, Subsequent Debit, o Subsequent Credit. Determina el impacto Debe/Haber en la cuenta del proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Invoice (AP)</div><div class="term-es">Factura de proveedor</div><div class="term-def">Tipo de transacción que representa la recepción de una factura del proveedor. Genera un asiento CREDIT en la cuenta del proveedor — aumenta el saldo de AP.</div></div>
+      <div class="gcard"><div class="term-en">Credit Memo</div><div class="term-es">Nota de crédito</div><div class="term-def">Tipo de transacción donde el proveedor emite un crédito (reembolso). Genera un asiento DEBIT en la cuenta del proveedor — disminuye el saldo de AP.</div></div>
+      <div class="gcard"><div class="term-en">Subsequent Debit</div><div class="term-es">Cargo adicional</div><div class="term-def">Cargo extra posterior a la factura original (ej. flete adicional). Genera CREDIT en cuenta del proveedor. Procesado mayormente por logística.</div></div>
+      <div class="gcard"><div class="term-en">Subsequent Credit</div><div class="term-es">Crédito adicional</div><div class="term-def">Crédito adicional posterior a un credit memo. Genera DEBIT en cuenta del proveedor. El menos frecuente de los cuatro tipos.</div></div>
+      <div class="gcard"><div class="term-en">Journal Entry</div><div class="term-es">Asiento de diario</div><div class="term-def">El resultado contable de procesar una factura de proveedor en SAP. Contiene al menos una partida CREDIT (cuenta del proveedor) y una o más partidas DEBIT (gasto/activo).</div></div>
+      <div class="gcard"><div class="term-en">Currency Key</div><div class="term-es">Clave de moneda</div><div class="term-def">Código de tres letras que identifica una moneda en SAP (USD, AUD, EUR, etc.). Se especifica al ingresar una factura en moneda extranjera.</div></div>
+      <div class="gcard"><div class="term-en">Exchange Rate</div><div class="term-es">Tipo de cambio</div><div class="term-def">Tasa de conversión entre dos monedas. SAP usa el tipo de cambio válido en la Posting Date para convertir automáticamente facturas en moneda extranjera a la moneda local.</div></div>
+      <div class="gcard"><div class="term-en">Supplier Master Record</div><div class="term-es">Maestro del proveedor</div><div class="term-def">Registro en SAP que contiene todos los datos maestros del proveedor. Al ingresar una factura, SAP toma automáticamente del maestro los datos de cuenta, condiciones de pago e información bancaria.</div></div>
+      <div class="gcard"><div class="term-en">Posting Date</div><div class="term-es">Fecha de contabilización</div><div class="term-def">Fecha en que el documento se registra en los libros. Determina el período contable al que pertenece el asiento y el tipo de cambio a usar en facturas en moneda extranjera.</div></div>
+    </div>
+  </div>
+</section>
+<footer>T1 · Básico — AP Posting Logic (AP) · Biblioteca de Guías SAP · Fuente: documento del curso</footer>
+</body>
+</html>

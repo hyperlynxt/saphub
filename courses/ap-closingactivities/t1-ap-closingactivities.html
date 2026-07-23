@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Closing Activities in Accounts Payable — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t1);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:660px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(127,191,143,0.14);
+    border-left:4px solid var(--t1);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:660px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t1-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(61,122,82,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  /* THEORY BOX */
+  .theory-box{
+    background:var(--t1-pale);
+    border-left:4px solid var(--t1-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  /* FLOW (timeline / process) */
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{
+    position:absolute; top:20px; right:-21px; width:28px; height:28px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* COMPARISON CARDS */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; margin-bottom:4px; }
+
+  /* CHIPS */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:190px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-desc{ font-size:0.72rem; color:var(--body); margin-top:6px; line-height:1.4; display:block; }
+
+  /* CARD ROW (timing differences) */
+  .cardrow2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cardrow2 .item{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:18px 20px; }
+  .cardrow2 .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow2 .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.92rem; color:var(--ink); }
+  .cardrow2 .item .en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-bottom:8px; }
+  .cardrow2 .item p{ margin:0; font-size:0.82rem; color:var(--body); line-height:1.55; }
+
+  /* FORMULA BOX (foreign currency valuation) */
+  .formula-box{ background:var(--bg); border-radius:8px; padding:16px 20px; font-size:0.85rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:8px; font-family:'Syne',sans-serif; font-size:0.95rem; }
+  .formula-box div.frow{ padding:5px 0; color:var(--body); display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); }
+  .formula-box div.frow:last-child{ border-bottom:none; font-weight:700; color:var(--t1-dark); }
+  .formula-box .fval{ font-family:'JetBrains Mono',monospace; }
+
+  /* TABLE */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+  .badge-gold{ background:rgba(212,175,55,0.14); color:#8A6D1F; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media (max-width:760px){
+    .cmp-grid, .cardrow2{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Why Closing Matters</a>
+  <a href="#s2">GL &amp; AP Roles</a>
+  <a href="#s3">Four Activities</a>
+  <a href="#s4">GR/IR Clearing Account</a>
+  <a href="#s5">Timing Differences</a>
+  <a href="#s6">Supplier Balance Confirmation</a>
+  <a href="#s7">Foreign Currency Valuation</a>
+  <a href="#s8">Regrouping</a>
+  <a href="#s9">Posting Periods</a>
+  <a href="#s10">Closing Checklist</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Closing</span> Activities in Accounts Payable</h1>
+    <h2>Actividades de Cierre en Cuentas por Pagar</h2>
+    <p class="desc">Fundamentos teóricos de las principales actividades de cierre de período en el área de Accounts Payable: conciliación GR/IR, confirmación de saldos de proveedores, valoración de moneda extranjera y regrouping/reclasificación — y por qué General Ledger Accounting y Accounts Payable las ejecutan juntas.</p>
+    <div class="hlbox">Resumen Visual — <b>Closing Activities in Accounts Payable</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — Timeline / por qué importa el cierre -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Period-End Closing Matters in AP</span>
+          <span class="sec-title-es">Por qué importa el cierre de período en AP</span>
+        </div>
+        <div class="sec-desc">El cierre no es un evento aislado: es la ventana en la que los saldos de proveedores quedan listos para el reporte financiero.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es el cierre de período?</strong> Es el conjunto de actividades que se ejecutan al final de cada <strong>período contable</strong> para asegurar que los saldos de <strong>Accounts Payable</strong> reflejen la realidad económica antes de que se generen los reportes financieros. Un key user de AP recién incorporado necesita este conocimiento de base para poder apoyar a sus compañeros durante esa ventana.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">📅</span><span class="title-en">During the Period</span><span class="title-es">Durante el período</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Se registran facturas y pagos de proveedores</li>
+            <li>Entregas y facturas se van acumulando</li>
+            <li>Los saldos de AP cambian día a día</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">🔒</span><span class="title-en">Closing Window</span><span class="title-es">Ventana de cierre</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>GR/IR Reconciliation</li>
+            <li>Supplier Balance Confirmation</li>
+            <li>Foreign Currency Valuation</li>
+            <li>Regrouping/Reclassification</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">📊</span><span class="title-en">Financial Reporting</span><span class="title-es">Reporte financiero</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Saldos de AP quedan validados</li>
+            <li>El Libro Mayor refleja cifras correctas</li>
+            <li>Se abre el siguiente período</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — comparación GL vs AP -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">General Ledger Accounting and Accounts Payable</span>
+          <span class="sec-title-es">Contabilidad General y Cuentas por Pagar</span>
+        </div>
+        <div class="sec-desc">Dos áreas con roles distintos pero necesariamente coordinados durante el cierre.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El documento del curso señala que <strong>General Ledger Accounting</strong> y <strong>Accounts Payable</strong> juegan roles cruciales en el proceso de cierre. Ninguna de las dos puede completar sus actividades de forma aislada: los saldos que AP concilia y valora son, en definitiva, los que terminan reflejados en el <strong>Libro Mayor</strong>.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4><span class="icon-inline">📒</span>General Ledger Accounting <span class="en-tag">Contabilidad General</span></h4>
+        <ul>
+          <li>Es dueña del <strong>Libro Mayor</strong> y de la vista contable consolidada.</li>
+          <li>Depende de que los sub-libros (como AP) le entreguen saldos correctos y a tiempo.</li>
+          <li>Ejecuta actividades de cierre propias sobre las cuentas del GL.</li>
+        </ul>
+      </div>
+      <div class="cmp-card neutral">
+        <h4><span class="icon-inline">📥</span>Accounts Payable <span class="en-tag">Cuentas por Pagar</span></h4>
+        <ul>
+          <li>Administra los datos contables de todos los proveedores.</li>
+          <li>Ejecuta las cuatro actividades de cierre puntuales de esta guía.</li>
+          <li>Actualiza el GL en tiempo real vía cuenta de enlace.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — chips de las 4 actividades -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Four Closing Activities at a Glance</span>
+          <span class="sec-title-es">Las cuatro actividades de cierre, de un vistazo</span>
+        </div>
+        <div class="sec-desc">El curso cubre estas cuatro actividades como el núcleo del cierre de período en AP.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Cuatro actividades, un mismo objetivo:</strong> que los saldos de proveedores estén completos, confirmados, correctamente valorados y correctamente presentados antes de que se genere el reporte financiero del período.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip">
+          <span class="chip-icon">🔄</span>
+          <span class="chip-title">GR/IR Reconciliation</span>
+          <span class="chip-en">Conciliación GR/IR</span>
+          <span class="chip-desc">Compensa mercadería recibida vs. factura recibida.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">✅</span>
+          <span class="chip-title">Supplier Balance Confirmation</span>
+          <span class="chip-en">Confirmación de saldo de proveedores</span>
+          <span class="chip-desc">Alinea el saldo interno con el del proveedor.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">💱</span>
+          <span class="chip-title">Foreign Currency Valuation</span>
+          <span class="chip-en">Valoración de moneda extranjera</span>
+          <span class="chip-desc">Revalúa partidas abiertas al tipo de cambio de cierre.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">🔁</span>
+          <span class="chip-title">Regrouping / Reclassification</span>
+          <span class="chip-en">Regrouping / Reclasificación</span>
+          <span class="chip-desc">Presenta correctamente los saldos en el balance.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — GR/IR hub SVG -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What the GR/IR Clearing Account Tracks</span>
+          <span class="sec-title-es">Qué registra la cuenta de compensación GR/IR</span>
+        </div>
+        <div class="sec-desc">Una cuenta puente entre lo que llegó físicamente y lo que llegó como factura.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es la cuenta GR/IR?</strong> Cada vez que se registra una <strong>entrada de mercadería con referencia a material</strong> (Goods Receipt) y su correspondiente <strong>entrada de factura</strong> (Invoice Receipt), la cuenta de compensación <strong>GR/IR</strong> se actualiza con esas contabilizaciones. Es una cuenta temporal: existe para tender el puente entre dos eventos que casi nunca ocurren al mismo tiempo.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+          </marker>
+        </defs>
+        <line x1="230" y1="90" x2="400" y2="145" stroke="#3D7A52" stroke-width="2.5" marker-end="url(#a4)"/>
+        <line x1="670" y1="90" x2="500" y2="145" stroke="#3D7A52" stroke-width="2.5" marker-end="url(#a4)"/>
+        <line x1="450" y1="185" x2="450" y2="215" stroke="#94A3B8" stroke-width="2" marker-end="url(#a4)"/>
+
+        <rect x="100" y="30" width="260" height="62" rx="10" fill="#00A896"/>
+        <text x="230" y="55" text-anchor="middle" fill="white" class="box-label" font-family="Inter">📦 Goods Receipt</text>
+        <text x="230" y="73" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">entrada de mercadería (valuada)</text>
+
+        <rect x="540" y="30" width="260" height="62" rx="10" fill="#7E4FBF"/>
+        <text x="670" y="55" text-anchor="middle" fill="white" class="box-label" font-family="Inter">🧾 Invoice Receipt</text>
+        <text x="670" y="73" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">entrada de factura del proveedor</text>
+
+        <rect x="335" y="145" width="230" height="70" rx="10" fill="#1A6B99"/>
+        <text x="450" y="171" text-anchor="middle" fill="white" class="box-label" font-family="Inter">GR/IR Clearing Account</text>
+        <text x="450" y="188" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">cuenta puente, temporal</text>
+
+        <rect x="345" y="220" width="210" height="34" rx="8" fill="#5A6B8C"/>
+        <text x="450" y="241" text-anchor="middle" fill="white" class="box-sub" font-size="10">Se compensa al conciliar (Sección 5)</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — diferencias temporales -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Open Balances Need Attention at Close</span>
+          <span class="sec-title-es">Por qué las partidas abiertas necesitan atención al cierre</span>
+        </div>
+        <div class="sec-desc">Mercadería y factura casi nunca llegan el mismo día — y eso es exactamente lo que la cuenta GR/IR debe mostrar con claridad.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Al cierre, la cuenta GR/IR puede tener saldo abierto por dos motivos típicos: mercadería que ya llegó pero cuya factura todavía no, o factura ya recibida sobre mercadería que todavía no llegó físicamente. La <strong>reconciliación GR/IR</strong> revisa esas partidas abiertas para confirmar que son diferencias de <strong>timing</strong> normales, y no errores.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow2">
+        <div class="item">
+          <span class="icon">📦➡️❓</span>
+          <h5>Goods Received, Invoice Pending <span class="en">Mercadería recibida, factura pendiente</span></h5>
+          <p>El sistema registró la entrada de mercadería, pero la factura del proveedor todavía no llegó. La cuenta GR/IR queda con saldo <strong>debe</strong> hasta que la factura se contabilice.</p>
+        </div>
+        <div class="item">
+          <span class="icon">🧾➡️❓</span>
+          <h5>Invoice Received, Goods Pending <span class="en">Factura recibida, mercadería pendiente</span></h5>
+          <p>La factura ya se contabilizó, pero la mercadería todavía no llegó físicamente. La cuenta GR/IR queda con saldo <strong>haber</strong> hasta que se registre la entrada.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — Supplier Balance Confirmation flow -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Supplier Balance Confirmation</span>
+          <span class="sec-title-es">Confirmación de saldo de proveedores</span>
+        </div>
+        <div class="sec-desc">Alinear lo que el sistema dice que se debe con lo que el proveedor dice que se le debe.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué busca esta actividad?</strong> Verificar que el saldo que Accounts Payable tiene registrado para cada proveedor coincida con el saldo que el propio proveedor reconoce. Es un control de integridad antes de que esos saldos queden fijados en el reporte del período.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">📤</span><span class="title-en">Request Sent</span><span class="title-es">Se envía la solicitud</span>
+          </div>
+          <div class="flow-step-body"><ul><li>AP envía el saldo registrado al proveedor</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">📥</span><span class="title-en">Supplier Responds</span><span class="title-es">El proveedor responde</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Confirma el monto, o informa su propia cifra</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">🔍</span><span class="title-en">Compare Figures</span><span class="title-es">Se comparan las cifras</span>
+          </div>
+          <div class="flow-step-body"><ul><li>AP contrasta ambos montos</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#C0392B;">
+            <span class="icon">⚖️</span><span class="title-en">Resolve Differences</span><span class="title-es">Se resuelven diferencias</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Se investiga y corrige antes del cierre</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — Foreign Currency Valuation, equation style -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Foreign Currency Valuation</span>
+          <span class="sec-title-es">Valoración de moneda extranjera</span>
+        </div>
+        <div class="sec-desc">Las partidas abiertas en moneda extranjera se revalúan al tipo de cambio vigente al cierre.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué revalúa esta actividad?</strong> Las <strong>partidas abiertas</strong> de proveedores contabilizadas en una moneda distinta a la moneda local se registraron originalmente a un tipo de cambio histórico. Al cierre, se las revalúa al <strong>tipo de cambio de cierre</strong>, y la diferencia se contabiliza como una <strong>diferencia de valoración</strong> — ganancia o pérdida cambiaria no realizada.
+    </div>
+    <div class="visual-wrap">
+      <div class="formula-box">
+        <span class="flabel">Ejemplo ilustrativo (cifras a modo didáctico)</span>
+        <div class="frow"><span>Factura de proveedor, moneda extranjera</span><span class="fval">USD 10.000</span></div>
+        <div class="frow"><span>Tipo de cambio histórico (al contabilizar)</span><span class="fval">0,90 EUR/USD → EUR 9.000</span></div>
+        <div class="frow"><span>Tipo de cambio de cierre (al valorar)</span><span class="fval">0,95 EUR/USD → EUR 9.500</span></div>
+        <div class="frow"><span>Diferencia de valoración a contabilizar</span><span class="fval">EUR 500</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — Regrouping comparación -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Regrouping / Reclassification</span>
+          <span class="sec-title-es">Regrouping / Reclasificación</span>
+        </div>
+        <div class="sec-desc">El balance debe mostrar cada saldo del lado correcto — pasivo o activo — más allá de en qué cuenta técnica vive.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué hace falta reagrupar?</strong> Un proveedor normalmente tiene saldo <strong>haber</strong> (se le debe dinero). Pero si, por ejemplo, se le pagó de más o se le devolvió mercadería, puede terminar con saldo <strong>debe</strong> — es decir, la empresa tiene un derecho de cobro sobre él. El <strong>balance general</strong> exige presentar ese caso como una partida de activo, no de pasivo, aunque técnicamente siga contabilizado en la misma cuenta de proveedor.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card neutral">
+        <h4><span class="icon-inline">➖</span>Posición normal <span class="en-tag">Credit balance</span></h4>
+        <p>El proveedor tiene saldo <strong>haber</strong>: la empresa le debe. Se presenta como <strong>Accounts Payable</strong> (pasivo) en el balance.</p>
+      </div>
+      <div class="cmp-card accent">
+        <h4><span class="icon-inline">➕</span>Posición reagrupada <span class="en-tag">Debit balance</span></h4>
+        <p>El proveedor quedó con saldo <strong>debe</strong>: la empresa tiene un derecho de cobro. Se <strong>reclasifica</strong> a una cuenta de tipo activo para el reporte, sin alterar la cuenta original del proveedor.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — Posting Periods tabla -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting Periods and Special Periods</span>
+          <span class="sec-title-es">Períodos contables y períodos especiales</span>
+        </div>
+        <div class="sec-desc">El marco temporal dentro del cual se ejecutan las cuatro actividades de cierre.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un <strong>posting period</strong> es el intervalo de tiempo dentro de un ejercicio fiscal en el que se actualizan las cifras de las transacciones; toda transacción se asigna a un período específico. Un <strong>special period</strong> subdivide el último período contable regular específicamente para las operaciones de cierre — puede haber hasta <strong>12 períodos regulares y 4 períodos especiales</strong> en un ejercicio fiscal.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Tipo de período</th><th>Cantidad máxima</th><th>Función</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">📆 Regular Posting Period</span><span class="mod-en">Período contable regular</span></td>
+            <td><span class="badge badge-neutral">Hasta 12</span></td>
+            <td>Ventana en la que se registran las transacciones normales del negocio a lo largo del ejercicio fiscal.</td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🔒 Special Period</span><span class="mod-en">Período especial</span></td>
+            <td><span class="badge badge-accent">Hasta 4</span></td>
+            <td>Subdivide el último período regular exclusivamente para contabilizaciones de cierre — como las cuatro actividades de esta guía.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — checklist consolidado -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Bringing It Together: the AP Closing Checklist</span>
+          <span class="sec-title-es">Uniendo todo: el checklist de cierre en AP</span>
+        </div>
+        <div class="sec-desc">Las cuatro actividades, lado a lado, tal como las ejecutaría un key user de AP durante la ventana de cierre.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Estas cuatro actividades son la base de <strong>Accounts Payable</strong> dentro del proceso de cierre más amplio de <strong>General Ledger Accounting</strong>. El curso aclara que este contenido asume un sistema SAP S/4HANA donde los procesos de <strong>Advanced Valuation</strong> todavía no están activados — un matiz importante para no confundir este enfoque con el de sistemas donde sí lo están.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Actividad</th><th>Qué resuelve</th><th>Resultado esperado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">🔄 GR/IR Reconciliation</span></td>
+            <td>Diferencias de timing entre mercadería y factura recibidas.</td>
+            <td><span class="badge badge-accent">Cuenta GR/IR depurada</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">✅ Supplier Balance Confirmation</span></td>
+            <td>Discrepancias entre el saldo interno y el del proveedor.</td>
+            <td><span class="badge badge-accent">Saldos alineados</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">💱 Foreign Currency Valuation</span></td>
+            <td>Partidas abiertas en moneda extranjera a tipo histórico.</td>
+            <td><span class="badge badge-accent">Valoradas a tipo de cierre</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🔁 Regrouping/Reclassification</span></td>
+            <td>Saldos deudores de proveedor mal presentados como pasivo.</td>
+            <td><span class="badge badge-accent">Presentación correcta en balance</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">GR/IR Clearing Account</div><div class="term-es">Cuenta de Compensación GR/IR</div><div class="term-def">Cuenta puente actualizada cuando se registran entradas de mercadería valuadas y sus facturas correspondientes.</div></div>
+      <div class="gcard"><div class="term-en">Posting Period</div><div class="term-es">Período Contable</div><div class="term-def">Intervalo de tiempo en un ejercicio fiscal en el que se actualizan las cifras de las transacciones asignadas a él.</div></div>
+      <div class="gcard"><div class="term-en">Special Period</div><div class="term-es">Período Especial</div><div class="term-def">Subdivisión del último período regular para operaciones de cierre; hasta 4 por ejercicio fiscal.</div></div>
+      <div class="gcard"><div class="term-en">Accounts Payable</div><div class="term-es">Cuentas por Pagar</div><div class="term-def">Sub-libro que administra los datos contables de todos los proveedores de la empresa.</div></div>
+      <div class="gcard"><div class="term-en">Open Item</div><div class="term-es">Partida Abierta</div><div class="term-def">Posición contable que todavía no fue compensada ni liquidada contra otra.</div></div>
+      <div class="gcard"><div class="term-en">Foreign Currency Valuation</div><div class="term-es">Valoración de Moneda Extranjera</div><div class="term-def">Revaloriza al cierre las partidas abiertas registradas en una moneda distinta a la local.</div></div>
+      <div class="gcard"><div class="term-en">Regrouping</div><div class="term-es">Reagrupación / Reclasificación</div><div class="term-def">Ajuste de presentación que ubica un saldo del lado correcto del balance sin modificar la cuenta original.</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Account</div><div class="term-es">Cuenta de Enlace</div><div class="term-def">Cuenta del Libro Mayor que un sub-libro, como AP, actualiza automáticamente en tiempo real.</div></div>
+      <div class="gcard"><div class="term-en">Fiscal Year</div><div class="term-es">Ejercicio Fiscal</div><div class="term-def">Período de doce meses (más los especiales) que estructura el calendario contable de la empresa.</div></div>
+      <div class="gcard"><div class="term-en">Balance Sheet</div><div class="term-es">Balance General</div><div class="term-def">Estado financiero que presenta activos, pasivos y patrimonio en un momento determinado.</div></div>
+      <div class="gcard"><div class="term-en">Exchange Rate</div><div class="term-es">Tipo de Cambio</div><div class="term-def">Relación de conversión entre dos monedas, usada para valorar partidas en moneda extranjera.</div></div>
+      <div class="gcard"><div class="term-en">Vendor / Supplier</div><div class="term-es">Proveedor</div><div class="term-def">Tercero al que la empresa le compra bienes o servicios y con quien mantiene saldos de AP.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Closing Activities in Accounts Payable · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

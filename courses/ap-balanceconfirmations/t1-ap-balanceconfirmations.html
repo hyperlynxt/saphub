@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Balance Confirmations for Suppliers — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(127,191,143,0.14); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px; max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  .process-group-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  .process-row{ display:flex; align-items:stretch; gap:10px; min-width:900px; margin-bottom:22px; }
+  .process-row:last-child{ margin-bottom:0; }
+  .p-step{ flex:1; background:white; border:1.5px solid var(--border); border-radius:10px; padding:12px 10px; text-align:center; position:relative; }
+  .p-step .icon{ font-size:18px; display:block; margin-bottom:6px; }
+  .p-step .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:11.5px; color:var(--ink); display:block; }
+  .p-step .t-es{ font-size:9px; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .p-step.highlight{ background:var(--t1-pale); border:2px solid var(--t1-dark); box-shadow:0 3px 10px rgba(61,122,82,0.25); }
+  .p-step.highlight .t-en{ color:var(--t1-dark); }
+  .p-arrow{ display:flex; align-items:center; color:#CBD5E1; font-size:14px; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:190px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-desc{ font-size:0.72rem; color:var(--body); margin-top:6px; line-height:1.4; display:block; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media (max-width:760px){ .cmp-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Where SBC Fits</a>
+  <a href="#s2">Why Balances Are Checked</a>
+  <a href="#s3">Three Ways to Write</a>
+  <a href="#s4">Confirmation vs Request</a>
+  <a href="#s5">Balance Notification</a>
+  <a href="#s6">Why the Procedure Changed</a>
+  <a href="#s7">The Reply Address Rule</a>
+  <a href="#s8">Three Key Dates</a>
+  <a href="#s9">Two Apps, Two Roles</a>
+  <a href="#s10">Putting It Together</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Balance</span> Confirmations for Suppliers</h1>
+    <h2>Confirmaciones de Saldo para Proveedores</h2>
+    <p class="desc">Fundamentos teóricos de cómo se verifican los saldos de proveedores al cierre del ejercicio: las tres formas de escribirle a un proveedor, la regla de la dirección de respuesta, y las fechas clave que ordenan todo el proceso.</p>
+    <div class="hlbox">Resumen Visual — <b>Balance Confirmations for Suppliers</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Supplier Balance Confirmation Fits</span>
+          <span class="sec-title-es">Dónde entra la confirmación de saldo de proveedores</span>
+        </div>
+        <div class="sec-desc">Un control puntual del ejercicio viejo, entre dos reconciliaciones y el traspaso de saldos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿En qué momento corre?</strong> La confirmación de saldo de proveedores corre en el <strong>ejercicio fiscal viejo</strong>, después de la conciliación GR/IR y la reconciliación intercompañía, y antes del traspaso de saldos hacia el nuevo ejercicio.
+    </div>
+    <div class="visual-wrap">
+      <div class="process-group-label">Old Fiscal Year</div>
+      <div class="process-row">
+        <div class="p-step"><span class="icon">🔄</span><span class="t-en">GR/IR Reconciliation</span><span class="t-es">Conciliación GR/IR</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step"><span class="icon">🏢</span><span class="t-en">Intercompany Reconciliation</span><span class="t-es">Reconciliación intercompañía</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step highlight"><span class="icon">✅</span><span class="t-en">Supplier Balance Confirmation</span><span class="t-es">Confirmación de saldo</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step"><span class="icon">➡️</span><span class="t-en">Balance Carryforward</span><span class="t-es">Traspaso de saldos</span></div>
+      </div>
+      <div class="process-group-label">New Fiscal Year</div>
+      <div class="process-row">
+        <div class="p-step"><span class="icon">📅</span><span class="t-en">Manage Posting Periods &amp; Special Periods</span><span class="t-es">Gestión de períodos</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step"><span class="icon">💱</span><span class="t-en">Foreign Currency Valuation</span><span class="t-es">Valoración de moneda</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step"><span class="icon">🔁</span><span class="t-en">Regrouping/Reclassification</span><span class="t-es">Reagrupación</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step"><span class="icon">🔒</span><span class="t-en">Manage Special Periods</span><span class="t-es">Gestión de períodos especiales</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Supplier Balances Get Checked</span>
+          <span class="sec-title-es">Por qué se revisan los saldos de proveedores</span>
+        </div>
+        <div class="sec-desc">No es un trámite interno aislado — hay auditoría de por medio.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los <strong>saldos de proveedores</strong> se revisan por su correctitud durante el cierre de fin de año, <strong>en cooperación con auditores internos o externos</strong>. No es solo un chequeo contable — es parte del proceso de auditoría del cierre.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Three Ways to Send Letters</span>
+          <span class="sec-title-es">Tres formas de enviar cartas</span>
+        </div>
+        <div class="sec-desc">Antes de programar nada, hay que elegir qué tipo de carta se le manda al proveedor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Existen <strong>tres formas</strong> de enviarle una carta a un proveedor para verificar su saldo, cada una con una lógica de respuesta distinta.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip">
+          <span class="chip-icon">✅</span>
+          <span class="chip-title">Balance Confirmation</span>
+          <span class="chip-en">Confirmación de saldo</span>
+          <span class="chip-desc">Pide respuesta siempre, coincida o no el monto.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">📣</span>
+          <span class="chip-title">Balance Notification</span>
+          <span class="chip-en">Notificación de saldo</span>
+          <span class="chip-desc">Solo responde si el proveedor está en desacuerdo.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">❓</span>
+          <span class="chip-title">Balance Request</span>
+          <span class="chip-en">Solicitud de saldo</span>
+          <span class="chip-desc">Le pregunta al proveedor cuánto dice que se le debe.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Balance Confirmation vs. Balance Request</span>
+          <span class="sec-title-es">Confirmación de saldo vs. solicitud de saldo</span>
+        </div>
+        <div class="sec-desc">La diferencia está en quién dice el monto primero.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Con una <strong>Balance Confirmation</strong>, la empresa le dice al proveedor cuánto le debe y pide una respuesta. Con una <strong>Balance Request</strong>, es al revés: se le pide al proveedor que diga cuánto tiene registrado en su cuenta.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4>Balance Confirmation</h4>
+        <p><strong>La empresa habla primero.</strong> Informa el monto que tiene registrado y pide que el proveedor confirme, esté o no de acuerdo.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4>Balance Request</h4>
+        <p><strong>El proveedor habla primero.</strong> Se le pide que informe el monto que él tiene registrado en su propia cuenta.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Balance Notification, in Detail</span>
+          <span class="sec-title-es">Notificación de saldo, en detalle</span>
+        </div>
+        <div class="sec-desc">La tercera opción, pensada para reducir el volumen de respuestas que hay que procesar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Con <strong>Balance Notification</strong>, se le informa al proveedor los montos a confirmar, pero <strong>solo responde si está en desacuerdo</strong> con el saldo. Si el proveedor no contesta, se asume que el saldo es correcto.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why the Procedure Changed This Year</span>
+          <span class="sec-title-es">Por qué el procedimiento cambió este año</span>
+        </div>
+        <div class="sec-desc">No fue un cambio arbitrario — hubo una razón concreta de respuesta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El procedimiento cambió porque <strong>no respondían suficientes proveedores</strong> a las Balance Requests. Al pasar a Balance Confirmation, la expectativa es que la <strong>tasa de respuesta aumente</strong> nuevamente este año.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card neutral">
+        <h4>Antes <span class="en-tag">Balance Request</span></h4>
+        <p>Se le pedía al proveedor que informara su saldo — la tasa de respuesta resultó insuficiente.</p>
+      </div>
+      <div class="cmp-card accent">
+        <h4>Ahora <span class="en-tag">Balance Confirmation</span></h4>
+        <p>Se le informa el saldo y se pide confirmación siempre — se espera mejorar la tasa de respuesta.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Reply Address Rule</span>
+          <span class="sec-title-es">La regla de la dirección de respuesta</span>
+        </div>
+        <div class="sec-desc">La carta necesita un destino de vuelta válido — y ese destino tiene una regla específica.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En <strong>SAP S/4HANA Public Cloud</strong>, la dirección de respuesta (<em>Reply To</em>) debe ser un <strong>business partner</strong> de categoría <strong>Organization</strong> o <strong>Group</strong>. En SAP S/4HANA (on-premise), esa dirección se configura en customizing dentro de la app <em>Create Balance Confirmation — For Suppliers</em>.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Entorno</th><th>Dónde se define la dirección de respuesta</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">SAP S/4HANA Public Cloud</span></td><td>Business partner (categoría Organization o Group) en el job template.</td></tr>
+          <tr><td><span class="mod-name">SAP S/4HANA (on-premise)</span></td><td>Customizing, dentro de la app Create Balance Confirmation — For Suppliers.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Three Key Dates That Drive the Job</span>
+          <span class="sec-title-es">Tres fechas clave que ordenan el job</span>
+        </div>
+        <div class="sec-desc">Sin estas tres fechas, el job no sabría qué saldo tomar ni cuándo esperar respuesta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Programar la confirmación de saldo requiere tres fechas: la fecha de <strong>reconciliación</strong> (qué saldo se toma), la fecha de <strong>emisión</strong> (cuándo se envía la carta), y la fecha de <strong>respuesta</strong> (hasta cuándo se espera contestación).
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Fecha</th><th>Qué determina</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">Reconciliation Date</span></td><td>El saldo tomado como referencia para la carta.</td></tr>
+          <tr><td><span class="mod-name">Issue Date</span></td><td>Fecha límite en la que la carta debe estar emitida.</td></tr>
+          <tr><td><span class="mod-name">Reply Date</span></td><td>Fecha límite hasta la que se espera respuesta del proveedor.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Two Apps, Two Roles</span>
+          <span class="sec-title-es">Dos apps, dos roles distintos</span>
+        </div>
+        <div class="sec-desc">Programar la carta y monitorear su resultado son dos tareas separadas, con apps distintas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para <strong>crear</strong> las cartas se usa el template Supplier Balance Confirmation dentro de <strong>Schedule Accounts Payable Jobs</strong>. Para <strong>monitorear</strong> el resultado se usa <strong>Manage Balance Confirmations for Suppliers</strong>.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4>Schedule Accounts Payable Jobs</h4>
+        <p>Programa la corrida del job y genera las cartas según el template elegido.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4>Manage Balance Confirmations for Suppliers</h4>
+        <p>Permite monitorear el estado de las confirmaciones ya generadas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Putting the Three Letter Types Together</span>
+          <span class="sec-title-es">Uniendo los tres tipos de carta</span>
+        </div>
+        <div class="sec-desc">Un resumen de quién habla primero y cuándo hay que esperar respuesta, según el tipo elegido.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los tres tipos de carta comparten el mismo objetivo — <strong>reconciliar la cuenta y corregir errores contactando al proveedor</strong> — pero difieren en quién informa el monto primero y cuándo se espera respuesta.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Tipo de carta</th><th>¿Quién informa el monto?</th><th>¿Cuándo responde el proveedor?</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">Balance Confirmation</span></td><td>La empresa</td><td><span class="badge badge-accent">Siempre</span></td></tr>
+          <tr><td><span class="mod-name">Balance Notification</span></td><td>La empresa</td><td><span class="badge badge-neutral">Solo si está en desacuerdo</span></td></tr>
+          <tr><td><span class="mod-name">Balance Request</span></td><td>El proveedor</td><td><span class="badge badge-accent">Siempre (es la respuesta misma)</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Balance Confirmation</div><div class="term-es">Confirmación de Saldo</div><div class="term-def">Carta que informa al proveedor el monto adeudado y pide confirmación, coincida o no con su registro.</div></div>
+      <div class="gcard"><div class="term-en">Balance Notification</div><div class="term-es">Notificación de Saldo</div><div class="term-def">Carta que informa el monto al proveedor, quien solo responde si está en desacuerdo.</div></div>
+      <div class="gcard"><div class="term-en">Balance Request</div><div class="term-es">Solicitud de Saldo</div><div class="term-def">Carta que le pide al proveedor que informe el monto que él tiene registrado en su cuenta.</div></div>
+      <div class="gcard"><div class="term-en">Reply To</div><div class="term-es">Dirección de Respuesta</div><div class="term-def">Dirección especificada en el job template; debe ser un business partner de categoría Organization o Group.</div></div>
+      <div class="gcard"><div class="term-en">Business Partner</div><div class="term-es">Socio de Negocio</div><div class="term-def">Registro maestro que representa una entidad (persona, organización o grupo) con la que la empresa interactúa.</div></div>
+      <div class="gcard"><div class="term-en">Business Partner Category</div><div class="term-es">Categoría de Socio de Negocio</div><div class="term-def">Clasificación del business partner (ej. Person, Organization, Group) que determina qué datos aplican.</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Date</div><div class="term-es">Fecha de Reconciliación</div><div class="term-def">Fecha cuyo saldo se toma como referencia para generar la carta de confirmación.</div></div>
+      <div class="gcard"><div class="term-en">Issue Date</div><div class="term-es">Fecha de Emisión</div><div class="term-def">Fecha límite en la que la carta de confirmación debe quedar emitida.</div></div>
+      <div class="gcard"><div class="term-en">Reply Date</div><div class="term-es">Fecha de Respuesta</div><div class="term-def">Fecha límite hasta la que se espera la respuesta del proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Year-End Closing</div><div class="term-es">Cierre de Fin de Año</div><div class="term-def">Conjunto de actividades que aseguran la correctitud de los saldos antes del reporte financiero anual.</div></div>
+      <div class="gcard"><div class="term-en">Internal Audit</div><div class="term-es">Auditoría Interna</div><div class="term-def">Función dentro de la empresa que verifica la correctitud de los procesos y saldos contables.</div></div>
+      <div class="gcard"><div class="term-en">External Audit</div><div class="term-es">Auditoría Externa</div><div class="term-def">Verificación independiente, realizada por un tercero, de los saldos y estados financieros de la empresa.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Balance Confirmations for Suppliers · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

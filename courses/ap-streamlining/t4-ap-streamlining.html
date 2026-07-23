@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Supplier Invoice Optimization — Configurador GUI | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#A78BC9;--t1-dark:#6B4C8F;--t1-pale:rgba(167,139,201,0.12);--t1-pale-border:rgba(167,139,201,0.38);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-secondary:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#160C24 55%,#200E32 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;letter-spacing:.2px;}
+  .pill-primary{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-secondary{border:1.5px solid var(--pill-secondary);color:var(--pill-secondary);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.5rem);color:rgba(255,255,255,0.62);margin:0 0 18px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(167,139,201,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(107,76,143,0.35);}
+  .area-tag{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);color:var(--t1-dark);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;white-space:nowrap;align-self:center;}
+  .sec-titles{display:flex;flex-direction:column;gap:2px;flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;margin-top:2px;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .spro-tree{background:#FAFAFA;border:1px solid #D0D4DC;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:12px;}
+  .spro-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--t1-dark);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+  .spro-node{display:flex;align-items:center;gap:6px;padding:2px 0;color:var(--body);}
+  .spro-node .sn-text{font-size:11.5px;}
+  .spro-node.active .sn-text{font-weight:700;color:var(--t1-dark);background:rgba(167,139,201,0.15);border-radius:4px;padding:1px 6px;}
+  .i1{padding-left:18px;}.i2{padding-left:36px;}.i3{padding-left:54px;}.i4{padding-left:72px;}.i5{padding-left:90px;}
+  .sapgui{border:2px solid #A8B0BC;border-radius:4px;overflow:hidden;box-shadow:0 4px 14px rgba(10,15,28,0.1);}
+  .gui-bar{background:linear-gradient(180deg,#3A5A80,#2A4060);padding:7px 14px;display:flex;align-items:center;gap:12px;}
+  .tcode{font-family:'JetBrains Mono',monospace;font-size:11px;color:white;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:3px;padding:3px 8px;flex-shrink:0;}
+  .gui-title{font-size:12.5px;font-weight:600;color:white;}
+  .gui-tools{background:#C8D0DA;padding:5px 10px;display:flex;gap:6px;border-bottom:1px solid #A8B0BC;}
+  .gbtn{background:#D8E0E8;border:1px solid #9AA0AA;border-radius:2px;padding:3px 8px;font-size:10.5px;color:#2A2A2A;}
+  .gui-body{background:white;padding:14px 16px;}
+  .gui-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .gui-table th{background:#C8D0DA;color:#1A1A1A;padding:6px 10px;text-align:left;border:1px solid #A8B0BC;font-weight:700;font-size:11px;}
+  .gui-table td{padding:5px 10px;border:1px solid #D4D8DC;color:#2A2A2A;vertical-align:middle;}
+  .gui-table tr:nth-child(even) td{background:#F5F7FA;}
+  .gui-table .hi td{background:#CCE0F5;border-left:2px solid #0070C8;}
+  .gui-status{background:#C8D0DA;border-top:1px solid #A8B0BC;padding:4px 12px;font-size:10.5px;color:#444;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR / GUI</span>
+  <a href="#s1">Doc Change Rules — Header</a>
+  <a href="#s2">Doc Change Rules — Items</a>
+  <a href="#s3">Posting Periods</a>
+  <a href="#s4">Recurring Doc Types</a>
+  <a href="#s5">Background Job</a>
+  <a href="#s6">Field Status Groups</a>
+  <a href="#s7">AP Number Ranges</a>
+  <a href="#s8">Authorization — Mass Change</a>
+  <a href="#s9">Validation Rules</a>
+  <a href="#s10">User Settings — System Level</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1>Supplier Invoice <span class="accent">Optimization</span></h1>
+    <h2>Tangibilización — Configurador SAP GUI</h2>
+    <p class="desc">Las 10 parametrizaciones que habilitan las funciones de optimización del curso: reglas de modificación de documentos, períodos, tipos documentales para recurrentes, scheduling, field status, autorizaciones y más.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">🔧</span>
+      <b>Vos, en el rol de Configurador</b> · SAP Consultant<br>
+      <span style="font-size:12.5px;opacity:0.85;">Estas configuraciones definen qué puede hacer Jennifer en Fiori — las reglas que el sistema aplica detrás de cada acción de optimización.</span>
+    </div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Document Change Rules — Header Fields</span><span class="sec-title-es">Reglas de cambio — campos de cabecera</span></div><div class="sec-desc">Configura qué campos del Document Header pueden modificarse post-contabilización, y bajo qué condiciones.</div></div></div>
+  <div class="theory-box"><strong>Document Change Rules = reglas de modificabilidad:</strong> SAP permite al configurador definir, por Company Code, qué campos de la cabecera de un documento FI pueden ser cambiados después de contabilizarse, y si el cambio requiere período abierto o partida no reconciliada. Los campos con impacto contable directo (Document Number, Amount, Posting Date, Company Code, Document Type) son siempre inmutables por el sistema base y no pueden habilitarse aquí.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Document Change Rules, Header Data</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Define Document Change Rules — Header Fields · DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Field Name</th><th>Field Label</th><th>Change allowed</th><th>Posting period</th><th>Not cleared</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>XBLNR</strong></td><td>Reference Doc. Number</td><td>✔</td><td>✔ req.</td><td></td></tr>
+            <tr class="hi"><td><strong>BKTXT</strong></td><td>Document Header Text</td><td>✔</td><td></td><td></td></tr>
+            <tr><td>BLDAT</td><td>Document Date</td><td>✘ NEVER</td><td>—</td><td>—</td></tr>
+            <tr><td>BUDAT</td><td>Posting Date</td><td>✘ NEVER</td><td>—</td><td>—</td></tr>
+            <tr><td>WAERS</td><td>Currency Key</td><td>✘ NEVER</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Company Code DE01 · Header change rules active</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Document Change Rules — Line Item Fields</span><span class="sec-title-es">Reglas de cambio — campos de posición</span></div><div class="sec-desc">Los campos de las partidas que pueden actualizarse — especialmente los relacionados con pago.</div></div></div>
+  <div class="theory-box"><strong>Los campos de pago de las partidas son los más frecuentemente habilitados:</strong> a nivel de partida (line item), los campos de impacto contable (Account, Posting Key, Amount, Tax ID) son siempre inmutables. Los campos de pago (Payment Terms, Baseline Date, Due Date, Payment Block) pueden habilitarse para modificación bajo condición — esto es lo que permite a Jennifer hacer el cambio masivo de payment terms en las facturas abiertas de un proveedor.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Document Change Rules, Line Items</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Document Change Rules — Line Item Fields · DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Field</th><th>Label</th><th>Change allowed</th><th>Pstg period</th><th>Not cleared</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>ZTERM</strong></td><td>Payment Terms</td><td>✔</td><td>✔</td><td>✔</td></tr>
+            <tr class="hi"><td><strong>ZFBDT</strong></td><td>Baseline Payment Date</td><td>✔</td><td>✔</td><td>✔</td></tr>
+            <tr class="hi"><td><strong>ZLSPR</strong></td><td>Payment Block</td><td>✔</td><td></td><td>✔</td></tr>
+            <tr class="hi"><td><strong>SGTXT</strong></td><td>Item Text</td><td>✔</td><td></td><td></td></tr>
+            <tr><td>WRBTR</td><td>Amount in Document Currency</td><td>✘ NEVER</td><td>—</td><td>—</td></tr>
+            <tr><td>HKONT</td><td>General Ledger Account</td><td>✘ NEVER</td><td>—</td><td>—</td></tr>
+            <tr><td>MWSKZ</td><td>Tax Code</td><td>✘ NEVER</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Line item change rules · ZTERM/ZFBDT: enabled with posting period + not cleared</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Posting Period Control</span><span class="sec-title-es">Control de períodos contables</span></div><div class="sec-desc">Cómo abrir y cerrar períodos contables, que es la primera condición para permitir cambios en documentos.</div></div></div>
+  <div class="theory-box"><strong>El período abierto es condición previa para cambios:</strong> la primera condición que SAP verifica antes de permitir un cambio en un documento FI es si el período contable está abierto (Open). El configurador gestiona esto con la transacción <strong>OB52</strong> — abriendo y cerrando períodos por sociedad y tipo de documento. En cierre mensual, los períodos anteriores se bloquean para prevenir modificaciones retrospectivas.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 T-code: OB52</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Fiscal Year</span></div>
+      <div class="spro-node i3 active"><span class="sn-icon">🔷</span><span class="sn-text">Open and Close Posting Periods</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">OB52</span><span class="gui-title">Open and Close Posting Periods — DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Var.</th><th>Acct Type</th><th>From Acct</th><th>To Acct</th><th>From Per.1</th><th>Year</th><th>To Per.1</th><th>Year</th></tr></thead>
+          <tbody>
+            <tr><td>DE01</td><td>+ (all)</td><td>—</td><td>—</td><td>7</td><td>2025</td><td>8</td><td>2025</td></tr>
+            <tr class="hi"><td>DE01</td><td>K (Vendor)</td><td>100000</td><td>199999</td><td><strong>7</strong></td><td>2025</td><td><strong>8</strong></td><td>2025</td></tr>
+            <tr><td>DE01</td><td>S (GL)</td><td>—</td><td>—</td><td>7</td><td>2025</td><td>8</td><td>2025</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;font-size:11px;color:#666;">Periods 1-6/2025 = Closed · Period 7-8/2025 = Open · Period 9+ = Not yet open</div>
+      </div>
+      <div class="gui-status">Open periods: July-August 2025 · Account Type K (Vendor) · DE01</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Document Types for Recurring Entries</span><span class="sec-title-es">Tipos de documento para entradas recurrentes</span></div><div class="sec-desc">El tipo de documento que SAP asigna a los FI documents generados por el Recurring Entry Program.</div></div></div>
+  <div class="theory-box"><strong>El Recurring Entry Program usa tipos documentales específicos:</strong> cuando el Recurring Entry Program genera documentos FI desde las plantillas, asigna un <strong>Document Type</strong> específico. El tipo de documento para el Original Document (la plantilla) suele ser <strong>X1</strong> o similar — especial porque no es un asiento contable real, es solo la plantilla fuente. Los FI documents generados para cada período llevan el tipo original del documento de factura (ej. KR, RE).</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Document Types for Entry View</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Document Types — Recurring Entries context</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">📋 Detail</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>DocType</th><th>Description</th><th>Account Types</th><th>Usage</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>X1</strong></td><td>Recurring Entry (Template)</td><td>K, S</td><td>Original Document — the template only, no GL posting</td></tr>
+            <tr><td>KR</td><td>Vendor Invoice</td><td>K, S</td><td>FI docs generated by recurring program for each period</td></tr>
+            <tr><td>RE</td><td>Invoice — Gross (PO ref)</td><td>K, S, M</td><td>FI docs if recurring entry references a PO</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">X1 = special type for Recurring Entry templates</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="area-tag">Basis / System</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Background Job — Recurring Entry Program</span><span class="sec-title-es">Scheduling del programa de entradas recurrentes</span></div><div class="sec-desc">Configurar la ejecución automática periódica del Recurring Entry Program como background job.</div></div></div>
+  <div class="theory-box"><strong>El scheduling evita que nadie tenga que iniciarlo manualmente:</strong> el Recurring Entry Program puede ejecutarse de forma manual (un usuario lo inicia) o como <strong>background job programado</strong>. Un empleado autorizado configura el job: define la variante de selección (qué sociedad, qué tipo de documento), el usuario bajo cuyo nombre corre, y el horario (ej. primer día hábil de cada mes a las 06:00). Desde entonces, el programa genera los documentos automáticamente sin intervención.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 Transaction: SM36 (Define Background Job)</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">System Administration</span></div>
+      <div class="spro-node i1 active"><span class="sn-icon">🔷</span><span class="sn-text">SM36 — Define Background Job</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">SM36</span><span class="gui-title">Define Background Job — Recurring Entry Program</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Job Steps</button><button class="gbtn">🗓️ Start Conditions</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table" style="margin-bottom:12px;">
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Job Name</td><td><strong>AP_RECUR_ENTRIES_DE01</strong></td></tr>
+            <tr><td>Job Class</td><td>C (Normal)</td></tr>
+            <tr><td>Target Host</td><td>SAPHOSTDE01</td></tr>
+            <tr class="hi"><td>Program</td><td><strong>SAPF120 (Recurring Entry Posting)</strong></td></tr>
+            <tr><td>Variant</td><td>DE01_MONTHLY (Company Code DE01, type K)</td></tr>
+            <tr><td>Start: Date/Time</td><td>01.08.2025 / 06:00:00</td></tr>
+            <tr><td>Periodicity</td><td>Monthly — 1st working day</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Job AP_RECUR_ENTRIES_DE01 scheduled · Next run: 01.08.2025 06:00</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="area-tag">FI — Accounts Payable</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Field Status Groups — Invoice Entry Screen</span><span class="sec-title-es">Grupos de field status para la pantalla de facturas</span></div><div class="sec-desc">Controla qué campos son visibles, obligatorios u opcionales en la pantalla de creación de facturas.</div></div></div>
+  <div class="theory-box"><strong>Field Status Groups definen la pantalla de Jennifer:</strong> la experiencia de Jennifer al crear facturas en Fiori está determinada por los <strong>Field Status Groups</strong> asignados a cada GL account. El Field Status Group define si cada campo de la pantalla es obligatorio (Required), opcional (Optional) o suprimido (Suppressed). Una cuenta de gastos puede requerir Centro de Costo obligatoriamente; una cuenta de GR/IR puede suprimir ese campo.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Line Item</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Field Status Variants / Groups</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Field Status Group G004 — Expense Accounts</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Field Group</th><th>Suppress</th><th>Required</th><th>Optional</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>General Data</td><td></td><td>✔</td><td></td><td>Posting key, account — always required</td></tr>
+            <tr class="hi"><td>Cost Accounting</td><td></td><td><strong>✔ Required</strong></td><td></td><td>Cost Center mandatory for expense accounts</td></tr>
+            <tr><td>Payment Transactions</td><td></td><td></td><td>✔</td><td>Payment terms optional at line item</td></tr>
+            <tr><td>Tax</td><td></td><td></td><td>✔</td><td>Tax code optional (from header default)</td></tr>
+            <tr><td>Asset Accounting</td><td>✔</td><td></td><td></td><td>Suppressed — not relevant for expense</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Field Status Group G004 · Expense accounts · Cost Center required</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Number Ranges for AP Documents</span><span class="sec-title-es">Rangos de numeración para documentos AP</span></div><div class="sec-desc">Los rangos que controlan la numeración de los documentos FI generados por el Recurring Entry Program y las importaciones.</div></div></div>
+  <div class="theory-box"><strong>Los recurring docs y los docs importados necesitan rangos propios:</strong> los documentos generados por el Recurring Entry Program usan el número range asignado al Document Type del template (X1) y al tipo del documento generado (KR). Los documentos creados por Import (tipo RE o KR) usan los mismos rangos que las facturas manuales. El configurador se asegura de que los rangos tengan suficiente capacidad para el volumen de entradas recurrentes e importaciones.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span class="sn-icon">🔷</span><span class="sn-text">Document Number Ranges — Entry View</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Number Range Maintenance — Company Code: DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Intervals</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>No.</th><th>From Number</th><th>To Number</th><th>Current No.</th><th>Int/Ext</th><th>Doc Types</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>90</strong></td><td>9000000000</td><td>9099999999</td><td>9000000011</td><td>Internal</td><td>X1 (Recurring Templates)</td></tr>
+            <tr><td>19</td><td>5100000000</td><td>5199999999</td><td>5105701089</td><td>Internal</td><td>KR, RE (incl. recurring run output)</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:10.5px;color:#666;margin-top:8px;">Range 90: Recurring Entry templates (Original Documents) · Range 19: FI docs generated by the program</div>
+      </div>
+      <div class="gui-status">Number ranges configured for DE01 · Recurring entries: range 90</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="area-tag">FI — Accounts Payable</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Authorization — Mass Change Operations</span><span class="sec-title-es">Autorización para cambios masivos</span></div><div class="sec-desc">El objeto de autorización que controla quién puede ejecutar cambios masivos en partidas de proveedores.</div></div></div>
+  <div class="theory-box"><strong>Mass Change requiere autorización específica:</strong> no todo usuario de AP puede ejecutar cambios masivos en partidas de proveedores. El cambio masivo puede afectar cientos de documentos simultáneamente — un error podría ser muy difícil de revertir. Por eso existe un <strong>objeto de autorización</strong> específico que controla quién puede usar la función de Mass Change en Manage Supplier Line Items, separado del permiso para cambios individuales.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 Authorization Management — Transaction: PFCG (Role Maintenance)</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">System Administration</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">User and Authorization Management</span></div>
+      <div class="spro-node i2 active"><span class="sn-icon">🔷</span><span class="sn-text">PFCG — Role Maintenance</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">PFCG</span><span class="gui-title">Role Maintenance — AP_SENIOR_ACCOUNTANT</span></div>
+      <div class="gui-tools"><button class="gbtn">Authorizations</button><button class="gbtn">💾 Generate</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Auth. Object</th><th>Description</th><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>F_BKPF_BUK</strong></td><td>FI: Company Code Auth.</td><td>BUKRS</td><td>DE01</td></tr>
+            <tr class="hi"><td><strong>F_BKPF_BLA</strong></td><td>FI: Document Type</td><td>BLART</td><td>KR, RE, KZ</td></tr>
+            <tr><td>F_BKPF_KOA</td><td>FI: Account Type</td><td>KOART</td><td>K (Vendor)</td></tr>
+            <tr class="hi"><td><strong>F_KNA1_APP</strong></td><td>Vendor: Mass Change Auth.</td><td>ACTVT</td><td>02 (Change, incl. mass)</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:10.5px;color:#666;margin-top:8px;">F_KNA1_APP with ACTVT=02 grants mass change rights · Standard AP role may have ACTVT=03 (display only)</div>
+      </div>
+      <div class="gui-status">Role AP_SENIOR_ACCOUNTANT · Mass Change: authorized</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Validation Rules for Document Changes</span><span class="sec-title-es">Reglas de validación para cambios en documentos</span></div><div class="sec-desc">Cómo configurar validaciones adicionales que SAP aplica antes de aceptar un cambio en un campo.</div></div></div>
+  <div class="theory-box"><strong>Validations añaden control extra más allá de Document Change Rules:</strong> además de las Document Change Rules (que definen qué campos pueden cambiarse), SAP permite configurar <strong>Validation Rules</strong> que ejecutan una lógica adicional antes de aceptar el cambio. Por ejemplo: "si el campo Payment Terms se cambia y el importe es mayor a EUR 10.000, requerir autorización adicional". Las Validations son mensajes de error o advertencia configurables por el equipo de FI.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span class="sn-icon">🔷</span><span class="sn-text">Validation of FI Documents</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Validation — Document Posting · DE01 · Call Point 2 (Complete Document)</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit Step</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Step</th><th>Description</th><th>Check</th><th>Message Type</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>001</td><td>Payment Terms change — large amount</td><td>IF ZTERM changed AND WRBTR > 10000: require dual approval</td><td>W (Warning)</td></tr>
+            <tr><td>002</td><td>Baseline date in closed period</td><td>IF ZFBDT in closed period: block change</td><td>E (Error)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Validation active · Call Point 2 · DE01</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="area-tag">FI — Accounts Payable</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">User Settings — System-Level Defaults</span><span class="sec-title-es">Parámetros de usuario — nivel de sistema</span></div><div class="sec-desc">La diferencia entre los parámetros configurables por el usuario (Edit Supplier Invoice Settings) y los valores por defecto definidos a nivel de sistema por el configurador.</div></div></div>
+  <div class="theory-box"><strong>Dos niveles de parametrización de usuario:</strong> los parámetros que Jennifer configura en <strong>Edit Supplier Invoice Settings</strong> son específicos de usuario y pueden ser modificados por ella misma. Pero el configurador puede también definir <strong>valores por defecto a nivel de sistema</strong> (SU3 / transaction defaults) que aplican a todos los usuarios de un rol, y que el usuario puede o no sobreescribir según cómo estén configurados. Esto permite estandarizar comportamientos para el equipo de AP completo.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 Transaction: SU3 (User Own Data) / SU01 (User Maintenance by Admin)</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">System Administration</span></div>
+      <div class="spro-node i1 active"><span class="sn-icon">🔷</span><span class="sn-text">SU01 — User Maintenance (Defaults tab)</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">SU01</span><span class="gui-title">User Maintenance — Defaults Tab · JENNIFER_K</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Parameter ID</th><th>Description</th><th>Default Value</th><th>Can user override?</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>BUK</strong></td><td>Company Code</td><td>DE01</td><td>✔ Yes (via app settings)</td></tr>
+            <tr class="hi"><td><strong>LFB</strong></td><td>Vendor Account Group</td><td>LIEF</td><td>✔ Yes</td></tr>
+            <tr><td>GJR</td><td>Fiscal Year</td><td>2025</td><td>✔ Yes</td></tr>
+            <tr><td>KOK</td><td>Controlling Area</td><td>A000</td><td>✔ Yes</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:10.5px;color:#666;margin-top:8px;">SU3 = user sets own defaults · SU01 = admin sets defaults for a user · Both feed into app behavior</div>
+      </div>
+      <div class="gui-status">User JENNIFER_K · Defaults configured by admin</div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>T4 · Configurador SAP GUI — Supplier Invoice Optimization (AP) · 🔧 Rol: Configurador · Biblioteca de Guías SAP</footer>
+</body>
+</html>

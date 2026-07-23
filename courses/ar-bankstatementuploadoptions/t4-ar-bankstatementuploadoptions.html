@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Bank Statement Upload Options — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9; --t4-dark:#5D3E82; --t4-pale:rgba(167,139,201,0.14); --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+    --sscui-blue:#0070F2; --sscui-bg:#F5F6F7; --sscui-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241C33 55%, #3C2C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(93,62,130,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .spro-area-tag{ display:inline-flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t4-dark); color:white; margin-left:8px; vertical-align:middle; }
+  .theory-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t4-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .part-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--t4-dark); margin:0 0 8px; }
+  .part-label:not(:first-child){ margin-top:22px; }
+  .sscui-tree, .sscui-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'JetBrains Mono',monospace; font-size:11.5px; }
+  .sscui-tree ul{ padding-left:20px; border-left:1px dotted #B399D4; margin-left:7px; }
+  .sscui-tree li{ position:relative; padding:4px 0 4px 16px; color:var(--body); }
+  .sscui-tree li::before{ content:''; position:absolute; left:0; top:13px; width:12px; height:1px; background:#B399D4; }
+  .sscui-tree .folder{ font-weight:700; color:var(--ink); }
+  .sscui-tree .leaf{ color:var(--t4-dark); font-weight:700; }
+  .sscui-mock{ background:var(--sscui-bg); border:1px solid var(--sscui-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .sscui-shellbar{ background:var(--sscui-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .sscui-body{ padding:18px 20px; background:white; }
+  .sscui-page-title{ font-size:15px; font-weight:600; color:#1D2D3E; margin:0 0 4px; }
+  .sscui-page-sub{ font-size:11px; color:#5B738B; margin:0 0 14px; }
+  .sscui-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .sscui-field{ flex:1; min-width:160px; }
+  .sscui-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .sscui-field .ffval{ border:1px solid var(--sscui-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+  .sscui-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .sscui-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sscui-border); }
+  .sscui-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .sscui-toggle-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid #EDEFF1; font-size:12px; }
+  .sscui-toggle{ width:34px; height:18px; border-radius:20px; background:var(--sscui-blue); position:relative; flex-shrink:0; }
+  .sscui-toggle::after{ content:''; position:absolute; top:2px; right:2px; width:14px; height:14px; border-radius:50%; background:white; }
+  .sscui-toggle.off{ background:#C9CDD2; }
+  .sscui-toggle.off::after{ right:auto; left:2px; }
+  .sscui-btn{ background:var(--sscui-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .sscui-btn.ghost{ background:white; color:var(--sscui-blue); border:1px solid var(--sscui-blue); }
+  .sscui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E;
+    margin-top:12px; display:flex; align-items:center; gap:7px; }
+  .to-t3-note{ background:var(--t4-pale); border:1px dashed var(--t4-dark); border-radius:8px; padding:10px 14px;
+    margin-top:14px; font-size:0.8rem; color:var(--t4-dark); }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Activate Multi-Bank Connectivity</a>
+  <a href="#s2">SWIFT Connection Setup</a>
+  <a href="#s3">API / SFTP Channel</a>
+  <a href="#s4">Host2Host / EBICS Setup</a>
+  <a href="#s5">Format Recognition Rules</a>
+  <a href="#s6">Manage Incoming Payment Files Access</a>
+  <a href="#s7">Sequence Check Rules</a>
+  <a href="#s8">Monitor Filter Defaults</a>
+  <a href="#s9">Rejection Notification Template</a>
+  <a href="#s10">Business Role Authorizations</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Bank Accounting</span>
+      <span class="pill pill-secondary">Multi-Bank Connectivity</span>
+      <span class="pill pill-secondary">Situation Handling</span>
+    </div>
+    <h1>Bank Statement Upload Options — <span class="accent">Customizing</span></h1>
+    <h2>Tangibilización Configurador (GUI)</h2>
+    <p class="desc">La base que hay que armar antes de que Sofía tenga un solo Monitor confiable: los tres canales de conexión, el reconocimiento de formato, la secuencia esperada de extractos, y las alertas que la avisan cuando algo falta.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Configure Your Solution — Bike Company Group</div>
+        <div class="p-note">esto arma la base que Sofía usa del otro lado, en Fiori</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Activating Multi-Bank Connectivity</span>
+          <span class="sec-title-es">Activando Multi-Bank Connectivity</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">El interruptor general — sin esto, ningún extracto entra solo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Punto de partida:</strong> se activa SAP Multi-Bank Connectivity como app de SAP BTP conectada al sistema, habilitando el canal de entrada automática de extractos y pagos que Sofía usa en T3.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Multi-Bank Connectivity
+                  <ul>
+                    <li class="leaf">Activate Multi-Bank Connectivity</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Configure Your Solution</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Activate Multi-Bank Connectivity</p>
+          <p class="sscui-page-sub">Bike Company Group</p>
+          <div class="sscui-toggle-row"><span>Enable Statement &amp; Payment Integration</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Enable Bank Statement Monitor</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up the SWIFT Connection</span>
+          <span class="sec-title-es">Configurando la conexión SWIFT</span>
+          <span class="spro-area-tag">Connectivity</span>
+        </div>
+        <div class="sec-desc">Deutsche Bank, que en T3 conecta solo, se configura acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se asigna qué bancos usan el canal SWIFT — solo posible con bancos que forman parte de la extensa lista SWIFT certificada — y se define la cuenta bancaria propia asociada.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Multi-Bank Connectivity
+                  <ul>
+                    <li class="leaf">Assign SWIFT Connection to House Bank</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>SWIFT Connection Setup</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">SWIFT Channel — House Bank Assignment</p>
+          <table class="sscui-table">
+            <tr><th>House Bank</th><th>Channel</th></tr>
+            <tr><td>Deutsche Bank — DE01</td><td>SWIFT</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up the API / SFTP Channel</span>
+          <span class="sec-title-es">Configurando el canal API / SFTP</span>
+          <span class="spro-area-tag">Connectivity</span>
+        </div>
+        <div class="sec-desc">El canal para bancos miembro directo, con conexión estandarizada.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se elige, banco por banco, si la conexión directa va vía API o vía SFTP — ambos son canales estandarizados, la elección depende de qué soporte el banco miembro.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Multi-Bank Connectivity
+                  <ul>
+                    <li class="leaf">Assign API or SFTP Channel to Direct Member Bank</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Direct Member Bank Channels</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Channel Assignment — Direct Member Banks</p>
+          <table class="sscui-table">
+            <tr><th>House Bank</th><th>Channel</th></tr>
+            <tr><td>Commerzbank — DE01</td><td>API</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up Host2Host / EBICS for a Non-Member Bank</span>
+          <span class="sec-title-es">Configurando Host2Host / EBICS para un banco no-miembro</span>
+          <span class="spro-area-tag">Connectivity</span>
+        </div>
+        <div class="sec-desc">Wells Fargo, el banco que se demoró en T3, necesita esta configuración especial.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se solicita a SAP el establecimiento de una conexión directa Host2Host o EBICS con un banco sin acuerdo previo — este paso no es autoservicio total, requiere coordinación puntual con SAP para el banco en cuestión.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Multi-Bank Connectivity
+                  <ul>
+                    <li class="leaf">Request Direct Connection — Non-Member Bank</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Non-Member Bank Connection Request</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Direct Connection — Wells Fargo (US01)</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Connection Type</label><div class="ffval">Host2Host</div></div>
+            <div class="sscui-field"><label>Status</label><div class="ffval">Requested — Pending SAP Setup</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring Format Recognition Rules</span>
+          <span class="sec-title-es">Configurando las reglas de reconocimiento de formato</span>
+          <span class="spro-area-tag">File Processing</span>
+        </div>
+        <div class="sec-desc">El reconocimiento automático que Sofía vio en T3 se habilita acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué habilita esto?</strong> Se activa qué formatos reconoce la app Manage Incoming Payment Files — el estándar ISO20022 y, además, los formatos específicos de los bancos con los que la organización efectivamente trabaja.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Manage Incoming Payment Files
+                  <ul>
+                    <li class="leaf">Configure Recognized File Formats</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Format Recognition Settings</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Recognized Formats — Bike Company Group</p>
+          <div class="sscui-toggle-row"><span>ISO20022</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Commerzbank Proprietary Format</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Granting Access to Manage Incoming Payment Files</span>
+          <span class="sec-title-es">Habilitando acceso a Manage Incoming Payment Files</span>
+          <span class="spro-area-tag">Authorizations</span>
+        </div>
+        <div class="sec-desc">La carga manual que hizo Sofía en T3 requiere este acceso previo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se asigna a qué tipos de archivo (lockbox, extracto, rechazo, intradía) puede acceder cada rol de negocio dentro de la app — no todos los roles necesitan ver todos los tipos de archivo.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Manage Incoming Payment Files
+                  <ul>
+                    <li class="leaf">Assign File Type Access to Business Roles</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>File Type Access</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Access by File Type — Treasury Analyst</p>
+          <table class="sscui-table">
+            <tr><th>File Type</th><th>Access</th></tr>
+            <tr><td>Bank Statements</td><td>Full</td></tr>
+            <tr><td>Lockbox</td><td>View + Upload</td></tr>
+            <tr><td>Payment Rejections</td><td>Full</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Sequence Check Rules</span>
+          <span class="sec-title-es">Definiendo reglas de chequeo de secuencia</span>
+          <span class="spro-area-tag">Bank Statement Monitor</span>
+        </div>
+        <div class="sec-desc">El vacío de serie que Sofía detectó en T3 se identifica gracias a esta regla.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se activa la validación de secuencia de números seriales por cuenta de banco propio, para que el Monitor marque automáticamente cualquier vacío antes de que alguien lo note manualmente.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Bank Statement Monitor
+                  <ul>
+                    <li class="leaf">Enable Serial Number Sequence Check</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Sequence Check Configuration</span><span>Group</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Serial Number Sequence — Bike Company Group</p>
+          <div class="sscui-toggle-row"><span>Enable Sequence Gap Detection</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Flag Gaps Automatically on Monitor</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Monitor Filter Defaults</span>
+          <span class="sec-title-es">Configurando filtros por defecto del Monitor</span>
+          <span class="spro-area-tag">Bank Statement Monitor</span>
+        </div>
+        <div class="sec-desc">Los filtros por sociedad y banco propio que Sofía usó

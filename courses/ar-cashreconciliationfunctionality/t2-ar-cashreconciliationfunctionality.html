@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · SAP Cash Reconciliation Functionality — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585; --t2-dark:#A94444; --t2-pale:rgba(224,133,133,0.14); --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t2-pale); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t2-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .vert-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:440px; }
+  .vf-box{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:12px 20px; text-align:center; min-width:320px; }
+  .vf-box.tier1{ border-color:var(--t2-dark); background:var(--t2-pale); font-weight:700; }
+  .vf-box.tier2{ border-style:dashed; }
+  .vf-arrow{ font-size:20px; color:var(--t2-dark); }
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:150px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t2-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t2-dark); font-weight:700; }
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  @media (max-width:720px){ .compare-grid, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Technical Prerequisites</a>
+  <a href="#s2">Recurrence Patterns In Practice</a>
+  <a href="#s3">Job Parameters In Depth</a>
+  <a href="#s4">Vendor vs. Customer Clearing</a>
+  <a href="#s5">Why BTP, Not S/4HANA Alone</a>
+  <a href="#s6">The Threshold Trade-Off</a>
+  <a href="#s7">The Reprocess App, Filter by Filter</a>
+  <a href="#s8">How the Model Actually Learns</a>
+  <a href="#s9">Lockbox Exception Handling In Depth</a>
+  <a href="#s10">Preventive Measures for Skipped Invoices</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">SAP Cash Application</span>
+      <span class="pill pill-secondary">SAP Business AI</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+    </div>
+    <h1>SAP Cash Reconciliation Functionality — <span class="accent">Profundización</span></h1>
+    <h2>Funcionalidad de Conciliación de Efectivo</h2>
+    <p class="desc">Lo que rodea a los dos jobs y los dos umbrales del T1 y no vimos ahí: requisitos técnicos previos, cómo se calibra el trade-off entre umbrales, la diferencia real entre aclarar vendors y customers, y el mecanismo interno de cómo el modelo realmente aprende y qué hace con una excepción de lockbox.</p>
+    <div class="hlbox">Resumen Visual — <b>SAP Cash Reconciliation Functionality</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 de profundidad sobre lo visto en el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Technical Prerequisites, in Context</span>
+          <span class="sec-title-es">Requisitos técnicos previos, en contexto</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó que hay "prerequisitos técnicos" a considerar — acá vemos qué tipo de cosas suelen ser.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué tipo de requisitos son?</strong> Antes de programar los jobs de Receivables Line-Item Matching, típicamente hace falta validar que la integración entre S/4HANA Cloud y el servicio de Cash Application ya esté activa, y que los datos maestros de cliente y cuenta bancaria estén correctamente mapeados — sin esa base, programar el job no tiene con qué trabajar.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🔗</span><h6>Active Integration</h6><p>Conexión entre S/4HANA Cloud y el servicio de Cash Application ya activa.</p></div>
+        <div class="mini-card"><span class="icon">🗂️</span><h6>Master Data Mapping</h6><p>Cliente y cuenta bancaria correctamente mapeados.</p></div>
+        <div class="mini-card"><span class="icon">✅</span><h6>Authorization</h6><p>Rol de negocio con acceso a la app de programación.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Recurrence Patterns in Practice</span>
+          <span class="sec-title-es">Patrones de recurrencia en la práctica</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "por ejemplo, cada hora" — acá vemos que elegir la frecuencia correcta implica un trade-off real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué trade-off hay?</strong> Correr el job con mucha frecuencia da resultados más al día, pero consume más recursos del sistema y puede generar más ruido de propuestas para revisar. Correr con menos frecuencia reduce esa carga, pero retrasa cuánto tarda un pago real en aparecer como aclarado.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>High Frequency</h5>
+          <span class="en">cada hora, por ejemplo</span>
+          <ul>
+            <li>Resultados más al día</li>
+            <li>Mayor consumo de recursos</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Low Frequency</h5>
+          <span class="en">una o dos veces al día</span>
+          <ul>
+            <li>Menor carga sobre el sistema</li>
+            <li>Mayor demora en ver el resultado</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Job Parameters, in Depth</span>
+          <span class="sec-title-es">Parámetros del job, en detalle</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "número de documento o sociedad" como parámetros — acá vemos para qué sirve acotar el alcance.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué acotar el alcance?</strong> Definir parámetros como sociedad o rango de documento permite correr el job solo sobre el subconjunto de datos que realmente importa en ese momento — útil, por ejemplo, si una sola sociedad del grupo necesita procesarse con más frecuencia que las demás.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Full Dataset</div><div class="t-es">todos los datos</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Scoped by Company Code</div><div class="t-es">acotado por sociedad</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Faster, Targeted Run</div><div class="t-es">corrida más rápida y puntual</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Vendor vs. Customer Clearing, Side by Side</span>
+          <span class="sec-title-es">Compensación de proveedor vs. cliente, lado a lado</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó que hay que cambiar Account Type for Clearing a "Vendors" — acá vemos qué implica ese cambio.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué cambia realmente?</strong> El mismo motor de matching se aplica en ambos casos, pero el conjunto de datos que consulta cambia por completo — con "Customer" busca contra partidas por cobrar de clientes, con "Vendor" busca contra facturas de proveedor. Elegir el tipo equivocado no genera un error, simplemente no encuentra ningún match porque está buscando en el conjunto de datos incorrecto.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Account Type: Customer</h5>
+          <span class="en">default</span>
+          <ul>
+            <li>Busca contra partidas por cobrar</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Account Type: Vendor</h5>
+          <span class="en">para Payables Line-Item Matching</span>
+          <ul>
+            <li>Busca contra facturas de proveedor</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why the Matching Runs on SAP BTP, Not Inside S/4HANA Alone</span>
+          <span class="sec-title-es">Por qué el matching corre en SAP BTP, no solo dentro de S/4HANA</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mostró la arquitectura — acá vemos la razón de fondo de separarla así.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> los modelos de machine learning necesitan recursos de cómputo especializados y ciclos de actualización más frecuentes que los de un sistema transaccional como S/4HANA — separar el motor de matching en SAP BTP permite evolucionar y escalar esa capacidad de IA sin tocar el núcleo transaccional del ERP.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">ML Needs Specialized Compute</div><div class="t-es">ML necesita cómputo especializado</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Separate on SAP BTP</div><div class="t-es">separado en SAP BTP</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">ERP Core Stays Stable</div><div class="t-es">el núcleo del ERP no se toca</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Threshold Trade-Off, in Depth</span>
+          <span class="sec-title-es">El trade-off de umbrales, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró los dos umbrales por separado — acá vemos cómo se relacionan entre sí.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el Target Accuracy for Proposal siempre debería ser menor o igual al Target Auto-Clear Accuracy — tiene sentido mostrar propuestas con menos certeza de la necesaria para aclarar solo, pero no al revés. Subir demasiado el umbral de auto-clear reduce el riesgo de error, pero aumenta directamente el volumen de trabajo manual que le queda al equipo de AR.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Target Auto-Clear Accuracy — más alto</div>
+        <div class="vf-arrow">≥</div>
+        <div class="vf-box tier2">Target Accuracy for Proposal — más bajo</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box">Subir el primero = más precisión, más trabajo manual</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Reprocess App, Filter by Filter</span>
+          <span class="sec-title-es">La app de reprocesamiento, filtro por filtro</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que se puede "filtrar u ordenar" — acá vemos qué criterios concretos suelen usarse.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué filtros son útiles?</strong> Ordenar por nivel de confianza ayuda a priorizar los ítems más fáciles de confirmar primero; filtrar por sociedad ayuda cuando distintos equipos procesan distintas entidades del grupo; filtrar por estado (propuesta pendiente, ya confirmado, sin match) da una vista clara de cuánto trabajo real queda.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📊</span><h6>Sort by Confidence</h6><p>Prioriza los ítems más fáciles de confirmar.</p></div>
+        <div class="mini-card"><span class="icon">🏢</span><h6>Filter by Company Code</h6><p>Útil cuando distintos equipos procesan distintas entidades.</p></div>
+        <div class="mini-card"><span class="icon">🏷️</span><h6>Filter by Status</h6><p>Da visibilidad clara de cuánto trabajo real queda.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How the Model Actually Learns</span>
+          <span class="sec-title-es">Cómo el modelo realmente aprende</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que el modelo "se entrena con acciones manuales pasadas" — acá vemos qué pasa cada vez que un usuario confirma o rechaza una propuesta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> cada vez que un usuario confirma o corrige una propuesta en la app de reprocesamiento, esa decisión se convierte en un nuevo dato de entrenamiento — el modelo no queda fijo desde el día uno, sigue ajustándose con cada decisión humana registrada.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">User Confirms / Corrects</div><div class="t-es">usuario confirma o corrige</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">New Training Data</div><div class="t-es">nuevo dato de entrenamiento</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Model Adjusts</div><div class="t-es">el modelo se ajusta</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Lockbox Exception Handling, in Depth</span>
+          <span class="sec-title-es">Manejo de excepciones de lockbox, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que la IA "resuelve excepciones menores" — acá vemos qué distingue una excepción menor de una que requiere intervención.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué hace que una excepción sea "menor"?</strong> Una excepción menor suele ser algo con precedente claro en el historial — por ejemplo, un pago levemente distinto al monto exacto de la factura, dentro de un margen ya visto antes. Una excepción sin precedente, o con un monto significativo en juego, dispara el workflow de intervención manual en vez de resolverse sola.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Minor Exception</h5>
+          <span class="en">con precedente claro</span>
+          <ul>
+            <li>Patrón ya visto en el historial</li>
+            <li>Se resuelve automáticamente</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Significant Exception</h5>
+          <span class="en">sin precedente o monto alto</span>
+          <ul>
+            <li>Dispara workflow de intervención manual</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Preventive Measures for Skipped Invoices, in Depth</span>
+          <span class="sec-title-es">Medidas preventivas para facturas omitidas, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró la detección y notificación — acá vemos la parte preventiva que el T1 solo nombró de pasada.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> más allá de detectar una factura ya omitida, el sistema aprende continuamente de errores pasados e implementa chequeos y balances — por ejemplo, si un tipo específico de factura se omite recurrentemente por un motivo identificado, ese patrón se usa para prevenir el mismo error en advices futuros, no solo para corregirlo después de ocurrido.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Past Errors</div><div class="t-es">errores pasados</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Checks &amp; Balances</div><div class="t-es">chequeos y balances</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Fewer Future Recurrences</div><div class="t-es">menos recurrencia futura</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de SAP Cash Reconciliation Functionality — Tipo 2 (no repite T1)</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Technical Prerequisite</div><div class="term-es">Requisito Técnico Previo</div><div class="term-def">Condición de integración o dato maestro que debe cumplirse antes de programar un job.</div></div>
+      <div class="gcard"><div class="term-en">Recurrence Pattern</div><div class="term-es">Patrón de Recurrencia</div><div class="term-def">Frecuencia con la que un job programado vuelve a ejecutarse.</div></div>
+      <div class="gcard"><div class="term-en">Job Scope</div><div class="term-es">Alcance del Job</div><div class="term-def">Subconjunto de datos (por sociedad, documento) sobre el que corre una ejecución puntual.</div></div>
+      <div class="gcard"><div class="term-en">Account Type for Clearing</div><div class="term-es">Tipo de Cuenta para Compensación</div><div class="term-def">Parámetro que determina si el matching busca contra clientes o proveedores.</div></div>
+      <div class="gcard"><div class="term-en">Specialized Compute</div><div class="term-es">Cómputo Especializado</div><div class="term-def">Recursos técnicos necesarios para entrenar y correr modelos de machine learning.</div></div>
+      <div class="gcard"><div class="term-en">Threshold Trade-Off</div><div class="term-es">Compensación entre Umbrales</div><div class="term-def">Relación inversa entre precisión exigida y volumen de trabajo manual resultante.</div></div>
+      <div class="gcard"><div class="term-en">Confidence-Based Sorting</div><div class="term-es">Ordenamiento por Confianza</div><div class="term-def">Criterio para priorizar qué propuestas revisar primero en la app de reprocesamiento.</div></div>
+      <div class="gcard"><div class="term-en">Training Data</div><div class="term-es">Dato de Entrenamiento</div><div class="term-def">Decisión humana registrada que el modelo usa para ajustar futuras predicciones.</div></div>
+      <div class="gcard"><div class="term-en">Minor Exception</div><div class="term-es">Excepción Menor</div><div class="term-def">Discrepancia con precedente claro en el historial, resoluble automáticamente.</div></div>
+      <div class="gcard"><div class="term-en">Significant Exception</div><div class="term-es">Excepción Significativa</div><div class="term-def">Discrepancia sin precedente o de monto alto, que requiere intervención manual.</div></div>
+      <div class="gcard"><div class="term-en">Checks and Balances</div><div class="term-es">Chequeos y Balances</div><div class="term-def">Controles implementados para prevenir la repetición de errores ya identificados.</div></div>
+      <div class="gcard"><div class="term-en">Business Technology Platform (BTP)</div><div class="term-es">SAP BTP</div><div class="term-def">Plataforma técnica separada del núcleo ERP, donde corre el motor de matching de IA.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — SAP Cash Reconciliation Functionality · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

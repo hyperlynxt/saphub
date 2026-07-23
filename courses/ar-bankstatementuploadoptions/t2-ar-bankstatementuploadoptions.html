@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Bank Statement Upload Options — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585; --t2-dark:#A94444; --t2-pale:rgba(224,133,133,0.14); --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t2-pale); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t2-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .vert-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:440px; }
+  .vf-box{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:12px 20px; text-align:center; min-width:320px; }
+  .vf-box.tier1{ border-color:var(--t2-dark); background:var(--t2-pale); font-weight:700; }
+  .vf-box.tier2{ border-style:dashed; }
+  .vf-arrow{ font-size:20px; color:var(--t2-dark); }
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:150px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t2-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t2-dark); font-weight:700; }
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  @media (max-width:720px){ .compare-grid, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">ISO20022 In Detail</a>
+  <a href="#s2">Lockbox Processing</a>
+  <a href="#s3">Payment Rejection Files</a>
+  <a href="#s4">SFTP vs. API Security</a>
+  <a href="#s5">Bank-Specific Formats</a>
+  <a href="#s6">SWIFT L2BA, in Depth</a>
+  <a href="#s7">Why Non-Member Banks Need Direct Connections</a>
+  <a href="#s8">Bank Statement Monitor Filters</a>
+  <a href="#s9">Status Reconciliation, in Depth</a>
+  <a href="#s10">Serial Number Sequencing</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Bank Accounting</span>
+      <span class="pill pill-secondary">Multi-Bank Connectivity</span>
+      <span class="pill pill-secondary">Cash Management</span>
+      <span class="pill pill-secondary">Cybersecurity</span>
+    </div>
+    <h1>Bank Statement Upload Options — <span class="accent">Profundización</span></h1>
+    <h2>Opciones para Cargar Extractos Bancarios</h2>
+    <p class="desc">Lo que rodea a las tres vías de carga del T1 y no vimos ahí: el estándar ISO20022, el procesamiento de lockbox, la seguridad detrás de SFTP y API, y el mecanismo interno de por qué el Bank Statement Monitor necesita filtros y secuencia de números seriales.</p>
+    <div class="hlbox">Resumen Visual — <b>Bank Statement Upload Options</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 de profundidad sobre lo visto en el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">ISO20022 In Detail</span>
+          <span class="sec-title-es">ISO20022 en detalle</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 lo nombró como un formato reconocido — acá vemos qué lo hace distinto de un formato propietario.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es ISO20022?</strong> Es un estándar internacional de mensajería financiera, estructurado en XML, que define un vocabulario común para representar pagos, extractos y otros mensajes bancarios — a diferencia de un formato propietario de un banco puntual, no requiere una lógica de interpretación distinta por cada institución.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>ISO20022</h5>
+          <span class="en">estándar internacional</span>
+          <ul>
+            <li>Estructura XML común entre bancos</li>
+            <li>Una sola lógica de interpretación</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Bank-Specific Format</h5>
+          <span class="en">formato propietario</span>
+          <ul>
+            <li>Estructura definida por cada banco</li>
+            <li>Requiere lógica de interpretación distinta por banco</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Lockbox Processing</span>
+          <span class="sec-title-es">Procesamiento de lockbox</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 lo listó como un tipo de archivo — acá vemos qué hay detrás de ese nombre.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es un lockbox?</strong> Es un servicio bancario donde el cliente envía su pago (típicamente por correo) directamente a un apartado del banco, que escanea y digitaliza esa información antes de que llegue a la empresa — el archivo de lockbox es justamente esa información ya digitalizada.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Customer Mails Payment</div><div class="t-es">cliente envía por correo</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Bank Scans &amp; Digitizes</div><div class="t-es">el banco escanea</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Lockbox File</div><div class="t-es">archivo listo para cargar</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Rejection Files</span>
+          <span class="sec-title-es">Archivos de rechazo de pago</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 los mencionó al pasar — acá vemos qué información concreta traen.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es un archivo de rechazo?</strong> Cuando un banco no puede ejecutar un pago (por ejemplo, por datos de cuenta incorrectos o fondos insuficientes), genera un archivo de rechazo con un código de motivo (reason code) — sin ese archivo, la empresa no sabría por qué un pago que creía ejecutado nunca llegó.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">❌</span><h6>Incorrect Account Data</h6><p>El pago no pudo ejecutarse por datos erróneos.</p></div>
+        <div class="mini-card"><span class="icon">💸</span><h6>Insufficient Funds</h6><p>Rechazo por falta de fondos en la cuenta origen.</p></div>
+        <div class="mini-card"><span class="icon">🏷️</span><h6>Reason Code</h6><p>Código que explica el motivo puntual del rechazo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">SFTP vs. API: Different Security Models</span>
+          <span class="sec-title-es">SFTP vs. API: distintos modelos de seguridad</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 los agrupó como "una misma opción" — acá vemos que no protegen la conexión de la misma forma.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> SFTP transfiere archivos completos de forma segura, pero no hay interacción en tiempo real — es más parecido a "dejar un archivo en un buzón cifrado". Una API bancaria, en cambio, permite consultas puntuales en tiempo real (por ejemplo, "dame el estado de este pago ahora"), con su propio esquema de autenticación por token.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>SFTP</h5>
+          <span class="en">transferencia de archivos</span>
+          <ul>
+            <li>Archivo completo, sin interacción en tiempo real</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>API</h5>
+          <span class="en">consulta en tiempo real</span>
+          <ul>
+            <li>Consultas puntuales con autenticación por token</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Recognizing Bank-Specific Formats</span>
+          <span class="sec-title-es">Reconociendo formatos específicos de banco</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que la app reconoce "formatos específicos de cada banco" — acá vemos por qué eso sigue siendo necesario aun con ISO20022 disponible.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué persisten los formatos propietarios?</strong> No todos los bancos, especialmente los más chicos o regionales, migraron completamente a ISO20022 — la app necesita reconocer ambos mundos para no dejar afuera a bancos que todavía entregan sus extractos en un formato propio.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🌐</span><h6>Global Banks</h6><p>Suelen adoptar ISO20022 más rápido.</p></div>
+        <div class="mini-card"><span class="icon">🏘️</span><h6>Regional Banks</h6><p>Con frecuencia mantienen formatos propios.</p></div>
+        <div class="mini-card"><span class="icon">🔀</span><h6>Dual Recognition</h6><p>La app necesita reconocer ambos para no dejar bancos afuera.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">SWIFT L2BA Certification, in Depth</span>
+          <span class="sec-title-es">Certificación SWIFT L2BA, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó la certificación — acá vemos qué significa concretamente "L2BA".</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> L2BA (Lite2ForBusinessApplications) es una categoría de conectividad de SWIFT pensada para proveedores de servicios que conectan a múltiples clientes corporativos con la red SWIFT — la certificación no es solo un sello, es la validación formal de que SAP cumple los requisitos técnicos y de seguridad para operar en ese rol de intermediario.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">SWIFT define requisitos técnicos y de seguridad</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box tier2">SAP cumple y se certifica como L2BA</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box">Empresas conectan vía SAP sin certificarse cada una por separado</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Non-Member Banks Need a Different Path</span>
+          <span class="sec-title-es">Por qué los bancos no-miembro necesitan otro camino</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró Host2Host/EBICS como una opción más — acá vemos por qué existe esa opción en primer lugar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> SWIFT y las conexiones API/SFTP de la sección anterior dependen de que el banco tenga un acuerdo previo con SAP Multi-Bank Connectivity. Cuando ese acuerdo no existe — típico en bancos locales muy pequeños — la única forma de conectar es que SAP arme, caso por caso, una conexión directa Host2Host o vía EBICS con ese banco puntual.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Member Bank</h5>
+          <span class="en">acuerdo previo con SAP</span>
+          <ul>
+            <li>Conexión ya estandarizada (SWIFT, API/SFTP)</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Non-Member Bank</h5>
+          <span class="en">sin acuerdo previo</span>
+          <ul>
+            <li>SAP arma la conexión caso por caso, vía Host2Host/EBICS</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Bank Statement Monitor Filters, in Depth</span>
+          <span class="sec-title-es">Filtros del Bank Statement Monitor, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó filtros por cuenta de banco propio o sociedad — acá vemos para qué sirve cada uno en la práctica.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Para qué sirve cada filtro?</strong> Filtrar por house bank account ayuda cuando el problema es de un banco puntual (por ejemplo, un banco que dejó de enviar extractos). Filtrar por sociedad ayuda cuando la revisión es más amplia — por ejemplo, verificar que todas las cuentas de una sociedad recibieron su extracto del día, sin importar de qué banco vienen.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🏦</span><h6>Filter by House Bank</h6><p>Útil para aislar un problema de un banco específico.</p></div>
+        <div class="mini-card"><span class="icon">🏢</span><h6>Filter by Company Code</h6><p>Útil para revisar toda la sociedad de una vez.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Status Reconciliation, in Depth</span>
+          <span class="sec-title-es">Conciliación de estados, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "status reconciliation" como una capacidad del Monitor — acá vemos qué compara exactamente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el Monitor no solo muestra un estado individual por archivo — compara la cantidad de extractos esperados (según cuántas cuentas bancarias hay activas) contra los efectivamente recibidos, marcando como discrepancia cualquier extracto ausente que debería haber llegado.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Expected Statements</div><div class="t-es">extractos esperados</div></div>
+        <div class="chain-arrow">vs.</div>
+        <div class="chain-box"><div class="t-en">Received Statements</div><div class="t-es">extractos recibidos</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Gap = Discrepancy Flagged</div><div class="t-es">diferencia = discrepancia marcada</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Serial Number Sequencing, in Depth</span>
+          <span class="sec-title-es">Secuencia de números seriales, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "serial number sequencing" como algo a entender — acá vemos qué problema concreto resuelve.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es y por qué importa?</strong> Cada extracto bancario trae un número de serie consecutivo. Si el sistema recibe el extracto número 47 y después el 49, sin haber visto el 48, eso es una señal clara de que un extracto se saltó o llegó fuera de orden — el chequeo de secuencia es lo que detecta ese vacío antes de que alguien note manualmente que falta información.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Statement #47</div><div class="t-es">recibido</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Statement #48 Missing</div><div class="t-es">salto detectado</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Statement #49</div><div class="t-es">recibido</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Bank Statement Upload Options — Tipo 2 (no repite T1)</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">ISO20022</div><div class="term-es">ISO20022</div><div class="term-def">Estándar internacional de mensajería financiera en formato XML.</div></div>
+      <div class="gcard"><div class="term-en">Reason Code</div><div class="term-es">Código de Motivo</div><div class="term-def">Código que explica por qué un pago fue rechazado por el banco.</div></div>
+      <div class="gcard"><div class="term-en">Token Authentication</div><div class="term-es">Autenticación por Token</div><div class="term-def">Esquema de seguridad usado en conexiones API para validar identidad en tiempo real.</div></div>
+      <div class="gcard"><div class="term-en">L2BA</div><div class="term-es">L2BA</div><div class="term-def">Categoría de conectividad SWIFT para proveedores que conectan múltiples clientes corporativos.</div></div>
+      <div class="gcard"><div class="term-en">Member Bank</div><div class="term-es">Banco Miembro</div><div class="term-def">Banco con acuerdo contractual previo con SAP Multi-Bank Connectivity.</div></div>
+      <div class="gcard"><div class="term-en">Non-Member Bank</div><div class="term-es">Banco No-Miembro</div><div class="term-def">Banco sin acuerdo previo, que requiere una conexión directa armada caso por caso.</div></div>
+      <div class="gcard"><div class="term-en">House Bank Account</div><div class="term-es">Cuenta de Banco Propio</div><div class="term-def">Cuenta bancaria de la organización, usada como criterio de filtro en el Monitor.</div></div>
+      <div class="gcard"><div class="term-en">Expected vs. Received Statement</div><div class="term-es">Extracto Esperado vs. Recibido</div><div class="term-def">Comparación entre cuántos extractos deberían llegar y cuántos efectivamente llegaron.</div></div>
+      <div class="gcard"><div class="term-en">Serial Number Sequencing</div><div class="term-es">Secuencia de Números Seriales</div><div class="term-def">Verificación de que los extractos llegan sin saltos en su numeración consecutiva.</div></div>
+      <div class="gcard"><div class="term-en">Statement Gap</div><div class="term-es">Vacío de Extracto</div><div class="term-def">Ausencia detectada en la secuencia esperada de extractos bancarios.</div></div>
+      <div class="gcard"><div class="term-en">Proprietary Format</div><div class="term-es">Formato Propietario</div><div class="term-def">Estructura de archivo definida por un banco puntual, distinta al estándar ISO20022.</div></div>
+      <div class="gcard"><div class="term-en">Regional Bank</div><div class="term-es">Banco Regional</div><div class="term-def">Institución bancaria local, con frecuencia más lenta en adoptar estándares globales.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Bank Statement Upload Options · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Accounts Payable Regrouping — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(127,191,143,0.14); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px; max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  .process-group-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  .process-row{ display:flex; align-items:stretch; gap:10px; min-width:900px; margin-bottom:22px; }
+  .process-row:last-child{ margin-bottom:0; }
+  .p-step{ flex:1; background:white; border:1.5px solid var(--border); border-radius:10px; padding:12px 10px; text-align:center; position:relative; }
+  .p-step .icon{ font-size:18px; display:block; margin-bottom:6px; }
+  .p-step .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:11.5px; color:var(--ink); display:block; }
+  .p-step .t-es{ font-size:9px; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .p-step.highlight{ background:var(--t1-pale); border:2px solid var(--t1-dark); box-shadow:0 3px 10px rgba(61,122,82,0.25); }
+  .p-step.highlight .t-en{ color:var(--t1-dark); }
+  .p-arrow{ display:flex; align-items:center; color:#CBD5E1; font-size:14px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:20px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  .formula-box{ background:var(--bg); border-radius:8px; padding:16px 20px; font-size:0.85rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:8px; font-family:'Syne',sans-serif; font-size:0.95rem; }
+  .formula-box div.frow{ padding:5px 0; color:var(--body); display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); }
+  .formula-box div.frow:last-child{ border-bottom:none; font-weight:700; color:var(--t1-dark); }
+  .formula-box .fval{ font-family:'JetBrains Mono',monospace; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media (max-width:760px){ .cmp-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Where Regrouping Fits</a>
+  <a href="#s2">Why Group by Term</a>
+  <a href="#s3">The Term Categories</a>
+  <a href="#s4">One Account, Many Terms</a>
+  <a href="#s5">The Job Template</a>
+  <a href="#s6">Using Previous Valuations</a>
+  <a href="#s7">Debit Balance Reclassification</a>
+  <a href="#s8">When the Account Changes</a>
+  <a href="#s9">The Adjustment Posting</a>
+  <a href="#s10">Three Scenarios Together</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Accounts</span> Payable Regrouping</h1>
+    <h2>Reagrupación de Cuentas por Pagar</h2>
+    <p class="desc">Fundamentos teóricos de cómo se reagrupan los saldos de proveedores para el balance: por plazo remanente, por saldo deudor, y por cambio de cuenta de enlace — con el ejemplo numérico exacto de una contabilización de ajuste.</p>
+    <div class="hlbox">Resumen Visual — <b>Accounts Payable Regrouping</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Regrouping Fits in the Closing Process</span>
+          <span class="sec-title-es">Dónde entra la reagrupación en el proceso de cierre</span>
+        </div>
+        <div class="sec-desc">La última actividad del nuevo ejercicio fiscal antes de gestionar los períodos especiales.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿En qué momento corre?</strong> Regrouping/Reclassification corre en el <strong>nuevo ejercicio fiscal</strong>, después de la valoración de moneda extranjera, y justo antes de la gestión de períodos especiales.
+    </div>
+    <div class="visual-wrap">
+      <div class="process-group-label">Old Fiscal Year</div>
+      <div class="process-row">
+        <div class="p-step"><span class="icon">🔄</span><span class="t-en">GR/IR Reconciliation</span><span class="t-es">Conciliación GR/IR</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step"><span class="icon">🏢</span><span class="t-en">Intercompany Reconciliation</span><span class="t-es">Reconciliación intercompañía</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step"><span class="icon">✅</span><span class="t-en">Supplier Balance Confirmation</span><span class="t-es">Confirmación de saldo</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step"><span class="icon">➡️</span><span class="t-en">Balance Carryforward</span><span class="t-es">Traspaso de saldos</span></div>
+      </div>
+      <div class="process-group-label">New Fiscal Year</div>
+      <div class="process-row">
+        <div class="p-step"><span class="icon">📅</span><span class="t-en">Manage Posting Periods &amp; Special Periods</span><span class="t-es">Gestión de períodos</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step"><span class="icon">💱</span><span class="t-en">Foreign Currency Valuation</span><span class="t-es">Valoración de moneda</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step highlight"><span class="icon">🔁</span><span class="t-en">Regrouping/Reclassification</span><span class="t-es">Reagrupación</span></div>
+        <div class="p-arrow">→</div>
+        <div class="p-step"><span class="icon">🔒</span><span class="t-en">Manage Special Periods</span><span class="t-es">Gestión de períodos especiales</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Payables Get Grouped by Remaining Term</span>
+          <span class="sec-title-es">Por qué los pasivos se agrupan por plazo remanente</span>
+        </div>
+        <div class="sec-desc">No es un detalle de presentación — es información que los externos necesitan para evaluar liquidez.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para darle a los externos una <strong>mejor visión de la situación de liquidez</strong> de la empresa, los pasivos deben agruparse en el balance según su <strong>plazo remanente</strong> — cuánto tiempo falta hasta que efectivamente haya que pagarlos.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Remaining Term Categories</span>
+          <span class="sec-title-es">Las categorías de plazo remanente</span>
+        </div>
+        <div class="sec-desc">Bike Company reporta con categorías distintas para cuentas por cobrar y por pagar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Bike Company reporta <strong>receivables</strong> y <strong>payables</strong> en el balance según su plazo remanente, pero con categorías distintas para cada uno.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Tipo</th><th>Categorías de plazo remanente</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">Receivables</span></td><td>Menos de 1 año · Más de 1 año</td></tr>
+          <tr><td><span class="mod-name">Payables</span></td><td>Menos de 1 año · 1-5 años · Más de 5 años</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">One Reconciliation Account, Many Possible Terms</span>
+          <span class="sec-title-es">Una sola cuenta de enlace, muchos plazos posibles</span>
+        </div>
+        <div class="sec-desc">El problema que Jake identifica: la cuenta de enlace no distingue plazos por sí sola.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Solo se puede asignar <strong>una cuenta de enlace</strong> al registro maestro de un proveedor, y esa cuenta está asignada de forma única al ítem de balance <strong>Payables — Less than 1 year</strong> de la versión de estado 1010 (usada para el reporte legal de Bike Company). Pero algunos proveedores ofrecen <strong>plazos de pago mayores a un año</strong> — y esa cuenta única no puede reflejar eso por sí sola.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Job Template That Solves This</span>
+          <span class="sec-title-es">El job template que resuelve esto</span>
+        </div>
+        <div class="sec-desc">Un template, corrido desde la misma app que ya vio Jake con Foreign Currency Valuation.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El template <strong>Regroup Receivables/Payables</strong>, dentro de la app <strong>Schedule General Ledger Jobs</strong>, organiza los pasivos (y también los activos por cobrar) según su plazo remanente — usando un <strong>sort method</strong> que define esos plazos y qué tipos de cuenta se ven afectados.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">📋</span><span class="title-en">Schedule General Ledger Jobs</span><span class="title-es">App</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Selecciona el template correcto</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">🔁</span><span class="title-en">Regroup Receivables/Payables</span><span class="title-es">Job Template</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Aplica el sort method configurado</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">📊</span><span class="title-en">Balance Sheet by Term</span><span class="title-es">Resultado</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Pasivos presentados según su plazo remanente</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Using Previous Valuations</span>
+          <span class="sec-title-es">Usando valoraciones previas</span>
+        </div>
+        <div class="sec-desc">Regrouping no tiene que recalcular todo desde cero si ya hay una valoración hecha.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para usar valoraciones previas (por ejemplo, de <strong>Foreign Currency Valuation</strong>), se seleccionan en el campo <strong>Use Valuations</strong> dentro de los parámetros del job template — así el regrouping parte de un saldo ya valorado, en vez de ignorarlo.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Debit Balance Reclassification</span>
+          <span class="sec-title-es">Reclasificación por saldo deudor</span>
+        </div>
+        <div class="sec-desc">El segundo escenario de regrouping: cuando la relación con el proveedor se invierte.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para que el balance sea correcto, <strong>receivables</strong> y <strong>payables</strong> deben listarse por separado. Los proveedores que quedan con <strong>saldo deudor</strong> al final del período deben mostrarse en la sección de receivables del balance, no en la de payables.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card neutral">
+        <h4>Saldo normal <span class="en-tag">Credit Balance</span></h4>
+        <p>La empresa le debe al proveedor. Se presenta como <strong>payable</strong>.</p>
+      </div>
+      <div class="cmp-card accent">
+        <h4>Saldo deudor <span class="en-tag">Debit Balance</span></h4>
+        <p>El proveedor le debe a la empresa. Se presenta como <strong>receivable</strong>, aunque siga en la misma cuenta de proveedor.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">When the Reconciliation Account Changes Mid-Year</span>
+          <span class="sec-title-es">Cuando la cuenta de enlace cambia a mitad de año</span>
+        </div>
+        <div class="sec-desc">El tercer escenario: los pasivos viejos y los nuevos quedan en cuentas distintas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Si la <strong>cuenta de enlace</strong> del registro maestro del proveedor cambió durante el ejercicio fiscal, también se puede usar el template <strong>Regroup Receivables/Payables</strong> para reportar todos los pasivos a la fecha clave del balance, usando la <strong>nueva cuenta de enlace</strong>. Para esto, se selecciona la opción <strong>Changed Rec. Acct.</strong> en los parámetros del template.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Adjustment Posting, Step by Step</span>
+          <span class="sec-title-es">La contabilización de ajuste, paso a paso</span>
+        </div>
+        <div class="sec-desc">El ejemplo exacto del curso: 700 de pasivos viejos, 100 de pasivos nuevos, ajuste de 700.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Primero se ejecutan las <strong>contabilizaciones de traspaso</strong> necesarias por el cambio de cuenta de enlace. Después, se <strong>ordenan los pasivos</strong>. Según el resultado, se determinan y ejecutan los ajustes necesarios.
+    </div>
+    <div class="visual-wrap">
+      <div class="formula-box">
+        <span class="flabel">Ejemplo del curso — cuenta de enlace cambiada</span>
+        <div class="frow"><span>Old Payables (cuenta vieja): 300 + 400</span><span class="fval">= 700</span></div>
+        <div class="frow"><span>Adjustment posting (traspasa la cuenta vieja)</span><span class="fval">700</span></div>
+        <div class="frow"><span>Old Payables — saldo después del ajuste</span><span class="fval">0</span></div>
+        <div class="frow"><span>New Payables (ya existente en la cuenta nueva)</span><span class="fval">100</span></div>
+        <div class="frow"><span>Cuenta nueva — saldo final (Adjustment 700 + New Payables 100)</span><span class="fval">+800</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Three Regrouping Scenarios, Together</span>
+          <span class="sec-title-es">Los tres escenarios de reagrupación, juntos</span>
+        </div>
+        <div class="sec-desc">Distintos disparadores, el mismo job template detrás de los tres.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los tres escenarios de este curso usan el <strong>mismo job template</strong> — Regroup Receivables/Payables — pero cada uno responde a un disparador distinto y usa un parámetro distinto dentro del template.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Escenario</th><th>Disparador</th><th>Parámetro clave</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">Por plazo remanente</span></td><td>Proveedores con plazos de pago mayores a un año</td><td><span class="badge badge-accent">Sort Method</span></td></tr>
+          <tr><td><span class="mod-name">Por saldo deudor</span></td><td>El proveedor termina debiéndole a la empresa</td><td><span class="badge badge-accent">(automático, según saldo)</span></td></tr>
+          <tr><td><span class="mod-name">Por cambio de cuenta de enlace</span></td><td>La cuenta de enlace del proveedor cambió en el año</td><td><span class="badge badge-accent">Changed Rec. Acct.</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Vendor with Debit Balance</div><div class="term-es">Proveedor con Saldo Deudor</div><div class="term-def">Proveedor que le debe más dinero a la empresa que la empresa a él; su saldo se muestra como receivable.</div></div>
+      <div class="gcard"><div class="term-en">Grouping Payables by Remaining Terms</div><div class="term-es">Agrupación de Pasivos por Plazo Remanente</div><div class="term-def">Reporte de los pasivos de proveedores a una fecha clave, agrupados según su plazo remanente.</div></div>
+      <div class="gcard"><div class="term-en">Sort Method</div><div class="term-es">Método de Ordenación</div><div class="term-def">Define los plazos remanentes para pasivos, activos por cobrar y cuentas del Libro Mayor, y qué tipos de cuenta se traspasan.</div></div>
+      <div class="gcard"><div class="term-en">Remaining Term</div><div class="term-es">Plazo Remanente</div><div class="term-def">Tiempo que falta, a una fecha determinada, hasta que un pasivo o activo efectivamente vence.</div></div>
+      <div class="gcard"><div class="term-en">Statement Version</div><div class="term-es">Versión de Estado</div><div class="term-def">Estructura de balance que define en qué ítem se presenta cada cuenta, usada para el reporte legal.</div></div>
+      <div class="gcard"><div class="term-en">Balance Sheet Item</div><div class="term-es">Ítem del Balance</div><div class="term-def">Línea específica del balance (ej. Payables — Less than 1 year) a la que se asigna una cuenta de enlace.</div></div>
+      <div class="gcard"><div class="term-en">Changed Reconciliation Account</div><div class="term-es">Cambio de Cuenta de Enlace</div><div class="term-def">Situación en la que la cuenta de enlace del maestro de proveedor cambió durante el ejercicio fiscal.</div></div>
+      <div class="gcard"><div class="term-en">Adjustment Posting</div><div class="term-es">Contabilización de Ajuste</div><div class="term-def">Asiento que traspasa el saldo de la cuenta de enlace vieja hacia la nueva, dejando la vieja en cero.</div></div>
+      <div class="gcard"><div class="term-en">Use Valuations</div><div class="term-es">Campo Use Valuations</div><div class="term-def">Parámetro del job template que permite incorporar una valoración previa (ej. de moneda extranjera) al regrouping.</div></div>
+      <div class="gcard"><div class="term-en">Transfer Posting</div><div class="term-es">Contabilización de Traspaso</div><div class="term-def">Asiento que mueve un saldo de una cuenta a otra como parte del proceso de regrouping.</div></div>
+      <div class="gcard"><div class="term-en">Key Date</div><div class="term-es">Fecha Clave</div><div class="term-def">Fecha de referencia a la que se reportan los pasivos agrupados por plazo remanente.</div></div>
+      <div class="gcard"><div class="term-en">Regroup Receivables/Payables</div><div class="term-es">Template Regroup Receivables/Payables</div><div class="term-def">Job template de Schedule General Ledger Jobs usado para los tres escenarios de esta guía.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Accounts Payable Regrouping · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

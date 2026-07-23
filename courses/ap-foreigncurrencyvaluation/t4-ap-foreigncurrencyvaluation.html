@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Foreign Currency Valuation — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#6B4C8F;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --gui-bg:#ECECEC;
+    --gui-panel:#F5F4F0;
+    --gui-border:#8E8E8E;
+    --gui-titlebar1:#4A85B8;
+    --gui-titlebar2:#2E5C87;
+    --gui-tab-inactive:#C6C2B6;
+    --gui-tab-active:#F5F4F0;
+    --gui-field-border:#7F9DB9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241A2E 55%, #402C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4); border-radius:0 10px 10px 0; padding:14px 20px; max-width:680px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(107,76,143,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-area{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(107,76,143,0.1); color:var(--t4-dark); margin-left:8px; vertical-align:middle; }
+
+  .task-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t4-dark); font-weight:700; margin-bottom:10px; }
+
+  .spro-box{ background:white; border:1px solid var(--border); border-radius:10px; padding:16px 20px 16px 18px; margin-bottom:26px; box-shadow:0 2px 8px rgba(10,15,28,0.04); }
+  .spro-tree{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; line-height:1.5; }
+  .spro-tree, .spro-tree ul{ list-style:none; margin:0; padding-left:0; }
+  .spro-tree ul{ padding-left:20px; border-left:1.5px dashed #C9BEDD; margin-left:7px; }
+  .spro-tree li{ position:relative; padding:4px 0 4px 18px; color:var(--body); }
+  .spro-tree li::before{ content:''; position:absolute; left:0; top:14px; width:14px; height:1.5px; background:#C9BEDD; }
+  .spro-tree .folder .icon{ margin-right:5px; opacity:.8; }
+  .spro-tree .target{ background:var(--t4-pale); border:1.5px solid var(--t4-dark); border-radius:6px; padding:4px 12px; display:inline-flex; align-items:center; gap:7px; color:var(--t4-dark); font-weight:700; }
+
+  .gui-screen{ background:var(--gui-bg); border:1px solid #6E6E6E; border-radius:2px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.14); font-family:Arial,Tahoma,sans-serif; color:#000; }
+  .gui-titlebar{ background:linear-gradient(180deg,var(--gui-titlebar1),var(--gui-titlebar2)); color:white; padding:4px 10px; font-size:11px; display:flex; justify-content:space-between; align-items:center; }
+  .gui-titlebar .gt-icons{ opacity:.85; letter-spacing:3px; font-size:9px; }
+  .gui-menubar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:3px 10px; font-size:10.5px; color:#222; display:flex; gap:14px; }
+  .gui-toolbar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:5px 8px; display:flex; align-items:center; gap:5px; }
+  .gui-toolbar .t-btn{ width:22px; height:19px; background:#DEDEDE; border:1px solid #9A9A9A; border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:10.5px; color:#333; }
+  .gui-crumbbar{ background:#DEDEDE; border-bottom:1px solid #B8B8B8; padding:5px 10px; font-size:11.5px; font-weight:700; color:#111; }
+  .gui-body{ background:var(--gui-panel); padding:18px; border-top:1px solid #fff; }
+  .gui-field-row{ display:grid; grid-template-columns:200px 1fr; gap:8px; align-items:center; margin-bottom:9px; font-size:11.5px; }
+  .gui-field-row label{ text-align:right; color:#000; }
+  .gui-field-row .val{ background:white; border:1px solid var(--gui-field-border); padding:3px 7px; font-family:'Courier New',monospace; font-size:11.5px; max-width:280px; }
+  .gui-field-row .val.grey{ background:#E8E8E8; border-color:#B8B8B8; color:#555; }
+  .gui-field-row .val.check{ font-family:Arial,sans-serif; }
+  .gui-table{ width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+  .gui-table th{ background:var(--gui-tab-inactive); border:1px solid var(--gui-border); padding:5px 9px; text-align:left; font-weight:700; color:#111; }
+  .gui-table td{ border:1px solid #C6C2B6; padding:5px 9px; background:white; font-family:'Courier New',monospace; }
+  .gui-statusbar{ background:var(--gui-bg); border-top:1px solid #B8B8B8; padding:4px 10px; font-size:10px; color:#555; display:flex; justify-content:space-between; }
+  .gui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E; margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Valuation Method</a>
+  <a href="#s2">Valuation Areas</a>
+  <a href="#s3">Ledger Determination</a>
+  <a href="#s4">Exchange Rate Types</a>
+  <a href="#s5">Automatic Postings</a>
+  <a href="#s6">Restricting Delta Logic</a>
+  <a href="#s7">Document Type</a>
+  <a href="#s8">Number Ranges</a>
+  <a href="#s9">Reversal Reason</a>
+  <a href="#s10">Ledger-Group-Specific OI</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Foreign</span> Currency Valuation</h1>
+    <h2>Valoración de Moneda Extranjera — Configuración en SPRO</h2>
+    <p class="desc">El customizing que deja lista la base para que Jake, en Fiori (T3), pueda programar la valoración — incluida la razón exacta por la que el área IF le bloqueó la lógica delta.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Implementación Bike Company · Financial Accounting</div>
+        <div class="p-note">Cada pantalla de este recorrido arma la base que Jake usa del otro lado, en Fiori (T3)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Valuation Method</span>
+          <span class="sec-title-es">Definiendo el método de valoración</span>
+          <span class="sec-area">Ledgers</span>
+        </div>
+        <div class="sec-desc">El primer parámetro: qué procedimiento, tipo de tasa y tipo de documento va a usar cada valoración.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se define el <strong>método de valoración</strong> que va a determinar el procedimiento (lowest value / always valuate), el tipo de tasa de cambio, y el tipo de documento — antes de que exista ningún job en Fiori.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Ledger
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Valuate Foreign Currency Balances
+                          <ul>
+                            <li><span class="target">⚙️ Define Valuation Methods</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Valuation Methods": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Valuation Method BIKE01 — Local GAAP</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Valuation Method</label><div class="val">BIKE01</div></div>
+        <div class="gui-field-row"><label>Valuation Procedure</label><div class="val">Lowest Value Principle</div></div>
+        <div class="gui-field-row"><label>Exchange Rate Type</label><div class="val">P (Closing rate)</div></div>
+        <div class="gui-field-row"><label>Document Type</label><div class="val grey">AB — G/L Account Document</div></div>
+      </div>
+      <div class="gui-statusbar"><span>BIKE01 — Valuation Method</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Valuation Areas</span>
+          <span class="sec-title-es">Definiendo las áreas de valoración</span>
+          <span class="sec-area">Ledgers</span>
+        </div>
+        <div class="sec-desc">El método necesita un área que lo aloje — y esa área es la que Jake selecciona en Fiori.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se crea un <strong>área de valoración</strong> por cada enfoque contable que la empresa necesite representar, y se le asigna el método de valoración correspondiente.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Ledger
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Valuate Foreign Currency Balances
+                          <ul>
+                            <li><span class="target">⚙️ Define Valuation Areas</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Valuation Areas": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Valuation Areas — Chart of Accounts BIKE</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Valuation Area</th><th>Description</th><th>Valuation Method</th></tr>
+          <tr><td>01</td><td>Local GAAP</td><td>BIKE01</td></tr>
+          <tr><td>IF</td><td>IFRS / Group Reporting</td><td>BIKEIF</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>BIKE — Valuation Areas</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning Ledger Determination to the Area</span>
+          <span class="sec-title-es">Asignando la determinación de ledger al área</span>
+          <span class="sec-area">Ledgers</span>
+        </div>
+        <div class="sec-desc">Cada área escribe en un ledger distinto — así conviven Local GAAP e IFRS sin pisarse.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se asigna, por área de valoración, a qué <strong>ledger</strong> se dirige la contabilización resultante — el área <strong>01</strong> escribe en el ledger líder, mientras que <strong>IF</strong> escribe en un ledger paralelo de IFRS.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Ledger
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Valuate Foreign Currency Balances
+                          <ul>
+                            <li><span class="target">⚙️ Assign Valuation Areas to Ledger Group</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Valuation Area / Ledger Group": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Valuation Area → Ledger Group</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Valuation Area</th><th>Ledger Group</th></tr>
+          <tr><td>01</td><td>0L (Leading Ledger)</td></tr>
+          <tr><td>IF</td><td>2L (IFRS Parallel Ledger)</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>BIKE — Ledger Determination</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking Exchange Rate Types</span>
+          <span class="sec-title-es">Verificando los tipos de tasa de cambio</span>
+          <span class="sec-area">Currencies</span>
+        </div>
+        <div class="sec-desc">El tipo de tasa que el método referencia tiene que existir a nivel de todo el sistema.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se verifica que el <strong>tipo de tasa de cambio de cierre</strong> exista y esté correctamente definido — es el mismo tipo que el método de valoración de la sección 1 usa para calcular la diferencia.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>General Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Currencies
+                  <ul>
+                    <li><span class="target">⚙️ Check Exchange Rate Types</span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Exchange Rate Types": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Exchange Rate Types</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Type</th><th>Description</th></tr>
+          <tr><td>M</td><td>Average rate — transacciones diarias</td></tr>
+          <tr><td>P</td><td>Closing rate — valoración de cierre</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>Exchange Rate Types</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Preparing Automatic Postings</span>
+          <span class="sec-title-es">Preparando las contabilizaciones automáticas</span>
+          <span class="sec-area">Periodic Processing</span>
+        </div>
+        <div class="sec-desc">Las tres cuentas exactas que aparecieron en la pantalla de resultados de Jake en T3.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se asignan las cuentas de <strong>gasto/ingreso por valoración</strong> y la <strong>cuenta de ajuste del estado financiero</strong> — nunca la cuenta de enlace directa de proveedores.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>General Ledger Accounting
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Periodic Processing
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Valuate
+                      <ul>
+                        <li><span class="target">⚙️ Prepare Automatic Postings for Foreign Currency Valuation</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Automatic Postings — Valuation": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Chart of Accounts BIKE</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Function</th><th>G/L Account</th></tr>
+          <tr><td>Expense account (Exchange Rate Loss)</td><td>78500000 — Exchange Rate Loss</td></tr>
+          <tr><td>Revenue account (Exchange Rate Gain)</td><td>68500000 — Exchange Rate Gain</td></tr>
+          <tr><td>Financial Statement Adjustment Account</td><td>21190000 — AP Valuation Adjustment</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>BIKE — Automatic Postings</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Restricting Delta Logic by Valuation Area</span>
+          <span class="sec-title-es">Restringiendo la lógica delta por área de valoración</span>
+          <span class="sec-area">Ledgers</span>
+        </div>
+        <div class="sec-desc">Acá vive el interruptor exacto que le mostró a Jake el error sobre el área IF.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Dentro de la definición de cada área de valoración hay un indicador que habilita o no la <strong>lógica delta</strong> (Year-End / Mid-Year Valuation). El área <strong>01</strong> la tiene habilitada; el área <strong>IF</strong>, no — por eso Jake vio el error al intentar marcarla para esa área.
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Valuation Areas": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Valuation Area IF — IFRS / Group Reporting</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Valuation Area</label><div class="val">IF</div></div>
+        <div class="gui-field-row"><label>Valuation Method</label><div class="val">BIKEIF</div></div>
+        <div class="gui-field-row"><label>Delta Logic Permitted</label><div class="val grey">☐ Not permitted for this area</div></div>
+        <div class="gui-hint">💡 Este mismo indicador, sin marcar para IF, es la razón exacta del mensaje "Year-End/Mid-Year Valuation is not permitted for area IF" que vio Jake.</div>
+      </div>
+      <div class="gui-statusbar"><span>IF — Delta Logic Setting</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Document Type for Valuation Postings</span>
+          <span class="sec-title-es">Definiendo el tipo de documento de las contabilizaciones de valoración</span>
+          <span class="sec-area">Document Header</span>
+        </div>
+        <div class="sec-desc">El tipo de documento que el método de la sección 1 referencia tiene que existir y estar bien configurado.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se confirma que el <strong>tipo de documento</strong> asignado al método de valoración esté correctamente definido, para poder distinguir en reportes qué asientos vinieron de una corrida de valoración.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Header
+                      <ul>
+                        <li><span class="target">⚙️ Define Document Types for Entry View</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Document Types": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Document Type AB — G/L Account Document</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Doc. Type</th><th>Description</th><th>Number Range</th></tr>
+          <tr><td>AB</td><td>G/L Account Document</td><td>01</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>BIKE — Document Types</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning the Number Range</span>
+          <span class="sec-title-es">Asignando el rango de numeración</span>
+          <span class="sec-area">Document Header</span>
+        </div>
+        <div class="sec-desc">Sin un rango de numeración válido para el año, el job de Jake fallaría al intentar contabilizar.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se confirma que el <strong>rango de numeración 01</strong>, usado por el tipo de documento AB, esté abierto para el <strong>ejercicio fiscal en curso</strong> en la sociedad correspondiente.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Number Ranges
+                      <ul>
+                        <li><span class="target">⚙️ Define Document Number Ranges</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Number Range Maintenance: Company Code DE01</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Interval</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Number Range 01 — Fiscal Year 2026</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>No. Range</label><div class="val">01</div></div>
+        <div class="gui-field-row"><label>Year</label><div class="val">2026</div></div>
+        <div class="gui-field-row"><label>From Number</label><div class="val">4900000000</div></div>
+        <div class="gui-field-row"><label>To Number</label><div class="val">4999999999</div></div>
+        <div class="gui-field-row"><label>Status</label><div class="val check">✔ Open</div></div>
+      </div>
+      <div class="gui-statusbar"><span>DE01 — Number Range 01</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring the Standard Reversal Reason</span>
+          <span class="sec-title-es">Configurando el motivo de reversión estándar</span>
+          <span class="sec-area">Business Transactions</span>
+        </div>
+        <div class="sec-desc">La reversión automática del día siguiente necesita un motivo asignado para poder ejecutarse.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se verifica que exista un <strong>motivo de reversión</strong> configurado para contabilizaciones automáticas — es el que el sistema usa por defecto cuando la lógica estándar revierte la valoración al día siguiente (sin lógica delta seleccionada).
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Header
+                      <ul>
+                        <li><span class="target">⚙️ Define Reasons for Reversal</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Reasons for Reversal": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Reasons for Reversal</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Reason</th><th>Description</th><th>Neg. Posting</th></tr>
+          <tr><td>04</td><td>Automatic reversal — period-end valuation</td><td>☐</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>BIKE — Reasons for Reversal</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Ledger-Group-Specific Open Item Management</span>
+          <span class="sec-title-es">Gestión de partidas abiertas específica por grupo de ledger</span>
+          <span class="sec-area">G/L Master Data</span>
+        </div>
+        <div class="sec-desc">La configuración que hace posible el campo E/R diff. key que Jake vio en la pantalla de G/L Accounts.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se activa, a nivel de cuenta del Libro Mayor, la <strong>gestión de partidas abiertas específica por grupo de ledger</strong> — necesaria cuando distintos ledgers paralelos requieren tratar la diferencia de cambio de forma distinta sobre la misma cuenta.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>General Ledger Accounting
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Master Data
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>G/L Accounts
+                      <ul>
+                        <li><span class="target">⚙️ Define Ledger-Group-Specific Open Item Management</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "G/L Account — Ledger Group OI Mgmt": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">G/L Account 21190000 — AP Valuation Adjustment</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>G/L Account</label><div class="val">21190000</div></div>
+        <div class="gui-field-row"><label>Ledger Group</label><div class="val">2L (IFRS Parallel Ledger)</div></div>
+        <div class="gui-field-row"><label>Open Item Management</label><div class="val check">✔ Ledger-group specific</div></div>
+        <div class="gui-field-row"><label>E/R Diff. Key</label><div class="val">EK-2L</div></div>
+      </div>
+      <div class="gui-statusbar"><span>21190000 — Ledger-Group OI Mgmt</span><span>INS</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Foreign Currency Valuation · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

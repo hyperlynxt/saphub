@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Manual Payments Processing — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F; --t1-dark:#3D7A52; --t1-pale:rgba(127,191,143,0.14); --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t1-pale); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:820px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; background:var(--t1-dark); }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.6px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:18px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; font-size:13px; color:var(--t1-dark); }
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g2{ grid-template-columns:repeat(2,1fr); }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card.compact{ padding:11px 10px; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card.compact .icon{ font-size:16px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card.compact h6{ font-size:0.72rem; }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:170px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t1-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t1-dark); font-weight:700; }
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  @media (max-width:720px){ .cards-grid.g2, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">The Payables Process</a>
+  <a href="#s2">When a Payment Advice Is Created</a>
+  <a href="#s3">Display Supplier Balances</a>
+  <a href="#s4">Why Manual Payments Exist</a>
+  <a href="#s5">Processing a Manual Payment</a>
+  <a href="#s6">Manage Supplier Line Items</a>
+  <a href="#s7">Creating a Supplier Invoice</a>
+  <a href="#s8">Header Parameters</a>
+  <a href="#s9">Line Item Parameters</a>
+  <a href="#s10">Payment Terms &amp; Method</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Payables Management</span>
+      <span class="pill pill-secondary">Materials Management</span>
+    </div>
+    <h1>Manual <span class="accent">Payments</span></h1>
+    <h2>Procesando Pagos Manuales</h2>
+    <p class="desc">Cómo se paga una factura de proveedor fuera del ciclo automático: cuándo hace falta un pago manual, cómo revisar saldos y partidas de proveedor, y todos los parámetros que hay que entender para crear una factura de proveedor correctamente.</p>
+    <div class="hlbox">Resumen Visual — <b>Manual Payments Processing</b>, Tipo 1 (Básico). 10 secciones — el proceso de pagos, las apps de saldo y partidas de proveedor, el pago manual urgente, y los parámetros completos de creación de factura.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Payables Process, from Proposal to Payment File</span>
+          <span class="sec-title-es">El proceso de pagos, de la propuesta al archivo de pago</span>
+        </div>
+        <div class="sec-desc">El punto de partida: cómo se paga una factura abierta en Bike Company.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> en Bike Company, las facturas abiertas se pagan usando el programa de pagos. El proceso recorre desde una lista de propuesta de pago hasta el archivo de pago final — y en algún punto de ese recorrido puede generarse un aviso de pago (payment advice) para el proveedor.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">📋</span><span class="title-en">Proposal List</span><span class="title-es">Lista de propuesta</span></div>
+          <div class="flow-step-body"><ul><li>Facturas candidatas a pagarse</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">✅</span><span class="title-en">Payment Program Runs</span><span class="title-es">Corre el programa de pagos</span></div>
+          <div class="flow-step-body"><ul><li>Procesa la propuesta aprobada</li></ul></div>
+          <div class="flow-connector">→</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head"><span class="icon">📁</span><span class="title-en">Payment File</span><span class="title-es">Archivo de pago</span></div>
+          <div class="flow-step-body"><ul><li>Resultado final enviado al banco</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">When a Payment Advice Is Created</span>
+          <span class="sec-title-es">Cuándo se crea un aviso de pago</span>
+        </div>
+        <div class="sec-desc">Una pieza clave que Jennifer necesita entender antes de tomar tareas del proceso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué importa esto?</strong> Jennifer, quien recién se suma al área de Payables Management, necesita entender el flujo del proceso de pago desde la lista de propuesta hasta el archivo de pago, y saber en qué punto se genera el aviso de pago — el documento que informa al proveedor qué facturas está cubriendo el pago.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Payment Run Executes</div><div class="t-es">corre la tanda de pagos</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Payment Advice Generated</div><div class="t-es">se genera el aviso</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Sent to Supplier</div><div class="t-es">enviado al proveedor</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Display Supplier Balances App</span>
+          <span class="sec-title-es">La app Display Supplier Balances</span>
+        </div>
+        <div class="sec-desc">Cómo revisar cuánto se le debe a un proveedor, antes de tomar cualquier decisión.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué permite hacer?</strong> Con esta app se pueden ver los saldos del proveedor correspondiente, filtrando por proveedor, sociedad, y/o ejercicio fiscal — y también se pueden exportar los valores a un archivo CSV.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🎚️</span><h6>Filter by Supplier</h6><p>Ver el saldo de un proveedor específico.</p></div>
+        <div class="mini-card"><span class="icon">🏢</span><h6>Filter by Company Code / Fiscal Year</h6><p>Acotar por sociedad o ejercicio.</p></div>
+        <div class="mini-card"><span class="icon">📤</span><h6>Export to CSV</h6><p>Exportar los valores para análisis externo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Manual Payments Exist</span>
+          <span class="sec-title-es">Por qué existen los pagos manuales</span>
+        </div>
+        <div class="sec-desc">Cuando esperar a la próxima tanda automática no es una opción.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> algunos pagos necesitan ejecutarse de inmediato y no pueden esperar a la próxima tanda automática de pagos — para esos casos urgentes, se crea un pago manual.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Urgent Payment Need</div><div class="t-es">necesidad urgente de pago</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Cannot Wait for Payment Run</div><div class="t-es">no puede esperar la tanda</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Manual Payment Created</div><div class="t-es">pago manual creado</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Processing a Manual Payment</span>
+          <span class="sec-title-es">Procesando un pago manual</span>
+        </div>
+        <div class="sec-desc">El proceso concreto para compensar una factura de inmediato.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué implica esto?</strong> Se crea un pago saliente para compensar la factura inmediatamente, definiendo los parámetros necesarios para el pago manual — sin esperar el ciclo del programa de pagos automático.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📄</span><h6>Select Invoice</h6><p>Identificar la factura a compensar de inmediato.</p></div>
+        <div class="mini-card"><span class="icon">⚙️</span><h6>Define Parameters</h6><p>Ajustar los parámetros necesarios del pago.</p></div>
+        <div class="mini-card"><span class="icon">💸</span><h6>Create Outgoing Payment</h6><p>Generar el pago saliente que compensa la factura.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Manage Supplier Line Items App</span>
+          <span class="sec-title-es">La app Manage Supplier Line Items</span>
+        </div>
+        <div class="sec-desc">La vista de detalle, partida por partida, no solo el saldo total.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué permite hacer?</strong> Da una visión general de las partidas de un proveedor específico, permitiendo ver y gestionar tanto las partidas abiertas como las ya compensadas, con distintas opciones de selección, filtros, y capacidades de edición.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card compact"><span class="icon">📂</span><h6>Open Items</h6></div>
+        <div class="mini-card compact"><span class="icon">✅</span><h6>Cleared Items</h6></div>
+        <div class="mini-card compact"><span class="icon">🎚️</span><h6>Selection Options</h6></div>
+        <div class="mini-card compact"><span class="icon">✏️</span><h6>Editing Capabilities</h6></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating a Supplier Invoice</span>
+          <span class="sec-title-es">Creando una factura de proveedor</span>
+        </div>
+        <div class="sec-desc">El punto de partida de toda la cadena: sin la factura, no hay nada que pagar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué hace esta app?</strong> Permite crear y verificar facturas de proveedor en cuanto a su contenido, precios, y aritmética. Al contabilizar la factura, el dato queda guardado en el sistema, y se actualiza tanto en Materials Management como en Financial Accounting.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Invoice Verified</div><div class="t-es">factura verificada</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Posted</div><div class="t-es">contabilizada</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Updates MM &amp; FI</div><div class="t-es">actualiza MM y FI</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Header Parameters</span>
+          <span class="sec-title-es">Parámetros de cabecera</span>
+        </div>
+        <div class="sec-desc">Los datos generales que identifican a la factura antes de entrar al detalle.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el Transaction describe el tipo (factura o nota de crédito); el Invoice Date es el día en que se creó la factura; el Posting Date es la fecha desde la cual el ítem impacta la cuenta; el Invoicing Party indica para quién se creó la factura; el Company Code estructura la organización desde lo contable; el Gross Invoice Amount es el total bruto; y el Reference puede contener el número de documento del proveedor u otro dato.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card compact"><span class="icon">🏷️</span><h6>Transaction</h6></div>
+        <div class="mini-card compact"><span class="icon">📅</span><h6>Invoice Date</h6></div>
+        <div class="mini-card compact"><span class="icon">📅</span><h6>Posting Date</h6></div>
+        <div class="mini-card compact"><span class="icon">👤</span><h6>Invoicing Party</h6></div>
+        <div class="mini-card compact"><span class="icon">🏢</span><h6>Company Code</h6></div>
+        <div class="mini-card compact"><span class="icon">💰</span><h6>Gross Invoice Amount</h6></div>
+        <div class="mini-card compact"><span class="icon">🔗</span><h6>Reference</h6></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Line Item Parameters</span>
+          <span class="sec-title-es">Parámetros de partida</span>
+        </div>
+        <div class="sec-desc">Los datos que asignan el gasto a una cuenta, un centro de costo, y un impuesto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el Debit/Credit Indicator asigna la partida a una cuenta deudora o acreedora; el G/L Account asigna la cuenta de mayor; el Amount es el monto neto; el Tax Code especifica el porcentaje de impuesto; el Cost Center asigna el costo a un presupuesto existente; el Profit Center representa el área evaluada por su resultado; el Tax Date es la fecha para los impuestos; y el Tax Amount es el monto de impuesto según el código.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card compact"><span class="icon">➕➖</span><h6>Debit/Credit Indicator</h6></div>
+        <div class="mini-card compact"><span class="icon">📒</span><h6>G/L Account</h6></div>
+        <div class="mini-card compact"><span class="icon">💵</span><h6>Amount</h6></div>
+        <div class="mini-card compact"><span class="icon">🧾</span><h6>Tax Code</h6></div>
+        <div class="mini-card compact"><span class="icon">🏭</span><h6>Cost Center</h6></div>
+        <div class="mini-card compact"><span class="icon">📊</span><h6>Profit Center</h6></div>
+        <div class="mini-card compact"><span class="icon">📅</span><h6>Tax Date</h6></div>
+        <div class="mini-card compact"><span class="icon">💰</span><h6>Tax Amount</h6></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Terms and Payment Method</span>
+          <span class="sec-title-es">Condiciones de pago y método de pago</span>
+        </div>
+        <div class="sec-desc">Los últimos parámetros: cuándo y cómo se le va a pagar al proveedor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> los Payment Terms especifican cuándo debe pagarse al proveedor y qué descuentos hay disponibles por pronto pago. Los Fixed Payment Terms permiten tomar el primer o segundo descuento por pronto pago sin importar si el período correspondiente ya pasó. El Payment Method define cómo se realiza el pago (transferencia bancaria, cheque, o débito directo SEPA), y el Payment Reference identifica el motivo del pago.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g4">
+        <div class="mini-card"><span class="icon">📆</span><h6>Payment Terms</h6><p>Cuándo pagar, y qué descuentos aplican.</p></div>
+        <div class="mini-card"><span class="icon">🔒</span><h6>Fixed Payment Terms</h6><p>Descuento tomado sin importar el plazo transcurrido.</p></div>
+        <div class="mini-card"><span class="icon">🏦</span><h6>Payment Method</h6><p>Transferencia, cheque, o débito directo SEPA.</p></div>
+        <div class="mini-card"><span class="icon">🔖</span><h6>Payment Reference</h6><p>Identifica el motivo del pago.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos clave de Manual Payments Processing — Tipo 1</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Payment Program</div><div class="term-es">Programa de Pagos</div><div class="term-def">Herramienta que ejecuta el pago automatizado de facturas abiertas de proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Proposal List</div><div class="term-es">Lista de Propuesta</div><div class="term-def">Listado de facturas candidatas a pagarse antes de ejecutar el programa de pagos.</div></div>
+      <div class="gcard"><div class="term-en">Payment Advice</div><div class="term-es">Aviso de Pago</div><div class="term-def">Documento que informa al proveedor qué facturas cubre un pago.</div></div>
+      <div class="gcard"><div class="term-en">Manual Payment</div><div class="term-es">Pago Manual</div><div class="term-def">Pago saliente creado fuera del ciclo automático, para casos urgentes.</div></div>
+      <div class="gcard"><div class="term-en">Display Supplier Balances</div><div class="term-es">Mostrar Saldos de Proveedor</div><div class="term-def">App para consultar el saldo de un proveedor por sociedad y ejercicio fiscal.</div></div>
+      <div class="gcard"><div class="term-en">Manage Supplier Line Items</div><div class="term-es">Gestionar Partidas de Proveedor</div><div class="term-def">App para ver y gestionar partidas abiertas y compensadas de un proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Invoicing Party</div><div class="term-es">Parte Facturada</div><div class="term-def">Indica para quién fue creada la factura.</div></div>
+      <div class="gcard"><div class="term-en">Gross Invoice Amount</div><div class="term-es">Monto Bruto de Factura</div><div class="term-def">El total bruto de la factura, antes de descuentos o ajustes.</div></div>
+      <div class="gcard"><div class="term-en">Debit/Credit Indicator</div><div class="term-es">Indicador de Debe/Haber</div><div class="term-def">Determina si una partida se asigna a una cuenta deudora o acreedora.</div></div>
+      <div class="gcard"><div class="term-en">Cost Center</div><div class="term-es">Centro de Costo</div><div class="term-def">Unidad organizativa usada para asignar el costo de una actividad a un presupuesto.</div></div>
+      <div class="gcard"><div class="term-en">Profit Center</div><div class="term-es">Centro de Beneficio</div><div class="term-def">Área de la empresa para la cual se determina un resultado periódico propio.</div></div>
+      <div class="gcard"><div class="term-en">Fixed Payment Terms</div><div class="term-es">Condiciones de Pago Fijas</div><div class="term-def">Permite tomar un descuento por pronto pago sin importar si el plazo ya venció.</div></div>
+      <div class="gcard"><div class="term-en">SEPA Direct Debit</div><div class="term-es">Débito Directo SEPA</div><div class="term-def">Método de pago mediante débito directo dentro del área SEPA europea.</div></div>
+      <div class="gcard"><div class="term-en">Payment Reference</div><div class="term-es">Referencia de Pago</div><div class="term-def">Dato que identifica el motivo o propósito de un pago específico.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Manual Payments Processing · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · AP Posting Logic — Usuario Fiori | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#7FC4E0;--t1-dark:#2E7096;--t1-pale:rgba(127,196,224,0.12);--navy-950:#0A0F1C;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#0C1C2E 55%,#0C2838 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(127,196,224,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;}
+  .actor-badge{width:36px;height:36px;border-radius:50%;background:var(--t1-dark);color:white;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid rgba(127,196,224,0.6);}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 26px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .nav-trail{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.82rem;}
+  .trail-step{color:var(--muted);font-weight:500;}
+  .trail-sep{color:var(--border);}
+  .trail-current{color:var(--t1-dark);font-weight:700;}
+  .screen-wrap{border:2px solid #C8D8E6;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(10,15,28,0.1);}
+  .screen-shell{background:#354A5E;padding:9px 16px;display:flex;align-items:center;gap:14px;}
+  .sap-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:white;letter-spacing:1px;flex-shrink:0;}
+  .app-title-bar{font-size:12.5px;font-weight:600;color:white;}
+  .user-chip{margin-left:auto;background:rgba(255,255,255,0.15);border-radius:20px;padding:3px 10px;font-size:11px;color:rgba(255,255,255,0.9);}
+  .screen-body{background:#F5F6F7;padding:14px 16px;}
+  .fiori-page-head{background:white;border-radius:8px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .fiori-page-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#32363A;}
+  .btn-primary{background:#0070F2;color:white;border:none;border-radius:4px;padding:6px 14px;font-size:11.5px;font-weight:600;}
+  .btn-secondary{background:white;color:#0070F2;border:1.5px solid #0070F2;border-radius:4px;padding:6px 14px;font-size:11.5px;font-weight:600;}
+  .fiori-form{background:white;border-radius:8px;padding:12px 14px;margin-bottom:8px;}
+  .form-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+  .ffield{flex:1;min-width:110px;}
+  .ffield label{font-size:10.5px;color:#666;display:block;margin-bottom:2px;}
+  .ffield .fval{border:1px solid #89919A;border-radius:4px;padding:5px 8px;font-size:11.5px;color:#32363A;background:white;width:100%;}
+  .ffield .fval.filled{border-color:#0070F2;background:rgba(0,112,242,0.03);}
+  .fiori-table{width:100%;border-collapse:collapse;font-size:11.5px;}
+  .fiori-table th{background:#F5F6F7;color:#666;padding:7px 10px;text-align:left;font-weight:600;border-bottom:2px solid #E0E0E0;font-size:10.5px;white-space:nowrap;}
+  .fiori-table td{padding:7px 10px;border-bottom:1px solid #F0F0F0;color:#32363A;vertical-align:middle;}
+  .fiori-table tr:last-child td{border-bottom:none;}
+  .dh-note{background:#EEF4FF;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:11.5px;color:#1565C0;border-left:4px solid #1565C0;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO / FIORI</span>
+  <a href="#s1">Jennifer's First Day</a>
+  <a href="#s2">Launchpad — AP Apps</a>
+  <a href="#s3">Create Supplier Invoice — Header</a>
+  <a href="#s4">Create Supplier Invoice — Post</a>
+  <a href="#s5">Create Incoming Invoices App</a>
+  <a href="#s6">Post a Credit Memo</a>
+  <a href="#s7">Review Posted Journal Entry</a>
+  <a href="#s8">Foreign Currency Invoice</a>
+  <a href="#s9">Subsequent Debit Scenario</a>
+  <a href="#s10">Check Supplier Account After Posting</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+      <span class="pill pill-sec">Procurement</span>
+    </div>
+    <h1>AP <span class="accent">Posting Logic</span></h1>
+    <h2>Tangibilización — Usuario Fiori</h2>
+    <p class="desc">El proceso de contabilización de facturas y credit memos visto desde la pantalla de Jennifer: desde el Launchpad hasta el asiento de diario confirmado, incluyendo moneda extranjera.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">👤</span>
+      <b>Jennifer</b> · AP Accountant · Bike Company (bicycles &amp; e-scooters)<br>
+      <span style="font-size:12.5px;opacity:0.85;">Primer día en el puesto. Aprende a procesar facturas de proveedor en SAP S/4HANA — su tarea diaria central.</span>
+    </div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Jennifer's First Day at Bike Company</span><span class="sec-title-es">El primer día de Jennifer en Bike Company</span></div><div class="sec-desc">El contexto de Jennifer y su rol en el proceso Invoice to Pay de Bike Company.</div></div></div>
+  <div class="theory-box"><strong>Jennifer viene de la facultad y empieza en el departamento de contabilidad:</strong> Bike Company produce bicicletas y e-scooters con materiales sostenibles. Jennifer es contadora AP — su trabajo es procesar y organizar las facturas entrantes de los proveedores de Bike Company: neumáticos, materiales, componentes. Su área de trabajo es el sub-proceso <strong>Invoice to Pay</strong>.</div>
+  <div class="visual-wrap">
+    <div style="background:white;border-radius:10px;padding:16px 20px;border:2px solid #E0E0E0;">
+      <div style="font-size:12.5px;font-weight:700;color:#32363A;margin-bottom:12px;">&#128101; Jennifer's Responsibilities at Bike Company</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11.5px;">
+        <div style="background:#E8F5E9;border-radius:6px;padding:10px 12px;"><span style="color:#2E7D32;font-weight:700;">Process Supplier Invoices</span><br>Receive, verify and post incoming supplier invoices. Handle corrections via credit memos if needed.</div>
+        <div style="background:#E3F2FD;border-radius:6px;padding:10px 12px;"><span style="color:#1565C0;font-weight:700;">Process Accounts Payable</span><br>Monitor open items, manage payment preparation, ensure timely supplier payments.</div>
+      </div>
+      <div style="margin-top:10px;background:rgba(0,112,242,0.05);border-radius:6px;padding:8px 12px;font-size:11px;color:#1565C0;">Supplier examples: Tireless Tires GmbH (tyres) · Steel Parts AG (components) · International materials suppliers</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Fiori Launchpad — AP Invoice Apps</span><span class="sec-title-es">Launchpad — las apps de facturación AP</span></div><div class="sec-desc">Jennifer abre su Fiori Launchpad y encuentra las apps que usará para procesar facturas de proveedor.</div></div></div>
+  <div class="theory-box"><strong>Dos apps hacen lo mismo — Jennifer elige con cuál trabajar según las preferencias del equipo:</strong> en su Launchpad Jennifer ve dos apps de ingreso de facturas. Después de consultar con sus colegas, decide usar Create Supplier Invoice como app principal.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Accounts Payable — Invoice Processing</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Fiori Launchpad — Jennifer</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="font-size:11.5px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;">Accounts Payable — Invoice Entry</div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;padding:14px;background:#F5F6F7;border-radius:8px;">
+          <div style="background:white;border:2px solid #0070F2;border-radius:8px;padding:16px 14px;text-align:center;flex:1;min-width:140px;">
+            <div style="font-size:24px;margin-bottom:8px;">📄</div>
+            <div style="font-size:11.5px;font-weight:700;color:#0070F2;line-height:1.3;">Create Supplier Invoice</div>
+            <div style="font-size:10px;color:#888;margin-top:4px;">Team preference ✓</div>
+          </div>
+          <div style="background:white;border:1px solid #E4E7E9;border-radius:8px;padding:16px 14px;text-align:center;flex:1;min-width:140px;">
+            <div style="font-size:24px;margin-bottom:8px;">📋</div>
+            <div style="font-size:11.5px;font-weight:600;color:#32363A;line-height:1.3;">Create Incoming Invoices</div>
+            <div style="font-size:10px;color:#888;margin-top:4px;">Alternative app</div>
+          </div>
+          <div style="background:white;border:1px solid #E4E7E9;border-radius:8px;padding:16px 14px;text-align:center;flex:1;min-width:140px;">
+            <div style="font-size:24px;margin-bottom:8px;">📊</div>
+            <div style="font-size:11.5px;font-weight:600;color:#32363A;line-height:1.3;">Manage Supplier Line Items</div>
+          </div>
+          <div style="background:white;border:1px solid #E4E7E9;border-radius:8px;padding:16px 14px;text-align:center;flex:1;min-width:140px;">
+            <div style="font-size:24px;margin-bottom:8px;">💰</div>
+            <div style="font-size:11.5px;font-weight:600;color:#32363A;line-height:1.3;">Supplier Invoices List</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Create Supplier Invoice — Header Data</span><span class="sec-title-es">Crear factura — datos de cabecera</span></div><div class="sec-desc">Jennifer ingresa los datos principales de una factura de Tireless Tires GmbH en la app Create Supplier Invoice.</div></div></div>
+  <div class="theory-box"><strong>El header contiene los datos que identifican la factura:</strong> Jennifer recibió la factura KR-2025-07-0890 de Tireless Tires GmbH por EUR 8.800 de neumáticos para bicicletas. Ingresa los datos del header — tipo de transacción, proveedor, fecha, referencia, importe.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Create Supplier Invoice</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Supplier Invoice</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form">
+          <div class="form-row">
+            <div class="ffield"><label>Transaction Type *</label><div class="fval filled">Invoice</div></div>
+            <div class="ffield"><label>Invoicing Party *</label><div class="fval filled">100023 — Tireless Tires GmbH</div></div>
+            <div class="ffield"><label>Company Code *</label><div class="fval filled">DE01 — Bike GmbH</div></div>
+          </div>
+          <div class="form-row">
+            <div class="ffield"><label>Invoice Date *</label><div class="fval filled">18.07.2025</div></div>
+            <div class="ffield"><label>Reference *</label><div class="fval filled">KR-2025-07-0890</div></div>
+            <div class="ffield"><label>Posting Date</label><div class="fval filled">22.07.2025</div></div>
+            <div class="ffield"><label>Currency</label><div class="fval filled">EUR</div></div>
+          </div>
+          <div class="form-row">
+            <div class="ffield"><label>Amount *</label><div class="fval filled">8.800,00</div></div>
+            <div class="ffield"><label>Tax Amount</label><div class="fval filled">1.672,00 (19% VAT)</div></div>
+            <div class="ffield"><label>Payment Terms</label><div class="fval" style="background:#F5F6F7;">NT30 (auto from master)</div></div>
+          </div>
+        </div>
+        <div style="background:#E3F2FD;border-radius:6px;padding:8px 12px;font-size:11px;color:#1565C0;">ℹ Payment Terms and Reconciliation Account loaded automatically from Tireless Tires GmbH master record</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Create Supplier Invoice — Line Items and Post</span><span class="sec-title-es">Crear factura — partidas y contabilizar</span></div><div class="sec-desc">Jennifer agrega las líneas de detalle de la factura y la contabiliza definitivamente.</div></div></div>
+  <div class="theory-box"><strong>Cada línea de la factura genera una partida en el asiento de diario:</strong> los neumáticos se imputan a la cuenta de gastos de compras de materiales. Jennifer agrega la línea de detalle, verifica que el saldo sea cero, y hace click en Post para crear el Accounting Document.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Create Supplier Invoice</span><span class="trail-sep">›</span><span class="trail-current">Line Items + Post</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Supplier Invoice — Line Items</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;margin-bottom:8px;">
+          <table class="fiori-table">
+            <thead><tr><th>Line</th><th>GL Account</th><th>Description</th><th>Cost Center</th><th>Amount (EUR)</th><th>Tax Code</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td style="color:#0070F2;">516000</td><td>Bicycle Tyre Purchases</td><td>CC-PROD-DE01</td><td style="text-align:right;font-weight:600;">8.800,00</td><td>V2 (19%)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="background:white;border-radius:6px;padding:8px 12px;border:1px solid #E0E0E0;display:flex;align-items:center;gap:14px;font-size:12px;margin-bottom:8px;">
+          <span style="color:#666;">Document Balance:</span>
+          <strong style="color:#3D7A52;font-size:14px;">0,00 EUR ✓</strong>
+          <span style="color:#888;font-size:10.5px;">Net EUR 8.800 + Tax EUR 1.672 = Total EUR 10.472 · Balanced</span>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;">
+          <button class="btn-secondary">Simulate</button>
+          <button class="btn-primary">Post ✓</button>
+        </div>
+        <div style="margin-top:8px;background:#E8F5E9;border-radius:6px;padding:8px 12px;font-size:11.5px;color:#2E7D32;font-weight:600;">✅ Document 1900000031 posted successfully · Open item created for Tireless Tires GmbH</div>
+      </div>
+    </div>
+  </div>
+  <div class="dh-note">
+    <strong>Debe / Haber de este asiento:</strong><br>
+    Dr. 516000 Bicycle Tyre Purchases EUR 8.800 — La empresa recibió neumáticos, reconoce el gasto<br>
+    Dr. 175000 Input Tax (VAT) EUR 1.672 — IVA soportado recuperable<br>
+    Cr. Tireless Tires GmbH (AP) EUR 10.472 — La empresa debe este importe al proveedor
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Create Incoming Invoices — The Alternative App</span><span class="sec-title-es">La app alternativa para ingresar facturas</span></div><div class="sec-desc">La segunda opción que SAP ofrece para ingresar facturas — misma funcionalidad, interfaz ligeramente diferente.</div></div></div>
+  <div class="theory-box"><strong>Create Incoming Invoices genera el mismo resultado que Create Supplier Invoice:</strong> Jennifer le pregunta a su colega por qué existen dos apps. La respuesta: históricamente SAP las fue evolucionando, y muchas empresas continúan usando la que adoptaron durante la implementación. Ambas producen el mismo Accounting Document.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Create Incoming Invoices</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Incoming Invoices</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form">
+          <div class="form-row">
+            <div class="ffield"><label>Transaction *</label>
+              <select style="border:1px solid #89919A;border-radius:4px;padding:5px 8px;font-size:11.5px;background:white;width:100%;color:#32363A;">
+                <option selected>Invoice</option>
+                <option>Credit Memo</option>
+                <option>Subsequent Debit</option>
+                <option>Subsequent Credit</option>
+              </select>
+            </div>
+            <div class="ffield"><label>Invoicing Party *</label><div class="fval filled">100023 — Tireless Tires</div></div>
+            <div class="ffield"><label>Invoice Date</label><div class="fval filled">18.07.2025</div></div>
+            <div class="ffield"><label>Amount</label><div class="fval filled">8.800,00 EUR</div></div>
+          </div>
+        </div>
+        <div style="background:#FFF3E0;border-radius:6px;padding:8px 12px;font-size:11px;color:#E65100;">💡 Ask your team which app to use — both produce the same FI document. Company standard may prefer one over the other.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Post a Credit Memo — Good Business Relationship</span><span class="sec-title-es">Contabilizar una nota de crédito</span></div><div class="sec-desc">Tireless Tires emite una nota de crédito como gesto de buena relación comercial tras las entregas puntuales. Jennifer la contabiliza.</div></div></div>
+  <div class="theory-box"><strong>Un Credit Memo reduce la deuda con el proveedor:</strong> Tireless Tires envió sus entregas a tiempo la semana pasada y como gesto de buena voluntad emite una nota de crédito de EUR 500. Jennifer la contabiliza usando la misma app — solo cambia el Transaction Type a "Credit Memo".</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Create Supplier Invoice</span><span class="trail-sep">›</span><span class="trail-current">Transaction Type: Credit Memo</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Supplier Invoice — Credit Memo</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form" style="margin-bottom:8px;">
+          <div class="form-row">
+            <div class="ffield"><label>Transaction Type *</label><div class="fval filled" style="border-color:#3D7A52;color:#3D7A52;font-weight:700;">Credit Memo</div></div>
+            <div class="ffield"><label>Invoicing Party</label><div class="fval filled">100023 — Tireless Tires GmbH</div></div>
+            <div class="ffield"><label>Invoice Date</label><div class="fval filled">21.07.2025</div></div>
+            <div class="ffield"><label>Amount</label><div class="fval filled">500,00 EUR</div></div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;margin-bottom:8px;">
+          <table class="fiori-table">
+            <thead><tr><th>GL Account</th><th>Description</th><th>Amount</th></tr></thead>
+            <tbody>
+              <tr><td style="color:#0070F2;">740000</td><td>Cash Discounts / Trade Discounts Received</td><td style="text-align:right;font-weight:600;color:#3D7A52;">-500,00 EUR</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="background:#E8F5E9;border-radius:6px;padding:8px 12px;font-size:11.5px;color:#2E7D32;font-weight:600;">✅ Credit Memo 1700000018 posted · AP balance reduced by EUR 500</div>
+      </div>
+    </div>
+  </div>
+  <div class="dh-note">
+    <strong>Debe / Haber de este asiento (Credit Memo):</strong><br>
+    Dr. Tireless Tires GmbH (AP) EUR 500 — La deuda con el proveedor se reduce<br>
+    Cr. 740000 Trade Discounts Received EUR 500 — El descuento recibido se reconoce como ingreso/reducción de costo
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Review the Posted Journal Entry</span><span class="sec-title-es">Revisar el asiento de diario contabilizado</span></div><div class="sec-desc">Jennifer navega al Journal Entry 1900000031 para verificar que el asiento fue creado correctamente.</div></div></div>
+  <div class="theory-box"><strong>Después de postear, el Journal Entry es permanente e inmutable:</strong> Jennifer hace click en el número de documento azul que apareció en la confirmación. Se abre el Manage Journal Entries mostrando el asiento completo con todas las partidas. Puede ver las tabs: General Information, Line Items, Related Documents.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Create Supplier Invoice (confirmation)</span><span class="trail-sep">›</span><span class="trail-current">Manage Journal Entries — 1900000031</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Journal Entry 1900000031 — Entry View</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">Journal Entry 1900000031</span><span style="font-size:11px;background:#E8F5E9;color:#2E7D32;padding:3px 8px;border-radius:12px;font-weight:600;">Posted</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;font-size:11.5px;">
+          <div style="background:white;border:1px solid #E0E0E0;border-radius:6px;padding:8px 10px;"><span style="color:#666;font-size:10px;">Journal Entry Type</span><br><strong>KR (Vendor Invoice)</strong></div>
+          <div style="background:white;border:1px solid #E0E0E0;border-radius:6px;padding:8px 10px;"><span style="color:#666;font-size:10px;">Posting Date</span><br><strong>22.07.2025</strong></div>
+          <div style="background:white;border:1px solid #E0E0E0;border-radius:6px;padding:8px 10px;"><span style="color:#666;font-size:10px;">Reference</span><br><strong>KR-2025-07-0890</strong></div>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+          <table class="fiori-table">
+            <thead><tr><th>PK</th><th>Account</th><th>Description</th><th style="text-align:right;">Amount (EUR)</th><th>DC</th></tr></thead>
+            <tbody>
+              <tr><td>31</td><td style="color:#E07B39;font-weight:600;">100023</td><td>Tireless Tires GmbH (AP)</td><td style="text-align:right;font-weight:700;color:#3D7A52;">10.472,00</td><td style="color:#3D7A52;">CR</td></tr>
+              <tr><td>40</td><td style="color:#0070F2;">516000</td><td>Bicycle Tyre Purchases</td><td style="text-align:right;font-weight:700;color:#C0392B;">8.800,00</td><td style="color:#C0392B;">DR</td></tr>
+              <tr><td>40</td><td style="color:#0070F2;">175000</td><td>Input Tax (VAT 19%)</td><td style="text-align:right;font-weight:700;color:#C0392B;">1.672,00</td><td style="color:#C0392B;">DR</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Foreign Currency Invoice — USD Supplier</span><span class="sec-title-es">Factura en moneda extranjera — proveedor de EE.UU.</span></div><div class="sec-desc">Jennifer recibe la primera factura en dólares estadounidenses. Aprende a ingresar la moneda extranjera en el campo Currency Key.</div></div></div>
+  <div class="theory-box"><strong>Para una factura en USD, Jennifer solo cambia el Currency Key — SAP hace el resto:</strong> Bike Company tiene un proveedor de componentes en EE.UU. que factura en USD. Jennifer abre Create Supplier Invoice normalmente — la única diferencia es cambiar el campo Currency Key de EUR a USD. SAP convierte automáticamente usando el tipo de cambio del Posting Date.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Create Supplier Invoice</span><span class="trail-sep">›</span><span class="trail-current">Foreign Currency — USD</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Supplier Invoice — USD Invoice</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form" style="margin-bottom:8px;">
+          <div class="form-row">
+            <div class="ffield"><label>Transaction Type</label><div class="fval filled">Invoice</div></div>
+            <div class="ffield"><label>Invoicing Party</label><div class="fval filled">200032 — Spoke USA Inc.</div></div>
+            <div class="ffield"><label>Invoice Date</label><div class="fval filled">15.07.2025</div></div>
+          </div>
+          <div class="form-row">
+            <div class="ffield"><label>Amount *</label><div class="fval filled">5.000,00</div></div>
+            <div class="ffield"><label style="color:#0070F2;font-weight:700;">Currency Key *</label><div class="fval filled" style="border-color:#E07B39;color:#E07B39;font-weight:700;">USD ← changed from EUR</div></div>
+            <div class="ffield"><label>Exch. Rate (auto)</label><div class="fval" style="background:#F5F6F7;color:#888;">0.9200 (22.07.2025)</div></div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:8px;padding:10px 14px;border:1px solid #E0E0E0;font-size:11.5px;margin-bottom:8px;">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;">
+            <div><span style="color:#666;">Invoice Amount:</span> <strong>USD 5.000,00</strong></div>
+            <div><span style="color:#666;">Exchange Rate:</span> <strong>1 USD = 0.9200 EUR</strong></div>
+            <div><span style="color:#3D7A52;font-weight:700;">EUR Equivalent: EUR 4.600,00</span> (auto-calculated)</div>
+          </div>
+        </div>
+        <div style="background:#E3F2FD;border-radius:6px;padding:8px 12px;font-size:11px;color:#1565C0;">ℹ SAP stores both USD 5.000 AND EUR 4.600 in the posting. Exchange rate used: valid on Posting Date 22.07.2025</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Subsequent Debit — Extra Freight Charge</span><span class="sec-title-es">Cargo adicional de flete</span></div><div class="sec-desc">El departamento de logística notifica a Jennifer que Tireless Tires cobró EUR 200 adicionales de flete — no incluidos en la factura original.</div></div></div>
+  <div class="theory-box"><strong>El Subsequent Debit se usa cuando llega un cargo extra posterior a la factura original:</strong> la factura 1900000031 ya fue procesada y compensada. Ahora Tireless Tires envía un cobro adicional de EUR 200 por flete express. Logística informa a Jennifer — ella debe procesar un Subsequent Debit para registrar este cargo adicional.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Create Supplier Invoice</span><span class="trail-sep">›</span><span class="trail-current">Transaction Type: Subsequent Debit</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Supplier Invoice — Subsequent Debit</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form">
+          <div class="form-row">
+            <div class="ffield"><label>Transaction Type *</label><div class="fval filled" style="border-color:#C9932E;color:#C9932E;font-weight:700;">Subsequent Debit</div></div>
+            <div class="ffield"><label>Invoicing Party</label><div class="fval filled">100023 — Tireless Tires GmbH</div></div>
+            <div class="ffield"><label>Amount</label><div class="fval filled">200,00 EUR</div></div>
+          </div>
+          <div class="form-row">
+            <div class="ffield"><label>Reference Doc.</label><div class="fval filled">1900000031 (original invoice)</div></div>
+            <div class="ffield"><label>Invoice Date</label><div class="fval filled">20.07.2025</div></div>
+          </div>
+        </div>
+        <div style="background:#FFF3E0;border-radius:6px;padding:8px 12px;font-size:11px;color:#E65100;">⚡ Subsequent Debit: additional CREDIT to Tireless Tires account (EUR 200). Total AP balance with this supplier increases.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Check Supplier Account After All Postings</span><span class="sec-title-es">Revisar la cuenta del proveedor tras todos los posteos</span></div><div class="sec-desc">Jennifer abre Manage Supplier Line Items para ver el estado de la cuenta de Tireless Tires con todos los documentos del día.</div></div></div>
+  <div class="theory-box"><strong>Al final del día, Jennifer revisa la cuenta del proveedor para verificar que todo cuadra:</strong> usando Manage Supplier Line Items, Jennifer puede ver todas las partidas abiertas de Tireless Tires: la factura original, la nota de crédito y el cargo adicional de flete. El saldo neto muestra exactamente lo que la empresa debe al proveedor.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Manage Supplier Line Items — Tireless Tires GmbH</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Manage Supplier Line Items — Open Items</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">Tireless Tires GmbH (100023) · DE01 · Open Items</span></div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+          <table class="fiori-table">
+            <thead><tr><th>Document</th><th>Type</th><th>Date</th><th>Reference</th><th style="text-align:right;">Amount (EUR)</th><th>Due Date</th></tr></thead>
+            <tbody>
+              <tr><td style="color:#0070F2;font-weight:600;">1900000031</td><td>KR — Invoice</td><td>22.07.2025</td><td>KR-2025-07-0890</td><td style="text-align:right;color:#C0392B;font-weight:700;">-10.472,00</td><td>21.08.2025</td></tr>
+              <tr><td style="color:#0070F2;font-weight:600;">1700000018</td><td>KG — Credit Memo</td><td>22.07.2025</td><td>CM-TT-2025</td><td style="text-align:right;color:#3D7A52;font-weight:700;">500,00</td><td>—</td></tr>
+              <tr><td style="color:#0070F2;font-weight:600;">1900000034</td><td>KR — Subseq. Debit</td><td>22.07.2025</td><td>Freight add.</td><td style="text-align:right;color:#C0392B;font-weight:700;">-200,00</td><td>21.08.2025</td></tr>
+              <tr style="background:#F5F6F7;font-weight:700;"><td colspan="4">NET BALANCE (owed to Tireless Tires)</td><td style="text-align:right;color:#C0392B;font-size:13px;">-10.172,00</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>T3 · Usuario Fiori — AP Posting Logic (AP) · Protagonista: Jennifer · Bike Company · Biblioteca de Guías SAP</footer>
+</body>
+</html>

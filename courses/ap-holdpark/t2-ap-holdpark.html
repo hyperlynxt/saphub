@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Invoice Holding &amp; Parking — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E08585;--t1-dark:#A94444;--t1-pale:rgba(224,133,133,0.12);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-hold:#E07B39;--cat-park:#1A6B99;--cat-complete:#3D7A52;--cat-alert:#C0392B;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#28100C 55%,#3B1818 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,133,133,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:640px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.5;}
+  .hlbox b{color:var(--t1);}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(10,15,28,0.04);}
+  .card h4{font-family:'Syne',sans-serif;font-size:1rem;margin:0 0 6px;color:var(--ink);}
+  .card .sub{font-size:0.72rem;color:var(--muted);font-style:italic;}
+  .card p{font-size:0.84rem;color:var(--body);line-height:1.6;margin:8px 0 0;}
+  .card ul{margin:8px 0 0;padding-left:18px;}
+  .card ul li{font-size:0.82rem;color:var(--body);line-height:1.75;}
+  .card.acc{border-top:4px solid var(--t1-dark);}
+  .card.b{border-top:4px solid var(--cat-fi);}
+  .card.t{border-top:4px solid var(--cat-park);}
+  .card.g{border-top:4px solid var(--cat-complete);}
+  .card.o{border-top:4px solid var(--cat-hold);}
+  .card.r{border-top:4px solid var(--cat-alert);}
+  .card.steel{border-top:4px solid #5A6B8C;}
+  .icon-big{font-size:26px;display:block;margin-bottom:6px;}
+  .data-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:0.85rem;}
+  .data-table th{background:var(--navy-900);color:white;padding:11px 14px;text-align:left;font-size:0.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+  .data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:nth-child(even) td{background:#FAFBFD;}
+  .data-table .strong{font-weight:700;color:var(--ink);}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;}
+  .badge-hold{background:rgba(224,123,57,0.12);color:#8B4513;}
+  .badge-park{background:rgba(26,107,153,0.1);color:#1A4B8C;}
+  .badge-complete{background:rgba(61,122,82,0.1);color:#3D7A52;}
+  .glossary{background:var(--navy-950);padding:64px 40px 72px;scroll-margin-top:64px;}
+  .glossary-inner{max-width:1100px;margin:0 auto;}
+  .glossary h2{font-family:'Syne',sans-serif;color:white;font-size:1.6rem;margin:0 0 6px;}
+  .gloss-sub{color:rgba(255,255,255,0.55);font-size:0.9rem;margin:0 0 30px;}
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .gcard{background:var(--navy-800);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 18px;}
+  .term-en{font-family:'Syne',sans-serif;font-weight:700;color:var(--t1);font-size:1rem;}
+  .term-es{color:rgba(255,255,255,0.5);font-size:0.78rem;margin:2px 0 8px;}
+  .term-def{color:rgba(255,255,255,0.82);font-size:0.83rem;line-height:1.5;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Segregation of Duties</a>
+  <a href="#s2">Workflow in AP</a>
+  <a href="#s3">GL Account &amp; Cost Center Context</a>
+  <a href="#s4">Period-End Implications</a>
+  <a href="#s5">Three Incomplete Statuses</a>
+  <a href="#s6">No FI Doc in Hold — Deep</a>
+  <a href="#s7">Document Number Assignment</a>
+  <a href="#s8">Hold vs Park — Decision Guide</a>
+  <a href="#s9">Save as Complete — Gateway</a>
+  <a href="#s10">Supplier Invoices List as Worklist</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+    </div>
+    <h1>Invoice <span class="accent">Holding &amp; Parking</span></h1>
+    <h2>Profundización — Adyacentes y Mecanismos</h2>
+    <p class="desc">Cinco temas adyacentes (segregación de funciones, workflow, cuentas GL, cierre de período, tres estados incompletos) y cinco mecanismos en mayor profundidad (sin FI doc en Hold, numeración, decisión Hold vs Park, Save as Complete, worklist).</p>
+    <div class="hlbox">Profundización — <b>Invoice Holding &amp; Parking (AP)</b>, Tipo 2. Glosario con términos distintos a T1.</div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Segregation of Duties in AP Invoice Processing</span><span class="sec-title-es">Segregación de funciones en AP</span></div><div class="sec-desc">Por qué el principio de "cuatro ojos" existe en AP y cómo el Parking lo implementa técnicamente.</div></div></div>
+  <div class="theory-box"><strong>La Segregación de Funciones reduce el riesgo de fraude y error en AP:</strong> en contabilidad de cuentas por pagar, una misma persona no debería crear Y aprobar Y contabilizar una factura. El <strong>Segregation of Duties (SoD)</strong> separa estas responsabilidades: una persona ingresa, otra verifica, y solo entonces se contabiliza. El Parking es el mecanismo técnico de SAP que habilita este flujo — el documento queda guardado mientras espera la segunda revisión.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card t"><span class="icon-big">👤</span><h4>AP Accountant <span class="sub">· Ingresa</span></h4><p>Ingresa los datos de la factura al sistema. Si le faltan datos, usa Hold. Si tiene los datos pero falta aprobación, usa Park → Save as Complete.</p></div>
+      <div class="card acc"><span class="icon-big">👀</span><h4>Reviewer / Supervisor <span class="sub">· Verifica</span></h4><p>Revisa el documento parkeado. Puede verificar que el importe, la cuenta GL y el proveedor son correctos antes de autorizar la contabilización.</p></div>
+      <div class="card g"><span class="icon-big">✅</span><h4>Post <span class="sub">· Contabiliza</span></h4><p>Solo después de la aprobación del revisor, el documento puede contabilizarse (Post). El Workflow de SAP gestiona quién puede hacer qué y en qué orden.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Workflow in SAP — Supporting the Park Process</span><span class="sec-title-es">El Workflow en SAP — soporte al proceso de Parking</span></div><div class="sec-desc">Cómo el Workflow de SAP enruta el documento parkeado al siguiente responsable automáticamente.</div></div></div>
+  <div class="theory-box"><strong>El Workflow automatiza el enrutamiento del documento sin intervención manual:</strong> cuando una factura se guarda como "Save as Complete", el Workflow de SAP puede enviar automáticamente una notificación (tarea de trabajo) a la persona responsable de la revisión o aprobación. Sin Workflow, el proceso de "Save as Complete" simplemente cambia el estado pero no notifica a nadie. Con Workflow, el proceso fluye automáticamente al paso siguiente sin depender de que alguien recuerde avisar.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card t">
+        <h4>⚙️ Without Workflow <span class="sub">· Sin workflow</span></h4>
+        <ul>
+          <li>El contador estaciona la factura y la guarda como completa</li>
+          <li>El siguiente revisor NO recibe notificación automática</li>
+          <li>Alguien tiene que comunicar manualmente que hay una factura lista</li>
+          <li>Mayor riesgo de facturas olvidadas en estado "Parked"</li>
+        </ul>
+      </div>
+      <div class="card g">
+        <h4>🚀 With Workflow <span class="sub">· Con workflow</span></h4>
+        <ul>
+          <li>Al guardar como Complete, SAP genera una tarea de trabajo automáticamente</li>
+          <li>El revisor recibe notificación en su bandeja de entrada (SAP Inbox)</li>
+          <li>El revisor puede aprobar o rechazar desde SAP Fiori</li>
+          <li>El proceso completo queda documentado y trazable en el sistema</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">GL Account and Cost Center — Why They Trigger Hold</span><span class="sec-title-es">Cuenta GL y centro de costo — por qué causan el Hold</span></div><div class="sec-desc">El contexto contable que lleva al contador de AP a usar Hold cuando falta información de imputación.</div></div></div>
+  <div class="theory-box"><strong>GL Account y Cost Center son datos de imputación críticos en una factura:</strong> cuando SAP contabiliza una factura de proveedor, crea dos asientos: la partida del proveedor (cuenta de AP) y la contrapartida en la cuenta de gasto (GL Account), con la asignación de costo al centro de costo (Cost Center) correspondiente. Si el contador no sabe qué cuenta GL usar o a qué centro de costo imputar, no puede crear el asiento completo — y un asiento incompleto no puede contabilizarse. En ese caso, Hold es la solución hasta obtener la información correcta.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card acc">
+        <h4>📊 What Goes in a Supplier Invoice Entry <span class="sub">· Estructura de la factura en SAP</span></h4>
+        <ul>
+          <li><strong>Vendor line:</strong> Cr. Account Payable (cuenta del proveedor) — automática</li>
+          <li><strong>Expense line:</strong> Dr. GL Account (cuenta de gasto) — <strong>requiere saber cuál</strong></li>
+          <li><strong>Cost assignment:</strong> Cost Center / WBS / Order — <strong>requiere saber cuál</strong></li>
+          <li>Si falta el GL Account o el Cost Center → no se puede contabilizar → Hold</li>
+        </ul>
+      </div>
+      <div class="card o">
+        <h4>🕐 When to Call a Colleague vs When to Hold <span class="sub">· Cuándo usar Hold</span></h4>
+        <ul>
+          <li><strong>Colegas disponibles:</strong> preguntar y esperar unos minutos antes de Hold</li>
+          <li><strong>Respuesta inmediata no posible:</strong> Hold — guardar lo que hay y completar mañana</li>
+          <li><strong>Factura urgente:</strong> Park inmediatamente y avisar al responsable de aprobar</li>
+          <li><strong>Never:</strong> inventar una cuenta GL o imputar a un CC incorrecto para evitar Hold</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Period-End Implications of Held and Parked Invoices</span><span class="sec-title-es">Implicaciones de fin de período</span></div><div class="sec-desc">Por qué los documentos en Hold y Park pueden volverse problemáticos al final del período contable.</div></div></div>
+  <div class="theory-box"><strong>Al cierre del período, los documentos sin contabilizar se convierten en un problema:</strong> a fin de mes, el equipo de FI necesita que todos los gastos del período estén contabilizados para poder cerrar correctamente los estados financieros. Las facturas en Hold o Park que corresponden al período pero aún no están posteadas representan un gasto que no está reflejado. Si no se contabilizan antes del cierre, el período puede cerrarse con información incompleta.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card r"><span class="icon-big">📅</span><h4>Held Invoices at Period-End <span class="sub">· Retenidas al cierre</span></h4><p>Son invisibles en reportes y no afectan saldos. Sin embargo, representan facturas recibidas que todavía no se reconocieron contablemente. El equipo GL puede no saber que existen.</p></div>
+      <div class="card acc"><span class="icon-big">📋</span><h4>Parked Invoices at Period-End <span class="sub">· Estacionadas al cierre</span></h4><p>Son visibles en la lista de partidas del proveedor pero no actualizan el balance. El equipo de AP puede usar el <strong>Supplier Invoices List</strong> para detectarlas y completarlas antes del cierre.</p></div>
+      <div class="card g"><span class="icon-big">✅</span><h4>Best Practice <span class="sub">· Práctica recomendada</span></h4><p>Antes de cada cierre de período, el AP accountant debe revisar la Supplier Invoices List filtrando por status "Held" y "Parked" para resolver todas las facturas pendientes del período.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Three Incomplete Statuses — Hold, Park, Draft Personal</span><span class="sec-title-es">Tres estados incompletos — comparación</span></div><div class="sec-desc">Las tres formas en que SAP puede guardar una factura sin contabilizarla — y en qué se diferencian entre sí.</div></div></div>
+  <div class="theory-box"><strong>No todos los borradores de facturas son iguales en SAP:</strong> existen tres estados "no-publicados" con características distintas. Entender la diferencia es crucial para saber cuál usar y cómo encontrar la factura después. La diferencia más importante es la visibilidad: Draft Personal solo te la ves vos, Hold también es privado, Park es visible para el equipo.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>Status</th><th>Created by</th><th>Visible to others?</th><th>In Supplier Line Items?</th><th>Min. data</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge" style="background:rgba(90,107,140,0.1);color:#5A6B8C;">Draft (Personal)</span></td><td>Starting Create Supplier Invoice</td><td>❌ Only you</td><td>❌ No</td><td>Nothing required</td></tr>
+        <tr><td><span class="badge badge-hold">Hold</span></td><td>Clicking Hold in Create Incoming Invoice</td><td>✅ All authorized</td><td>❌ No</td><td>Date + Party</td></tr>
+        <tr><td><span class="badge badge-park">Park</span></td><td>Clicking Park / Save</td><td>✅ All authorized</td><td>✅ Yes</td><td>Date + Party + Ref + CC</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Hold Creates No FI Document — The Technical Reality</span><span class="sec-title-es">Hold no crea documento FI — la realidad técnica</span></div><div class="sec-desc">Por qué un documento en Hold no aparece en ACDOCA ni actualiza ningún saldo de cuenta.</div></div></div>
+  <div class="theory-box"><strong>Hold guarda datos en una tabla temporal, no en el Universal Journal:</strong> cuando se retiene una factura en Hold, SAP guarda los datos en una estructura de almacenamiento temporal — no crea un documento FI en el Universal Journal (ACDOCA). Por eso no hay asiento contable, no hay actualización de saldos, y los datos no están disponibles para reportes. Solo existe como borrador en la base de datos de entrada de documentos. En contraste, un documento Park sí genera una referencia en el subledger de AP (por eso es visible en la lista de partidas).</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card acc">
+        <h4>📦 Hold — Technical Storage <span class="sub">· Almacenamiento temporal</span></h4>
+        <ul>
+          <li>Datos guardados en tabla de borrador (no en ACDOCA)</li>
+          <li>Sin asiento FI → sin impacto en GL ni AP sub-ledger</li>
+          <li>No afecta DPO, Aging Report, ni ningún KPI de AP</li>
+          <li>El número de documento Hold es provisional</li>
+          <li>Al publicar → nuevo número de Accounting Document</li>
+        </ul>
+      </div>
+      <div class="card t">
+        <h4>📋 Park — Partial FI Reference <span class="sub">· Referencia parcial en AP</span></h4>
+        <ul>
+          <li>Crea una entrada en el subledger de AP → visible en partidas</li>
+          <li>Sin embargo, <strong>no actualiza saldos de cuentas GL</strong></li>
+          <li>No hay impacto en el balance hasta el posteo</li>
+          <li>Al publicar → la partida parkeada se convierte en Accounting Document</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Document Number Assignment — Hold vs Park vs Post</span><span class="sec-title-es">Asignación de números de documento</span></div><div class="sec-desc">Cómo SAP asigna números distintos a cada estado — y qué pasa con el número original cuando se contabiliza.</div></div></div>
+  <div class="theory-box"><strong>Cada transición de estado puede implicar un cambio de número de documento:</strong> en Hold, SAP asigna un número automáticamente — pero este número es provisional. Al contabilizar desde Hold, SAP asigna un <strong>nuevo número</strong> al Accounting Document (que sale de otro rango). Lo mismo aplica en Park. El número del borrador (Hold/Park) no es el mismo que el número del documento contable final — esto es importante para el tracking y la trazabilidad.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card acc">
+        <h4>🟠 Hold Number <span class="sub">· Número provisional</span></h4>
+        <p>Asignado automáticamente por SAP al guardar en Hold. Es un número de borrador — no aparece en el GL. Al publicar, este número se reemplaza por el del Accounting Document.</p>
+      </div>
+      <div class="card t">
+        <h4>🔵 Park Number <span class="sub">· Número de documento park</span></h4>
+        <p>También asignado automáticamente. Aparece en la lista de partidas del proveedor como referencia. Al publicar, puede convertirse en el número del Accounting Document (o uno nuevo según config.).</p>
+      </div>
+      <div class="card g">
+        <h4>🟢 Accounting Document Number <span class="sub">· Número definitivo</span></h4>
+        <p>El número final asignado al Accounting Document (documento FI) al momento del posteo. Este es el número que queda permanentemente en ACDOCA y en el audit trail contable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Hold vs Park — Decision Framework</span><span class="sec-title-es">Hold vs Park — guía de decisión</span></div><div class="sec-desc">Cuándo usar Hold y cuándo usar Park — el árbol de decisión para el día a día del contador de AP.</div></div></div>
+  <div class="theory-box"><strong>La elección entre Hold y Park depende de dos variables: cuánta información tenés y si otra persona necesita revisar:</strong> si tenés muy poca información (solo fecha y proveedor), Hold es la única opción. Si tenés más datos (incluyendo referencia y sociedad) pero falta aprobación o verificación de otro, Park es el camino. Si el proceso de tu empresa requiere aprobación formal, Park + Workflow es siempre el camino correcto independientemente de si tenés todos los datos.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>Scenario</th><th>Recommended Action</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">Missing GL account or Cost Center only</td><td><span class="badge badge-hold">Hold</span></td><td>Minimal data available → save the minimum and get the info later</td></tr>
+        <tr><td class="strong">Have all data, need manager approval before posting</td><td><span class="badge badge-park">Park → Save as Complete</span></td><td>Four-eye principle → Workflow can route to approver</td></tr>
+        <tr><td class="strong">Need to step away and come back later (all data available)</td><td><span class="badge badge-park">Park</span></td><td>More structured than Hold; visible to team if urgent</td></tr>
+        <tr><td class="strong">Just started entry, only date entered</td><td><span class="badge badge-hold">Hold or Draft</span></td><td>Nothing to park yet — too little data for Park requirements</td></tr>
+        <tr><td class="strong">Invoice entered but team policy requires 2-person sign-off</td><td><span class="badge badge-park">Park → Save as Complete</span></td><td>Company policy mandates four-eye → always Park, not Hold</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Save as Complete — The Technical Gateway</span><span class="sec-title-es">Save as Complete — el gateway técnico al workflow</span></div><div class="sec-desc">Qué valida SAP exactamente cuando se elige "Save as Complete" y por qué es el momento de decisión más importante del proceso de Parking.</div></div></div>
+  <div class="theory-box"><strong>Al elegir "Save as Complete", SAP ejecuta todas las validaciones de posting — sin postear:</strong> este estado es el punto donde SAP verifica que el documento cumple todos los requisitos para ser contabilizado: campos completos, saldo cero, cuentas válidas, períodos abiertos. Si alguna validación falla, el sistema no permite guardar como completo y muestra el error. Es como un "dry run" del posteo — todo se valida pero nada se contabiliza todavía. Solo cuando todo pasa estas validaciones, el Workflow puede iniciar.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card acc">
+        <h4>🔍 What SAP Validates on Save as Complete <span class="sub">· Qué valida SAP</span></h4>
+        <ul>
+          <li>Todos los campos "must" completados</li>
+          <li>Saldo del documento = cero</li>
+          <li>Cuentas GL válidas y activas</li>
+          <li>Período contable abierto</li>
+          <li>Centros de costo / imputaciones correctas</li>
+          <li>Tax code válido si aplica</li>
+        </ul>
+      </div>
+      <div class="card g">
+        <h4>🚀 What Happens After <span class="sub">· Qué ocurre después</span></h4>
+        <ul>
+          <li>El documento queda en status "Saved as Complete"</li>
+          <li>El Workflow (si está configurado) envía notificación al revisor</li>
+          <li>El revisor puede aprobar → el documento se publica (Post)</li>
+          <li>O el revisor puede rechazar → vuelve al contador para corrección</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Supplier Invoices List as AP Worklist Management</span><span class="sec-title-es">La lista de facturas como herramienta de gestión de cola</span></div><div class="sec-desc">Cómo el AP accountant usa la Supplier Invoices List no solo para buscar sino para gestionar su cola de trabajo diaria.</div></div></div>
+  <div class="theory-box"><strong>La Supplier Invoices List no es solo un buscador — es una herramienta de gestión de trabajo:</strong> los contadores de AP no solo buscan facturas individuales — necesitan gestionar decenas o cientos de facturas simultáneamente. La Supplier Invoices List permite filtrar por estado, proveedor, fecha, y actuar en lote. Se convierte en la herramienta de gestión del día a día: ver qué está bloqueado, qué necesita completarse, qué está esperando aprobación.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card acc"><span class="icon-big">🔍</span><h4>Morning Routine <span class="sub">· Rutina matutina</span></h4><p>Abrir Supplier Invoices List filtrado por "Held" → procesar las retenidas que ahora tienen datos completos → Hold o Park → Post según corresponda.</p></div>
+      <div class="card t"><span class="icon-big">⏰</span><h4>Pre-Period-Close <span class="sub">· Antes del cierre</span></h4><p>Filtrar por "Parked" para el período actual → completar todas como "Save as Complete" → empujar al workflow para aprobación antes del cierre.</p></div>
+      <div class="card g"><span class="icon-big">📊</span><h4>Team Oversight <span class="sub">· Supervisión del equipo</span></h4><p>Los supervisores filtran por status y fecha para detectar facturas atascadas → asignar o reasignar responsables → garantizar que el proceso no se trabe.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de T2 — Profundización. No repiten los de T1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Segregation of Duties (SoD)</div><div class="term-es">Segregación de funciones</div><div class="term-def">Control interno que separa las responsabilidades de ingreso, aprobación y contabilización de una transacción entre distintas personas, para reducir el riesgo de fraude o error.</div></div>
+      <div class="gcard"><div class="term-en">GL Account</div><div class="term-es">Cuenta de Mayor General</div><div class="term-def">Cuenta del Libro Mayor donde se registra el gasto o activo al contabilizar una factura de proveedor. Si el contador no sabe qué cuenta GL usar, no puede completar la entrada → Hold.</div></div>
+      <div class="gcard"><div class="term-en">Cost Center</div><div class="term-es">Centro de costo</div><div class="term-def">Unidad organizativa que acumula costos. Las facturas de gasto suelen imputarse a un Centro de Costo específico. Si no se sabe cuál, la factura no puede contabilizarse → Hold.</div></div>
+      <div class="gcard"><div class="term-en">Worklist</div><div class="term-es">Lista de trabajo / Cola de trabajo</div><div class="term-def">Conjunto de tareas o documentos pendientes de procesamiento. La Supplier Invoices List funciona como worklist del contador de AP — muestra qué facturas necesitan atención y permite actuar sobre ellas.</div></div>
+      <div class="gcard"><div class="term-en">Incomplete Document</div><div class="term-es">Documento incompleto</div><div class="term-def">Documento FI que no cumple todos los requisitos para ser contabilizado (campos vacíos, saldo no cero). Puede guardarse en Hold o Park pero no puede publicarse hasta estar completo.</div></div>
+      <div class="gcard"><div class="term-en">Simulate (Document)</div><div class="term-es">Simular documento</div><div class="term-def">Función en la entrada de facturas que muestra cómo quedaría el asiento contable si se publicara, sin publicarlo realmente. Útil para verificar cuentas y importes antes de contabilizar.</div></div>
+      <div class="gcard"><div class="term-en">FI Document</div><div class="term-es">Documento FI</div><div class="term-def">Documento contable del módulo Financial Accounting creado en ACDOCA al publicar una factura. A diferencia de Hold/Park, sí actualiza los saldos de las cuentas y genera el asiento definitivo.</div></div>
+      <div class="gcard"><div class="term-en">Offsetting Account</div><div class="term-es">Cuenta de contrapartida</div><div class="term-def">La cuenta que "cierra" el asiento contable. En una factura de proveedor: la cuenta de AP es la partida del proveedor, y la cuenta de gasto GL es la contrapartida. Ambas deben sumar cero.</div></div>
+      <div class="gcard"><div class="term-en">Document Number Range</div><div class="term-es">Rango de numeración de documentos</div><div class="term-def">Rango de números asignado a un tipo de documento en SAP. Los documentos Hold/Park tienen su propio rango; al contabilizar, SAP puede asignar un número diferente del rango del Accounting Document.</div></div>
+      <div class="gcard"><div class="term-en">Tax Code</div><div class="term-es">Código de impuesto</div><div class="term-def">Código que determina cómo se calcula y registra el IVA (o impuesto local) en una factura. Puede ser obligatorio según la configuración del sistema; si falta, la factura no puede guardarse como Complete.</div></div>
+      <div class="gcard"><div class="term-en">Period-End Close</div><div class="term-es">Cierre de período</div><div class="term-def">Proceso contable mensual o trimestral en que se finalizan los registros del período. Las facturas en Hold o Park pueden distorsionar los estados financieros si no se procesan antes del cierre.</div></div>
+      <div class="gcard"><div class="term-en">SAP Inbox (Workflow Task)</div><div class="term-es">Bandeja de entrada SAP / Tarea de Workflow</div><div class="term-def">Notificación enviada automáticamente por el Workflow de SAP a la bandeja de entrada del usuario responsable cuando un documento parkeado se guarda como Complete y requiere revisión o aprobación.</div></div>
+    </div>
+  </div>
+</section>
+<footer>T2 · Profundización — Invoice Holding &amp; Parking (AP) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

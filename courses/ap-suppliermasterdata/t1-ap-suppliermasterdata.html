@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Supplier Master Data Maintenance — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(127,191,143,0.14); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px; max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:190px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-desc{ font-size:0.72rem; color:var(--body); margin-top:6px; line-height:1.4; display:block; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:20px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; margin-bottom:4px; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media (max-width:760px){ .cmp-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Why Methods Matter</a>
+  <a href="#s2">Copying a Vendor</a>
+  <a href="#s3">Duplicate Check</a>
+  <a href="#s4">Why It Matters</a>
+  <a href="#s5">Quality Reports</a>
+  <a href="#s6">Additional Company Codes</a>
+  <a href="#s7">Additional Roles</a>
+  <a href="#s8">Tracking Changes</a>
+  <a href="#s9">The 4-Eyes Principle</a>
+  <a href="#s10">Mass Maintenance</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Business Partner</span>
+      <span class="pill pill-secondary">Procurement</span>
+    </div>
+    <h1><span class="accent">Supplier</span> Master Data Maintenance</h1>
+    <h2>Métodos de Creación y Mantenimiento de Datos Maestros de Proveedores</h2>
+    <p class="desc">Fundamentos teóricos de cómo SAP S/4HANA permite crear, editar y controlar la calidad de los datos maestros de proveedores: copiar un proveedor existente, evitar duplicados, extender a varias sociedades, sumar roles, rastrear cambios y aplicar el principio de cuatro ojos.</p>
+    <div class="hlbox">Resumen Visual — <b>Supplier Master Data Maintenance</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Master Data Methods Matter</span>
+          <span class="sec-title-es">Por qué importan estos métodos</span>
+        </div>
+        <div class="sec-desc">No hay una sola forma de crear un proveedor — y elegir bien ahorra trabajo después.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      SAP S/4HANA ofrece <strong>varios métodos</strong> para crear, editar y controlar la calidad de los datos maestros de proveedores de forma eficiente: copiar un proveedor existente, extender un proveedor a varias sociedades, o realizar una carga o modificación masiva con un usuario autorizado.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Copying an Existing Vendor</span>
+          <span class="sec-title-es">Copiando un proveedor existente</span>
+        </div>
+        <div class="sec-desc">La forma más simple de crear un proveedor — con una advertencia importante.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Una de las formas más simples de crear un proveedor nuevo es seleccionar un <strong>business partner existente</strong> con características similares y copiarlo. Como <strong>todas</strong> las configuraciones del modelo se copian, hay que revisarlas cuidadosamente para decidir qué mantener y qué actualizar.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4>Probablemente necesita actualizarse</h4>
+        <p><strong>Nombre y dirección</strong> del nuevo proveedor — son datos específicos de cada entidad, no del modelo.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4>Probablemente se puede mantener igual</h4>
+        <p><strong>Roles</strong> y <strong>condiciones de pago</strong> — suelen ser comparables entre proveedores similares.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Duplicate Supplier Check</span>
+          <span class="sec-title-es">El chequeo de proveedores duplicados</span>
+        </div>
+        <div class="sec-desc">Justo cuando se está copiando un proveedor, el sistema puede avisar si ya existe algo parecido.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      SAP S/4HANA permite activar una funcionalidad que revisa <strong>duplicados de business partner</strong> basándose en el índice de datos de dirección. Con esta configuración activa, aparece una <strong>ventana pop-up</strong> que informa al usuario que existe un posible duplicado, según el porcentaje de similitud entre direcciones — desde ahí se puede revisar el duplicado potencial o continuar con la creación.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why the Duplicate Check Matters</span>
+          <span class="sec-title-es">Por qué importa el chequeo de duplicados</span>
+        </div>
+        <div class="sec-desc">Tres situaciones concretas donde esta funcionalidad hace una diferencia real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El curso destaca tres escenarios donde el chequeo de duplicados resulta especialmente útil.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip">
+          <span class="chip-icon">🤝</span>
+          <span class="chip-title">Mergers &amp; Acquisitions</span>
+          <span class="chip-en">Fusiones y adquisiciones</span>
+          <span class="chip-desc">Identificar proveedores duplicados entre las dos organizaciones.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">🔄</span>
+          <span class="chip-title">High Staff Turnover</span>
+          <span class="chip-en">Alta rotación de personal</span>
+          <span class="chip-desc">Compensa el conocimiento limitado de procedimientos por parte de personal nuevo o temporal.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">⚖️</span>
+          <span class="chip-title">Compliance &amp; Audit</span>
+          <span class="chip-en">Cumplimiento y auditoría</span>
+          <span class="chip-desc">Reduce el riesgo de fraude, sanciones regulatorias y complicaciones de auditoría.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Analytical Reports for Data Quality</span>
+          <span class="sec-title-es">Reportes analíticos de calidad de datos</span>
+        </div>
+        <div class="sec-desc">El chequeo de duplicados no es solo reactivo — también se puede monitorear de forma proactiva.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      SAP S/4HANA también ofrece <strong>reportes analíticos</strong> para monitorear la calidad general de los datos y el porcentaje de proveedores duplicados en la base. Monitorear estos reportes con regularidad permite identificar y resolver problemas de calidad de forma <strong>proactiva</strong>.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Extending a Supplier to Additional Company Codes</span>
+          <span class="sec-title-es">Extendiendo un proveedor a sociedades adicionales</span>
+        </div>
+        <div class="sec-desc">Un proveedor, un solo ID — pero configuraciones propias para cada sociedad que lo usa.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El concepto de <strong>Business Partner</strong> permite unificar y compartir los datos generales del proveedor, con flexibilidad para que cada sociedad personalice sus configuraciones clave. Si un proveedor es usado por dos o más sociedades, <strong>solo debe crearse una vez</strong> (un único número de proveedor) — cada sociedad se asigna a su registro maestro y define sus propias configuraciones individuales, como la <strong>cuenta de enlace</strong> o las <strong>condiciones de pago</strong> acordadas.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">🆔</span><span class="title-en">One Supplier ID</span><span class="title-es">Un solo número</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Datos generales compartidos</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">🏢</span><span class="title-en">Company Code Assignment</span><span class="title-es">Asignación de sociedad</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Cada sociedad se asigna al registro maestro</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">⚙️</span><span class="title-en">Individual Settings</span><span class="title-es">Configuración propia</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Cuenta de enlace y condiciones de pago propias</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Adding Roles to an Existing Business Partner</span>
+          <span class="sec-title-es">Sumando roles a un business partner existente</span>
+        </div>
+        <div class="sec-desc">La mejor práctica no es crear de nuevo — es agregar un rol a lo que ya existe.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La mejor práctica recomendada es crear un <strong>business partner único</strong> y asignarle tantos roles como haga falta. Por ejemplo, si un cliente existente se convierte en proveedor, el procedimiento correcto es <strong>agregar el rol "supplier"</strong> al business partner existente, no crear uno nuevo. Además, la mayoría de los proveedores necesitan estar asignados a <strong>dos roles distintos</strong> — uno para Compras y otro para Contabilidad — ya que cada departamento gestiona requisitos propios.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Tracking Changes to a Vendor</span>
+          <span class="sec-title-es">Rastreando cambios en un proveedor</span>
+        </div>
+        <div class="sec-desc">Cada modificación queda registrada — y hay una app dedicada para consultarlo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La app estándar <strong>Display Changes to Vendors</strong> permite rastrear modificaciones al registro maestro de proveedor. El usuario puede filtrar por número de proveedor, usuario que hizo el cambio, y si se trata de datos generales, de sociedad, o de organización de compras — el reporte muestra cuándo, por quién, y qué valores cambiaron (antes y después).
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Criterio de selección</th><th>Qué filtra</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">Vendor Number(s)</span></td><td>Uno o varios proveedores puntuales.</td></tr>
+          <tr><td><span class="mod-name">User ID</span></td><td>Quién hizo el cambio.</td></tr>
+          <tr><td><span class="mod-name">Data Type</span></td><td>Datos generales, de sociedad, o de organización de compras.</td></tr>
+          <tr><td><span class="mod-name">Company Code / Purchasing Org.</span></td><td>Alcance específico de sociedad u organización de compras.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The 4-Eyes Principle</span>
+          <span class="sec-title-es">El principio de cuatro ojos</span>
+        </div>
+        <div class="sec-desc">Un cambio sensible no queda vigente hasta que otra persona lo valide.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Es posible configurar <strong>campos sensibles</strong> en el registro maestro de proveedor que, al modificarse, marcan al proveedor para <strong>validación por un usuario distinto y autorizado</strong>. Hasta que se valide, el proveedor queda <strong>bloqueado para pagos</strong> — aunque otras transacciones, como órdenes de compra o facturas, siguen siendo posibles. Cada vez que se use el proveedor, aparece una advertencia de validación pendiente. Un usuario <strong>nunca puede aprobar sus propias modificaciones</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">✏️</span><span class="title-en">Sensitive Field Changed</span><span class="title-es">Campo sensible modificado</span>
+          </div>
+          <div class="flow-step-body"><ul><li>El proveedor queda marcado para validación</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#C9932E;">
+            <span class="icon">🚫</span><span class="title-en">Blocked for Payment</span><span class="title-es">Bloqueado para pago</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Otras transacciones siguen siendo posibles</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#3D7A52;">
+            <span class="icon">✅</span><span class="title-en">Validated by Another User</span><span class="title-es">Validado por otro usuario</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Nunca por quien hizo el cambio</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Supplier Mass Maintenance</span>
+          <span class="sec-title-es">Mantenimiento masivo de proveedores</span>
+        </div>
+        <div class="sec-desc">Cuando el cambio afecta a cientos de proveedores a la vez, no tiene sentido hacerlo uno por uno.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para procesar <strong>múltiples proveedores simultáneamente</strong>, SAP S/4HANA ofrece una app estándar para <strong>carga masiva</strong> de registros (por ejemplo, migrando datos de un sistema legacy), y otra dedicada a <strong>cambios masivos</strong>, que permite seleccionar los proveedores a modificar y luego qué zonas y valores actualizar. El acceso a estas apps suele restringirse al equipo de <strong>Administración</strong>, aunque los usuarios de negocio pueden participar del proceso.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4>Mass Upload</h4>
+        <p>Carga inicial de registros — por ejemplo, migrar proveedores desde un sistema legacy.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4>Mass Change</h4>
+        <p>Selecciona proveedores existentes y actualiza zonas y valores puntuales en todos a la vez.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Business Partner</div><div class="term-es">Socio de Negocio</div><div class="term-def">Registro maestro unificado que puede tener uno o más roles (cliente, proveedor, etc.) y datos compartidos.</div></div>
+      <div class="gcard"><div class="term-en">Duplicate Supplier Check</div><div class="term-es">Chequeo de Proveedor Duplicado</div><div class="term-def">Funcionalidad que detecta posibles duplicados según la similitud del índice de datos de dirección.</div></div>
+      <div class="gcard"><div class="term-en">Company Code Assignment</div><div class="term-es">Asignación de Sociedad</div><div class="term-def">Vínculo entre un business partner y una sociedad, con configuraciones individuales propias.</div></div>
+      <div class="gcard"><div class="term-en">Business Partner Role</div><div class="term-es">Rol de Business Partner</div><div class="term-def">Función (ej. Supplier, Financial Accounting) que habilita datos y transacciones específicas para ese partner.</div></div>
+      <div class="gcard"><div class="term-en">Display Changes to Vendors</div><div class="term-es">App Display Changes to Vendors</div><div class="term-def">App estándar para consultar el historial de modificaciones a un registro maestro de proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Sensitive Field</div><div class="term-es">Campo Sensible</div><div class="term-def">Campo del maestro de proveedor cuya modificación dispara la validación de cuatro ojos.</div></div>
+      <div class="gcard"><div class="term-en">4-Eyes Principle</div><div class="term-es">Principio de Cuatro Ojos</div><div class="term-def">Control que exige que un usuario distinto al que hizo el cambio lo valide antes de habilitar pagos.</div></div>
+      <div class="gcard"><div class="term-en">Mass Maintenance</div><div class="term-es">Mantenimiento Masivo</div><div class="term-def">Procesamiento simultáneo de múltiples registros de proveedor, vía carga o cambio masivo.</div></div>
+      <div class="gcard"><div class="term-en">Legacy System</div><div class="term-es">Sistema Legacy</div><div class="term-def">Sistema previo desde el cual se puede migrar información de proveedores mediante carga masiva.</div></div>
+      <div class="gcard"><div class="term-en">Purchasing Organization</div><div class="term-es">Organización de Compras</div><div class="term-def">Unidad organizativa responsable de la negociación de condiciones de compra con proveedores.</div></div>
+      <div class="gcard"><div class="term-en">Payment Terms</div><div class="term-es">Condiciones de Pago</div><div class="term-def">Reglas acordadas con el proveedor sobre plazos y descuentos de pago.</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Account</div><div class="term-es">Cuenta de Enlace</div><div class="term-def">Cuenta del Libro Mayor que se actualiza automáticamente según la sociedad asignada al proveedor.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Supplier Master Data Maintenance · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>

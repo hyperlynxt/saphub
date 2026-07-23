@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Foreign Currency Valuation — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A1F1F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:680px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,133,133,0.14); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px; max-width:680px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .kind-tag{ display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase; padding:3px 9px; border-radius:20px; margin-left:2px; }
+  .kind-adjacent{ background:rgba(26,107,153,0.1); color:#1A6B99; }
+  .kind-depth{ background:var(--t2-pale); color:var(--t2-dark); }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t2-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:20px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; margin-bottom:4px; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+  .badge-alert{ background:#FDE8E8; color:#B23A3A; }
+
+  .formula-box{ background:var(--bg); border-radius:8px; padding:16px 20px; font-size:0.85rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:8px; font-family:'Syne',sans-serif; font-size:0.95rem; }
+  .formula-box div.frow{ padding:5px 0; color:var(--body); display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); }
+  .formula-box div.frow:last-child{ border-bottom:none; font-weight:700; color:var(--t2-dark); }
+  .formula-box .fval{ font-family:'JetBrains Mono',monospace; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:190px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t2-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-desc{ font-size:0.72rem; color:var(--body); margin-top:6px; line-height:1.4; display:block; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media (max-width:760px){ .cmp-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Intercompany Reconciliation</a>
+  <a href="#s2">Balance Carryforward</a>
+  <a href="#s3">Schedule GL Jobs</a>
+  <a href="#s4">Beyond Vendors</a>
+  <a href="#s5">Ledger-Group-Specific</a>
+  <a href="#s6">Valuation Procedure</a>
+  <a href="#s7">Parallel Valuation Areas</a>
+  <a href="#s8">Why an Adjustment Account</a>
+  <a href="#s9">Reading the Delta Log</a>
+  <a href="#s10">Why Area IF Blocked It</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Accounts Receivable</span>
+    </div>
+    <h1><span class="accent">Foreign</span> Currency Valuation</h1>
+    <h2>Valoración de Moneda Extranjera — Profundización</h2>
+    <p class="desc">Cinco temas adyacentes que el Tipo 1 no cubrió — reconciliación intercompañía, traspaso de saldos, la app de jobs, valoración más allá de proveedores y ledgers paralelos — más el mecanismo interno de lo ya visto: procedimientos de valoración, áreas paralelas, la cuenta de ajuste, y el log real de la lógica delta que Jake vio en su prueba.</p>
+    <div class="hlbox">Resumen Visual — <b>Foreign Currency Valuation</b>, Tipo 2 (Profundización). 10 secciones — 5 de temas adyacentes, 5 de mayor profundidad sobre lo visto en T1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Intercompany Reconciliation</span>
+          <span class="sec-title-es">Reconciliación intercompañía</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El otro control del ejercicio viejo que corre justo al lado de GR/IR, antes del traspaso de saldos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Tal como muestra el proceso de cierre (T1, sección 1), la <strong>reconciliación intercompañía</strong> corre en el ejercicio fiscal viejo, junto a GR/IR Reconciliation y Supplier Balance Confirmation. Verifica que las transacciones registradas entre dos sociedades del mismo grupo <strong>coincidan en ambos lados</strong> antes de cerrar — una sociedad no puede reportar una deuda que la otra no reconoce como su crédito.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🏢</span><span class="title-en">Company Code A</span><span class="title-es">Sociedad A</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Registra una deuda intercompañía</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">🔍</span><span class="title-en">Reconciliation Check</span><span class="title-es">Chequeo de reconciliación</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Se compara contra el registro de la otra sociedad</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">🏢</span><span class="title-en">Company Code B</span><span class="title-es">Sociedad B</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Debe reconocer el mismo monto como crédito</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Balance Carryforward</span>
+          <span class="sec-title-es">Traspaso de saldos</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El puente exacto entre el ejercicio viejo y el nuevo — y la razón por la que FCV corre después, no antes.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>traspaso de saldos</strong> es el paso que marca la transición de un ejercicio fiscal al siguiente (T1, sección 1). Las cuentas de <strong>balance</strong> trasladan su saldo final como saldo inicial del año nuevo; las cuentas de <strong>resultado</strong> se cierran contra una cuenta de resultados acumulados. Recién después de este paso tiene sentido correr la valoración de moneda extranjera sobre los saldos ya trasladados.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4>Cuentas de Balance <span class="en-tag">Balance Sheet Accounts</span></h4>
+        <p>El saldo final del ejercicio viejo se traslada como saldo inicial del ejercicio nuevo, sin pasar por ninguna cuenta intermedia.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4>Cuentas de Resultado <span class="en-tag">P&amp;L Accounts</span></h4>
+        <p>Se cierran contra una cuenta de <strong>resultados acumulados</strong> (retained earnings) — el ejercicio nuevo empieza con saldo cero en resultado.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Schedule General Ledger Jobs App</span>
+          <span class="sec-title-es">La app Schedule General Ledger Jobs</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">FCV no tiene una app propia — vive dentro de un catálogo más amplio de jobs periódicos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La valoración de moneda extranjera se programa desde <strong>Schedule General Ledger Jobs</strong>, una app que centraliza varios <strong>job templates</strong> periódicos de cierre — no es exclusiva de FCV. Elegir el template correcto es el primer paso antes de definir parámetros.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Job Template</th><th>Qué programa</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">Foreign Currency Valuation</span></td><td>Revalúa partidas abiertas en moneda extranjera al tipo de cambio de cierre.</td></tr>
+          <tr><td><span class="mod-name">Regroup Receivables/Payables</span></td><td>Reclasifica saldos deudores/acreedores para presentación correcta en balance.</td></tr>
+          <tr><td><span class="mod-name">Balance Carryforward</span></td><td>Traslada saldos de un ejercicio fiscal al siguiente.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Valuation Goes Beyond Vendor Open Items</span>
+          <span class="sec-title-es">La valoración va más allá de las partidas de proveedor</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">La misma pantalla que revalúa a Tireless Tires también puede revaluar clientes y cuentas del Libro Mayor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      T1 se enfocó en <strong>partidas abiertas de proveedores</strong>, pero la pantalla de configuración del job incluye selección independiente para <strong>Valuate Vendors</strong>, <strong>Valuate Customers</strong> y <strong>Valuate G/L Accounts</strong> — cada casillero se activa según qué tipo de saldo necesite revaluarse ese período.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip">
+          <span class="chip-icon">📥</span>
+          <span class="chip-title">Valuate Vendors</span>
+          <span class="chip-en">Proveedores</span>
+          <span class="chip-desc">Partidas abiertas de Accounts Payable en moneda extranjera.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">📤</span>
+          <span class="chip-title">Valuate Customers</span>
+          <span class="chip-en">Clientes</span>
+          <span class="chip-desc">Partidas abiertas de Accounts Receivable en moneda extranjera.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">📒</span>
+          <span class="chip-title">Valuate G/L Accounts</span>
+          <span class="chip-en">Cuentas del Libro Mayor</span>
+          <span class="chip-desc">Saldos de cuentas de balance en moneda extranjera, fuera de AP/AR.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Ledger-Group-Specific Open Item Management</span>
+          <span class="sec-title-es">Gestión de partidas abiertas específica por grupo de ledger</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Cuando existen ledgers paralelos, la diferencia de cambio puede necesitar tratarse distinto en cada uno.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La pantalla del job incluye una sección específica para cuentas del Libro Mayor con <strong>gestión de partidas abiertas por grupo de ledger</strong>, con un campo de <strong>clave de diferencia de tipo de cambio</strong> (E/R diff. key) propio del grupo de ledger — conecta directo con la <strong>determinación de ledger</strong> que controla el área de valoración (T1, sección 5).
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Campo</th><th>Función</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">Valuate G/L Accounts</span></td><td>Activa la revaluación para cuentas de Libro Mayor específicas.</td></tr>
+          <tr><td><span class="mod-name">G/L Account</span></td><td>Selecciona qué cuentas del Libro Mayor entran en esta corrida.</td></tr>
+          <tr><td><span class="mod-name">E/R diff. key LdgrGrp-Spec. OI</span></td><td>Define la clave de diferencia de cambio propia de ese grupo de ledger.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Lowest Value Principle vs. Always Valuate</span>
+          <span class="sec-title-es">Principio del valor más bajo vs. Always Valuate</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 solo nombró estos dos procedimientos — acá se ve qué cambia en la práctica con un ejemplo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>Valuation Procedure</strong> configurado dentro del método de valoración decide si una diferencia de tipo de cambio se contabiliza siempre, o solo cuando representa una pérdida. Con el mismo movimiento de tipo de cambio, cada procedimiento produce un resultado distinto.
+    </div>
+    <div class="visual-wrap">
+      <div class="formula-box">
+        <span class="flabel">Misma partida, dos procedimientos (cifras a modo didáctico)</span>
+        <div class="frow"><span>Factura de proveedor, moneda extranjera</span><span class="fval">USD 10.000</span></div>
+        <div class="frow"><span>Valor en libros (tipo histórico)</span><span class="fval">EUR 9.000</span></div>
+        <div class="frow"><span>Valor al tipo de cierre</span><span class="fval">EUR 8.700 (ganancia no realizada)</span></div>
+        <div class="frow"><span>Lowest Value Principle → contabiliza</span><span class="fval">Nada (no anticipa ganancias)</span></div>
+        <div class="frow"><span>Always Valuate → contabiliza</span><span class="fval">EUR 300 de ganancia</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running Parallel Valuation Areas</span>
+          <span class="sec-title-es">Corriendo áreas de valoración en paralelo</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 dijo que un área representa un enfoque contable — acá se ve por qué suele haber más de una a la vez.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando una sociedad reporta bajo más de un <strong>principio contable</strong> (por ejemplo, GAAP local e IFRS), suele existir <strong>más de un área de valoración</strong> configurada — cada una con su propio método, corriendo sobre el mismo saldo, pero escribiendo en <strong>ledgers distintos</strong> según la determinación de ledger de cada área.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Valuation Area</th><th>Principio contable</th><th>Ledger de destino</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">01 — Local GAAP</span></td><td>Normativa local (ej. HGB)</td><td>Ledger líder (0L)</td></tr>
+          <tr><td><span class="mod-name">IF — IFRS</span></td><td>IFRS / normativa de grupo</td><td>Ledger paralelo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why the Posting Can't Go Directly to the Reconciliation Account</span>
+          <span class="sec-title-es">Por qué la contabilización no puede ir directo a la cuenta de enlace</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 mencionó la restricción — acá se ve la razón detrás.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La <strong>cuenta de enlace</strong> de proveedores es una cuenta de control: cada movimiento en ella debe poder rastrearse hasta una partida individual de un proveedor específico en el sub-libro de AP. Una contabilización de valoración es un ajuste <strong>agregado</strong>, no ligado a un proveedor puntual — por eso el sistema la dirige a la <strong>cuenta de ajuste</strong>, que vive en la misma partida del balance pero sin esa restricción de trazabilidad por proveedor.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reading the Delta Logic Posting Log</span>
+          <span class="sec-title-es">Leyendo el log de contabilización de la lógica delta</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">Jake resume exactamente qué dos columnas revisar después de correr Year-End Valuation.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para usar <strong>Year-End Valuation</strong> como lógica delta, hay que navegar a la sección <strong>Open Items: Subledger</strong> y marcar el campo correspondiente. Después de correr, hay que revisar la columna <strong>New Difference</strong> (la diferencia de valoración calculada) y la columna <strong>Amount Posted</strong> (lo que efectivamente se contabilizó) — el log muestra un solo asiento financiero, porque no existe contabilización de reversión para ese documento.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Columna del log</th><th>Qué muestra</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">New Difference</span></td><td>La diferencia de valoración calculada respecto de la valoración anterior.</td></tr>
+          <tr><td><span class="mod-name">Amount Posted</span></td><td>El monto que efectivamente se contabilizó en este documento.</td></tr>
+          <tr><td><span class="mod-name">Reversal Document</span></td><td><span class="badge badge-neutral">No existe para Year-End Valuation</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Area IF Rejected the Delta Logic</span>
+          <span class="sec-title-es">Por qué el área IF rechazó la lógica delta</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El error real que vio Jake al probar en Company Code 1010, explicado en detalle.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Al probar la valoración para la sociedad 1010, Jake seleccionó por error <strong>Year-End Valuation</strong> y el sistema devolvió: <em>"Year-End/Mid-Year Valuation is not permitted for area IF."</em> No toda área de valoración está habilitada para lógica delta — depende de cómo se configuró esa área específica (T4 lo retoma desde el lado de customizing). El área <strong>IF</strong>, en este caso, solo admite la lógica de reversión estándar.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Área de valoración</th><th>Delta Logic habilitada</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">01 — Local GAAP</span></td><td><span class="badge badge-accent">Sí</span></td></tr>
+          <tr><td><span class="mod-name">IF — IFRS</span></td><td><span class="badge badge-alert">No — solo reversión estándar</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos introducidos en este archivo (Tipo 2 — Profundización). No repite los ya vistos en el glosario de Tipo 1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Intercompany Reconciliation</div><div class="term-es">Reconciliación Intercompañía</div><div class="term-def">Control que verifica que las transacciones entre sociedades del mismo grupo coincidan en ambos lados antes de cerrar.</div></div>
+      <div class="gcard"><div class="term-en">Balance Carryforward</div><div class="term-es">Traspaso de Saldos</div><div class="term-def">Proceso que traslada saldos de balance al nuevo ejercicio y cierra cuentas de resultado contra resultados acumulados.</div></div>
+      <div class="gcard"><div class="term-en">Schedule General Ledger Jobs</div><div class="term-es">App Schedule General Ledger Jobs</div><div class="term-def">App Fiori que centraliza la programación de varios job templates periódicos de cierre del Libro Mayor.</div></div>
+      <div class="gcard"><div class="term-en">Job Template</div><div class="term-es">Plantilla de Job</div><div class="term-def">Configuración predefinida que determina qué proceso periódico de cierre se va a programar y ejecutar.</div></div>
+      <div class="gcard"><div class="term-en">Ledger Group</div><div class="term-es">Grupo de Ledger</div><div class="term-def">Conjunto de ledgers que comparten un mismo tratamiento específico, como una clave de diferencia de cambio.</div></div>
+      <div class="gcard"><div class="term-en">Lowest Value Principle</div><div class="term-es">Principio del Valor Más Bajo</div><div class="term-def">Procedimiento de valoración que solo contabiliza pérdidas no realizadas, nunca ganancias.</div></div>
+      <div class="gcard"><div class="term-en">Always Valuate</div><div class="term-es">Always Valuate</div><div class="term-def">Procedimiento de valoración que contabiliza tanto ganancias como pérdidas no realizadas.</div></div>
+      <div class="gcard"><div class="term-en">GL Account Determination</div><div class="term-es">Determinación de Cuenta del Libro Mayor</div><div class="term-def">Lógica que decide a qué cuenta del Libro Mayor se dirige automáticamente una contabilización.</div></div>
+      <div class="gcard"><div class="term-en">New Difference</div><div class="term-es">Nueva Diferencia</div><div class="term-def">Columna del log de valoración que muestra la diferencia calculada respecto de la valoración anterior.</div></div>
+      <div class="gcard"><div class="term-en">Amount Posted</div><div class="term-es">Monto Contabilizado</div><div class="term-def">Columna del log de valoración que muestra el monto efectivamente contabilizado en el documento.</div></div>
+      <div class="gcard"><div class="term-en">Mid-Year Valuation</div><div class="term-es">Valoración de Mitad de Año</div><div class="term-def">Lógica delta que genera valoración y una contabilización de reversión en el siguiente período.</div></div>
+      <div class="gcard"><div class="term-en">Retained Earnings Account</div><div class="term-es">Cuenta de Resultados Acumulados</div><div class="term-def">Cuenta contra la que se cierran las cuentas de resultado durante el traspaso de saldos.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Foreign Currency Valuation · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

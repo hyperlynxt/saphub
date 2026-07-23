@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Supplier Payments Monitoring — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585; --t2-dark:#A94444; --t2-pale:rgba(224,133,133,0.14); --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t2-pale); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t2-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .vert-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:440px; }
+  .vf-box{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:12px 20px; text-align:center; min-width:320px; }
+  .vf-box.tier1{ border-color:var(--t2-dark); background:var(--t2-pale); font-weight:700; }
+  .vf-box.tier2{ border-style:dashed; }
+  .vf-arrow{ font-size:20px; color:var(--t2-dark); }
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:150px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t2-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t2-dark); font-weight:700; }
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  @media (max-width:720px){ .compare-grid, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Multi-Level Approval Chains</a>
+  <a href="#s2">What Counts as "High Amount"</a>
+  <a href="#s3">The Bank Statement Link</a>
+  <a href="#s4">Discount Utilization and DSO</a>
+  <a href="#s5">Filter Criteria Across Apps</a>
+  <a href="#s6">Batch Status Transitions</a>
+  <a href="#s7">Auto-Payment vs. Approval Logic</a>
+  <a href="#s8">What Lands in Exceptions</a>
+  <a href="#s9">Monitor Payments vs. Display Status</a>
+  <a href="#s10">How Utilization Is Calculated</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Bank Communication Management</span>
+      <span class="pill pill-secondary">Cash Management</span>
+    </div>
+    <h1>Supplier Payments Monitoring — <span class="accent">Profundización</span></h1>
+    <h2>Monitoreando Pagos a Proveedores</h2>
+    <p class="desc">Lo que rodea a los siete estados del T1 y no vimos ahí: cómo se define un monto alto, qué conecta el extracto bancario con el estado Completado, y el mecanismo interno de cómo se calcula realmente el aprovechamiento de descuento.</p>
+    <div class="hlbox">Resumen Visual — <b>Supplier Payments Monitoring</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 de profundidad sobre lo visto en el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Multi-Level Approval Chains</span>
+          <span class="sec-title-es">Cadenas de aprobación de múltiples niveles</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que "In Approval" requiere más de una aprobación — acá vemos por qué a veces hace falta más de un aprobador.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué más de un nivel?</strong> Cuanto mayor es el monto de un lote, más común es que se requiera una cadena de aprobación con varios niveles — por ejemplo, un supervisor directo y después un gerente de tesorería — en vez de que una sola persona pueda liberar montos grandes por su cuenta.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Level 1: Supervisor</div><div class="t-es">primer nivel</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Level 2: Treasury Manager</div><div class="t-es">segundo nivel</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Fully Approved</div><div class="t-es">completamente aprobado</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Counts as "High Amount"</span>
+          <span class="sec-title-es">Qué cuenta como "monto alto"</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó pagos de "monto alto" sin definir el umbral — acá vemos cómo suele definirse en la práctica.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Cómo se define?</strong> No es un número universal — cada organización configura su propio umbral, y puede variar por sociedad o moneda. Lo que Bike GmbH considera "alto" en euros puede ser distinto de lo que Bike Inc considera alto en dólares.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🏢</span><h6>Per Company Code</h6><p>Cada sociedad puede tener su propio umbral.</p></div>
+        <div class="mini-card"><span class="icon">💱</span><h6>Per Currency</h6><p>El umbral puede variar según la moneda del pago.</p></div>
+        <div class="mini-card"><span class="icon">⚙️</span><h6>Configurable, Not Universal</h6><p>No hay un número fijo válido para todas las empresas.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Bank Statement Link to "Completed"</span>
+          <span class="sec-title-es">La conexión con el extracto bancario hacia "Completado"</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó que el extracto marca el estado Completado — acá vemos por qué ese paso final depende de otro proceso ya visto en esta biblioteca.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué depende de otro proceso?</strong> El extracto bancario del día siguiente no llega solo — depende de la carga de extractos vía Multi-Bank Connectivity que ya vimos en otro curso de esta biblioteca. Si ese extracto no llega o se demora, el lote de pago queda indefinidamente en "Sent to Bank", sin poder avanzar a "Completed".
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Bank Statement Upload</div><div class="t-es">carga de extracto (otro curso)</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Prior Day Statement Imported</div><div class="t-es">extracto importado</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Payment Marked Completed</div><div class="t-es">pago marcado completado</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Discount Utilization and Working Capital</span>
+          <span class="sec-title-es">Aprovechamiento de descuento y capital de trabajo</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mostró el tile como un indicador — acá vemos por qué le importa tanto a la gerencia de tesorería.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué importa a nivel gerencial?</strong> Cada descuento por pronto pago no aprovechado es, en la práctica, dinero que Bike Company dejó sobre la mesa — a escala, sumar todos los descuentos perdidos en un trimestre puede representar un monto significativo de ahorro potencial no capturado.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">One Missed Discount</div><div class="t-es">un descuento perdido</div></div>
+        <div class="chain-arrow">×</div>
+        <div class="chain-box"><div class="t-en">Hundreds of Invoices</div><div class="t-es">cientos de facturas</div></div>
+        <div class="chain-arrow">=</div>
+        <div class="chain-box"><div class="t-en">Significant Lost Savings</div><div class="t-es">ahorro potencial perdido</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Filter Criteria Across Monitoring Apps</span>
+          <span class="sec-title-es">Criterios de filtro en las apps de monitoreo</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó filtros al pasar en varias apps — acá vemos qué criterios suelen ser los más útiles en conjunto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué filtros conviene combinar?</strong> Filtrar por sociedad y rango de fecha ayuda a Jennifer a acotar el volumen diario; filtrar por estado le permite enfocarse solo en lo que necesita su atención — combinados, evitan que tenga que revisar cientos de lotes uno por uno.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🏢</span><h6>Company Code</h6><p>Acota el volumen por sociedad.</p></div>
+        <div class="mini-card"><span class="icon">📅</span><h6>Date Range</h6><p>Limita a un período relevante.</p></div>
+        <div class="mini-card"><span class="icon">🏷️</span><h6>Status</h6><p>Enfoca solo en lo que necesita atención.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Batch Status Transitions, in Depth</span>
+          <span class="sec-title-es">Transiciones de estado de lote, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró los siete estados en secuencia — acá vemos que no todos los lotes pasan por todos ellos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> un lote de bajo monto puede saltar directamente de "New" a "Approved" sin pasar por "In Approval", si solo necesita un nivel de aprobación (o ninguno, si está configurado para pago automático). El camino completo de los siete estados es el máximo posible, no lo que le pasa a cada lote.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Lote de bajo monto: New → Approved directo</div>
+        <div class="vf-arrow">≠</div>
+        <div class="vf-box tier2">Lote de monto alto: New → In Approval → Approved</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box">El recorrido completo depende del monto y la configuración</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Auto-Payment vs. Approval Logic, in Depth</span>
+          <span class="sec-title-es">Lógica de pago automático vs. aprobación, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que un pago "puede pagarse automáticamente, o ser aprobado antes" — acá vemos qué decide entre uno y otro.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué decide el camino?</strong> La decisión no la toma Jennifer caso por caso — depende de una regla configurada de antemano, típicamente basada en el monto del lote. Por debajo del umbral configurado, el sistema procesa automáticamente; por encima, exige el ciclo de aprobación completo antes de avanzar.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Below Threshold</h5>
+          <span class="en">pago automático</span>
+          <ul>
+            <li>Procesa sin intervención humana</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Above Threshold</h5>
+          <span class="en">requiere aprobación</span>
+          <ul>
+            <li>Espera el ciclo completo de aprobación vía BCM</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Actually Lands in Exceptions</span>
+          <span class="sec-title-es">Qué termina realmente en Excepciones</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró el tab como un punto de atención genérico — acá vemos qué tipo de problemas concretos suelen aparecer ahí.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué tipo de problemas aparecen?</strong> Un rechazo del banco por datos de cuenta incorrectos, una comunicación fallida con el sistema bancario, o un lote que quedó atascado sin avanzar de estado más tiempo del esperado — todos estos casos comparten que algo interrumpió el flujo normal del ciclo de vida, y necesitan revisión antes de que el pago pueda seguir su curso.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🚫</span><h6>Bank Rejection</h6><p>Rechazo por datos de cuenta incorrectos.</p></div>
+        <div class="mini-card"><span class="icon">🔌</span><h6>Communication Failure</h6><p>Falla en la comunicación con el sistema bancario.</p></div>
+        <div class="mini-card"><span class="icon">⏳</span><h6>Stalled Batch</h6><p>Lote atascado sin avanzar de estado.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Monitor Payments vs. Display Status, in Depth</span>
+          <span class="sec-title-es">Monitor Payments vs. Display Status, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 las mostró como apps distintas — acá vemos cuándo conviene usar cada una.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Cuándo usar cada una?</strong> Monitor Payments es la vista de trabajo, organizada por lote y pensada para gestionar aprobaciones activamente. Display Status of Payment Documents es más una vista de consulta rápida — útil cuando alguien pregunta puntualmente "¿qué pasó con este pago?" sin necesitar el contexto completo del lote al que pertenece.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Monitor Payments</h5>
+          <span class="en">vista de trabajo activa</span>
+          <ul>
+            <li>Organizada por lote, para gestionar aprobaciones</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Display Status of Payment Documents</h5>
+          <span class="en">vista de consulta rápida</span>
+          <ul>
+            <li>Útil para preguntas puntuales sobre un pago</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How Utilization Is Actually Calculated</span>
+          <span class="sec-title-es">Cómo se calcula realmente el aprovechamiento</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró el resultado — acá vemos qué dos números se comparan para llegar a ese porcentaje.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué se compara?</strong> El indicador de utilización compara el descuento efectivamente tomado en los pagos ya ejecutados contra el descuento total que estaba disponible según las condiciones de pago de cada factura — la diferencia entre ambos números es exactamente el "dinero dejado sobre la mesa" que se vio en la sección adyacente.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Discount Available</div><div class="t-es">descuento disponible</div></div>
+        <div class="chain-arrow">vs.</div>
+        <div class="chain-box"><div class="t-en">Discount Actually Taken</div><div class="t-es">descuento efectivamente tomado</div></div>
+        <div class="chain-arrow">=</div>
+        <div class="chain-box"><div class="t-en">Utilization %</div><div class="t-es">% de aprovechamiento</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Supplier Payments Monitoring — Tipo 2 (no repite T1)</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Multi-Level Approval</div><div class="term-es">Aprobación de Múltiples Niveles</div><div class="term-def">Cadena de aprobación con más de un responsable, típica de pagos de monto alto.</div></div>
+      <div class="gcard"><div class="term-en">Approval Threshold</div><div class="term-es">Umbral de Aprobación</div><div class="term-def">Monto configurado por sociedad o moneda que determina si un pago requiere aprobación adicional.</div></div>
+      <div class="gcard"><div class="term-en">Bank Rejection</div><div class="term-es">Rechazo Bancario</div><div class="term-def">Fallo en la ejecución de un pago por datos incorrectos, visible en el tab de Excepciones.</div></div>
+      <div class="gcard"><div class="term-en">Stalled Batch</div><div class="term-es">Lote Atascado</div><div class="term-def">Lote de pago que no avanza de estado más tiempo del esperado.</div></div>
+      <div class="gcard"><div class="term-en">Working Capital Impact</div><div class="term-es">Impacto en Capital de Trabajo</div><div class="term-def">Efecto financiero de aprovechar o no descuentos por pronto pago a escala.</div></div>
+      <div class="gcard"><div class="term-en">Discount Available</div><div class="term-es">Descuento Disponible</div><div class="term-def">Monto de descuento que las condiciones de pago de una factura permiten tomar.</div></div>
+      <div class="gcard"><div class="term-en">Discount Taken</div><div class="term-es">Descuento Tomado</div><div class="term-def">Monto de descuento efectivamente aplicado al momento de ejecutar el pago.</div></div>
+      <div class="gcard"><div class="term-en">Lost Savings</div><div class="term-es">Ahorro Perdido</div><div class="term-def">Diferencia entre el descuento disponible y el efectivamente tomado, acumulada en el tiempo.</div></div>
+      <div class="gcard"><div class="term-en">Payment-Level Query</div><div class="term-es">Consulta a Nivel de Pago</div><div class="term-def">Búsqueda puntual sobre un pago individual, sin necesitar el contexto de su lote.</div></div>
+      <div class="gcard"><div class="term-en">Batch-Level Management</div><div class="term-es">Gestión a Nivel de Lote</div><div class="term-def">Trabajo de aprobación y seguimiento organizado alrededor de lotes, no de pagos individuales.</div></div>
+      <div class="gcard"><div class="term-en">Configured Payment Rule</div><div class="term-es">Regla de Pago Configurada</div><div class="term-def">Definición previa que determina si un pago se procesa automáticamente o requiere aprobación.</div></div>
+      <div class="gcard"><div class="term-en">Filter Combination</div><div class="term-es">Combinación de Filtros</div><div class="term-def">Uso conjunto de criterios (sociedad, fecha, estado) para acotar un volumen grande de lotes.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Supplier Payments Monitoring · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

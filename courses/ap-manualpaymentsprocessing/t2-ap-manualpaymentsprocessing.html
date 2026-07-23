@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Manual Payments Processing — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585; --t2-dark:#A94444; --t2-pale:rgba(224,133,133,0.14); --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t2-pale); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t2-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .vert-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:440px; }
+  .vf-box{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:12px 20px; text-align:center; min-width:320px; }
+  .vf-box.tier1{ border-color:var(--t2-dark); background:var(--t2-pale); font-weight:700; }
+  .vf-box.tier2{ border-style:dashed; }
+  .vf-arrow{ font-size:20px; color:var(--t2-dark); }
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:150px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t2-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t2-dark); font-weight:700; }
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  @media (max-width:720px){ .compare-grid, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Three-Way Match</a>
+  <a href="#s2">Approval Workflows</a>
+  <a href="#s3">Cash Discount Mechanics</a>
+  <a href="#s4">SEPA Direct Debit In Context</a>
+  <a href="#s5">MM and FI Integration</a>
+  <a href="#s6">Payment Terms In Depth</a>
+  <a href="#s7">Tax Code In Depth</a>
+  <a href="#s8">Cost Center vs. Profit Center</a>
+  <a href="#s9">Line Item Filters In Depth</a>
+  <a href="#s10">Manual vs. Automatic Reconciliation</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Controlling</span>
+    </div>
+    <h1>Manual Payments Processing — <span class="accent">Profundización</span></h1>
+    <h2>Procesando Pagos Manuales</h2>
+    <p class="desc">Lo que rodea a los parámetros de factura del T1 y no vimos ahí: el three-way match detrás de la verificación, los controles de aprobación de un pago urgente, y el mecanismo interno de cómo se calcula un descuento y se decide entre centro de costo y centro de beneficio.</p>
+    <div class="hlbox">Resumen Visual — <b>Manual Payments Processing</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 de profundidad sobre lo visto en el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Three-Way Match Behind Invoice Verification</span>
+          <span class="sec-title-es">El three-way match detrás de la verificación de factura</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que se verifica contenido, precios y aritmética — acá vemos contra qué se compara exactamente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es el three-way match?</strong> Antes de aprobar una factura de proveedor, el sistema compara tres documentos entre sí: la orden de compra (qué se pidió), la recepción de mercadería (qué llegó), y la factura (qué se cobra) — si los tres coinciden, la factura puede procesarse sin bloqueo.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Purchase Order</div><div class="t-es">qué se pidió</div></div>
+        <div class="chain-arrow">+</div>
+        <div class="chain-box"><div class="t-en">Goods Receipt</div><div class="t-es">qué llegó</div></div>
+        <div class="chain-arrow">+</div>
+        <div class="chain-box"><div class="t-en">Invoice</div><div class="t-es">qué se cobra</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Approval Workflows Around Manual Payments</span>
+          <span class="sec-title-es">Workflows de aprobación alrededor del pago manual</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mostró cómo se crea un pago manual — acá vemos qué controles suelen rodearlo, dado que se salta el ciclo habitual.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué necesita más control?</strong> Un pago manual salta la validación colectiva que aporta correr toda una tanda de pagos junta — por eso, suele requerir una aprobación adicional de un supervisor antes de ejecutarse, especialmente por encima de cierto monto.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">👤</span><h6>Requester</h6><p>Jennifer identifica la necesidad urgente.</p></div>
+        <div class="mini-card"><span class="icon">✅</span><h6>Supervisor Approval</h6><p>Validación adicional antes de ejecutar.</p></div>
+        <div class="mini-card"><span class="icon">💸</span><h6>Payment Executed</h6><p>Recién ahí se genera el pago saliente.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Cash Discount Mechanics</span>
+          <span class="sec-title-es">Mecánica del descuento por pronto pago</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "descuentos disponibles por pronto pago" — acá vemos cómo se calcula concretamente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Cómo funciona?</strong> Un término de pago típico define dos ventanas: pagar dentro de los primeros días con un porcentaje de descuento, o pagar hasta la fecha límite sin descuento — cuanto antes se pague dentro de la primera ventana, mayor es el ahorro que Bike Company se queda.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Pay Within 10 Days</div><div class="t-es">pagar en 10 días</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">2% Discount Applied</div><div class="t-es">2% de descuento</div></div>
+        <div class="chain-arrow">vs.</div>
+        <div class="chain-box"><div class="t-en">Pay by Day 30 — No Discount</div><div class="t-es">día 30 sin descuento</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">SEPA Direct Debit, in Context</span>
+          <span class="sec-title-es">Débito directo SEPA, en contexto</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 lo listó como un método de pago más — acá vemos en qué se diferencia de transferencia o cheque.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿En qué se diferencia?</strong> Con una transferencia bancaria o un cheque, Bike Company inicia el pago activamente. Con SEPA direct debit, es el proveedor quien está autorizado a "tirar" el monto directamente de la cuenta de Bike Company — solo funciona dentro del área SEPA europea, y requiere un mandato de autorización previo firmado.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Bank Transfer / Check</h5>
+          <span class="en">iniciado por Bike Company</span>
+          <ul>
+            <li>La empresa inicia el pago activamente</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>SEPA Direct Debit</h5>
+          <span class="en">iniciado por el proveedor</span>
+          <ul>
+            <li>Requiere mandato de autorización previo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How MM and FI Actually Integrate</span>
+          <span class="sec-title-es">Cómo se integran realmente MM y FI</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que se actualizan "ambos" al contabilizar — acá vemos qué actualiza cada uno específicamente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué actualiza cada módulo?</strong> Materials Management registra el impacto sobre el inventario o el consumo del material comprado; Financial Accounting registra el impacto contable — la partida por pagar y la cuenta de gasto o activo correspondiente. Es una sola contabilización que impacta dos vistas distintas del mismo hecho de negocio.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Materials Management</h5>
+          <span class="en">vista logística</span>
+          <ul>
+            <li>Impacto sobre inventario o consumo</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Financial Accounting</h5>
+          <span class="en">vista contable</span>
+          <ul>
+            <li>Partida por pagar y cuenta de gasto/activo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Terms, in Depth</span>
+          <span class="sec-title-es">Condiciones de pago, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró qué son — acá vemos por qué las condiciones fijas rompen la regla habitual del calendario.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué existen los Fixed Payment Terms?</strong> Normalmente, si el plazo de descuento ya venció, el sistema no lo aplica. Marcar una condición como fija le dice al sistema que ignore ese chequeo de calendario — útil, por ejemplo, cuando un acuerdo comercial especial garantiza el descuento sin importar cuándo se pague realmente.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Condición normal: plazo vencido = sin descuento</div>
+        <div class="vf-arrow">≠</div>
+        <div class="vf-box tier2">Condición fija: descuento aplica igual</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box">Útil para acuerdos comerciales especiales</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Tax Code, in Depth</span>
+          <span class="sec-title-es">Código de impuesto, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró Tax Code y Tax Amount como dos campos separados — acá vemos cómo se relacionan.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Cómo se relacionan?</strong> El Tax Code no es solo un porcentaje — encapsula además a qué cuenta de mayor va el impuesto y bajo qué jurisdicción aplica. El Tax Amount se deriva automáticamente del Amount de la línea y el porcentaje asociado al código, aunque Jennifer podría ajustarlo manualmente si el caso lo requiere.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Line Amount</div><div class="t-es">monto de la línea</div></div>
+        <div class="chain-arrow">×</div>
+        <div class="chain-box"><div class="t-en">Tax Code Percentage</div><div class="t-es">porcentaje del código</div></div>
+        <div class="chain-arrow">=</div>
+        <div class="chain-box"><div class="t-en">Tax Amount (Derived)</div><div class="t-es">monto de impuesto derivado</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Cost Center vs. Profit Center, in Depth</span>
+          <span class="sec-title-es">Centro de costo vs. centro de beneficio, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 los mostró como dos campos de línea — acá vemos por qué a veces hace falta completar ambos a la vez.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué a veces van los dos juntos?</strong> El Cost Center responde "¿qué área generó este gasto?" — útil para control presupuestario. El Profit Center responde "¿qué unidad de negocio es responsable de este resultado?" — útil para medir rentabilidad. Una misma línea de factura suele necesitar ambos, porque miden cosas distintas sobre el mismo gasto.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Cost Center</h5>
+          <span class="en">¿qué área generó el gasto?</span>
+          <ul>
+            <li>Control presupuestario</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Profit Center</h5>
+          <span class="en">¿qué unidad es responsable del resultado?</span>
+          <ul>
+            <li>Medición de rentabilidad</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Line Item Filters, in Depth</span>
+          <span class="sec-title-es">Filtros de partidas, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que Manage Supplier Line Items tiene "varias opciones de selección" — acá vemos cuáles suelen ser útiles en la práctica.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué filtros son útiles?</strong> Filtrar por rango de fecha de vencimiento ayuda a priorizar qué pagar primero; filtrar por status (abierto/compensado) da una vista rápida de qué queda pendiente; filtrar por sociedad es clave cuando un mismo proveedor factura a más de una entidad del grupo.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📅</span><h6>Due Date Range</h6><p>Prioriza qué pagar primero.</p></div>
+        <div class="mini-card"><span class="icon">🏷️</span><h6>Status (Open/Cleared)</h6><p>Vista rápida de lo pendiente.</p></div>
+        <div class="mini-card"><span class="icon">🏢</span><h6>Company Code</h6><p>Clave con proveedores multi-sociedad.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Manual vs. Automatic Payment Reconciliation</span>
+          <span class="sec-title-es">Conciliación de pago manual vs. automático</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró ambos caminos por separado — acá vemos que terminan igual, solo llegan distinto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> tanto un pago generado por la tanda automática como uno creado manualmente por Jennifer terminan compensando la misma partida abierta de la misma forma — la diferencia está en el camino, no en el resultado contable final, que es indistinguible entre ambos.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Automatic Payment Run</div><div class="t-es">tanda automática</div></div>
+        <div class="chain-arrow">y</div>
+        <div class="chain-box"><div class="t-en">Manual Payment</div><div class="t-es">pago manual</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Same Final Clearing Result</div><div class="t-es">mismo resultado final</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Manual Payments Processing — Tipo 2 (no repite T1)</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Three-Way Match</div><div class="term-es">Match de Tres Vías</div><div class="term-def">Comparación entre orden de compra, recepción de mercadería, y factura antes de aprobar el pago.</div></div>
+      <div class="gcard"><div class="term-en">Approval Workflow</div><div class="term-es">Workflow de Aprobación</div><div class="term-def">Proceso de validación adicional requerido antes de ejecutar un pago manual.</div></div>
+      <div class="gcard"><div class="term-en">Discount Window</div><div class="term-es">Ventana de Descuento</div><div class="term-def">Período dentro del cual pagar una factura otorga un porcentaje de descuento.</div></div>
+      <div class="gcard"><div class="term-en">SEPA Mandate</div><div class="term-es">Mandato SEPA</div><div class="term-def">Autorización previa firmada que habilita a un proveedor a debitar directamente una cuenta.</div></div>
+      <div class="gcard"><div class="term-en">Logistics View</div><div class="term-es">Vista Logística</div><div class="term-def">Registro del impacto de una compra sobre inventario o consumo de material.</div></div>
+      <div class="gcard"><div class="term-en">Accounting View</div><div class="term-es">Vista Contable</div><div class="term-def">Registro del impacto financiero de una compra, en partidas y cuentas.</div></div>
+      <div class="gcard"><div class="term-en">Discount Calendar Check</div><div class="term-es">Chequeo de Calendario de Descuento</div><div class="term-def">Validación de si el plazo de descuento sigue vigente al momento del pago.</div></div>
+      <div class="gcard"><div class="term-en">Tax Jurisdiction</div><div class="term-es">Jurisdicción Fiscal</div><div class="term-def">Ámbito regulatorio bajo el cual aplica un código de impuesto determinado.</div></div>
+      <div class="gcard"><div class="term-en">Budgetary Control</div><div class="term-es">Control Presupuestario</div><div class="term-def">Seguimiento del gasto de un área organizativa contra su presupuesto asignado.</div></div>
+      <div class="gcard"><div class="term-en">Profitability Measurement</div><div class="term-es">Medición de Rentabilidad</div><div class="term-def">Evaluación del resultado periódico atribuido a una unidad de negocio específica.</div></div>
+      <div class="gcard"><div class="term-en">Due Date Range Filter</div><div class="term-es">Filtro de Rango de Vencimiento</div><div class="term-def">Criterio de búsqueda que prioriza partidas según su fecha límite de pago.</div></div>
+      <div class="gcard"><div class="term-en">Multi-Company Supplier</div><div class="term-es">Proveedor Multi-Sociedad</div><div class="term-def">Proveedor que factura a más de una sociedad dentro del mismo grupo corporativo.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Manual Payments Processing · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

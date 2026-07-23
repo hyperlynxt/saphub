@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Manage Supplier Items — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#7FBF8F;--t1-dark:#3D7A52;--t1-pale:rgba(127,191,143,0.14);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-co:#1A6B99;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-sales:#E07B39;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#122A1C 55%,#1B4028 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(127,191,143,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:640px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.5;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(61,122,82,0.35);}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(10,15,28,0.04);}
+  .card h4{font-family:'Syne',sans-serif;font-size:1rem;margin:0 0 6px;color:var(--ink);}
+  .card .sub{font-size:0.72rem;color:var(--muted);font-style:italic;}
+  .card p{font-size:0.84rem;color:var(--body);line-height:1.6;margin:8px 0 0;}
+  .card ul{margin:8px 0 0;padding-left:18px;}
+  .card ul li{font-size:0.82rem;color:var(--body);line-height:1.7;}
+  .card.g{border-top:4px solid var(--t1-dark);}
+  .card.b{border-top:4px solid var(--cat-fi);}
+  .card.t{border-top:4px solid var(--cat-log);}
+  .card.p{border-top:4px solid var(--cat-purchase);}
+  .card.o{border-top:4px solid var(--cat-sales);}
+  .card.r{border-top:4px solid var(--cat-alert);}
+  .card.gold{border-top:4px solid var(--cat-legal);}
+  .card.steel{border-top:4px solid var(--cat-steel);}
+  .icon-big{font-size:26px;display:block;margin-bottom:6px;}
+  .data-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:0.85rem;}
+  .data-table th{background:var(--navy-900);color:white;padding:11px 14px;text-align:left;font-size:0.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+  .data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:nth-child(even) td{background:#FAFBFD;}
+  .data-table .strong{font-weight:700;color:var(--ink);}
+  .data-table .section-head td{background:var(--t1-pale);font-weight:700;color:var(--t1-dark);font-size:0.78rem;text-transform:uppercase;letter-spacing:.3px;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;white-space:nowrap;}
+  .badge-red{background:rgba(192,57,43,0.1);color:#C0392B;}
+  .badge-green{background:rgba(0,168,150,0.1);color:#00A896;}
+  .badge-gold{background:rgba(201,147,46,0.09);color:#C9932E;}
+  .badge-blue{background:rgba(26,75,140,0.08);color:#1A4B8C;}
+  .flow4{display:flex;align-items:stretch;gap:0;min-width:700px;}
+  .fstep{flex:1;display:flex;flex-direction:column;}
+  .fstep-head{border-radius:10px 10px 0 0;padding:12px 10px;text-align:center;color:white;}
+  .fstep-head .fi{font-size:18px;display:block;margin-bottom:3px;}
+  .fstep-head .fn{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;}
+  .fstep-body{border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:10px 12px;flex:1;font-size:10.5px;color:var(--body);line-height:1.5;}
+  .farrow{display:flex;align-items:center;color:#94A3B8;font-size:20px;flex-shrink:0;padding-top:16px;padding:16px 4px 0;}
+  .glossary{background:var(--navy-950);padding:64px 40px 72px;scroll-margin-top:64px;}
+  .glossary-inner{max-width:1100px;margin:0 auto;}
+  .glossary h2{font-family:'Syne',sans-serif;color:white;font-size:1.6rem;margin:0 0 6px;}
+  .gloss-sub{color:rgba(255,255,255,0.55);font-size:0.9rem;margin:0 0 30px;}
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .gcard{background:var(--navy-800);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 18px;}
+  .term-en{font-family:'Syne',sans-serif;font-weight:700;color:var(--t1);font-size:1rem;}
+  .term-es{color:rgba(255,255,255,0.5);font-size:0.78rem;margin:2px 0 8px;}
+  .term-def{color:rgba(255,255,255,0.82);font-size:0.83rem;line-height:1.5;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Two Analysis Apps</a>
+  <a href="#s2">Display Supplier Balances</a>
+  <a href="#s3">Drill-Down: Period to Postings</a>
+  <a href="#s4">Manage Supplier Line Items</a>
+  <a href="#s5">Open vs Cleared Items</a>
+  <a href="#s6">Manual Clearing</a>
+  <a href="#s7">Reverse a Supplier Invoice</a>
+  <a href="#s8">The Reversal Document</a>
+  <a href="#s9">Reset Cleared Items</a>
+  <a href="#s10">Reversal Reasons</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+    </div>
+    <h1>Manage Supplier <span class="accent">Line Items</span></h1>
+    <h2>Gestión de Partidas y Cuentas de Proveedores</h2>
+    <p class="desc">Cómo analizar cuentas de proveedores, interpretar saldos por período, distinguir partidas abiertas de compensadas, y corregir errores mediante la reversión y el reseteo de compensaciones.</p>
+    <div class="hlbox">Resumen Visual — <b>Manage Supplier Invoices &amp; Line Items (AP)</b>, Tipo 1. 10 secciones basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+<!-- S1 -->
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Two Apps for Supplier Account Analysis</span><span class="sec-title-es">Dos apps para el análisis de cuentas de proveedores</span></div><div class="sec-desc">El análisis de proveedores en SAP Fiori se realiza con dos apps complementarias: una de saldos y otra de partidas individuales.</div></div></div>
+  <div class="theory-box"><strong>El análisis parte de lo agregado y baja al detalle:</strong> para analizar la cuenta de un proveedor, el contador de AP dispone de dos apps. La app <strong>Display Supplier Balances</strong> muestra una vista agregada por período — cuánto se debe/ha, cuál es el saldo acumulado. Cuando se necesita profundizar, la app <strong>Manage Supplier Line Items</strong> muestra cada partida individual. El flujo natural es: empezar con los saldos para detectar períodos anómalos, y luego bajar al detalle de las partidas de ese período.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <span class="icon-big">📊</span>
+        <h4>Display Supplier Balances <span class="sub">· Saldos agregados</span></h4>
+        <p><strong>Vista de nivel alto:</strong> muestra Débito, Crédito y Saldo por cada período contable del año fiscal. Permite ver la evolución mensual de la cuenta del proveedor y comparar con el ejercicio anterior.</p>
+        <p style="margin-top:8px;"><strong>Utilidad:</strong> identificar períodos con actividad inusual (saldo alto, movimientos inesperados) antes de profundizar.</p>
+      </div>
+      <div class="card g">
+        <span class="icon-big">📋</span>
+        <h4>Manage Supplier Line Items <span class="sub">· Partidas individuales</span></h4>
+        <p><strong>Vista de detalle:</strong> lista cada documento individual (facturas, pagos, notas de crédito) con su estado (abierta/compensada), importe, fecha y número de asiento.</p>
+        <p style="margin-top:8px;"><strong>Utilidad:</strong> gestionar partidas individuales — editarlas, bloquearlas para pago, crear correspondencia o iniciar una reversión.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 -->
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Display Supplier Balances — Structure and Filters</span><span class="sec-title-es">Estructura de la app de saldos de proveedor</span></div><div class="sec-desc">Qué muestra la app, cómo se filtran los datos y qué información contiene cada columna de la tabla de saldos.</div></div></div>
+  <div class="theory-box"><strong>Los saldos se leen período a período:</strong> la app Display Supplier Balances presenta los datos en una tabla donde cada fila es un período contable. Las columnas muestran los importes en Débito (pagos realizados al proveedor) y Crédito (facturas recibidas del proveedor), el Saldo del período y el Saldo Acumulado. Un saldo negativo en AP indica que la empresa le debe dinero al proveedor — esto es lo normal cuando hay facturas pendientes.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>🔍 Filter Parameters <span class="sub">· Filtros de entrada</span></h4>
+        <ul>
+          <li><strong>Supplier:</strong> el proveedor específico a analizar</li>
+          <li><strong>Company Code:</strong> la sociedad para la que se analiza</li>
+          <li><strong>Fiscal Year:</strong> el ejercicio fiscal del análisis</li>
+          <li><strong>Comparison Fiscal Year:</strong> opcional — para comparar dos ejercicios</li>
+        </ul>
+      </div>
+      <div class="card g">
+        <h4>📋 Table Columns <span class="sub">· Columnas de la tabla de saldos</span></h4>
+        <ul>
+          <li><strong>Period:</strong> número del período contable (01–16)</li>
+          <li><strong>Debit:</strong> pagos realizados al proveedor en el período</li>
+          <li><strong>Credit:</strong> facturas recibidas del proveedor en el período</li>
+          <li><strong>Balance:</strong> saldo del período (Debit − Credit)</li>
+          <li><strong>Cumulative Balance:</strong> saldo acumulado desde el inicio del ejercicio</li>
+          <li><strong>Purchases:</strong> volumen de compras del período</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:10px 14px;font-size:0.84rem;">Tabs adicionales: <strong>Balances</strong> (vista por defecto) · <strong>Special G/L</strong> (anticipos y otros movimientos especiales) · <strong>Compare</strong> (comparación entre ejercicios)</div>
+  </div>
+</section>
+
+<!-- S3 -->
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Drill-Down: From Period Balance to Individual Postings</span><span class="sec-title-es">Navegación desde el saldo hasta las partidas individuales</span></div><div class="sec-desc">Cómo navegar desde el saldo de un período hacia los documentos individuales que lo componen.</div></div></div>
+  <div class="theory-box"><strong>Los valores de la tabla son navegables:</strong> en Display Supplier Balances, los importes de Debit, Credit y Balance de cada período son links clicables. Hacer click en el valor de Crédito de agosto, por ejemplo, lleva directamente a las partidas individuales que generaron ese crédito en agosto. Hacer click en el <strong>Balance</strong> del período muestra todos los movimientos de ese período de una sola vez — la forma más rápida de analizar un período completo. Los números de documento (en azul) llevan al asiento de diario completo.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 220" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a3t1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker></defs>
+      <!-- Balances table mock -->
+      <rect x="20" y="20" width="380" height="180" rx="10" fill="#F8F9FA" stroke="#D0D4DC" stroke-width="1.5"/>
+      <rect x="20" y="20" width="380" height="36" rx="10" fill="#0A0F1C"/>
+      <text x="40" y="43" fill="white" font-family="Syne" font-weight="700" font-size="12">Display Supplier Balances</text>
+      <text x="210" y="43" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9.5">Supplier: TIRELESS · FY 2025</text>
+      <!-- Table header -->
+      <rect x="20" y="56" width="380" height="24" fill="#E8ECEF"/>
+      <text x="35" y="72" fill="#444" font-family="Inter" font-weight="600" font-size="10">Period</text>
+      <text x="155" y="72" fill="#444" font-family="Inter" font-weight="600" font-size="10">Debit</text>
+      <text x="235" y="72" fill="#444" font-family="Inter" font-weight="600" font-size="10">Credit</text>
+      <text x="325" y="72" fill="#444" font-family="Inter" font-weight="600" font-size="10">Balance</text>
+      <!-- Row 07 -->
+      <text x="35" y="97" fill="#444" font-family="Inter" font-size="10">07</text>
+      <text x="155" y="97" fill="#888" font-family="JetBrains Mono" font-size="10">0,00</text>
+      <text x="235" y="97" fill="#888" font-family="JetBrains Mono" font-size="10">0,00</text>
+      <text x="325" y="97" fill="#888" font-family="JetBrains Mono" font-size="10">0,00</text>
+      <!-- Row 08 -->
+      <text x="35" y="117" fill="#444" font-family="Inter" font-size="10">08</text>
+      <text x="155" y="117" fill="#888" font-family="JetBrains Mono" font-size="10">0,00</text>
+      <text x="225" y="117" fill="#0070F2" font-family="JetBrains Mono" font-size="10" text-decoration="underline">8.800,00</text>
+      <text x="315" y="117" fill="#0070F2" font-family="JetBrains Mono" font-size="10" text-decoration="underline">-8.800,00</text>
+      <!-- Row 09 highlighted -->
+      <rect x="22" y="124" width="376" height="22" fill="rgba(61,122,82,0.08)"/>
+      <text x="35" y="139" fill="#444" font-family="Inter" font-size="10" font-weight="600">09</text>
+      <text x="145" y="139" fill="#0070F2" font-family="JetBrains Mono" font-size="10" text-decoration="underline">5.000,00</text>
+      <text x="215" y="139" fill="#0070F2" font-family="JetBrains Mono" font-size="10" text-decoration="underline">88.000,00</text>
+      <text x="305" y="139" fill="#0070F2" font-family="JetBrains Mono" font-size="10" text-decoration="underline" font-weight="700">-83.000,00</text>
+      <!-- Row 10 -->
+      <text x="35" y="159" fill="#444" font-family="Inter" font-size="10">10</text>
+      <text x="155" y="159" fill="#888" font-family="JetBrains Mono" font-size="10">0,00</text>
+      <text x="235" y="159" fill="#888" font-family="JetBrains Mono" font-size="10">0,00</text>
+      <text x="325" y="159" fill="#888" font-family="JetBrains Mono" font-size="10">0,00</text>
+      <!-- Total -->
+      <rect x="20" y="170" width="380" height="30" fill="#E8ECEF"/>
+      <text x="35" y="188" fill="#0A0F1C" font-family="Inter" font-weight="700" font-size="10">Total</text>
+      <text x="135" y="188" fill="#0A0F1C" font-family="JetBrains Mono" font-size="10" font-weight="700">5.000,00</text>
+      <text x="205" y="188" fill="#0A0F1C" font-family="JetBrains Mono" font-size="10" font-weight="700">96.800,00</text>
+      <text x="295" y="188" fill="#0A0F1C" font-family="JetBrains Mono" font-size="10" font-weight="700">-91.800,00</text>
+      <!-- Click annotations -->
+      <text x="290" y="108" fill="#3D7A52" font-family="Inter" font-size="9" font-weight="700">← click Credit value</text>
+      <text x="290" y="152" fill="#3D7A52" font-family="Inter" font-size="9" font-weight="700">← click Balance</text>
+      <!-- Arrow to right panel -->
+      <line x1="400" y1="130" x2="460" y2="130" stroke="#3D7A52" stroke-width="2.5" marker-end="url(#a3t1)"/>
+      <!-- Right panel: line items result -->
+      <rect x="460" y="20" width="380" height="180" rx="10" fill="#F8F9FA" stroke="#3D7A52" stroke-width="2"/>
+      <rect x="460" y="20" width="380" height="36" rx="10" fill="#3D7A52"/>
+      <text x="480" y="43" fill="white" font-family="Syne" font-weight="700" font-size="12">Manage Supplier Line Items</text>
+      <text x="480" y="65" fill="#3D7A52" font-family="Inter" font-size="9.5" font-weight="600">→ Individual postings for period 09</text>
+      <text x="470" y="85" fill="#444" font-family="JetBrains Mono" font-size="9">1900000022  KR  6.600,00  ✓ cleared</text>
+      <text x="470" y="100" fill="#444" font-family="JetBrains Mono" font-size="9">1900000021  KR  -6.600,00  ✓ cleared</text>
+      <text x="470" y="115" fill="#C62828" font-family="JetBrains Mono" font-size="9">1900000020  KR  -4.400,00  ✗ open</text>
+      <text x="470" y="130" fill="#444" font-family="JetBrains Mono" font-size="9">1700000005  KG  4.400,00  ✗ open</text>
+      <text x="470" y="150" fill="#666" font-family="Inter" font-size="9.5">Blue document numbers → navigate</text>
+      <text x="470" y="165" fill="#666" font-family="Inter" font-size="9.5">to full Journal Entry detail</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S4 -->
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Manage Supplier Line Items — Features</span><span class="sec-title-es">Funcionalidades de la app de partidas</span></div><div class="sec-desc">Las acciones disponibles sobre partidas individuales de proveedores desde esta app de gestión.</div></div></div>
+  <div class="theory-box"><strong>Manage Supplier Line Items es la app de acción central de AP:</strong> además de consultar las partidas, esta app permite realizar múltiples acciones directamente sobre ellas. El contador puede filtrar por estado (abiertas/compensadas/todas), cambiar la vista del listado, navegar al asiento de diario completo, y desde ahí iniciar correcciones. La app también permite exportar la lista de partidas o personalizar qué campos se muestran.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>🔍 Filter Options <span class="sub">· Filtros de la lista</span></h4>
+        <ul>
+          <li><strong>Supplier / Company Code / Fiscal Year / Period</strong></li>
+          <li><strong>Status:</strong> Open Items · Cleared Items · All Items</li>
+          <li><strong>Item Type:</strong> Normal Items, Special G/L Items</li>
+          <li><strong>Posting Date</strong></li>
+        </ul>
+      </div>
+      <div class="card g">
+        <h4>⚡ Actions on Line Items <span class="sub">· Acciones disponibles</span></h4>
+        <ul>
+          <li><strong>Navigate to Journal Entry</strong> — click the blue document number</li>
+          <li><strong>Edit Line Item</strong> — modify changeable fields</li>
+          <li><strong>Generate Correspondence</strong> — produce account statements</li>
+          <li><strong>Block / Unblock for Payment</strong> — set or remove payment block</li>
+          <li><strong>Create Individual Payment</strong> — pay one invoice directly</li>
+          <li><strong>Import / Export list</strong> — bulk operations</li>
+          <li><strong>Change View / Settings</strong> — adjust displayed columns</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 -->
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Open Items vs Cleared Items</span><span class="sec-title-es">Partidas abiertas vs compensadas</span></div><div class="sec-desc">La distinción fundamental entre una partida abierta y una compensada — y qué evento cambia el estado.</div></div></div>
+  <div class="theory-box"><strong>Una partida abierta es una obligación pendiente; una compensada, una obligación cumplida:</strong> cuando el sistema registra una nueva factura de proveedor, crea una <strong>partida abierta</strong> en la cuenta del proveedor. Esta partida representa una deuda pendiente con ese proveedor. El estado pasa a <strong>compensada</strong> cuando se realiza un asiento que cancela el saldo — normalmente un pago. En la app Manage Supplier Line Items, las partidas abiertas aparecen con un indicador rojo (✗) y las compensadas con un indicador verde (✓).</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a5t1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker></defs>
+      <!-- Invoice event -->
+      <rect x="20" y="60" width="160" height="80" rx="10" fill="#1A4B8C"/>
+      <text x="100" y="93" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Invoice Posted</text>
+      <text x="100" y="111" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">KR document created</text>
+      <text x="100" y="127" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Vendor credit entry</text>
+      <!-- Arrow to open -->
+      <line x1="180" y1="100" x2="220" y2="100" stroke="#3D7A52" stroke-width="2" marker-end="url(#a5t1)"/>
+      <!-- Open item -->
+      <rect x="220" y="60" width="170" height="80" rx="10" fill="#C0392B"/>
+      <text x="305" y="88" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">OPEN</text>
+      <text x="305" y="106" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">✗ Red indicator</text>
+      <text x="305" y="122" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Obligation pending · no offsetting</text>
+      <!-- Arrow to cleared via payment -->
+      <line x1="390" y1="80" x2="480" y2="60" stroke="#3D7A52" stroke-width="2" marker-end="url(#a5t1)"/>
+      <text x="430" y="64" fill="#3D7A52" font-family="Syne" font-weight="700" font-size="9.5">Payment made (KZ)</text>
+      <!-- Arrow to cleared via manual -->
+      <line x1="390" y1="120" x2="480" y2="140" stroke="#3D7A52" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a5t1)"/>
+      <text x="425" y="142" fill="#3D7A52" font-family="Syne" font-weight="700" font-size="9">Manual clearing</text>
+      <!-- Cleared item -->
+      <rect x="480" y="40" width="170" height="80" rx="10" fill="#3D7A52"/>
+      <text x="565" y="73" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">CLEARED</text>
+      <text x="565" y="91" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">✓ Green indicator</text>
+      <text x="565" y="107" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Obligation fulfilled · offsetting exists</text>
+      <!-- Cleared via manual -->
+      <rect x="480" y="130" width="170" height="55" rx="10" fill="#3D7A52" opacity="0.75"/>
+      <text x="565" y="155" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">CLEARED</text>
+      <text x="565" y="173" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">via Manual Clearing</text>
+      <!-- Legend -->
+      <text x="700" y="80" fill="#1A4B8C" font-family="Inter" font-size="10" font-weight="700">Normal path:</text>
+      <text x="700" y="94" fill="#3D7A52" font-family="Inter" font-size="10">Invoice → Payment → Cleared</text>
+      <text x="700" y="118" fill="#5A6B8C" font-family="Inter" font-size="10" font-weight="700">Alternative:</text>
+      <text x="700" y="132" fill="#5A6B8C" font-family="Inter" font-size="10">Manual clearing (housekeeping)</text>
+      <text x="700" y="148" fill="#5A6B8C" font-family="Inter" font-size="10">eg. Invoice ↔ Credit Memo</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S6 -->
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Manual Clearing — Housekeeping Without Payment</span><span class="sec-title-es">Compensación manual sin pago</span></div><div class="sec-desc">Cuándo y cómo compensar partidas abiertas directamente, sin que medie un pago real.</div></div></div>
+  <div class="theory-box"><strong>La compensación manual es una herramienta de mantenimiento contable:</strong> no siempre la compensación ocurre mediante un pago. Los contables de AP realizan periódicamente tareas de "housekeeping" en las cuentas — limpian partidas abiertas que se pueden compensar entre sí sin que medie un pago de efectivo. El caso más común es compensar una <strong>factura abierta</strong> contra una <strong>nota de crédito abierta</strong> del mismo proveedor: la deuda de la factura se cancela con el crédito de la nota de crédito, sin que haya flujo de efectivo.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card r">
+        <span class="icon-big">🔴</span>
+        <h4>Before Manual Clearing <span class="sub">· Antes de la compensación</span></h4>
+        <ul>
+          <li>Invoice KR: EUR 4.400,00 → <strong>OPEN</strong> ✗</li>
+          <li>Credit Memo KG: EUR −4.400,00 → <strong>OPEN</strong> ✗</li>
+          <li>Ambas partidas están abiertas y generan "ruido" en el análisis</li>
+        </ul>
+      </div>
+      <div class="card g">
+        <span class="icon-big">✅</span>
+        <h4>After Manual Clearing <span class="sub">· Después de la compensación</span></h4>
+        <ul>
+          <li>Invoice KR: EUR 4.400,00 → <strong>CLEARED</strong> ✓</li>
+          <li>Credit Memo KG: EUR −4.400,00 → <strong>CLEARED</strong> ✓</li>
+          <li>Las partidas se netean a cero — cuenta limpia</li>
+          <li>SAP asigna un <strong>Clearing Journal Entry</strong> que vincula ambas</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:10px 14px;font-size:0.84rem;">La app para esta operación es <strong>Clear Outgoing Payments – Manual Clearing</strong>. Permite seleccionar las partidas abiertas que se compensarán mutuamente.</div>
+  </div>
+</section>
+
+<!-- S7 -->
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reverse a Supplier Invoice — When and How</span><span class="sec-title-es">Reversar una factura — cuándo y cómo</span></div><div class="sec-desc">Cuándo es necesario reversar una factura de proveedor ya contabilizada y cuál es el proceso para hacerlo.</div></div></div>
+  <div class="theory-box"><strong>La reversión es el mecanismo de corrección cuando el cambio de campo no es posible:</strong> si una factura fue contabilizada con un error en un campo que no puede modificarse en un documento ya posteado (monto, cuenta, fecha de contabilización, etc.), la única opción es <strong>reversarla</strong>. La reversión crea un <strong>nuevo asiento de diario</strong> con los importes opuestos que cancela el original. La partida original pasa a estado "compensada" y queda neutralizada contablemente.</div>
+  <div class="visual-wrap">
+    <div class="flow4" style="min-width:750px;">
+      <div class="fstep">
+        <div class="fstep-head" style="background:#5A6B8C;"><span class="fi">📋</span><span class="fn">Start: Manage Supplier Line Items</span></div>
+        <div class="fstep-body">Abrir la app y localizar el documento erróneo. Verificar que está en estado OPEN (no cleared).</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:#1A4B8C;"><span class="fi">🔗</span><span class="fn">Select Journal Entry Number</span></div>
+        <div class="fstep-body">Hacer click en el número azul del asiento. Dentro del documento, elegir "Manage Journal Entries – New version".</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:#C9932E;"><span class="fi">📝</span><span class="fn">Select Reversal Reason + Date</span></div>
+        <div class="fstep-body">Elegir el Reversal Reason (ej. "01 – Wrong posting") e ingresar la Posting Date de la reversión.</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:#3D7A52;"><span class="fi">✅</span><span class="fn">Reverse — Confirmation</span></div>
+        <div class="fstep-body">Click "Reverse". SAP muestra "Journal entry was reversed". El documento original queda compensado por el de reversión.</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:#FFEBEE;border-left:4px solid var(--cat-alert);border-radius:0 8px 8px 0;padding:10px 14px;font-size:0.84rem;color:var(--ink);">⚠ <strong>Prerequisite:</strong> el documento debe estar en estado OPEN (no cleared). Si está cleared, primero hay que resetear la compensación (ver sección 09).</div>
+  </div>
+</section>
+
+<!-- S8 -->
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">The Reversal Document — What SAP Creates</span><span class="sec-title-es">El documento de reversión — qué crea SAP</span></div><div class="sec-desc">La estructura del documento de reversión: el asiento opuesto, su relación con el original y dónde se visualiza.</div></div></div>
+  <div class="theory-box"><strong>Una reversión genera un nuevo documento, no modifica el original:</strong> SAP no elimina ni modifica el documento original erróneo. En cambio, crea un <strong>nuevo documento de reversión</strong> con los mismos importes pero en sentido contrario. Los dos documentos quedan vinculados: el original muestra "Reversed By: [número]" y el de reversión muestra "Reversal Reference Document: [número original]". La tab <strong>Related Documents</strong> del nuevo documento muestra el par completo, incluyendo el "Reversed Document".</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card r">
+        <h4>📄 Original Document (erróneo) <span class="sub">· Ej: 1500000005</span></h4>
+        <ul>
+          <li>Journal Entry Type: KZ (Vendor payment)</li>
+          <li>Status: <strong>CLEARED</strong> (compensado por reversión)</li>
+          <li>Header shows: <strong>"Reversed By: 1500000006"</strong></li>
+          <li>Reversal Reason: 01 (Wrong posting)</li>
+          <li>Reversal Reference Document: 1500000006</li>
+        </ul>
+      </div>
+      <div class="card g">
+        <h4>📄 Reversal Document <span class="sub">· Ej: 1500000006</span></h4>
+        <ul>
+          <li>Journal Entry Type: KZ (misma que el original)</li>
+          <li>Importes: invertidos (Débito ↔ Crédito)</li>
+          <li>Tab Related Documents muestra: "Reversed Document: 1500000005"</li>
+          <li>Original Reference Document: 15000000510102023</li>
+          <li>Los dos documentos se compensan mutuamente → saldo neto = 0</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S9 -->
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reset Cleared Items — The Required First Step</span><span class="sec-title-es">Resetear la compensación — el primer paso obligatorio</span></div><div class="sec-desc">Por qué no se puede reversar directamente un documento compensado y cómo se hace el proceso en dos pasos.</div></div></div>
+  <div class="theory-box"><strong>SAP no permite reversar documentos con ítems ya compensados:</strong> si la factura incorrecta ya fue pagada (o compensada de otra forma), el documento está en estado "cleared". Intentar reversarlo directamente falla. La razón es lógica: revertir el asiento original sin deshacer primero la compensación dejaría el documento de pago "huérfano" — apuntando a un documento que ya no existe como tal. Por eso el proceso es de dos pasos: primero <strong>resetear la compensación</strong> (el pago), y luego <strong>reversar la factura</strong>.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 180" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a9t1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker></defs>
+      <!-- Step 1: Cleared state -->
+      <rect x="20" y="40" width="160" height="100" rx="10" fill="#3D7A52"/>
+      <text x="100" y="72" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Invoice</text>
+      <text x="100" y="89" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">CLEARED ✓</text>
+      <text x="100" y="107" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Payment applied</text>
+      <text x="100" y="122" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Cannot reverse directly</text>
+      <!-- Step 2 arrow + label -->
+      <line x1="180" y1="90" x2="240" y2="90" stroke="#3D7A52" stroke-width="2" marker-end="url(#a9t1)"/>
+      <text x="205" y="80" text-anchor="middle" fill="#3D7A52" font-family="Syne" font-weight="700" font-size="9.5">STEP 1</text>
+      <text x="205" y="105" text-anchor="middle" fill="#5A6B8C" font-family="Inter" font-size="8.5">Reset Clearing</text>
+      <!-- After reset: open again -->
+      <rect x="240" y="40" width="160" height="100" rx="10" fill="#C0392B"/>
+      <text x="320" y="72" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Invoice</text>
+      <text x="320" y="89" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">OPEN ✗</text>
+      <text x="320" y="107" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Clearing reset</text>
+      <text x="320" y="122" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Ready to reverse</text>
+      <!-- Step 3 arrow + label -->
+      <line x1="400" y1="90" x2="460" y2="90" stroke="#3D7A52" stroke-width="2" marker-end="url(#a9t1)"/>
+      <text x="425" y="80" text-anchor="middle" fill="#3D7A52" font-family="Syne" font-weight="700" font-size="9.5">STEP 2</text>
+      <text x="425" y="105" text-anchor="middle" fill="#5A6B8C" font-family="Inter" font-size="8.5">Reverse Invoice</text>
+      <!-- After reverse: reversed pair -->
+      <rect x="460" y="20" width="160" height="60" rx="8" fill="#5A6B8C"/>
+      <text x="540" y="47" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Original Doc</text>
+      <text x="540" y="64" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">CLEARED by reversal</text>
+      <rect x="460" y="100" width="160" height="60" rx="8" fill="#3D7A52"/>
+      <text x="540" y="127" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Reversal Doc</text>
+      <text x="540" y="144" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">Offsetting entry</text>
+      <line x1="540" y1="80" x2="540" y2="100" stroke="white" stroke-width="1.5" stroke-dasharray="3,3"/>
+      <!-- Note -->
+      <text x="660" y="80" fill="#3D7A52" font-family="Syne" font-weight="700" font-size="11">Two-step process</text>
+      <text x="660" y="97" fill="#5A6B8C" font-family="Inter" font-size="9.5">1. Reset Clearing</text>
+      <text x="660" y="112" fill="#5A6B8C" font-family="Inter" font-size="9.5">2. Reverse Invoice</text>
+      <text x="660" y="130" fill="#C0392B" font-family="Inter" font-size="9">⚠ Mandatory sequence</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S10 -->
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reversal Reasons — Control and Traceability</span><span class="sec-title-es">Razones de reversión — control y trazabilidad</span></div><div class="sec-desc">Los códigos de razón de reversión que SAP registra en el documento para asegurar la trazabilidad contable.</div></div></div>
+  <div class="theory-box"><strong>La razón de reversión es obligatoria y queda registrada permanentemente:</strong> al reversar un documento, SAP requiere que se seleccione una <strong>Reversal Reason</strong>. Este código se guarda en el header del documento de reversión y también en el documento original (en el campo "Reversed By"). Las razones de reversión también pueden determinar la fecha de contabilización del documento de reversión — algunas obligan a usar la fecha del documento original, otras permiten una fecha diferente. Esto es relevante para los cierres de período.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>Reason Code</th><th>Description</th><th>Posting Date Rule</th><th>Audit Trail</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">01</td><td>Wrong posting <span style="font-size:0.78rem;color:var(--muted);">· Contabilización incorrecta</span></td><td>Same as original or current date</td><td><span class="badge badge-red">Always recorded</span></td></tr>
+        <tr><td class="strong">02</td><td>Reversal in subsequent period</td><td>Must be in subsequent period</td><td><span class="badge badge-red">Always recorded</span></td></tr>
+        <tr><td class="strong">Other</td><td>Configurable by company</td><td>As configured</td><td><span class="badge badge-red">Always recorded</span></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:10px 14px;font-size:0.84rem;">El campo <strong>Reversal Reason</strong> aparece en el header del documento original (en el campo "Reversal Reason") y en el del documento de reversión, garantizando la trazabilidad completa del ciclo de corrección.</div>
+  </div>
+</section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (T1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Open Item</div><div class="term-es">Partida abierta</div><div class="term-def">Partida en una cuenta de proveedor (o cualquier cuenta de AP/AR) que todavía no ha sido compensada. Representa una obligación pendiente — normalmente una factura no pagada.</div></div>
+      <div class="gcard"><div class="term-en">Cleared Item</div><div class="term-es">Partida compensada</div><div class="term-def">Partida que ha sido compensada por un asiento opuesto (pago, compensación manual o reversión). Indica que la obligación está cumplida.</div></div>
+      <div class="gcard"><div class="term-en">Reversal</div><div class="term-es">Reversión</div><div class="term-def">Proceso que crea un nuevo documento FI con importes opuestos para cancelar un documento original erróneo. No modifica el original — crea uno nuevo que lo neutraliza.</div></div>
+      <div class="gcard"><div class="term-en">Manual Clearing</div><div class="term-es">Compensación manual</div><div class="term-def">Proceso de compensar partidas abiertas de una cuenta de proveedor entre sí, sin que medie un pago real. Típico ejemplo: compensar una factura contra una nota de crédito.</div></div>
+      <div class="gcard"><div class="term-en">Reversal Reason</div><div class="term-es">Razón de reversión</div><div class="term-def">Código obligatorio que se selecciona al reversar un documento. Queda registrado permanentemente en ambos documentos (original y reversión) para la trazabilidad contable.</div></div>
+      <div class="gcard"><div class="term-en">Display Supplier Balances</div><div class="term-es">Visualizar saldos de proveedores</div><div class="term-def">App Fiori que muestra los saldos de un proveedor período a período (Débito, Crédito, Saldo, Saldo Acumulado) en forma de tabla anual.</div></div>
+      <div class="gcard"><div class="term-en">Manage Supplier Line Items</div><div class="term-es">Gestionar partidas de proveedores</div><div class="term-def">App Fiori que lista las partidas individuales de una cuenta de proveedor con su estado (abierta/compensada) y permite actuar sobre ellas.</div></div>
+      <div class="gcard"><div class="term-en">Cumulative Balance</div><div class="term-es">Saldo acumulado</div><div class="term-def">Saldo que acumula todos los movimientos desde el inicio del ejercicio fiscal hasta un período determinado. Muestra la posición neta total del proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Reset Clearing</div><div class="term-es">Resetear compensación</div><div class="term-def">Paso previo obligatorio para poder reversar un documento que ya fue compensado. Deshace la compensación y devuelve la partida al estado "abierta".</div></div>
+      <div class="gcard"><div class="term-en">Journal Entry</div><div class="term-es">Asiento de diario</div><div class="term-def">Documento contable FI que registra una transacción. Visible mediante su número azul en las apps de partidas. Puede ser de tipo KR (factura), KZ (pago), KG (nota de crédito).</div></div>
+      <div class="gcard"><div class="term-en">Offsetting Entry</div><div class="term-es">Asiento de contrapartida</div><div class="term-def">Asiento que cancela o neutraliza otro. En una reversión, el documento de reversión es el offsetting entry del documento original.</div></div>
+      <div class="gcard"><div class="term-en">Posting Period</div><div class="term-es">Período de contabilización</div><div class="term-def">Período contable (normalmente un mes) al que se asigna un documento FI. Los saldos de la app Display Supplier Balances se organizan por períodos.</div></div>
+    </div>
+  </div>
+</section>
+<footer>T1 · Básico — Manage Supplier Line Items (AP) · Biblioteca de Guías SAP · Fuente: documento del curso</footer>
+</body>
+</html>

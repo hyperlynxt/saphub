@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Payables KPIs — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#7FBF8F;--t1-dark:#3D7A52;--t1-pale:rgba(127,191,143,0.14);--t1-pale-border:rgba(127,191,143,0.40);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-co:#1A6B99;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-sales:#E07B39;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#122A1C 55%,#1B4028 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;letter-spacing:.2px;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(127,191,143,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:640px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.5;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(61,122,82,0.35);}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(10,15,28,0.04);}
+  .card h4{font-family:'Syne',sans-serif;font-size:1rem;margin:0 0 6px;color:var(--ink);}
+  .card .sub{font-size:0.72rem;color:var(--muted);font-style:italic;}
+  .card p{font-size:0.84rem;color:var(--body);line-height:1.6;margin:8px 0 0;}
+  .card ul{margin:8px 0 0;padding-left:18px;}
+  .card ul li{font-size:0.82rem;color:var(--body);line-height:1.7;}
+  .card.g{border-top:4px solid var(--t1-dark);}
+  .card.b{border-top:4px solid var(--cat-fi);}
+  .card.t{border-top:4px solid var(--cat-log);}
+  .card.p{border-top:4px solid var(--cat-purchase);}
+  .card.o{border-top:4px solid var(--cat-sales);}
+  .card.r{border-top:4px solid var(--cat-alert);}
+  .card.gold{border-top:4px solid var(--cat-legal);}
+  .card.steel{border-top:4px solid var(--cat-steel);}
+  .icon-big{font-size:26px;display:block;margin-bottom:6px;}
+  .data-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:0.85rem;}
+  .data-table th{background:var(--navy-900);color:white;padding:11px 14px;text-align:left;font-size:0.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+  .data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:nth-child(even) td{background:#FAFBFD;}
+  .data-table .strong{font-weight:700;color:var(--ink);}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;white-space:nowrap;}
+  .badge-red{background:rgba(192,57,43,0.1);color:#C0392B;}
+  .badge-green{background:rgba(0,168,150,0.1);color:#00A896;}
+  .badge-gold{background:rgba(201,147,46,0.09);color:#C9932E;}
+  .badge-blue{background:rgba(26,75,140,0.08);color:#1A4B8C;}
+  /* timing bar */
+  .timing-bar{display:flex;height:48px;border-radius:10px;overflow:hidden;margin-bottom:12px;}
+  .tb-zone{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:white;}
+  .glossary{background:var(--navy-950);padding:64px 40px 72px;scroll-margin-top:64px;}
+  .glossary-inner{max-width:1100px;margin:0 auto;}
+  .glossary h2{font-family:'Syne',sans-serif;color:white;font-size:1.6rem;margin:0 0 6px;}
+  .gloss-sub{color:rgba(255,255,255,0.55);font-size:0.9rem;margin:0 0 30px;}
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .gcard{background:var(--navy-800);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 18px;}
+  .term-en{font-family:'Syne',sans-serif;font-weight:700;color:var(--t1);font-size:1rem;}
+  .term-es{color:rgba(255,255,255,0.5);font-size:0.78rem;margin:2px 0 8px;}
+  .term-def{color:rgba(255,255,255,0.82);font-size:0.83rem;line-height:1.5;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">What Are KPIs</a>
+  <a href="#s2">Why AP KPIs Matter</a>
+  <a href="#s3">AP Overview App</a>
+  <a href="#s4">Nine KPI Indicators</a>
+  <a href="#s5">Days Payable Outstanding</a>
+  <a href="#s6">Overdue Payables</a>
+  <a href="#s7">Cash Discount Utilization</a>
+  <a href="#s8">Payable Aging Report</a>
+  <a href="#s9">Due Invoices Free for Payment</a>
+  <a href="#s10">Analytics to Action</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+      <span class="pill pill-sec">Analytics</span>
+    </div>
+    <h1>Payables <span class="accent">KPIs</span></h1>
+    <h2>Indicadores Clave de Rendimiento en Cuentas por Pagar</h2>
+    <p class="desc">Los KPIs que el contador de AP usa para monitorear la eficiencia del procesamiento de facturas: cuándo pagar, cuánto se aprovechan los descuentos, qué está vencido, y cómo navegar las apps analíticas de SAP para pasar del dato al la acción.</p>
+    <div class="hlbox">Resumen Visual — <b>Payables KPIs (AP)</b>, Tipo 1 (Básico). 10 secciones basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+<!-- S1 -->
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">What Are KPIs in Accounts Payable</span><span class="sec-title-es">Qué son los KPIs en AP</span></div><div class="sec-desc">Definición y propósito de los indicadores clave en la gestión de cuentas por pagar.</div></div></div>
+  <div class="theory-box"><strong>KPI = métrica cuantitativa para evaluar rendimiento:</strong> los <strong>Key Performance Indicators</strong> son métricas cuantitativas que permiten evaluar el rendimiento y la eficiencia de empresas, departamentos o procesos específicos. En Cuentas por Pagar, los KPIs ayudan a rastrear el progreso hacia los objetivos y a identificar áreas de mejora — desde la puntualidad de los pagos hasta el aprovechamiento de descuentos comerciales. No son solo números de reporte: son señales de alerta que indican dónde el contador de AP necesita tomar acción concreta.</div>
+  <div class="visual-wrap">
+    <div class="g4">
+      <div class="card g"><span class="icon-big">📊</span><h4>Measure Performance <span class="sub">· Medir</span></h4><p>Cuantificar qué tan bien funciona el proceso de AP en términos de velocidad, costo y cumplimiento.</p></div>
+      <div class="card b"><span class="icon-big">🎯</span><h4>Track Progress <span class="sub">· Rastrear</span></h4><p>Monitorear el avance hacia los objetivos de la empresa: descuentos capturados, pagos en plazo, costos de mora.</p></div>
+      <div class="card t"><span class="icon-big">🔍</span><h4>Identify Gaps <span class="sub">· Identificar</span></h4><p>Detectar dónde se generan costos innecesarios, se dañan relaciones con proveedores o se pierden eficiencias.</p></div>
+      <div class="card o"><span class="icon-big">⚡</span><h4>Drive Action <span class="sub">· Actuar</span></h4><p>Conectar el dato analítico con la acción transaccional: abrir la factura, liberar el bloqueo, ejecutar el pago.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 -->
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Why AP KPIs Matter — The Timing Challenge</span><span class="sec-title-es">El desafío del timing en los pagos</span></div><div class="sec-desc">El dilema central de AP: ni demasiado pronto ni demasiado tarde — y cómo los KPIs ayudan a navegar ese equilibrio.</div></div></div>
+  <div class="theory-box"><strong>El timing es la tensión central de AP:</strong> para el contador de Cuentas por Pagar, el momento del pago importa en dos sentidos. Pagar demasiado <strong>pronto</strong> desperdicia liquidez — el dinero podría usarse mejor en otro lugar durante ese tiempo. Pagar demasiado <strong>tarde</strong> tiene consecuencias peores: pérdida del descuento por pronto pago, riesgo de recibir avisos de cobro del proveedor, y daño a la relación comercial. Los KPIs de AP existen para detectar cuándo el proceso se aleja de este equilibrio.</div>
+  <div class="visual-wrap">
+    <div class="timing-bar" style="margin-bottom:16px;">
+      <div class="tb-zone" style="flex:2;background:#C0392B;">⏰ Too Early — Cash tied up unnecessarily</div>
+      <div class="tb-zone" style="flex:3;background:#3D7A52;font-size:14px;">✅ Optimal Timing<br><span style="font-size:10px;opacity:.85;">Discount captured · On time · Supplier happy</span></div>
+      <div class="tb-zone" style="flex:2;background:#A94444;">🚨 Too Late — Discount lost · Dunning risk</div>
+    </div>
+    <div class="g3">
+      <div class="card r"><h4>❌ Too Early <span class="sub">· Demasiado pronto</span></h4><p>El dinero queda inmovilizado. Se pierde la oportunidad de usarlo en otras inversiones o para mejorar el working capital.</p></div>
+      <div class="card g"><h4>✅ Optimal <span class="sub">· A tiempo</span></h4><p>El pago llega en la ventana de descuento o en la fecha de vencimiento exacta. Máxima eficiencia financiera y relación comercial saludable.</p></div>
+      <div class="card r"><h4>❌ Too Late <span class="sub">· Demasiado tarde</span></h4><p>Se pierde el descuento por pronto pago. El proveedor puede emitir recordatorios o afectar las condiciones futuras de suministro.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 -->
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Accounts Payable Overview App — Central Hub</span><span class="sec-title-es">La app central de KPIs de AP</span></div><div class="sec-desc">El punto de entrada único para todos los indicadores de AP — una pantalla, múltiples KPIs, acceso directo a la acción.</div></div></div>
+  <div class="theory-box"><strong>Una pantalla con todo lo importante:</strong> la app <strong>Accounts Payable Overview</strong> es la central de mando para los KPIs de AP. Su valor principal es permitir ver mucha información en una sola pantalla y desde ahí acceder directamente a las áreas que requieren acción. El contador de AP puede filtrar por sus proveedores específicos — según la responsabilidad definida en los datos maestros — para ver solo los indicadores relevantes para su área.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Central hub -->
+      <rect x="290" y="100" width="280" height="80" rx="14" fill="#0A0F1C"/>
+      <text x="430" y="132" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Accounts Payable</text>
+      <text x="430" y="152" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Overview App</text>
+      <text x="430" y="170" text-anchor="middle" fill="rgba(255,255,255,0.62)" font-family="Inter" font-size="10">Central entry point for AP KPIs</text>
+      <!-- Filter box above -->
+      <rect x="320" y="20" width="220" height="50" rx="8" fill="#3D7A52"/>
+      <text x="430" y="42" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Filter Area</text>
+      <text x="430" y="58" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Company Code · Supplier · Region · Accounting Clerk</text>
+      <line x1="430" y1="70" x2="430" y2="100" stroke="#3D7A52" stroke-width="2"/>
+      <!-- Surrounding KPI circles -->
+      <rect x="20" y="20" width="160" height="50" rx="8" fill="#1A4B8C"/>
+      <text x="100" y="43" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Days Payable</text>
+      <text x="100" y="59" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Outstanding (DPO)</text>
+      <rect x="20" y="90" width="160" height="50" rx="8" fill="#C0392B"/>
+      <text x="100" y="113" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Overdue</text>
+      <text x="100" y="129" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Payables</text>
+      <rect x="20" y="160" width="160" height="50" rx="8" fill="#C9932E"/>
+      <text x="100" y="183" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Cash Discount</text>
+      <text x="100" y="199" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Utilization</text>
+      <rect x="20" y="230" width="160" height="40" rx="8" fill="#00A896"/>
+      <text x="100" y="254" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Payable Aging</text>
+      <rect x="680" y="20" width="160" height="50" rx="8" fill="#7E4FBF"/>
+      <text x="760" y="43" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Parked &amp;</text>
+      <text x="760" y="59" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Blocked Invoices</text>
+      <rect x="680" y="90" width="160" height="50" rx="8" fill="#1A6B99"/>
+      <text x="760" y="113" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Due Invoices</text>
+      <text x="760" y="129" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Free for Payment</text>
+      <rect x="680" y="160" width="160" height="50" rx="8" fill="#5A6B8C"/>
+      <text x="760" y="183" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Suppliers with</text>
+      <text x="760" y="199" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Debit Balances</text>
+      <rect x="680" y="230" width="160" height="40" rx="8" fill="#5A6B8C" opacity="0.75"/>
+      <text x="760" y="254" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Posted Invoices</text>
+      <!-- Connection lines left -->
+      <line x1="180" y1="45" x2="290" y2="120" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <line x1="180" y1="115" x2="290" y2="130" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <line x1="180" y1="185" x2="290" y2="150" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <line x1="180" y1="250" x2="290" y2="165" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <!-- Connection lines right -->
+      <line x1="680" y1="45" x2="570" y2="120" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <line x1="680" y1="115" x2="570" y2="130" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <line x1="680" y1="185" x2="570" y2="150" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <line x1="680" y1="250" x2="570" y2="165" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+    </svg>
+  </div>
+</section>
+
+<!-- S4 -->
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Nine KPI Indicators in the Overview</span><span class="sec-title-es">Los nueve indicadores de la app Overview</span></div><div class="sec-desc">Descripción breve de cada uno de los indicadores disponibles en la app Accounts Payable Overview.</div></div></div>
+  <div class="theory-box"><strong>La app reúne nueve indicadores clave en una sola vista:</strong> el valor de la Accounts Payable Overview app está en concentrar información de distintos ángulos del proceso de AP. Algunos indicadores reflejan <strong>ineficiencias en el proceso</strong> (facturas estacionadas, bloqueadas), otros miden el <strong>rendimiento financiero</strong> (DPO, descuento), y otros informan sobre el <strong>estado de la deuda con proveedores</strong> (vencidas, por vencer, antigüedad).</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>KPI</th><th>What It Shows</th><th>Señal de alerta cuando…</th><th>Área</th></tr></thead>
+      <tbody>
+        <tr><td class="strong">Days Payable Outstanding</td><td>Días promedio que la empresa tarda en pagar sus facturas</td><td>Excesivamente alto (daña proveedores) o bajo (desperdicia liquidez)</td><td><span class="badge badge-blue">Liquidez</span></td></tr>
+        <tr><td class="strong">Overdue Payables</td><td>Importe total de pagos vencidos y no realizados</td><td>Cualquier importe vencido, especialmente el crítico</td><td><span class="badge badge-red">Riesgo</span></td></tr>
+        <tr><td class="strong">Cash Discount Utilization</td><td>% de descuentos por pronto pago aprovechados vs disponibles</td><td>Porcentaje bajo = pérdida de ahorros potenciales</td><td><span class="badge badge-gold">Eficiencia</span></td></tr>
+        <tr><td class="strong">Payable Aging</td><td>Distribución de saldos pendientes por intervalos de antigüedad</td><td>Gran concentración en intervalos lejanos (pagos muy atrasados)</td><td><span class="badge badge-blue">Análisis</span></td></tr>
+        <tr><td class="strong">Parked Invoices</td><td>Facturas guardadas temporalmente sin contabilizar</td><td>Volumen alto = posible bottleneck en el proceso</td><td><span class="badge badge-gold">Proceso</span></td></tr>
+        <tr><td class="strong">Blocked Invoices</td><td>Facturas bloqueadas para pago (discrepancias, bloqueo manual)</td><td>Acumulación = facturas que no pueden pagarse aunque venzan</td><td><span class="badge badge-red">Riesgo</span></td></tr>
+        <tr><td class="strong">Suppliers with Debit Balances</td><td>Proveedores con saldo deudor (la empresa tiene crédito a su favor)</td><td>Saldo deudor no gestionado = activo no recuperado</td><td><span class="badge badge-blue">Análisis</span></td></tr>
+        <tr><td class="strong">Posted Invoices</td><td>Volumen de facturas contabilizadas en el período</td><td>Caída brusca puede indicar problemas de procesamiento</td><td><span class="badge badge-green">Operativo</span></td></tr>
+        <tr><td class="strong">Due Invoices Free for Payment</td><td>Facturas vencidas disponibles para el programa de pagos</td><td>Importe alto = pago urgente requerido en el próximo run</td><td><span class="badge badge-red">Urgente</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S5 -->
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Days Payable Outstanding</span><span class="sec-title-es">Días de cuentas a pagar pendientes</span></div><div class="sec-desc">El KPI que mide cuántos días, en promedio, tarda la empresa en pagar sus facturas de proveedores.</div></div></div>
+  <div class="theory-box"><strong>DPO mide la velocidad de pago promedio:</strong> el <strong>Days Payable Outstanding (DPO)</strong> expresa cuántos días, en promedio, la empresa retiene las facturas de proveedores antes de pagarlas. Un DPO muy bajo puede indicar que la empresa paga demasiado pronto (pérdida de liquidez). Un DPO muy alto puede señalar que la empresa se está retrasando en los pagos (daño a relaciones con proveedores). El valor óptimo varía según el sector e industria, y debe mantenerse en línea con las condiciones de pago negociadas.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card r">
+        <span class="icon-big">📉</span>
+        <h4>DPO Too Low <span class="sub">· Muy bajo</span></h4>
+        <p>La empresa paga más rápido que lo requerido. Consecuencia: <strong>pérdida de liquidez</strong> — el dinero podría mantenerse en caja por más tiempo sin afectar la relación comercial.</p>
+      </div>
+      <div class="card g">
+        <span class="icon-big">✅</span>
+        <h4>DPO Optimal <span class="sub">· En zona ideal</span></h4>
+        <p>Los pagos se realizan cerca de la fecha de vencimiento, aprovechando los descuentos cuando aplican. La liquidez se gestiona eficientemente y los proveedores reciben el pago a tiempo.</p>
+      </div>
+      <div class="card r">
+        <span class="icon-big">⚠️</span>
+        <h4>DPO Too High <span class="sub">· Demasiado alto</span></h4>
+        <p>Los pagos se retrasan sistemáticamente más allá de la fecha de vencimiento. Consecuencia: <strong>daño a la relación con proveedores</strong>, riesgo de corte de crédito o condiciones menos favorables.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S6 -->
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Overdue Payables — Critical vs Uncritical</span><span class="sec-title-es">Vencidos críticos vs no críticos</span></div><div class="sec-desc">Cómo SAP distingue entre vencidos que requieren acción urgente y los que aún están en zona manejable.</div></div></div>
+  <div class="theory-box"><strong>No todos los vencidos son iguales — la clasificación importa:</strong> la app <strong>Overdue Payables</strong> permite monitorear el importe vencido a los proveedores. Dentro de los vencidos, SAP distingue entre <strong>critically overdue</strong> (importe vencido crítico, supera el umbral configurable) y <strong>uncritically overdue</strong> (vencido pero aún dentro de un rango manejable). Esta distinción permite priorizar la acción: ¿qué proveedores necesitan atención inmediata? El sistema también muestra el importe <strong>Not Overdue</strong> para tener el panorama completo.</div>
+  <div class="visual-wrap">
+    <div class="g3">
+      <div class="card r">
+        <span class="icon-big">🚨</span>
+        <h4>Critically Overdue <span class="sub">· Vencido crítico</span></h4>
+        <p>El importe vencido supera el <strong>umbral de criticidad</strong> configurado. Requiere acción inmediata. El contador de AP debe notificar a los responsables y tomar medidas para liberar o procesar el pago.</p>
+        <div style="margin-top:8px;background:#FFEBEE;border-radius:6px;padding:8px 10px;font-size:0.8rem;color:#C62828;">⚠ Riesgo de daño a relación comercial con el proveedor.</div>
+      </div>
+      <div class="card gold">
+        <span class="icon-big">⚡</span>
+        <h4>Uncritically Overdue <span class="sub">· Vencido no crítico</span></h4>
+        <p>El importe está vencido pero no ha superado el umbral de criticidad. Monitoreable pero requiere atención en el corto plazo para no escalar a crítico. Se puede seguir de cerca sin acción urgente inmediata.</p>
+      </div>
+      <div class="card g">
+        <span class="icon-big">✅</span>
+        <h4>Not Overdue <span class="sub">· No vencido</span></h4>
+        <p>Importe con fecha de vencimiento futura — aún no requiere pago. La app muestra este importe para tener el contexto completo de la deuda total con el proveedor, no solo lo vencido.</p>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-size:0.84rem;color:var(--muted);background:var(--t1-pale);border-radius:8px;padding:10px 14px;">
+      La app Overdue Payables permite analizar los vencidos <strong>por sociedad, grupo de proveedor, razón de bloqueo, y proveedor</strong>. Para el análisis por proveedor, desglosa el importe en <strong>cuatro intervalos de días antes de la fecha actual</strong>, lo que permite ver la antigüedad de cada vencido.
+    </div>
+  </div>
+</section>
+
+<!-- S7 -->
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Cash Discount Utilization</span><span class="sec-title-es">Aprovechamiento del descuento por pronto pago</span></div><div class="sec-desc">El KPI que mide qué fracción de los descuentos disponibles se está capturando realmente.</div></div></div>
+  <div class="theory-box"><strong>El descuento por pronto pago es dinero que se puede ganar o perder:</strong> muchos proveedores ofrecen un <strong>descuento por pronto pago</strong> (cash discount) si la factura se abona antes de cierta fecha — por ejemplo, 2% si se paga en los primeros 10 días. La app <strong>Cash Discount Utilization</strong> monitorea en tiempo real qué porcentaje de estos descuentos disponibles se está capturando efectivamente. Un porcentaje bajo indica que las facturas se pagan después de que vence la ventana de descuento — dinero que podría haberse ahorrado.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>📊 What the KPI Shows <span class="sub">· Qué muestra</span></h4>
+        <ul>
+          <li><strong>Descuento disponible:</strong> importe total que podría ahorrarse si todas las facturas con descuento se pagan en la ventana de pronto pago</li>
+          <li><strong>Descuento capturado:</strong> lo que realmente se aprovechó en el período</li>
+          <li><strong>Tasa de utilización:</strong> capturado / disponible × 100%</li>
+          <li>Analizable por <strong>sociedad o localización</strong> para identificar dónde mejorar</li>
+        </ul>
+      </div>
+      <div class="card g">
+        <h4>⚡ Action Trigger <span class="sub">· Cuándo actuar</span></h4>
+        <p>Si la tasa de utilización es baja, el contador de AP debe identificar:</p>
+        <ul>
+          <li>¿Hay facturas bloqueadas que no pudieron pagarse a tiempo?</li>
+          <li>¿El proceso de aprobación es demasiado lento?</li>
+          <li>¿Las condiciones de pago están configuradas incorrectamente?</li>
+          <li>¿El programa de pagos no está corriendo con frecuencia suficiente?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8 -->
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Aging Report for Accounts Payable</span><span class="sec-title-es">Reporte de antigüedad de saldos</span></div><div class="sec-desc">Distribución de los saldos pendientes de proveedores en intervalos de tiempo para planificar los pagos futuros.</div></div></div>
+  <div class="theory-box"><strong>El aging organiza la deuda por antigüedad:</strong> la app <strong>Aging Report for Accounts Payable</strong> permite analizar los importes pendientes con proveedores organizándolos por <strong>intervalos de antigüedad</strong> — cuánto vence este mes, el próximo, en dos meses, etc. Esta vista es fundamental para la planificación de caja: saber cuándo vencen las obligaciones con proveedores permite preparar la liquidez necesaria con anticipación y priorizar los pagos correctamente.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Aging bars concept -->
+      <text x="430" y="22" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="11">Aging Intervals — Payable Amounts by Due Date Bucket</text>
+      <!-- Interval bars -->
+      <rect x="30" y="40" width="140" height="100" rx="8" fill="#C0392B"/>
+      <text x="100" y="82" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Past Due</text>
+      <text x="100" y="100" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Already overdue</text>
+      <text x="100" y="130" text-anchor="middle" fill="#FFB3B3" font-family="Inter" font-size="9">Urgent action</text>
+      <rect x="190" y="55" width="140" height="85" rx="8" fill="#C9932E"/>
+      <text x="260" y="94" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Current Month</text>
+      <text x="260" y="112" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Due this month</text>
+      <rect x="350" y="70" width="140" height="70" rx="8" fill="#3D7A52"/>
+      <text x="420" y="103" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Next Month</text>
+      <text x="420" y="121" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Plan cash outflow</text>
+      <rect x="510" y="90" width="140" height="50" rx="8" fill="#1A6B99"/>
+      <text x="580" y="113" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">+2 Months</text>
+      <rect x="670" y="105" width="160" height="35" rx="8" fill="#1A4B8C"/>
+      <text x="750" y="127" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Future / No Due Date</text>
+      <!-- Labels below -->
+      <text x="100" y="162" text-anchor="middle" fill="#C0392B" font-family="Inter" font-size="9.5" font-weight="600">Immediate</text>
+      <text x="260" y="162" text-anchor="middle" fill="#C9932E" font-family="Inter" font-size="9.5" font-weight="600">Monitor</text>
+      <text x="420" y="162" text-anchor="middle" fill="#3D7A52" font-family="Inter" font-size="9.5" font-weight="600">Plan ahead</text>
+      <text x="580" y="162" text-anchor="middle" fill="#1A6B99" font-family="Inter" font-size="9.5" font-weight="600">Forecast</text>
+      <text x="750" y="162" text-anchor="middle" fill="#1A4B8C" font-family="Inter" font-size="9.5" font-weight="600">No urgency</text>
+      <text x="430" y="190" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Intervals allow quick identification of payments due this month, next month, and future periods</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S9 -->
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Due Invoices Free for Payment</span><span class="sec-title-es">Facturas vencidas disponibles para pago</span></div><div class="sec-desc">Las facturas que han vencido, no tienen bloqueo, y están listas para ser procesadas por el programa de pagos.</div></div></div>
+  <div class="theory-box"><strong>"Free for Payment" tiene dos condiciones simultáneas:</strong> no toda factura vencida puede pagarse automáticamente. Para que una factura esté <strong>free for payment</strong> (disponible para el programa de pagos) debe cumplir dos condiciones: (1) la fecha de vencimiento o de descuento ya llegó, y (2) no tiene ningún bloqueo de pago activo. Una factura que venció pero tiene un bloqueo NO aparece en este KPI — aparece en el de Blocked Invoices. Este KPI indica exactamente cuánto dinero está listo para ser pagado en el próximo run del programa de pagos.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card b">
+        <h4>✅ Free for Payment requires: <span class="sub">· Condiciones necesarias</span></h4>
+        <ul>
+          <li><strong>Condition 1:</strong> Due date has passed (or discount window is active)</li>
+          <li><strong>Condition 2:</strong> No payment block on the invoice</li>
+          <li><strong>Condition 3:</strong> Invoice is posted (not parked)</li>
+          <li>→ Payment program can process it in the next run</li>
+        </ul>
+      </div>
+      <div class="card r">
+        <h4>🚫 NOT Free for Payment: <span class="sub">· Excluidas del KPI</span></h4>
+        <ul>
+          <li><strong>Blocked invoices:</strong> have a payment block code → appear in Blocked Invoices KPI</li>
+          <li><strong>Parked invoices:</strong> not yet posted → appear in Parked Invoices KPI</li>
+          <li><strong>Future due date:</strong> haven't reached their due date yet → appear in Aging Report</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S10 -->
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">From Analytics to Action</span><span class="sec-title-es">Del análisis a la acción transaccional</span></div><div class="sec-desc">Cómo las apps analíticas de KPIs se conectan a las apps transaccionales para cerrar el ciclo entre monitoreo y acción.</div></div></div>
+  <div class="theory-box"><strong>Los KPIs no son solo reportes — son puntos de partida para la acción:</strong> el diseño de la Accounts Payable Overview y las apps de KPIs incluye funciones de <strong>jump-to</strong> que conectan directamente el dato analítico con la app transaccional donde se toma la acción. Por ejemplo, desde la app Overdue Payables se puede saltar a <strong>Manage Supplier Line Items</strong> o a <strong>Display Supplier Balances</strong> para ver el detalle y actuar. Esta integración analítica-transaccional es la clave del valor de los KPIs en SAP Fiori.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker></defs>
+      <!-- Step 1 -->
+      <rect x="20" y="60" width="155" height="80" rx="10" fill="#0A0F1C"/>
+      <text x="97" y="95" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">AP Overview</text>
+      <text x="97" y="113" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">KPI dashboard</text>
+      <text x="97" y="130" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Spot the issue</text>
+      <line x1="175" y1="100" x2="215" y2="100" stroke="#3D7A52" stroke-width="2" marker-end="url(#a10)"/>
+      <!-- Step 2 -->
+      <rect x="215" y="60" width="155" height="80" rx="10" fill="#C0392B"/>
+      <text x="292" y="90" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">KPI App</text>
+      <text x="292" y="108" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">(e.g. Overdue Payables)</text>
+      <text x="292" y="126" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Analyze · filter · drill down</text>
+      <line x1="370" y1="100" x2="410" y2="100" stroke="#3D7A52" stroke-width="2" marker-end="url(#a10)"/>
+      <!-- Step 3 -->
+      <rect x="410" y="60" width="155" height="80" rx="10" fill="#C9932E"/>
+      <text x="487" y="90" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Jump To</text>
+      <text x="487" y="108" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Built-in navigation</text>
+      <text x="487" y="126" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">From KPI to transactional app</text>
+      <line x1="565" y1="100" x2="605" y2="100" stroke="#3D7A52" stroke-width="2" marker-end="url(#a10)"/>
+      <!-- Step 4 -->
+      <rect x="605" y="40" width="235" height="120" rx="10" fill="#3D7A52"/>
+      <text x="722" y="75" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Transactional App</text>
+      <text x="722" y="95" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="10">Manage Supplier Line Items</text>
+      <text x="722" y="113" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="10">Display Supplier Balances</text>
+      <text x="722" y="131" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Take action · pay · unblock · change</text>
+      <text x="430" y="180" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">KPI apps include Jump To functions that navigate directly to the transactional app where action is taken</text>
+    </svg>
+  </div>
+</section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (T1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">KPI (Key Performance Indicator)</div><div class="term-es">Indicador Clave de Rendimiento</div><div class="term-def">Métrica cuantitativa usada para evaluar el rendimiento y eficiencia de un proceso, departamento o empresa. Señala dónde se requiere acción correctiva.</div></div>
+      <div class="gcard"><div class="term-en">Days Payable Outstanding</div><div class="term-es">Días de cuentas a pagar pendientes</div><div class="term-def">KPI que mide cuántos días tarda en promedio una empresa en pagar sus facturas de proveedores. Alto = retraso; bajo = pago anticipado innecesario.</div></div>
+      <div class="gcard"><div class="term-en">Overdue Payable</div><div class="term-es">Cuenta a pagar vencida</div><div class="term-def">Importe que ya superó su fecha de vencimiento y no ha sido pagado. Se clasifica en crítico y no crítico según un umbral configurable.</div></div>
+      <div class="gcard"><div class="term-en">Cash Discount Utilization</div><div class="term-es">Aprovechamiento del descuento por pronto pago</div><div class="term-def">Porcentaje de descuentos disponibles por pronto pago que se capturaron efectivamente. Un valor bajo indica pagos fuera de la ventana de descuento.</div></div>
+      <div class="gcard"><div class="term-en">Payable Aging</div><div class="term-es">Antigüedad de saldos de proveedores</div><div class="term-def">Distribución de los saldos pendientes con proveedores por intervalos de tiempo (vencido, mes actual, próximo mes, etc.) para planificación de caja.</div></div>
+      <div class="gcard"><div class="term-en">Parked Invoice</div><div class="term-es">Factura estacionada</div><div class="term-def">Factura guardada temporalmente en SAP sin contabilizar. No genera asiento FI hasta ser completada y posteada. Indica trabajo pendiente en el proceso de AP.</div></div>
+      <div class="gcard"><div class="term-en">Blocked Invoice</div><div class="term-es">Factura bloqueada</div><div class="term-def">Factura contabilizada pero con un bloqueo de pago activo. No puede ser procesada por el programa de pagos hasta que el bloqueo sea liberado.</div></div>
+      <div class="gcard"><div class="term-en">Due Invoice Free for Payment</div><div class="term-es">Factura vencida disponible para pago</div><div class="term-def">Factura que cumple dos condiciones simultáneas: su fecha de vencimiento llegó Y no tiene bloqueo de pago. Puede ser procesada en el próximo run del payment program.</div></div>
+      <div class="gcard"><div class="term-en">Critically Overdue</div><div class="term-es">Vencido crítico</div><div class="term-def">Importe vencido que supera el umbral de criticidad configurado en SAP. Requiere acción inmediata del contador de AP para evitar consecuencias en la relación con el proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Uncritically Overdue</div><div class="term-es">Vencido no crítico</div><div class="term-def">Importe vencido que no supera el umbral de criticidad. Requiere monitoreo pero no acción urgente inmediata.</div></div>
+      <div class="gcard"><div class="term-en">Accounting Clerk</div><div class="term-es">Contable responsable</div><div class="term-def">Campo del Vendor Master que identifica qué contador de AP es responsable de un proveedor. Permite filtrar los KPIs del AP Overview para ver solo los propios.</div></div>
+      <div class="gcard"><div class="term-en">Suppliers with Debit Balances</div><div class="term-es">Proveedores con saldo deudor</div><div class="term-def">Proveedores cuyo saldo en AP es a favor de la empresa (saldo deudor). Puede indicar anticipos, notas de crédito no aplicadas, o pagos en exceso que deben gestionarse.</div></div>
+    </div>
+  </div>
+</section>
+<footer>T1 · Básico — Payables KPIs (AP) · Biblioteca de Guías SAP · Fuente: documento del curso</footer>
+</body>
+</html>

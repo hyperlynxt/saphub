@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Advanced Payment Management — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-blue:#0070F2;
+    --sap-bg:#F5F6F7;
+    --sap-tile-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #132A36 55%, #1C4A5F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .actor-badge{ display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t3-dark); color:white; margin-left:8px; vertical-align:middle; }
+
+  .theory-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .breadcrumb-nav{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
+  .breadcrumb-nav .sep{ color:var(--t3-pale-border); }
+  .breadcrumb-nav .current{ color:var(--t3-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .fiori-mock{ background:var(--sap-bg); border:1px solid var(--sap-tile-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .fiori-shellbar{ background:var(--sap-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .fiori-shellbar .fs-title{ font-size:12.5px; }
+  .fiori-shellbar .fs-user{ width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:10px; }
+  .fiori-body{ padding:18px 20px; background:white; }
+  .fiori-page-title{ font-size:16px; font-weight:600; color:#1D2D3E; margin:0 0 12px; }
+
+  .fiori-tiles{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .fiori-tile{ background:white; border:1px solid var(--sap-tile-border); border-radius:6px; padding:14px; }
+  .fiori-tile .tile-num{ font-size:20px; font-weight:700; color:var(--sap-blue); }
+  .fiori-tile .tile-label{ font-size:11px; color:#5B738B; margin-top:4px; }
+  .fiori-tile.highlight{ border-color:var(--sap-blue); background:#EBF5FF; }
+  .fiori-tile.alert{ border-color:#C9932E; background:#FFF8E8; }
+  .fiori-tile.alert .tile-num{ color:#8A6A1E; }
+  .fiori-tile.good .tile-num{ color:#187A32; }
+
+  .fiori-list{ border:1px solid var(--sap-tile-border); border-radius:6px; overflow:hidden; }
+  .fiori-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid #EDEFF1; font-size:12.5px; background:white; }
+  .fiori-row:last-child{ border-bottom:none; }
+  .fiori-row .fr-main{ font-weight:600; color:#1D2D3E; }
+  .fiori-row .fr-sub{ font-size:10.5px; color:#5B738B; margin-top:2px; }
+  .fr-badge{ font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fr-badge.high{ background:#E3F7E6; color:#187A32; }
+  .fr-badge.medium{ background:#FFF3D6; color:#8A6A1E; }
+  .fr-badge.low{ background:#FDE7E7; color:#A32D2D; }
+  .fr-badge.open{ background:#E6F1FB; color:#0C447C; }
+
+  .fiori-btn{ background:var(--sap-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .fiori-btn.ghost{ background:white; color:var(--sap-blue); border:1px solid var(--sap-blue); }
+
+  .fiori-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .fiori-field{ flex:1; min-width:140px; }
+  .fiori-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .fiori-field .ffval{ border:1px solid var(--sap-tile-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+
+  .fiori-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .fiori-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sap-tile-border); }
+  .fiori-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .fiori-table td.neg{ color:#A32D2D; }
+  .fiori-table td.pos{ color:#187A32; }
+
+  .fiori-kpi-row{ display:flex; gap:14px; }
+  .fiori-kpi{ flex:1; background:white; border:1px solid var(--sap-tile-border); border-radius:6px; padding:14px; text-align:center; }
+  .fiori-kpi .kv{ font-size:20px; font-weight:700; color:var(--sap-blue); }
+  .fiori-kpi .kl{ font-size:10.5px; color:#5B738B; margin-top:3px; }
+  .fiori-kpi.good .kv{ color:#187A32; }
+  .fiori-kpi.warn .kv{ color:#8A6A1E; }
+
+  .situation-banner{ background:#FFF8E8; border:1px solid #E0D48A; border-radius:6px; padding:10px 14px; margin-bottom:12px;
+    display:flex; align-items:center; gap:10px; font-size:11.5px; color:#5C4A1E; }
+  .situation-banner .sb-icon{ font-size:16px; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px;
+    font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){ .fiori-tiles{ grid-template-columns:1fr; } .fiori-kpi-row{ flex-direction:column; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Payment Hub Overview</a>
+  <a href="#s2">Requesting an On-Behalf-Of Payment</a>
+  <a href="#s3">Running Intercompany Netting</a>
+  <a href="#s4">Virtual Account Tracking</a>
+  <a href="#s5">A Sanctions Screening Hit</a>
+  <a href="#s6">Approving a New IHB Account</a>
+  <a href="#s7">Posting the Netting Settlement</a>
+  <a href="#s8">Real-Time Payment Status</a>
+  <a href="#s9">Central Incoming Payments</a>
+  <a href="#s10">End-of-Day Payment Factory</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Advanced Payment Management</span>
+      <span class="pill pill-secondary">In-House Banking</span>
+      <span class="pill pill-secondary">Multi-Bank Connectivity</span>
+    </div>
+    <h1>Advanced Payment Management — <span class="accent">Día a Día</span></h1>
+    <h2>Tangibilización Usuario (Fiori)</h2>
+    <p class="desc">Un día operando el hub central de pagos del grupo: netting intercompañía, pagos por cuenta de otra entidad, un screening de sanciones que se activa a tiempo, y el cierre con la fábrica de pagos ya conciliada.</p>
+    <div class="protagonist">
+      <div class="avatar">S</div>
+      <div>
+        <div class="p-name">Sofía</div>
+        <div class="p-role">Treasury Analyst — Bike GmbH (DE01) / Bike Inc (US01)</div>
+        <div class="p-note">opera el In-House Bank del grupo Bike Company</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Starting the Day at the Payment Hub</span>
+          <span class="sec-title-es">Arrancando el día en el hub de pagos</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">Todo lo que entra y sale del grupo, en una sola pantalla.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía ve, apenas entra, cuántos pagos están pendientes de procesar, cuántos ya se ejecutaron hoy, y si hay algo bloqueado que necesite su atención.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Fiori Launchpad <span class="sep">›</span> <span class="current">Payment Hub Overview</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">SAP Fiori · Bike Company Group</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">My Home — Payment Hub</p>
+          <div class="fiori-tiles">
+            <div class="fiori-tile highlight"><div class="tile-num">12</div><div class="tile-label">Pending Payments</div></div>
+            <div class="fiori-tile good"><div class="tile-num">148</div><div class="tile-label">Executed Today</div></div>
+            <div class="fiori-tile alert"><div class="tile-num">1</div><div class="tile-label">Blocked — Screening</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Requesting an On-Behalf-Of Payment</span>
+          <span class="sec-title-es">Solicitando un pago por cuenta de otra entidad</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">Bike GmbH paga a un proveedor que en realidad le facturó a Bike Inc.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La obligación sigue siendo de Bike Inc, pero Bike GmbH tiene mejor relación bancaria con ese proveedor puntual. Sofía registra el pago como "on-behalf-of" para que quede trazado correctamente entre ambas sociedades.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Payment Management <span class="sep">›</span> <span class="current">New Payment Request</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Payment Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">New Payment — On-Behalf-Of</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Obligated Entity</label><div class="ffval">Bike Inc (US01)</div></div>
+            <div class="fiori-field"><label>Paying Entity</label><div class="ffval">Bike GmbH (DE01)</div></div>
+            <div class="fiori-field"><label>Amount</label><div class="ffval">€65,000.00</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Submit Payment</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running the Intercompany Netting Cycle</span>
+          <span class="sec-title-es">Corriendo el ciclo de netting intercompañía</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">En vez de siete transferencias separadas, un solo saldo neto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de liquidar cada deuda intercompañía por separado, Sofía corre el ciclo de netting — el sistema compensa todo y deja un único saldo neto por entidad.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Intercompany Netting <span class="sep">›</span> <span class="current">Netting Run — Week 29</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Intercompany Netting</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Netting Run Results</p>
+          <table class="fiori-table">
+            <tr><th>Entity</th><th>Gross Payable</th><th>Gross Receivable</th><th>Net</th></tr>
+            <tr><td>Bike GmbH</td><td>€180,000</td><td>€210,000</td><td class="pos">+€30,000</td></tr>
+            <tr><td>Bike Inc</td><td>€210,000</td><td>€180,000</td><td class="neg">−€30,000</td></tr>
+          </table>
+          <div style="margin-top:12px;"><button class="fiori-btn">Confirm Netting</button></div>
+        </div>
+      </div>
+      <div class="visual-caption">7 pagos brutos se convirtieron en 1 solo movimiento neto de €30.000</div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Tracking a Virtual Account</span>
+          <span class="sec-title-es">Rastreando una cuenta virtual</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">Bike Inc no tiene una cuenta física propia dentro del IHB — y no la necesita.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía revisa el movimiento de Bike Inc dentro del In-House Bank. No hay una cuenta bancaria real detrás — es un identificador virtual que trackea su posición mientras el efectivo real vive concentrado en la cuenta física del IHB.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">In-House Banking <span class="sep">›</span> <span class="current">Virtual Account — Bike Inc</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">In-House Banking</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Virtual Account VA-US01 — Bike Inc</p>
+          <table class="fiori-table">
+            <tr><th>Field</th><th>Value</th></tr>
+            <tr><td>Physical Account Behind</td><td>IHB Master Account — DE01</td></tr>
+            <tr><td>Virtual Balance</td><td>€1,140,000.00</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">A Sanctions Screening Hit</span>
+          <span class="sec-title-es">Un aviso de screening de sanciones</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">El pago bloqueado que vio Sofía en el tile de la sección 1.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un beneficiario nuevo coincide parcialmente con un nombre en lista de sanciones. El sistema no ejecuta el pago — lo bloquea para que Sofía lo revise antes de decidir.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Payment Management <span class="sep">›</span> <span class="current">Screening Review</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Payment Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <div class="situation-banner"><span class="sb-icon">⚠️</span> Payment blocked: beneficiary partially matches sanctions list entry</div>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Payment PMT-90312 — €12,400.00</div><div class="fr-sub">Beneficiary: "Novatek Supplies"</div></div><span class="fr-badge open">Review</span></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn ghost">Release Payment</button> <button class="fiori-btn">Escalate</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Approving a New In-House Bank Account</span>
+          <span class="sec-title-es">Aprobando una cuenta nueva del banco interno</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">Bike Company suma una entidad nueva al grupo — necesita su cuenta dentro del IHB.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La solicitud ya pasó la validación contra política interna. Sofía da la aprobación final antes de que la cuenta quede activa y pueda empezar a operar.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">In-House Banking <span class="sep">›</span> <span class="current">Account Approval</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">In-House Banking</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Approve Virtual Account — Bike Retail (New Entity)</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Policy Check</label><div class="ffval">Passed</div></div>
+            <div class="fiori-field"><label>Requested By</label><div class="ffval">Corporate Treasury</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Approve &amp; Activate</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Netting Settlement</span>
+          <span class="sec-title-es">Contabilizando la liquidación del netting</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">El saldo neto de la sección 3 se convierte en un movimiento contable real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Confirmado el netting, el sistema mueve el saldo neto entre las cuentas virtuales de ambas entidades dentro del IHB — sin que salga ni entre un solo euro por fuera del grupo.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Intercompany Netting <span class="sep">›</span> <span class="current">Posting Result</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Intercompany Netting</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Netting Posting — Week 29</p>
+          <table class="fiori-table">
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Virtual Account — Bike Inc (US01)</td><td>€30,000.00</td><td>—</td></tr>
+            <tr><td>Virtual Account — Bike GmbH (DE01)</td><td>—</td><td>€30,000.00</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="dc-note">
+        <span class="dc-label">Debe / Haber</span>
+        Se <b>debita</b> la cuenta virtual de Bike Inc por €30.000 (lo que debía al neto) y se <b>acredita</b> la cuenta virtual de Bike GmbH por el mismo importe — ningún banco externo interviene, todo el movimiento queda dentro del In-House Bank.
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking Real-Time Payment Status</span>
+          <span class="sec-title-es">Revisando el estado de un pago en tiempo real</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">El pago on-behalf-of de la sección 2, seguido de punta a punta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía no espera un reporte del día siguiente — ve el estado del pago actualizarse al instante, gracias a los adaptadores en tiempo real conectados vía Multi-Bank Connectivity.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Payment Management <span class="sep">›</span> <span class="current">Payment Status</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Payment Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Payment PMT-90305 — On-Behalf-Of</p>
+          <table class="fiori-table">
+            <tr><th>Step</th><th>Status</th></tr>
+            <tr><td>Submitted</td><td class="pos">Confirmed</td></tr>
+            <tr><td>Sent to Bank (SWIFT)</td><td class="pos">Confirmed</td></tr>
+            <tr><td>Credited to Beneficiary</td><td class="pos">Confirmed</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing Central Incoming Payments</span>
+          <span class="sec-title-es">Revisando cobros centralizados</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">No solo lo que sale del grupo — también lo que entra, en un solo lugar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un cliente pagó a la cuenta central del grupo en vez de a la entidad puntual que le facturó. Sofía ve el cobro llegar centralizado y lo asigna a la entidad correcta.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Payment Management <span class="sep">›</span> <span class="current">Central Incoming Payments</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Payment Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Incoming Payment — Central Account</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Amount Received</label><div class="ffval">€48,000.00</div></div>
+            <div class="fiori-field"><label>Assign to Entity</label><div class="ffval">Bike GmbH (DE01)</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Assign &amp; Distribute</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">End-of-Day Payment Factory Summary</span>
+          <span class="sec-title-es">Resumen de cierre de la fábrica de pagos</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">Todo lo que pasó por el hub hoy, en un solo vistazo antes de irse.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía cierra el día con el screening resuelto, el netting confirmado, y el hub en cero pendientes — la centralización hizo posible ver todo esto en una sola pantalla, no en seis sistemas distintos.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Fiori Launchpad <span class="sep">›</span> <span class="current">Payment Hub Overview</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">SAP Fiori · Bike Company Group</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">My Home — Payment Hub</p>
+          <div class="fiori-tiles">
+            <div class="fiori-tile"><div class="tile-num">0</div><div class="tile-label">Pending Payments</div></div>
+            <div class="fiori-tile good"><div class="tile-num">160</div><div class="tile-label">Executed Today</div></div>
+            <div class="fiori-tile good"><div class="tile-num">€30,000</div><div class="tile-label">Netted This Week</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Advanced Payment Management · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Rule-Based Clearing — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585; --t2-dark:#A94444; --t2-pale:rgba(224,133,133,0.14); --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t2-pale); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t2-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .vert-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:440px; }
+  .vf-box{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:12px 20px; text-align:center; min-width:320px; }
+  .vf-box.tier1{ border-color:var(--t2-dark); background:var(--t2-pale); font-weight:700; }
+  .vf-box.tier2{ border-style:dashed; }
+  .vf-arrow{ font-size:20px; color:var(--t2-dark); }
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:150px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t2-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t2-dark); font-weight:700; }
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  @media (max-width:720px){ .compare-grid, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Rule Precedence &amp; Conflicts</a>
+  <a href="#s2">Sharing Rules Across Teams</a>
+  <a href="#s3">Versioning Uploaded Rules</a>
+  <a href="#s4">Two-Step Posting In Context</a>
+  <a href="#s5">Confidence in ML Extraction</a>
+  <a href="#s6">Interpretation Algorithms In Depth</a>
+  <a href="#s7">The Interim Table In Depth</a>
+  <a href="#s8">The Automate-or-Deactivate Rule</a>
+  <a href="#s9">Template Generation In Depth</a>
+  <a href="#s10">Payment Advice Extraction In Depth</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Cash Application</span>
+      <span class="pill pill-secondary">SAP Business AI</span>
+      <span class="pill pill-secondary">Governance</span>
+    </div>
+    <h1>Rule-Based Clearing — <span class="accent">Profundización</span></h1>
+    <h2>Compensación Basada en Reglas</h2>
+    <p class="desc">Lo que rodea a las dos fases del T1 y no vimos ahí: cómo se ordenan las reglas cuando compiten entre sí, qué implica compartirlas en equipo, y el mecanismo interno de cómo el sistema realmente decide entre varios algoritmos de interpretación y genera plantillas del historial propio.</p>
+    <div class="hlbox">Resumen Visual — <b>Rule-Based Clearing</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 de profundidad sobre lo visto en el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Rule Precedence and Conflicts</span>
+          <span class="sec-title-es">Precedencia y conflictos entre reglas</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mostró posting rules y processing rules como dos fases secuenciales — acá vemos qué pasa cuando varias reglas de la misma fase podrían aplicar a la vez.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> cuando más de una regla de procesamiento podría aplicar al mismo ítem de extracto, el sistema evalúa en un orden de precedencia definido — típicamente, la regla más específica (por ejemplo, la que exige coincidencia exacta de monto y referencia) se evalúa antes que una regla más genérica.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Regla más específica se evalúa primero</div>
+        <div class="vf-arrow">↓ si no aplica</div>
+        <div class="vf-box tier2">Regla intermedia</div>
+        <div class="vf-arrow">↓ si no aplica</div>
+        <div class="vf-box">Regla más genérica, como último recurso</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Sharing Rules Across Teams</span>
+          <span class="sec-title-es">Compartiendo reglas entre equipos</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que las reglas "pueden compartirse" — acá vemos qué implica eso en la práctica organizacional.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué implica compartir una regla?</strong> Una regla compartida deja de ser propiedad exclusiva de quien la creó — otros miembros del equipo pueden usarla, pero eso también significa que un cambio a esa regla afecta a todos los que dependen de ella, no solo al autor original.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">👤</span><h6>Private Rule</h6><p>Solo el autor la usa y puede modificarla.</p></div>
+        <div class="mini-card"><span class="icon">👥</span><h6>Shared Rule</h6><p>Todo el equipo la usa; un cambio impacta a todos.</p></div>
+        <div class="mini-card"><span class="icon">⚠️</span><h6>Shared Responsibility</h6><p>Modificarla exige avisar al equipo, no solo al autor.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Versioning Uploaded and Downloaded Rules</span>
+          <span class="sec-title-es">Versionado de reglas subidas y bajadas</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó subir/bajar reglas entre entornos — acá vemos el riesgo concreto de hacerlo sin control de versión.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué riesgo aparece?</strong> Al mover una regla de un entorno de test a uno productivo, si no se controla qué versión se está moviendo, es fácil sobrescribir una regla productiva ya ajustada con una versión de prueba desactualizada — el hábito recomendado es documentar qué versión corresponde a qué entorno antes de subir o bajar.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Test Environment Rule</div><div class="t-es">regla en ambiente de test</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Download / Upload</div><div class="t-es">bajar / subir</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Production — Risk of Overwrite</div><div class="t-es">riesgo de sobrescritura</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Two-Step Posting in the Broader Reconciliation Context</span>
+          <span class="sec-title-es">La contabilización en dos pasos, en contexto</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "two-step posting" al pasar — acá vemos por qué a veces conviene separar la contabilización en dos etapas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué en dos pasos?</strong> A veces conviene primero mover el monto a una cuenta puente (por ejemplo, efectivo sin asignar) y recién en un segundo paso, ya con más información disponible, moverlo a la cuenta final — esto evita que un match de baja confianza quede contabilizado directamente contra la partida equivocada.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Step 1: Bridge Account</div><div class="t-es">cuenta puente</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">More Info Available</div><div class="t-es">más info disponible</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Step 2: Final Account</div><div class="t-es">cuenta final</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How Confident Is the ML Extraction?</span>
+          <span class="sec-title-es">¿Qué tan confiable es la extracción con ML?</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 celebró la extracción de payment advice — acá vemos que no siempre tiene la misma confianza.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> la calidad de la extracción depende directamente de qué tan legible y consistente sea el PDF original — un documento escaneado con baja calidad va a producir una extracción con menor confianza que un PDF generado digitalmente con texto real.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Digitally Generated PDF</h5>
+          <span class="en">texto real, alta confianza</span>
+          <ul>
+            <li>Texto extraíble directamente, sin OCR</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Scanned Document</h5>
+          <span class="en">imagen, menor confianza</span>
+          <ul>
+            <li>Requiere OCR, más riesgo de error de lectura</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Interpretation Algorithms, in Depth</span>
+          <span class="sec-title-es">Algoritmos de interpretación, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró tres tipos de búsqueda — acá vemos por qué la elección depende tanto de la factura como del cliente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> el algoritmo correcto no es una elección universal — depende de qué información realmente aparece en la factura original y de qué información se le pide al cliente que devuelva al pagar. Si la factura no incluye un número de orden de pago, configurar un algoritmo basado en ese dato no va a encontrar nada.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">What the Invoice Includes</div><div class="t-es">qué trae la factura</div></div>
+        <div class="chain-arrow">+</div>
+        <div class="chain-box"><div class="t-en">What You Ask Customer to Return</div><div class="t-es">qué le pedís al cliente</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Right Algorithm Choice</div><div class="t-es">algoritmo correcto</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Interim Clearing Table, in Depth</span>
+          <span class="sec-title-es">La tabla de compensación interina, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que el match queda "registrado en una tabla" — acá vemos por qué ese paso intermedio existe.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué no se contabiliza directo?</strong> Guardar el match como propuesta interina, antes de la compensación final, da una oportunidad de revisión — si el match automático estuviera mal, corregirlo en la tabla interina es mucho más simple que revertir un asiento contable ya en firme.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Match encontrado por el algoritmo</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box tier2">Guardado como propuesta interina (revisable)</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box">Recién ahí, compensación final en firme</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Automate-or-Deactivate Rule, in Depth</span>
+          <span class="sec-title-es">La regla de "automatizar o desactivar", en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó esta restricción como una nota al margen — acá vemos por qué existe.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué esta restricción?</strong> Una vez que una regla se automatiza, ya no puede aplicarse manualmente en paralelo — solo se puede automatizar o desactivar. Esto evita la ambigüedad de que la misma regla actúe dos veces sobre el mismo ítem, una vez sola y otra vez a mano, generando un doble procesamiento.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Automated Rule</h5>
+          <span class="en">corre sola</span>
+          <ul>
+            <li>No se puede aplicar manualmente en paralelo</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Deactivated Rule</h5>
+          <span class="en">disponible para uso manual</span>
+          <ul>
+            <li>Se puede aplicar a mano, ítem por ítem</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Template Generation, in Depth</span>
+          <span class="sec-title-es">Generación de plantillas, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que el sistema "analiza tu historial" — acá vemos qué patrones concretos busca.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué busca el análisis?</strong> El sistema identifica patrones recurrentes en cómo se contabilizaron y compensaron pagos anteriores — por ejemplo, que cierto tipo de transacción siempre termine en la misma cuenta — y convierte ese patrón repetido en una plantilla de regla lista para usar.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Past Postings &amp; Clearings</div><div class="t-es">historial de contabilizaciones</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Recurring Pattern Found</div><div class="t-es">patrón recurrente detectado</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Ready-to-Use Template</div><div class="t-es">plantilla lista para usar</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Advice Extraction, in Depth</span>
+          <span class="sec-title-es">Extracción de payment advice, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 mostró la extracción como un paso — acá vemos con qué se compara para validar que fue correcta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> lo que el modelo extrae del PDF (montos, números de ítem, referencias) se compara automáticamente contra las partidas abiertas reales del cliente — si la extracción no encuentra una coincidencia razonable, el ítem queda para revisión humana en vez de forzar un match incorrecto.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Extracted Data</div><div class="t-es">dato extraído del PDF</div></div>
+        <div class="chain-arrow">vs.</div>
+        <div class="chain-box"><div class="t-en">Actual Open Items</div><div class="t-es">partidas abiertas reales</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Match or Human Review</div><div class="t-es">match o revisión humana</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Rule-Based Clearing — Tipo 2 (no repite T1)</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Rule Precedence</div><div class="term-es">Precedencia de Reglas</div><div class="term-def">Orden en que se evalúan varias reglas que podrían aplicar al mismo ítem.</div></div>
+      <div class="gcard"><div class="term-en">Shared Rule</div><div class="term-es">Regla Compartida</div><div class="term-def">Regla de procesamiento disponible para todo el equipo, no solo para su autor.</div></div>
+      <div class="gcard"><div class="term-en">Rule Versioning</div><div class="term-es">Versionado de Reglas</div><div class="term-def">Control de qué versión de una regla corresponde a qué entorno de sistema.</div></div>
+      <div class="gcard"><div class="term-en">Bridge Account</div><div class="term-es">Cuenta Puente</div><div class="term-def">Cuenta intermedia usada en una contabilización de dos pasos antes del destino final.</div></div>
+      <div class="gcard"><div class="term-en">Extraction Confidence</div><div class="term-es">Confianza de Extracción</div><div class="term-def">Nivel de certeza que el sistema asigna a un dato extraído de un documento no estructurado.</div></div>
+      <div class="gcard"><div class="term-en">OCR (Optical Character Recognition)</div><div class="term-es">OCR (Reconocimiento Óptico de Caracteres)</div><div class="term-def">Tecnología que convierte texto de una imagen escaneada en texto extraíble.</div></div>
+      <div class="gcard"><div class="term-en">Recurring Pattern</div><div class="term-es">Patrón Recurrente</div><div class="term-def">Comportamiento repetido en el historial de contabilizaciones, base de una plantilla de regla.</div></div>
+      <div class="gcard"><div class="term-en">Automate-or-Deactivate</div><div class="term-es">Automatizar o Desactivar</div><div class="term-def">Restricción que impide aplicar manualmente una regla ya automatizada.</div></div>
+      <div class="gcard"><div class="term-en">Double Processing</div><div class="term-es">Doble Procesamiento</div><div class="term-def">Riesgo de que un mismo ítem sea procesado dos veces por la misma regla, automática y manualmente.</div></div>
+      <div class="gcard"><div class="term-en">Human Review Queue</div><div class="term-es">Cola de Revisión Humana</div><div class="term-def">Lista de ítems que la extracción automática no pudo emparejar con confianza.</div></div>
+      <div class="gcard"><div class="term-en">Digitally Generated Document</div><div class="term-es">Documento Generado Digitalmente</div><div class="term-def">PDF con texto real extraíble, sin necesidad de reconocimiento óptico.</div></div>
+      <div class="gcard"><div class="term-en">Specific vs. Generic Rule</div><div class="term-es">Regla Específica vs. Genérica</div><div class="term-def">Distinción entre una regla con criterios estrictos y una de aplicación más amplia, usada para ordenar precedencia.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Rule-Based Clearing · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · Payables KPIs — Holístico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E0A56F;--t1-dark:#A85F2B;--t1-pale:rgba(224,165,111,0.12);--t1-pale-border:rgba(224,165,111,0.38);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#1C1206 55%,#2A1A08 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,165,111,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(168,95,43,0.35);}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .sec-tags{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .orbit-tag{background:rgba(10,15,28,0.07);border:1px solid #CBD5E1;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--muted);}
+  .type-tag-pos{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--t1-dark);}
+  .type-tag-flow{background:rgba(26,75,140,0.08);border:1.5px solid rgba(26,75,140,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:#1A4B8C;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">AP Analytics Stack</a>
+  <a href="#s2">Accounting vs Management View</a>
+  <a href="#s3">DPO within Working Capital</a>
+  <a href="#s4">KPI Apps within Fiori Analytics</a>
+  <a href="#s5">What Feeds Each KPI</a>
+  <a href="#s6">Overdue Escalation Flow</a>
+  <a href="#s7">DPO Calculation Flow</a>
+  <a href="#s8">Cross-Module Connections</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+      <span class="pill pill-sec">Analytics</span>
+      <span class="pill pill-sec">Treasury</span>
+    </div>
+    <h1>Payables <span class="accent">KPIs</span></h1>
+    <h2>Holístico — Ecosistema y Posicionamiento</h2>
+    <p class="desc">Dónde viven los KPIs de AP dentro del ecosistema de analítica de Finance, cómo se posicionan en el ciclo de capital de trabajo, y qué fluye hacia adentro y hacia afuera de cada indicador clave.</p>
+    <div class="hlbox">Holístico — <b>Payables KPIs (AP)</b>, Tipo 5. 4 secciones de posicionamiento + 4 secciones de flujos. Sin glosario.</div>
+  </div>
+</header>
+
+<main>
+
+<!-- S1 — STACK: AP ANALYTICS WITHIN FINANCE DATA LAYERS -->
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">AP KPIs within the Finance Analytics Stack</span><span class="sec-title-es">Los KPIs como capa analítica sobre las transacciones</span></div><div class="sec-desc">Los KPIs de AP no son datos primarios — son una capa de análisis que se construye sobre los documentos FI, que a su vez se construyen sobre las transacciones operativas.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 Finance Analytics</span><span class="type-tag-pos">📍 Posicionamiento — Stack</span></div>
+  <div class="theory-box"><strong>Las capas se construyen de abajo hacia arriba:</strong> los KPIs no existen de forma independiente. Cada indicador (DPO, Cash Discount Utilization, Overdue) es el resultado de agregar y calcular sobre datos que existen en capas inferiores. Comprender el stack permite entender por qué un KPI puede ser incorrecto: si los datos de una capa inferior son erróneos, el KPI heredará ese error.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 310" xmlns="http://www.w3.org/2000/svg">
+      <!-- Layer 5: Management Decisions (top, narrow) -->
+      <rect x="210" y="16" width="440" height="42" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="33" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">Management Decisions</text>
+      <text x="430" y="50" text-anchor="middle" fill="rgba(255,255,255,0.62)" font-family="Inter" font-size="9.5">Pay early? Negotiate terms? Escalate supplier? Adjust payment run frequency?</text>
+      <!-- Layer 4: KPI Apps (highlighted) -->
+      <rect x="110" y="72" width="640" height="50" rx="8" fill="#A85F2B"/>
+      <text x="430" y="94" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">AP KPI Apps ★</text>
+      <text x="430" y="112" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">AP Overview · Overdue Payables · Cash Discount Utilization · Aging Report · Due Invoices Free for Payment</text>
+      <!-- Layer 3: FI Documents / Universal Journal -->
+      <rect x="40" y="136" width="780" height="46" rx="8" fill="#1A4B8C"/>
+      <text x="430" y="155" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">FI Documents — Universal Journal (ACDOCA)</text>
+      <text x="430" y="172" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="10">Invoice documents · Payment documents · Open items · AP subledger entries · Clearing documents</text>
+      <!-- Layer 2: AP Transactions -->
+      <rect x="20" y="196" width="820" height="46" rx="8" fill="#1A6B99"/>
+      <text x="430" y="215" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">AP Transactions</text>
+      <text x="430" y="232" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="10">Create Supplier Invoice · Post GR/IR · Run Payment Program · Block/Unblock Invoice · Change Payment Terms</text>
+      <!-- Layer 1: Master Data + Config -->
+      <rect x="20" y="256" width="820" height="42" rx="8" fill="#5A6B8C"/>
+      <text x="430" y="274" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Master Data + Configuration</text>
+      <text x="430" y="291" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Vendor Master (Accounting Clerk, Payment Terms) · Payment Block Reasons · Tolerance Keys · Fiscal Year</text>
+      <!-- Vertical arrows left side -->
+      <line x1="60" y1="254" x2="60" y2="244" stroke="#A85F2B" stroke-width="2"/>
+      <line x1="60" y1="194" x2="60" y2="184" stroke="#A85F2B" stroke-width="2"/>
+      <line x1="60" y1="134" x2="60" y2="124" stroke="#A85F2B" stroke-width="2"/>
+      <text x="26" y="168" fill="#A85F2B" font-family="Inter" font-size="9.5" font-weight="700">KPIs</text>
+      <text x="16" y="182" fill="#A85F2B" font-family="Inter" font-size="9.5" font-weight="700">derived</text>
+      <text x="22" y="196" fill="#A85F2B" font-family="Inter" font-size="9.5" font-weight="700">from ↑</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S2 — BIFURCATION: OPERATIONAL vs MANAGEMENT VIEW -->
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Accounting View vs Management View — Two Parallel Branches</span><span class="sec-title-es">Dos ramas paralelas del mismo origen</span></div><div class="sec-desc">Los mismos datos del AP subledger se bifurcan en dos lecturas paralelas: la operativa del contador y la estratégica del management.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 Finance Reporting</span><span class="type-tag-pos">📍 Posicionamiento — Bifurcación</span></div>
+  <div class="theory-box"><strong>Un origen, dos lecturas:</strong> los datos de AP (documentos FI, partidas abiertas, pagos realizados) alimentan simultáneamente dos perspectivas. El contador de AP usa los datos para <strong>gestión operativa diaria</strong> — procesar facturas, liberar bloqueos, ejecutar pagos. El management usa los mismos datos agregados como <strong>KPIs estratégicos</strong> — ¿estamos pagando a tiempo? ¿capturamos los descuentos? ¿es saludable nuestro DPO? Las apps analíticas de Fiori son el puente entre ambas perspectivas.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a2t5k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker></defs>
+      <!-- Root: AP Subledger data -->
+      <rect x="295" y="14" width="270" height="52" rx="10" fill="#1A4B8C"/>
+      <text x="430" y="36" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="13">AP Subledger Data</text>
+      <text x="430" y="54" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Invoice docs · open items · payments · master data</text>
+      <!-- Fork lines -->
+      <line x1="430" y1="66" x2="430" y2="88" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="160" y1="88" x2="700" y2="88" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="160" y1="88" x2="160" y2="108" stroke="#94A3B8" stroke-width="1.8" marker-end="url(#a2t5k)"/>
+      <line x1="700" y1="88" x2="700" y2="108" stroke="#A85F2B" stroke-width="2.5" marker-end="url(#a2t5k)"/>
+      <!-- Left branch: Operational (muted) -->
+      <rect x="40" y="108" width="240" height="56" rx="10" fill="#5A6B8C" opacity="0.8"/>
+      <text x="160" y="133" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Operational View</text>
+      <text x="160" y="151" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Day-to-day AP processing</text>
+      <!-- Left sub-items -->
+      <rect x="40" y="180" width="105" height="44" rx="8" fill="#5A6B8C" opacity="0.6"/>
+      <text x="92" y="199" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Post Invoice</text>
+      <text x="92" y="214" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Create Supplier Inv.</text>
+      <rect x="155" y="180" width="105" height="44" rx="8" fill="#5A6B8C" opacity="0.6"/>
+      <text x="207" y="199" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Execute Payment</text>
+      <text x="207" y="214" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Payment program run</text>
+      <line x1="160" y1="164" x2="115" y2="180" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="3,3"/>
+      <line x1="160" y1="164" x2="207" y2="180" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="3,3"/>
+      <!-- Right branch: Management (highlighted) -->
+      <rect x="580" y="108" width="240" height="56" rx="10" fill="#A85F2B"/>
+      <text x="700" y="130" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">Management View ★</text>
+      <text x="700" y="148" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">KPI monitoring &amp; strategic decisions</text>
+      <!-- Right sub-items -->
+      <rect x="580" y="180" width="100" height="44" rx="8" fill="#0A0F1C"/>
+      <text x="630" y="199" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">DPO Trend</text>
+      <text x="630" y="214" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">vs. pay terms target</text>
+      <rect x="690" y="180" width="100" height="44" rx="8" fill="#0A0F1C"/>
+      <text x="740" y="199" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Discount Rate</text>
+      <text x="740" y="214" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">captured vs available</text>
+      <rect x="800" y="180" width="40" height="44" rx="8" fill="#0A0F1C"/>
+      <text x="820" y="207" text-anchor="middle" fill="white" font-family="Inter" font-size="13">···</text>
+      <line x1="700" y1="164" x2="645" y2="180" stroke="#A85F2B" stroke-width="1.5"/>
+      <line x1="700" y1="164" x2="755" y2="180" stroke="#A85F2B" stroke-width="1.5"/>
+      <!-- Bridge label -->
+      <rect x="325" y="200" width="210" height="36" rx="8" fill="rgba(168,95,43,0.1)" stroke="rgba(168,95,43,0.4)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="430" y="215" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="11.5">Fiori KPI Apps</text>
+      <text x="430" y="229" text-anchor="middle" fill="#A85F2B" font-family="Inter" font-size="9.5">Bridge between both views · Analytics + Jump To action</text>
+      <text x="430" y="265" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Both branches draw from the same AP subledger — KPI apps make the management view accessible to AP accountants</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S3 — MAMUSHKA: DPO WITHIN WORKING CAPITAL CYCLE -->
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">DPO within the Cash Conversion Cycle</span><span class="sec-title-es">El DPO dentro del ciclo de conversión de efectivo</span></div><div class="sec-desc">El DPO de AP es una pieza de un ciclo mayor — el Cash Conversion Cycle — que conecta compras, inventario y cobros.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 Working Capital Management</span><span class="type-tag-pos">📍 Posicionamiento — Mamushka</span></div>
+  <div class="theory-box"><strong>El DPO es parte de un ciclo, no un indicador aislado:</strong> el DPO no puede interpretarse correctamente en aislamiento. Es una de las tres métricas del <strong>Cash Conversion Cycle</strong>: DSO (cobros de AR), DIO (días de inventario), y DPO (pagos de AP). El CCC = DSO + DIO − DPO. Mejorar el DPO (pagar más tarde dentro de los términos) reduce el CCC y mejora la liquidez de la empresa. Por eso el equipo de Treasury monitorea el DPO de AP como un KPI propio.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer: Financial Health -->
+      <rect x="20" y="20" width="820" height="240" rx="14" fill="none" stroke="#0A0F1C" stroke-width="2.5"/>
+      <text x="56" y="44" fill="#0A0F1C" font-family="Syne" font-weight="800" font-size="12.5">Financial Health &amp; Liquidity</text>
+      <!-- Working Capital layer -->
+      <rect x="50" y="54" width="760" height="182" rx="12" fill="none" stroke="#1A4B8C" stroke-width="2"/>
+      <text x="72" y="76" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="12">Working Capital Management</text>
+      <!-- Cash Conversion Cycle layer -->
+      <rect x="80" y="86" width="700" height="126" rx="10" fill="rgba(168,95,43,0.06)" stroke="#A85F2B" stroke-width="1.8" stroke-dasharray="6,3"/>
+      <text x="100" y="106" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="11.5">Cash Conversion Cycle (CCC = DSO + DIO − DPO)</text>
+      <!-- Three metrics inside CCC -->
+      <rect x="110" y="114" width="170" height="70" rx="8" fill="#1A6B99"/>
+      <text x="195" y="139" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">DSO</text>
+      <text x="195" y="157" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Days Sales Outstanding</text>
+      <text x="195" y="174" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">AR — Accounts Receivable</text>
+      <rect x="305" y="114" width="170" height="70" rx="8" fill="#00A896"/>
+      <text x="390" y="139" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">DIO</text>
+      <text x="390" y="157" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Days Inventory Outstanding</text>
+      <text x="390" y="174" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">MM — Materials Management</text>
+      <!-- DPO innermost (highlighted) -->
+      <rect x="500" y="106" width="250" height="86" rx="8" fill="#A85F2B"/>
+      <text x="625" y="136" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">DPO ★</text>
+      <text x="625" y="156" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">Days Payable Outstanding</text>
+      <text x="625" y="172" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">AP — Accounts Payable</text>
+      <text x="625" y="186" text-anchor="middle" fill="#FFD9A8" font-family="Inter" font-size="9">Higher DPO = lower CCC = better liquidity</text>
+      <!-- Formula below -->
+      <text x="430" y="244" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">DPO is the only subtractive component in CCC — a higher DPO directly reduces the cash conversion cycle duration</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S4 — FOUNDATION + PILLARS: AP APPS WITHIN FIORI ANALYTICS -->
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">AP KPI Apps within the Fiori Analytics Landscape</span><span class="sec-title-es">Las apps de KPI de AP como pilares del analytics de Finance</span></div><div class="sec-desc">Las apps analíticas de AP son uno de varios módulos de analytics que se apoyan sobre la misma base de datos financiera de S/4HANA.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 SAP Fiori Analytics</span><span class="type-tag-pos">📍 Posicionamiento — Fundación + Pilares</span></div>
+  <div class="theory-box"><strong>AP Analytics no está solo — comparte fundación con el resto de Finance:</strong> las apps de KPI de AP son pilares especializados que se apoyan en la misma base: el <strong>Universal Journal (ACDOCA)</strong> de S/4HANA. Esta base común es lo que permite que los datos de AP sean consistentes con los de AR, GL y CO — todos leen del mismo origen. Cada módulo de Finance tiene su propio grupo de apps analíticas, todos apoyados sobre la misma fundación.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Foundation bar -->
+      <rect x="20" y="232" width="820" height="40" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="250" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Universal Journal — ACDOCA (S/4HANA Core)</text>
+      <text x="430" y="266" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9.5">Single source of truth · AP + AR + GL + CO + AA all stored here</text>
+      <!-- Pillar connectors -->
+      <line x1="100" y1="76" x2="100" y2="232" stroke="#D0D4DC" stroke-width="1.5"/>
+      <line x1="260" y1="76" x2="260" y2="232" stroke="#D0D4DC" stroke-width="1.5"/>
+      <line x1="430" y1="76" x2="430" y2="232" stroke="#A85F2B" stroke-width="3"/>
+      <line x1="600" y1="76" x2="600" y2="232" stroke="#D0D4DC" stroke-width="1.5"/>
+      <line x1="760" y1="76" x2="760" y2="232" stroke="#D0D4DC" stroke-width="1.5"/>
+      <!-- Pillar boxes -->
+      <rect x="20" y="20" width="160" height="56" rx="10" fill="#1A6B99" opacity="0.8"/>
+      <text x="100" y="45" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">AR Analytics</text>
+      <text x="100" y="63" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">DSO · Aging AR · Overdue Recv.</text>
+      <rect x="180" y="20" width="160" height="56" rx="10" fill="#1A4B8C" opacity="0.8"/>
+      <text x="260" y="45" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">GL Analytics</text>
+      <text x="260" y="63" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Trial Balance · Account Balances</text>
+      <!-- AP KPI pillar (highlighted center) -->
+      <rect x="340" y="12" width="180" height="64" rx="10" fill="#A85F2B"/>
+      <text x="430" y="38" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">AP Analytics ★</text>
+      <text x="430" y="56" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="9.5">DPO · Overdue · Cash Disc. · Aging</text>
+      <text x="430" y="70" text-anchor="middle" fill="#FFD9A8" font-family="Inter" font-size="9">← este curso</text>
+      <rect x="520" y="20" width="160" height="56" rx="10" fill="#7E4FBF" opacity="0.8"/>
+      <text x="600" y="45" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Cost Analytics</text>
+      <text x="600" y="63" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Cost Center · Profitability Analysis</text>
+      <rect x="680" y="20" width="160" height="56" rx="10" fill="#00A896" opacity="0.8"/>
+      <text x="760" y="45" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Treasury Analytics</text>
+      <text x="760" y="63" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Cash Position · Liquidity Plan</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S5 — FLOW: WHAT FEEDS EACH KPI -->
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">What Feeds Each AP KPI — Data Inputs</span><span class="sec-title-es">Qué alimenta cada KPI de AP</span></div><div class="sec-desc">Las fuentes de datos que determinan el valor de cada indicador — y por qué la calidad de los datos maestros y transaccionales es crítica.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 AP Data Architecture</span><span class="type-tag-flow">🔄 Flujo de entrada</span></div>
+  <div class="theory-box"><strong>Un KPI incorrecto siempre tiene una causa en los datos aguas arriba:</strong> si el Cash Discount Utilization muestra 0% cuando debería ser 60%, la causa puede estar en que los payment terms no están configurados con descuento, en que el programa de pagos no corre con frecuencia suficiente, o en que las facturas están bloqueadas. Identificar la fuente de datos de cada KPI permite diagnosticar rápidamente por qué un indicador muestra un valor anómalo.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 310" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a5t5k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker></defs>
+      <!-- KPI boxes (right column) -->
+      <rect x="620" y="18" width="220" height="36" rx="7" fill="#A85F2B"/>
+      <text x="730" y="42" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Days Payable Outstanding</text>
+      <rect x="620" y="70" width="220" height="36" rx="7" fill="#C0392B"/>
+      <text x="730" y="94" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Overdue Payables</text>
+      <rect x="620" y="122" width="220" height="36" rx="7" fill="#C9932E"/>
+      <text x="730" y="146" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Cash Discount Utilization</text>
+      <rect x="620" y="174" width="220" height="36" rx="7" fill="#1A4B8C"/>
+      <text x="730" y="198" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Payable Aging</text>
+      <rect x="620" y="226" width="220" height="36" rx="7" fill="#7E4FBF"/>
+      <text x="730" y="250" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Blocked / Parked Invoices</text>
+      <!-- Input sources (left column) -->
+      <rect x="20" y="18" width="200" height="36" rx="7" fill="#1A6B99"/>
+      <text x="120" y="42" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">AP Balance (ACDOCA)</text>
+      <rect x="20" y="70" width="200" height="36" rx="7" fill="#1A6B99"/>
+      <text x="120" y="94" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">COGS / Purchases data</text>
+      <rect x="20" y="122" width="200" height="36" rx="7" fill="#5A6B8C"/>
+      <text x="120" y="146" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Due dates (from Pay. Terms)</text>
+      <rect x="20" y="174" width="200" height="36" rx="7" fill="#5A6B8C"/>
+      <text x="120" y="198" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Discount terms (ZTERM)</text>
+      <rect x="20" y="226" width="200" height="36" rx="7" fill="#5A6B8C"/>
+      <text x="120" y="250" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Payment block codes</text>
+      <rect x="20" y="270" width="200" height="36" rx="7" fill="#0A0F1C"/>
+      <text x="120" y="294" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Parked doc status (BKPF)</text>
+      <!-- Arrows -->
+      <line x1="220" y1="36" x2="616" y2="36" stroke="#A85F2B" stroke-width="1.5" marker-end="url(#a5t5k)"/>
+      <line x1="220" y1="54" x2="560" y2="80" stroke="#A85F2B" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#a5t5k)"/>
+      <line x1="220" y1="88" x2="616" y2="88" stroke="#C0392B" stroke-width="1.5" marker-end="url(#a5t5k)"/>
+      <line x1="220" y1="140" x2="616" y2="140" stroke="#C9932E" stroke-width="1.5" marker-end="url(#a5t5k)"/>
+      <line x1="220" y1="192" x2="616" y2="192" stroke="#1A4B8C" stroke-width="1.5" marker-end="url(#a5t5k)"/>
+      <line x1="220" y1="140" x2="560" y2="192" stroke="#1A4B8C" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#a5t5k)"/>
+      <line x1="220" y1="244" x2="616" y2="244" stroke="#7E4FBF" stroke-width="1.5" marker-end="url(#a5t5k)"/>
+      <line x1="220" y1="288" x2="560" y2="250" stroke="#7E4FBF" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#a5t5k)"/>
+    </svg>
+  </div>
+</section>
+
+<!-- S6 — FLOW: OVERDUE ESCALATION -->
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Overdue Escalation Flow</span><span class="sec-title-es">Flujo de escalada de los vencidos</span></div><div class="sec-desc">Desde el vencimiento de una factura hasta la resolución — el ciclo completo que el KPI de Overdue Payables monitorea.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 AP Risk Management</span><span class="type-tag-flow">🔄 Flujo — Overdue Escalation</span></div>
+  <div class="theory-box"><strong>El KPI de vencidos es una foto instantánea de un proceso dinámico:</strong> las facturas no pasan directamente de "procesada" a "vencida crítica". Existe un proceso de escalada continuo que el KPI refleja como una fotografía en un momento dado. Entender el flujo permite saber dónde intervenir para detener la escalada antes de que llegue a los niveles más dañinos.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 220" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a6t5k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker><marker id="a6t5kg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker></defs>
+      <!-- Main flow -->
+      <rect x="14" y="70" width="120" height="60" rx="9" fill="#3D7A52"/>
+      <text x="74" y="97" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Invoice Posted</text>
+      <text x="74" y="114" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Open item · not due</text>
+      <line x1="134" y1="100" x2="164" y2="100" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6t5k)"/>
+      <rect x="164" y="70" width="120" height="60" rx="9" fill="#C9932E"/>
+      <text x="224" y="97" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Due Date</text>
+      <text x="224" y="114" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Free for payment</text>
+      <line x1="284" y1="100" x2="314" y2="100" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6t5k)"/>
+      <rect x="314" y="70" width="120" height="60" rx="9" fill="#E07B39"/>
+      <text x="374" y="92" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Uncritically</text>
+      <text x="374" y="108" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Overdue</text>
+      <text x="374" y="124" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">Below threshold</text>
+      <line x1="434" y1="100" x2="464" y2="100" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6t5k)"/>
+      <rect x="464" y="70" width="120" height="60" rx="9" fill="#C0392B"/>
+      <text x="524" y="92" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Critically</text>
+      <text x="524" y="108" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Overdue</text>
+      <text x="524" y="124" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">Exceeds threshold</text>
+      <line x1="584" y1="100" x2="614" y2="100" stroke="#C0392B" stroke-width="2" marker-end="url(#a6t5k)"/>
+      <rect x="614" y="70" width="120" height="60" rx="9" fill="#0A0F1C"/>
+      <text x="674" y="92" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Supplier</text>
+      <text x="674" y="108" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Dunning Risk</text>
+      <text x="674" y="124" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Relationship damage</text>
+      <!-- Resolution arrow (up from Uncritically) -->
+      <line x1="374" y1="70" x2="374" y2="40" stroke="#2E7D32" stroke-width="2" marker-end="url(#a6t5kg)"/>
+      <rect x="294" y="14" width="160" height="26" rx="6" fill="#3D7A52"/>
+      <text x="374" y="31" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">AP Action → Payment Run</text>
+      <!-- Resolution from Critical -->
+      <line x1="524" y1="70" x2="524" y2="40" stroke="#2E7D32" stroke-width="2" marker-end="url(#a6t5kg)"/>
+      <rect x="450" y="14" width="148" height="26" rx="6" fill="#3D7A52"/>
+      <text x="524" y="31" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Unblock + Urgent Payment</text>
+      <!-- KPI label -->
+      <text x="430" y="168" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="11">← Overdue Payables KPI monitors this entire spectrum →</text>
+      <text x="430" y="188" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Critical Overdue Threshold config determines where "uncritical" ends and "critical" begins</text>
+      <text x="430" y="204" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Jump To from the KPI app takes AP accountant directly to Manage Supplier Line Items to act</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S7 — FLOW: DPO CALCULATION -->
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">DPO Calculation — From Raw Data to KPI</span><span class="sec-title-es">Del dato crudo al indicador DPO</span></div><div class="sec-desc">Cómo los datos de AP Balance y COGS fluyen para producir el Days Payable Outstanding que aparece en el dashboard.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 AP KPI Calculation</span><span class="type-tag-flow">🔄 Flujo — DPO Cálculo</span></div>
+  <div class="theory-box"><strong>El DPO tiene dos inputs de módulos distintos:</strong> a diferencia del Aging o el Overdue (que solo necesitan datos de AP), el <strong>DPO requiere datos de dos módulos distintos</strong>: el saldo de cuentas a pagar (AP subledger) y el costo de bienes vendidos o volumen de compras (que puede provenir de MM o CO). Esta dependencia cross-módulo hace que el DPO sea un KPI integrador — su calidad depende de la integridad de datos en varios sistemas.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a7t5k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker></defs>
+      <!-- Input 1: AP Balance -->
+      <rect x="20" y="30" width="185" height="60" rx="10" fill="#1A4B8C"/>
+      <text x="112" y="56" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">AP Balance</text>
+      <text x="112" y="74" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Open invoices · ACDOCA</text>
+      <text x="112" y="86" text-anchor="middle" fill="rgba(255,255,255,0.62)" font-family="Inter" font-size="9">Source: FI-AP</text>
+      <!-- Input 2: COGS -->
+      <rect x="20" y="110" width="185" height="60" rx="10" fill="#1A6B99"/>
+      <text x="112" y="136" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">COGS / Purchases</text>
+      <text x="112" y="154" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Cost of goods sold</text>
+      <text x="112" y="166" text-anchor="middle" fill="rgba(255,255,255,0.62)" font-family="Inter" font-size="9">Source: MM / CO / FI</text>
+      <!-- Arrows to calculation -->
+      <line x1="205" y1="60" x2="295" y2="95" stroke="#A85F2B" stroke-width="2" marker-end="url(#a7t5k)"/>
+      <line x1="205" y1="140" x2="295" y2="105" stroke="#A85F2B" stroke-width="2" marker-end="url(#a7t5k)"/>
+      <!-- Calculation box -->
+      <rect x="295" y="68" width="200" height="64" rx="10" fill="#A85F2B"/>
+      <text x="395" y="90" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Calculation</text>
+      <text x="395" y="108" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="JetBrains Mono" font-size="10">(AP ÷ COGS) × 365</text>
+      <text x="395" y="124" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Days of period</text>
+      <!-- Arrow to result -->
+      <line x1="495" y1="100" x2="545" y2="100" stroke="#A85F2B" stroke-width="2" marker-end="url(#a7t5k)"/>
+      <!-- Result -->
+      <rect x="545" y="64" width="145" height="72" rx="10" fill="#0A0F1C"/>
+      <text x="617" y="94" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="24">47</text>
+      <text x="617" y="114" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="10">Days Payable</text>
+      <text x="617" y="128" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="10">Outstanding</text>
+      <!-- Arrow to interpretation -->
+      <line x1="690" y1="100" x2="730" y2="100" stroke="#A85F2B" stroke-width="2" marker-end="url(#a7t5k)"/>
+      <!-- Interpretation -->
+      <rect x="730" y="50" width="110" height="40" rx="8" fill="#3D7A52"/>
+      <text x="785" y="66" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">In range</text>
+      <text x="785" y="82" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Terms avg 45d ✓</text>
+      <rect x="730" y="110" width="110" height="40" rx="8" fill="#5A6B8C" opacity="0.8"/>
+      <text x="785" y="126" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">vs target</text>
+      <text x="785" y="142" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Benchmark industry</text>
+      <line x1="730" y1="90" x2="716" y2="90" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="3,3"/>
+      <line x1="716" y1="90" x2="716" y2="130" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="3,3"/>
+      <line x1="716" y1="130" x2="730" y2="130" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="3,3"/>
+    </svg>
+  </div>
+</section>
+
+<!-- S8 — FLOW: CROSS-MODULE CONNECTIONS -->
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Cross-Module Connections of AP KPIs</span><span class="sec-title-es">Conexiones de los KPIs de AP con otros módulos</span></div><div class="sec-desc">Qué reciben y qué envían los KPIs de AP hacia y desde Treasury, MM, CO y AR.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 Finance Ecosystem</span><span class="type-tag-flow">🔄 Flujo — Cross-módulo</span></div>
+  <div class="theory-box"><strong>Los KPIs de AP no son islas — dependen de y alimentan a otros módulos:</strong> el DPO requiere datos de MM/CO (COGS). La Cash Discount Utilization impacta en GL (cuenta de descuentos). El Overdue Payables alerta a Treasury sobre necesidades urgentes de caja. El Aging Report es insumo directo del forecast de liquidez de Treasury. Comprender estas conexiones permite diagnosticar discrepancias y aprovechar los KPIs de AP como insumo estratégico más allá de la gestión operativa.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a8t5in" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker>
+        <marker id="a8t5out" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1A6B99"/></marker>
+      </defs>
+      <!-- Central: AP KPIs -->
+      <rect x="320" y="104" width="220" height="72" rx="12" fill="#A85F2B"/>
+      <text x="430" y="134" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">AP KPIs</text>
+      <text x="430" y="154" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">DPO · Overdue · Cash Disc.</text>
+      <text x="430" y="170" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Aging · Blocked · Parked</text>
+      <!-- Treasury (top) -->
+      <rect x="315" y="18" width="230" height="52" rx="9" fill="#1A4B8C"/>
+      <text x="430" y="41" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Treasury / Cash Management</text>
+      <text x="430" y="58" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Uses AP Aging + Overdue for liquidity forecasting</text>
+      <line x1="430" y1="70" x2="430" y2="104" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5in)"/>
+      <text x="440" y="92" fill="#A85F2B" font-family="Inter" font-size="9.5" font-weight="700">AP → feeds</text>
+      <!-- MM (left) -->
+      <rect x="20" y="112" width="200" height="52" rx="9" fill="#00A896"/>
+      <text x="120" y="135" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Materials Management</text>
+      <text x="120" y="153" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Sends COGS / purchase volume → DPO</text>
+      <line x1="220" y1="138" x2="316" y2="138" stroke="#1A6B99" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5in)"/>
+      <text x="256" y="132" fill="#1A6B99" font-family="Inter" font-size="9.5" font-weight="700">MM → AP</text>
+      <!-- CO (bottom left) -->
+      <rect x="20" y="198" width="200" height="52" rx="9" fill="#7E4FBF" opacity="0.85"/>
+      <text x="120" y="221" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Controlling (CO)</text>
+      <text x="120" y="239" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Cost analytics reference DPO trend</text>
+      <line x1="220" y1="224" x2="316" y2="168" stroke="#1A6B99" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a8t5in)"/>
+      <!-- GL (bottom) -->
+      <rect x="315" y="210" width="230" height="52" rx="9" fill="#1A6B99" opacity="0.85"/>
+      <text x="430" y="233" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">General Ledger (GL)</text>
+      <text x="430" y="251" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Receives cash discount postings (account 730000)</text>
+      <line x1="430" y1="176" x2="430" y2="210" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5out)"/>
+      <text x="440" y="198" fill="#1A6B99" font-family="Inter" font-size="9.5" font-weight="700">AP → posts</text>
+      <!-- AR (right) -->
+      <rect x="640" y="112" width="200" height="52" rx="9" fill="#5A6B8C" opacity="0.85"/>
+      <text x="740" y="135" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Accounts Receivable</text>
+      <text x="740" y="153" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">DSO (mirror KPI): same cycle, buyer side</text>
+      <line x1="540" y1="140" x2="636" y2="140" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5out)"/>
+      <text x="572" y="132" fill="#A85F2B" font-family="Inter" font-size="9.5" font-weight="700">parallel KPI</text>
+    </svg>
+  </div>
+</section>
+
+</main>
+<footer>T5 · Holístico — Payables KPIs (AP) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

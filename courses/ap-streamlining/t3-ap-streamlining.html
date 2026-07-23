@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Supplier Invoice Optimization — Usuario Fiori | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#7FC4E0;--t1-dark:#2E7096;--t1-pale:rgba(127,196,224,0.12);--t1-pale-border:rgba(127,196,224,0.38);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-secondary:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-sales:#E07B39;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#0C1C2E 55%,#0C2838 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;letter-spacing:.2px;}
+  .pill-primary{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-secondary{border:1.5px solid var(--pill-secondary);color:var(--pill-secondary);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.5rem);color:rgba(255,255,255,0.62);margin:0 0 18px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(127,196,224,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(46,112,150,0.35);}
+  .actor-badge{width:36px;height:36px;border-radius:50%;background:var(--t1-dark);color:white;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(46,112,150,0.4);border:2px solid rgba(127,196,224,0.6);}
+  .sec-titles{display:flex;flex-direction:column;gap:2px;flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;margin-top:2px;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .nav-trail{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.82rem;}
+  .nav-trail .trail-step{color:var(--muted);font-weight:500;}
+  .nav-trail .trail-sep{color:var(--border);}
+  .nav-trail .trail-current{color:var(--t1-dark);font-weight:700;}
+  .screen-wrap{border:2px solid #C8D8E6;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(10,15,28,0.1);}
+  .screen-shell{background:#354A5E;padding:9px 16px;display:flex;align-items:center;gap:14px;}
+  .sap-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:white;letter-spacing:1px;flex-shrink:0;}
+  .app-title-bar{font-size:12.5px;font-weight:600;color:white;}
+  .user-chip{margin-left:auto;background:rgba(255,255,255,0.15);border-radius:20px;padding:3px 10px;font-size:11px;color:rgba(255,255,255,0.9);}
+  .screen-body{background:#F5F6F7;padding:16px 18px;}
+  .fiori-page-head{background:white;border-radius:8px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .fiori-page-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#32363A;}
+  .fiori-btns{display:flex;gap:8px;}
+  .btn-primary{background:#0070F2;color:white;border:none;border-radius:4px;padding:7px 16px;font-size:12px;font-weight:600;}
+  .btn-secondary{background:white;color:#0070F2;border:1.5px solid #0070F2;border-radius:4px;padding:7px 16px;font-size:12px;font-weight:600;}
+  .fiori-form{background:white;border-radius:8px;padding:14px 16px;margin-bottom:10px;}
+  .form-title{font-size:11.5px;font-weight:700;color:#32363A;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F0F0F0;}
+  .form-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:10px;}
+  .form-row.two{grid-template-columns:1fr 1fr;}
+  .ffield label{font-size:11px;color:#666;display:block;margin-bottom:3px;}
+  .ffield .fval{border:1px solid #89919A;border-radius:4px;padding:6px 10px;font-size:12px;color:#32363A;background:white;width:100%;}
+  .ffield .fval.filled{border-color:#0070F2;background:rgba(0,112,242,0.03);}
+  .ffield .fval.readonly{background:#F5F6F7;color:#888;}
+  .fiori-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .fiori-table th{background:#F5F6F7;color:#666;padding:8px 12px;text-align:left;font-weight:600;border-bottom:2px solid #E0E0E0;font-size:11px;white-space:nowrap;}
+  .fiori-table td{padding:9px 12px;border-bottom:1px solid #F0F0F0;color:#32363A;vertical-align:middle;}
+  .fiori-table tr:last-child td{border-bottom:none;}
+  .fstatus{display:inline-block;padding:3px 10px;border-radius:12px;font-size:10.5px;font-weight:600;}
+  .fs-green{background:#E8F5E9;color:#2E7D32;}
+  .fs-blue{background:#E3F2FD;color:#1565C0;}
+  .fs-orange{background:#FFF3E0;color:#E65100;}
+  .fs-red{background:#FFEBEE;color:#C62828;}
+  .tile-grid{display:flex;flex-wrap:wrap;gap:12px;padding:16px;background:#F5F6F7;border-radius:8px;}
+  .tile{background:white;border:1px solid #E4E7E9;border-radius:8px;padding:16px 14px;text-align:center;min-width:130px;flex:1;}
+  .tile .tile-icon{font-size:24px;display:block;margin-bottom:8px;}
+  .tile .tile-title{font-size:11.5px;font-weight:600;color:#32363A;line-height:1.3;display:block;}
+  .checkbox-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F0F0F0;}
+  .checkbox-row:last-child{border-bottom:none;}
+  .cb-label{font-size:13px;color:#32363A;}
+  .cb-sub{font-size:11px;color:#888;display:block;margin-top:2px;}
+  .fiori-section-head{font-size:14px;font-weight:700;color:#32363A;margin:16px 0 10px;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO / FIORI</span>
+  <a href="#s1">Efficiency Toolkit</a>
+  <a href="#s2">Invoice Settings</a>
+  <a href="#s3">Recurring Invoices — List</a>
+  <a href="#s4">Create Recurring Entry</a>
+  <a href="#s5">Recurring Program Run</a>
+  <a href="#s6">Import — Download Template</a>
+  <a href="#s7">Import — Upload &amp; Post</a>
+  <a href="#s8">Upload Electronic Invoices</a>
+  <a href="#s9">Single Change</a>
+  <a href="#s10">Mass Change</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1>Supplier Invoice <span class="accent">Optimization</span></h1>
+    <h2>Tangibilización — Usuario Fiori</h2>
+    <p class="desc">Las cuatro técnicas de eficiencia de AP vistas desde la pantalla de Jennifer: parametrizar su entorno, crear facturas recurrentes, importar/cargar facturas masivamente, y corregir documentos ya contabilizados.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">👤</span>
+      <b>Jennifer</b> · AP Accountant · Accounts Payable<br>
+      <span style="font-size:12.5px;opacity:0.85;">Objetivo: dominar las herramientas Fiori que aceleran el procesamiento diario de facturas de proveedor.</span>
+    </div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Jennifer's AP Efficiency Toolkit</span><span class="sec-title-es">Las nuevas tiles de eficiencia</span></div><div class="sec-desc">Las apps de optimización que Jennifer tiene disponibles en su Fiori Launchpad.</div></div></div>
+  <div class="theory-box"><strong>Nuevas tools, mismo Launchpad:</strong> además de las apps estándar de AP (Create Supplier Invoice, Display Document Flow), Jennifer tiene acceso a un grupo de apps orientadas a la eficiencia: settings personalizados, facturas recurrentes, importación masiva, carga de electrónicos y gestión de cambios en partidas.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Accounts Payable — Optimization Group</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Fiori Launchpad</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="font-size:12px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;padding:0 4px;">AP Invoice Optimization</div>
+        <div class="tile-grid">
+          <div class="tile"><span class="tile-icon">⚙️</span><span class="tile-title">Edit Supplier Invoice Settings</span></div>
+          <div class="tile"><span class="tile-icon">🔁</span><span class="tile-title">Manage Recurring Supplier Invoices</span></div>
+          <div class="tile"><span class="tile-icon">📊</span><span class="tile-title">Import Supplier Invoices</span></div>
+          <div class="tile"><span class="tile-icon">📎</span><span class="tile-title">Upload Supplier Invoices</span></div>
+          <div class="tile"><span class="tile-icon">📋</span><span class="tile-title">Manage Supplier Line Items</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Edit Supplier Invoice Settings</span><span class="sec-title-es">Personalizar los parámetros de usuario</span></div><div class="sec-desc">Jennifer activa los parámetros que más le convienen para adaptar la pantalla de facturas a su flujo de trabajo.</div></div></div>
+  <div class="theory-box"><strong>Una sola vez, impacto permanente:</strong> Jennifer solo necesita configurar estos parámetros una vez. Quedan guardados en su perfil de usuario y se aplican en cada sesión. Aquí activa el Display Journal Entry para ver inmediatamente el número de asiento al contabilizar, y habilita el Default Company Code para no tener que elegirlo cada vez que busca POs.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Edit Supplier Invoice Settings</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Edit Supplier Invoice Settings</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">User-Specific Parameters for Supplier Invoices</span><div class="fiori-btns"><button class="btn-secondary">Cancel</button><button class="btn-primary">Save</button></div></div>
+        <div class="fiori-form">
+          <div class="form-title">General Parameters</div>
+          <div class="checkbox-row">
+            <input type="checkbox" checked disabled style="accent-color:#0070F2;width:16px;height:16px;">
+            <div><span class="cb-label">Display Journal Entry</span><span class="cb-sub">After posting or parking: shows invoice number AND journal entry number</span></div>
+          </div>
+        </div>
+        <div class="fiori-form">
+          <div class="form-title">Parameters for the App Create Supplier Invoice — Value Help for Purchase Order References</div>
+          <div class="checkbox-row">
+            <input type="checkbox" checked disabled style="accent-color:#0070F2;width:16px;height:16px;">
+            <div><span class="cb-label">Apply Company Code as Default Value</span><span class="cb-sub">Company Code entered for the invoice is pre-loaded in PO reference search</span></div>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" checked disabled style="accent-color:#0070F2;width:16px;height:16px;">
+            <div><span class="cb-label">Apply Supplier as Default Value</span><span class="cb-sub">Supplier entered for the invoice is pre-loaded in PO reference search</span></div>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" disabled style="accent-color:#0070F2;width:16px;height:16px;">
+            <div><span class="cb-label">Deactivate Default Currency from Finance</span><span class="cb-sub">Uncheck: currency is defaulted from Finance (Jennifer keeps this default)</span></div>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" disabled style="accent-color:#0070F2;width:16px;height:16px;">
+            <div><span class="cb-label">Display Buttons for Navigating to Advanced App</span><span class="cb-sub">Show navigation buttons to advanced supplier invoice apps</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Manage Recurring Supplier Invoices — Overview</span><span class="sec-title-es">Ver las entradas recurrentes activas</span></div><div class="sec-desc">Jennifer revisa la lista de plantillas de facturas recurrentes antes de crear una nueva para el alquiler.</div></div></div>
+  <div class="theory-box"><strong>La app como centro de control de recurrencias:</strong> antes de crear la plantilla para la factura de alquiler, Jennifer abre la app <strong>Manage Recurring Supplier Invoices</strong> para ver qué plantillas ya existen. Puede filtrar por proveedor, sociedad o estado. Desde aquí también puede crear, modificar o desactivar plantillas.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Manage Recurring Supplier Invoices</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Manage Recurring Supplier Invoices</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">Recurring Supplier Invoices</span><div class="fiori-btns"><button class="btn-primary">+ Create</button></div></div>
+        <div class="fiori-form" style="margin-bottom:10px;">
+          <div class="form-row">
+            <div class="ffield"><label>Company Code</label><div class="fval filled">DE01</div></div>
+            <div class="ffield"><label>Supplier</label><div class="fval">All</div></div>
+            <div class="ffield"><label>Status</label><div class="fval">Active</div></div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+          <table class="fiori-table">
+            <thead><tr><th>Document No.</th><th>Supplier</th><th>Description</th><th>Pattern</th><th>Start Date</th><th>Gross Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="color:#0070F2;font-weight:600;">9000000011</td><td>Immobilien GmbH</td><td>Office Rent — Berlin</td><td>Monthly</td><td>01.01.2024</td><td>EUR 4,500.00</td><td><span class="fstatus fs-green">Active</span></td></tr>
+              <tr><td style="color:#0070F2;font-weight:600;">9000000008</td><td>Clean Services AG</td><td>Cleaning Service — Monthly</td><td>Monthly</td><td>01.03.2023</td><td>EUR 680.00</td><td><span class="fstatus fs-green">Active</span></td></tr>
+              <tr><td style="color:#888;">9000000005</td><td>IT Support GmbH</td><td>Support Contract (expired)</td><td>Monthly</td><td>01.01.2023</td><td>EUR 1,200.00</td><td><span class="fstatus fs-red">Inactive</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Create Recurring Entry — Original Document</span><span class="sec-title-es">Crear la plantilla de entrada recurrente</span></div><div class="sec-desc">Jennifer crea el Original Document para la factura mensual de alquiler del edificio de oficinas.</div></div></div>
+  <div class="theory-box"><strong>El Original Document es como una factura normal más dos campos extra:</strong> Jennifer completa los datos habituales de la factura de alquiler (proveedor, importe, cuenta GL, tax code) y luego especifica el <strong>Recurrence Pattern</strong> (Monthly) y la <strong>Recurrence Start Date</strong>. Este documento no genera un asiento contable — es la plantilla que el programa usará cada mes.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-step">Manage Recurring Supplier Invoices</span><span class="trail-sep">›</span><span class="trail-current">Create Recurring Entry</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Create Recurring Entry — Original Document</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-form">
+          <div class="form-title">Invoice Data</div>
+          <div class="form-row">
+            <div class="ffield"><label>Supplier *</label><div class="fval filled">100045 — Immobilien GmbH</div></div>
+            <div class="ffield"><label>Company Code *</label><div class="fval filled">DE01 — Bike GmbH</div></div>
+            <div class="ffield"><label>Currency</label><div class="fval readonly">EUR (auto)</div></div>
+          </div>
+          <div class="form-row">
+            <div class="ffield"><label>Gross Amount *</label><div class="fval filled" style="font-weight:700;">4,500.00</div></div>
+            <div class="ffield"><label>Tax Code *</label><div class="fval filled">V1 — Input Tax 19%</div></div>
+            <div class="ffield"><label>GL Account</label><div class="fval filled">620000 — Rent Expense</div></div>
+          </div>
+        </div>
+        <div class="fiori-form">
+          <div class="form-title">🔁 Recurrence Settings</div>
+          <div class="form-row two">
+            <div class="ffield"><label>Recurrence Pattern *</label><div class="fval filled" style="color:#0070F2;font-weight:600;">Monthly</div></div>
+            <div class="ffield"><label>Recurrence Start Date *</label><div class="fval filled">01.05.2023</div></div>
+          </div>
+          <div style="background:rgba(0,112,242,0.05);border-radius:6px;padding:10px 12px;font-size:11.5px;color:#1565C0;margin-top:8px;">ℹ El Recurring Entry Program generará un documento FI el 1° de cada mes a partir del 01.05.2023.</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:4px;"><button class="btn-secondary">Cancel</button><button class="btn-primary">Save as Original Document</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Recurring Entry Program — Verify Execution</span><span class="sec-title-es">Verificar ejecución del programa recurrente</span></div><div class="sec-desc">Jennifer verifica que el programa generó correctamente los documentos FI del mes correspondiente.</div></div></div>
+  <div class="theory-box"><strong>El programa corre en background — Jennifer verifica el resultado:</strong> normalmente un empleado autorizado programa la ejecución automática. Jennifer accede a la lista de entradas recurrentes para verificar que los documentos FI de mayo se generaron correctamente. Si ve documentos en estado "Posted", el ciclo automático funcionó. Si hay errores, puede ver el detalle y corregir.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-step">Manage Recurring Supplier Invoices</span><span class="trail-sep">›</span><span class="trail-current">Document 9000000011 — Run History</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Recurring Entry — Run History · 9000000011</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:white;border-radius:8px;padding:12px 16px;margin-bottom:10px;display:flex;gap:24px;font-size:12px;border:1px solid #E0E0E0;">
+          <div><span style="color:#666;">Supplier:</span> <strong>Immobilien GmbH</strong></div>
+          <div><span style="color:#666;">Pattern:</span> <strong>Monthly</strong></div>
+          <div><span style="color:#666;">Amount:</span> <strong>EUR 4,500.00</strong></div>
+          <div><span style="color:#666;">Start Date:</span> <strong>01.05.2023</strong></div>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+          <table class="fiori-table">
+            <thead><tr><th>Period</th><th>FI Document</th><th>Posting Date</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>May 2023</td><td style="color:#0070F2;font-weight:600;">5105701001</td><td>01.05.2023</td><td>EUR 4,500.00</td><td><span class="fstatus fs-green">Posted</span></td></tr>
+              <tr><td>June 2023</td><td style="color:#0070F2;font-weight:600;">5105701045</td><td>01.06.2023</td><td>EUR 4,500.00</td><td><span class="fstatus fs-green">Posted</span></td></tr>
+              <tr><td>July 2023</td><td style="color:#0070F2;font-weight:600;">5105701089</td><td>01.07.2023</td><td>EUR 4,500.00</td><td><span class="fstatus fs-green">Posted</span></td></tr>
+              <tr><td>August 2023</td><td style="color:#888;">—</td><td>—</td><td>—</td><td><span class="fstatus fs-blue">Pending</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Import Supplier Invoices — Download Template</span><span class="sec-title-es">Importar facturas — descargar plantilla</span></div><div class="sec-desc">Jennifer descarga la plantilla Excel desde la app de importación para preparar los datos de las facturas.</div></div></div>
+  <div class="theory-box"><strong>El primer paso es obtener la plantilla correcta:</strong> Jennifer abre la app <strong>Import Supplier Invoices</strong> y descarga la plantilla Excel que el sistema espera. Esta plantilla tiene las columnas exactas en el orden correcto. Un proveedor envió un Excel con datos de 15 facturas — Jennifer mapea esos datos a las columnas de la plantilla SAP.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Import Supplier Invoices</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Import Supplier Invoices</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">Import Supplier Invoices</span><div class="fiori-btns"><button class="btn-secondary">⬇ Download Template</button><button class="btn-primary">⬆ Upload File</button></div></div>
+        <div style="background:white;border-radius:8px;padding:20px;text-align:center;border:2px dashed #D0D4DC;margin-bottom:12px;">
+          <div style="font-size:32px;margin-bottom:8px;">📊</div>
+          <div style="font-size:13.5px;font-weight:600;color:#32363A;margin-bottom:4px;">No file uploaded yet</div>
+          <div style="font-size:12px;color:#666;">Download the template, fill in invoice data, then upload the completed file.</div>
+          <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;">
+            <button class="btn-secondary" style="font-size:11px;padding:6px 12px;">📥 Download Template (XLSX)</button>
+          </div>
+        </div>
+        <div style="background:rgba(0,112,242,0.05);border-radius:8px;padding:12px 14px;font-size:11.5px;color:#1565C0;">
+          ℹ Template columns include: Company Code · Supplier · Invoice Date · Posting Date · Gross Amount · Currency · Tax Code · Reference · GL Account · PO Number (optional)
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Import Supplier Invoices — Upload &amp; Post</span><span class="sec-title-es">Importar facturas — subir y contabilizar</span></div><div class="sec-desc">Jennifer sube el Excel completado, revisa los errores y contabiliza las facturas en bloque.</div></div></div>
+  <div class="theory-box"><strong>Validar antes de postear es la clave:</strong> después de subir el archivo, SAP valida cada fila. Las filas con errores (ej. código de sociedad incorrecto, proveedor no existente) se marcan en rojo sin bloquear las demás. Jennifer puede contabilizar las filas correctas y corregir las erróneas por separado — no pierde el trabajo del lote completo.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-step">Import Supplier Invoices</span><span class="trail-sep">›</span><span class="trail-current">Upload Results</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAspan><span class="app-title-bar">Import Supplier Invoices — Upload Results</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:white;border-radius:8px;padding:10px 16px;margin-bottom:10px;display:flex;gap:16px;flex-wrap:wrap;font-size:12px;border:1px solid #E0E0E0;">
+          <div><span style="color:#666;">File:</span> <strong>invoices_july_2025.xlsx</strong></div>
+          <div><span style="color:#2E7D32;font-weight:700;">✔ 13 valid</span></div>
+          <div><span style="color:#C62828;font-weight:700;">✘ 2 errors</span></div>
+          <div style="margin-left:auto;"><button class="btn-primary" style="padding:5px 14px;font-size:11px;">Post Valid (13)</button></div>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+          <table class="fiori-table">
+            <thead><tr><th>Row</th><th>Supplier</th><th>Invoice Date</th><th>Amount</th><th>Status</th><th>Error Detail</th></tr></thead>
+            <tbody>
+              <tr><td>2</td><td>Tireless Tires GmbH</td><td>05.07.2025</td><td>EUR 9,000</td><td><span class="fstatus fs-green">✔ Valid</span></td><td style="color:#888;">—</td></tr>
+              <tr><td>3</td><td>Steel Parts AG</td><td>07.07.2025</td><td>EUR 3,450</td><td><span class="fstatus fs-green">✔ Valid</span></td><td style="color:#888;">—</td></tr>
+              <tr><td>8</td><td>Unknown Supplier</td><td>10.07.2025</td><td>EUR 1,200</td><td><span class="fstatus fs-red">✘ Error</span></td><td style="color:#C62828;font-size:11px;">Supplier 999999 not found in DE01</td></tr>
+              <tr><td>14</td><td>IT Hardware GmbH</td><td>15.07.2025</td><td>EUR 0.00</td><td><span class="fstatus fs-red">✘ Error</span></td><td style="color:#C62828;font-size:11px;">Gross amount cannot be zero</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Upload Supplier Invoices — Electronic Documents</span><span class="sec-title-es">Cargar facturas electrónicas</span></div><div class="sec-desc">Jennifer sube un PDF de factura al sistema para vincularlo como adjunto al documento SAP correspondiente.</div></div></div>
+  <div class="theory-box"><strong>El Upload guarda el documento original en SAP:</strong> diferente al Import (que crea facturas desde datos en Excel), esta app sube el archivo físico del documento de factura (PDF, imagen) y lo vincula al registro SAP. El adjunto queda accesible permanentemente para la auditoría interna y externa — cualquier auditor puede abrir el documento original directamente desde SAP.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-current">Upload Supplier Invoices</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Upload Supplier Invoices</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">Uploaded Supplier Invoices</span><div class="fiori-btns"><button class="btn-primary">+ Create Upload</button></div></div>
+        <div style="background:white;border-radius:8px;padding:16px;border:1px solid #E0E0E0;margin-bottom:10px;">
+          <div style="font-size:12.5px;font-weight:700;color:#32363A;margin-bottom:10px;">Create Upload of Supplier Invoices</div>
+          <div style="font-size:12px;color:#666;margin-bottom:10px;font-weight:600;">Assignment to Company Code</div>
+          <div class="form-row two">
+            <div class="ffield"><label>Company Code *</label><div class="fval filled">DE01 — Bike GmbH</div></div>
+            <div class="ffield"><label>Upload Description</label><div class="fval">July 2025 — Batch 3</div></div>
+          </div>
+          <div style="border:2px dashed #D0D4DC;border-radius:6px;padding:16px;text-align:center;margin-top:8px;">
+            <div style="font-size:20px;margin-bottom:6px;">📎</div>
+            <div style="font-size:12px;color:#666;margin-bottom:8px;">Select the invoice file from your directory</div>
+            <div style="font-size:11px;color:#888;margin-bottom:10px;">Filename example: invoice_document_07152025.pdf</div>
+            <button class="btn-primary" style="font-size:11.5px;">Upload</button>
+          </div>
+        </div>
+        <div style="background:#E8F5E9;border-radius:8px;padding:10px 14px;font-size:12px;color:#2E7D32;font-weight:600;display:flex;align-items:center;gap:8px;">
+          <span>✔</span> All files were uploaded. · Use Company Code + Creation Day filters to review upload status.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Manage Supplier Line Items — Single Change</span><span class="sec-title-es">Cambio individual en una factura contabilizada</span></div><div class="sec-desc">Jennifer corrige el número de referencia incorrecto en una factura ya contabilizada.</div></div></div>
+  <div class="theory-box"><strong>El Reference Number es modificable — un campo de gestión, no contable:</strong> Jennifer recibió la tarea de corregir el número de referencia en una factura ya posteada porque fue ingresado erróneamente. Como el Reference (XBLNR) es un campo de gestión (no afecta saldos), SAP permite modificarlo. Jennifer lo hace directamente desde <strong>Manage Supplier Line Items</strong> sin necesidad de reversar el documento.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-step">Manage Supplier Line Items</span><span class="trail-sep">›</span><span class="trail-current">Edit Document 5105600042 — Single Change</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Manage Supplier Line Items · Edit</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div class="fiori-page-head"><span class="fiori-page-title">Edit Supplier Line Item · Doc 5105600042</span><div class="fiori-btns"><button class="btn-secondary">Cancel</button><button class="btn-primary">Save</button></div></div>
+        <div class="fiori-form">
+          <div class="form-title">Editable Fields (Payment-related &amp; Administrative)</div>
+          <div class="form-row">
+            <div class="ffield"><label>Reference (editable ✔)</label><div class="fval filled" style="border-color:#2E7D32;background:rgba(46,125,50,0.04);">INV-2025-0701 <span style="color:#2E7D32;font-size:10px;">(corrected)</span></div></div>
+            <div class="ffield"><label>Item Text (editable ✔)</label><div class="fval filled">July Tires Delivery</div></div>
+            <div class="ffield"><label>Payment Terms (editable ✔)</label><div class="fval readonly">NT30</div></div>
+          </div>
+        </div>
+        <div class="fiori-form">
+          <div class="form-title">Non-Editable Fields (accounting impact)</div>
+          <div class="form-row">
+            <div class="ffield"><label>Amount 🔒 (never)</label><div class="fval readonly">EUR 10,710.00</div></div>
+            <div class="ffield"><label>GL Account 🔒 (never)</label><div class="fval readonly">191100</div></div>
+            <div class="ffield"><label>Posting Date 🔒 (never)</label><div class="fval readonly">15.07.2025</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="actor-badge">J</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Manage Supplier Line Items — Mass Change</span><span class="sec-title-es">Cambio masivo de condiciones de pago</span></div><div class="sec-desc">Jennifer actualiza las condiciones de pago en todas las facturas abiertas de un proveedor cuyo Vendor Master ya fue actualizado.</div></div></div>
+  <div class="theory-box"><strong>Mass Change ahorra horas de trabajo:</strong> el proveedor Tireless Tires mejoró sus condiciones de pago de NT30 a NT45. El Vendor Master ya fue actualizado. Ahora Jennifer necesita que todas las <strong>facturas abiertas</strong> de este proveedor (las que todavía no fueron pagadas) reflejen las nuevas condiciones. Hacerlo una por una tomaría mucho tiempo — con Mass Change, lo hace en una sola operación.</div>
+  <div class="visual-wrap">
+    <div class="nav-trail"><span>🏠</span><span class="trail-step">Fiori Launchpad</span><span class="trail-sep">›</span><span class="trail-step">Manage Supplier Line Items</span><span class="trail-sep">›</span><span class="trail-current">Mass Change — Payment Terms</span></div>
+    <div class="screen-wrap">
+      <div class="screen-shell"><span class="sap-logo">SAP</span><span class="app-title-bar">Manage Supplier Line Items · Mass Change</span><span class="user-chip">Jennifer</span></div>
+      <div class="screen-body">
+        <div style="background:white;border-radius:8px;padding:10px 16px;margin-bottom:10px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:12px;border:1px solid #E0E0E0;">
+          <div><span style="color:#666;">Supplier:</span> <strong>Tireless Tires GmbH (100023)</strong></div>
+          <div><span style="color:#666;">Status:</span> <strong>Open items only</strong></div>
+          <div><span class="fstatus fs-blue" style="font-size:11px;">8 items selected</span></div>
+          <div style="margin-left:auto;"><button class="btn-primary" style="padding:5px 14px;font-size:11px;">Mass Change</button></div>
+        </div>
+        <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;margin-bottom:10px;">
+          <table class="fiori-table">
+            <thead><tr><th>☑</th><th>Document</th><th>Invoice Date</th><th>Amount</th><th>Old Pay.Terms</th><th>New Pay.Terms</th></tr></thead>
+            <tbody>
+              <tr><td><input type="checkbox" checked disabled style="accent-color:#0070F2;"></td><td>5105600042</td><td>15.07.2025</td><td>EUR 10,710</td><td style="color:#C62828;">NT30</td><td style="color:#2E7D32;font-weight:600;">NT45 ✔</td></tr>
+              <tr><td><input type="checkbox" checked disabled style="accent-color:#0070F2;"></td><td>5105600038</td><td>08.07.2025</td><td>EUR 5,985</td><td style="color:#C62828;">NT30</td><td style="color:#2E7D32;font-weight:600;">NT45 ✔</td></tr>
+              <tr><td><input type="checkbox" checked disabled style="accent-color:#0070F2;"></td><td>5105600031</td><td>01.07.2025</td><td>EUR 8,550</td><td style="color:#C62828;">NT30</td><td style="color:#2E7D32;font-weight:600;">NT45 ✔</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="background:#E8F5E9;border-radius:8px;padding:10px 14px;font-size:12px;color:#2E7D32;font-weight:600;">✔ Mass Change applied: Payment Terms updated to NT45 in 8 open items. Change Document Log updated.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>T3 · Usuario Fiori — Supplier Invoice Optimization (AP) · Protagonista: Jennifer · Biblioteca de Guías SAP</footer>
+</body>
+</html>

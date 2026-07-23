@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Key Elements of Supplier Master Data — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-tabs{ display:flex; gap:22px; border-bottom:1px solid #EAEAEA; margin-bottom:18px; padding:0 20px; }
+  .fiori-tab{ padding:11px 2px; font-size:0.8rem; color:var(--sap-muted); border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-body{ padding:22px 20px; }
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px 22px; margin-bottom:6px; }
+  .fiori-field label{ display:block; font-size:0.7rem; color:var(--sap-muted); margin-bottom:4px; }
+  .fiori-field .val{ font-size:0.83rem; color:var(--sap-text); padding:7px 10px; background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; }
+  .fiori-field .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .fiori-field .val.locked{ background:#F0F0F0; color:#999; }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.warn{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-status.alert{ background:#FDE8E8; color:#B23A3A; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .popover-box{ border:2px solid #D4AF37; background:#FFFAE0; border-radius:8px; padding:14px 16px; margin-top:14px; }
+  .popover-box .pt{ font-weight:700; font-size:0.85rem; color:#5C4A1E; margin-bottom:6px; }
+  .popover-box p{ margin:0; font-size:0.8rem; color:#5C4A1E; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:760px){ .fiori-field-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">General Data Overview</a>
+  <a href="#s2">Editing Bank Accounts</a>
+  <a href="#s3">New Bank on the Fly</a>
+  <a href="#s4">Deriving from IBAN</a>
+  <a href="#s5">A Second Bank</a>
+  <a href="#s6">The Finance Tab</a>
+  <a href="#s7">Duplicate Invoice Warning</a>
+  <a href="#s8">Alternative Payee Setup</a>
+  <a href="#s9">The Allowed List</a>
+  <a href="#s10">Reviewing the Full Record</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Business Partner</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Key</span> Elements of Supplier Master Data</h1>
+    <h2>Elementos Clave de Datos Maestros — Vividos por el Usuario</h2>
+    <p class="desc">Cómo Jennifer recorre en Fiori los campos concretos del maestro de proveedor: datos generales, cuentas bancarias, la pestaña Finance de sociedad, y el escenario del pagador alternativo.</p>
+    <div class="protagonist">
+      <div class="avatar">J</div>
+      <div>
+        <div class="p-name">Jennifer</div>
+        <div class="p-role">Auditoría Interna · Bike GmbH (DE01)</div>
+        <div class="p-note">Guía principal de este recorrido, de punta a punta.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the General Data</span>
+          <span class="sec-title-es">Revisando los datos generales</span>
+          <span class="sec-actor"><span class="dot">J</span>Jennifer</span>
+        </div>
+        <div class="sec-desc">El primer vistazo: dirección, idioma y cuentas bancarias de Tireless Tires.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jennifer abre <strong>Manage Business Partner Master Data</strong> para revisar los datos generales de Tireless Tires — los mismos que están disponibles para todas las sociedades que lo usan.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Business Partner</div><span class="sep">›</span>
+      <div class="crumb current">Manage Business Partner Master Data</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Business Partner Master Data</div>
+      <div class="fiori-appbar"><div><h6>Tireless Tires — General Data</h6></div></div>
+      <div class="fiori-tabs">
+        <div class="fiori-tab active">General Data</div>
+        <div class="fiori-tab">Company Code DE01</div>
+        <div class="fiori-tab">Purchasing Org.</div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Address</label><div class="val filled">Industriestraße 12, 30159 Hannover</div></div>
+          <div class="fiori-field"><label>Language</label><div class="val filled">DE — German</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Editing the Bank Accounts</span>
+          <span class="sec-title-es">Editando las cuentas bancarias</span>
+          <span class="sec-actor"><span class="dot">J</span>Jennifer</span>
+        </div>
+        <div class="sec-desc">Jennifer tiene la autorización necesaria — no todos la tienen.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jennifer navega a la sección de <strong>Bank Accounts</strong>, habilitada para ella porque tiene la autorización específica que requieren estos datos sensibles.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Business Partner Master Data</div>
+      <div class="fiori-appbar"><div><h6>Tireless Tires — Bank Accounts</h6></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Bank Key</th><th>Account Number</th><th>Editable</th></tr></thead>
+          <tbody>
+            <tr><td>DEUTDEFF</td><td>1234567890</td><td><span class="fiori-status ok">Yes (authorized)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating a New Bank on the Fly</span>
+          <span class="sec-title-es">Creando un banco nuevo sobre la marcha</span>
+          <span class="sec-actor"><span class="dot">J</span>Jennifer</span>
+        </div>
+        <div class="sec-desc">Tireless Tires cambió de banco — este todavía no existe en la lista.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jennifer ingresa la nueva bank key de Tireless Tires. Como no existe en la lista de bancos, el sistema le pide completar los datos faltantes.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Business Partner Master Data</div>
+      <div class="fiori-appbar"><div><h6>Add New Bank</h6></div></div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Bank Key</label><div class="val filled">DEUTDEHH</div></div>
+          <div class="fiori-field"><label>Bank Country</label><div class="val filled">DE</div></div>
+        </div>
+        <div class="popover-box">
+          <div class="pt">🏦 Bank Not Found</div>
+          <p>This bank key doesn't exist yet. Please complete the missing details to create it now.</p>
+        </div>
+        <div class="fiori-field-grid" style="margin-top:12px;">
+          <div class="fiori-field"><label>Bank Name</label><div class="val filled">Deutsche Bank Hamburg</div></div>
+          <div class="fiori-field"><label>SWIFT/BIC</label><div class="val filled">DEUTDEHH</div></div>
+        </div>
+        <div class="fiori-btnbar"><button class="fiori-btn primary">Create Bank &amp; Save</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Deriving the Account from the IBAN</span>
+          <span class="sec-title-es">Derivando la cuenta desde el IBAN</span>
+          <span class="sec-actor"><span class="dot">J</span>Jennifer</span>
+        </div>
+        <div class="sec-desc">En vez de ingresar cada dato bancario a mano, Jennifer pega el IBAN completo.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jennifer ingresa el IBAN completo, y el sistema deriva automáticamente el banco y el número de cuenta correspondientes.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Business Partner Master Data</div>
+      <div class="fiori-appbar"><div><h6>Derive from IBAN</h6></div></div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>IBAN</label><div class="val filled">DE89370400440532013000</div></div>
+          <div class="fiori-field"><label>Derived Bank Key</label><div class="val filled">DEUTDEHH</div></div>
+        </div>
+        <div class="fiori-btnbar"><button class="fiori-btn primary">Confirm</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Adding a Second Bank</span>
+          <span class="sec-title-es">Agregando un segundo banco</span>
+          <span class="sec-actor"><span class="dot">J</span>Jennifer</span>
+        </div>
+        <div class="sec-desc">Tireless Tires ahora tiene dos cuentas — el sistema tendrá que elegir.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jennifer deja registrados ambos bancos. El programa de pago decidirá cuál usar según su configuración.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Business Partner Master Data</div>
+      <div class="fiori-appbar"><div><h6>Tireless Tires — Bank Accounts (2)</h6></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Bank Key</th><th>Currency</th><th>Priority</th></tr></thead>
+          <tbody>
+            <tr><td>DEUTDEFF</td><td>EUR</td><td>1 (Primary)</td></tr>
+            <tr><td>DEUTDEHH</td><td>EUR</td><td>2</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Finance Tab for DE01</span>
+          <span class="sec-title-es">Revisando la pestaña Finance para DE01</span>
+          <span class="sec-actor"><span class="dot">J</span>Jennifer</span>
+        </div>
+        <div class="sec-desc">Ahora Jennifer cambia de pestaña, a la configuración específica de Bike GmbH.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jennifer revisa la cuenta de enlace, las condiciones de pago, y los métodos de pago que Bike GmbH tiene configurados para Tireless Tires.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Business Partner Master Data</div>
+      <div class="fiori-appbar"><div><h6>Tireless Tires — Company Code DE01</h6></div></div>
+      <div class="fiori-tabs">
+        <div class="fiori-tab">General Data</div>
+        <div class="fiori-tab active">Company Code DE01</div>
+        <div class="fiori-tab">Purchasing Org.</div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Reconciliation Account</label><div class="val filled">21100000</div></div>
+          <div class="fiori-field"><label>Payment Terms</label><div class="val filled">Net 30</div></div>
+          <div class="fiori-field"><label>Check Double Invoice</label><div class="val filled">Active</div></div>
+          <div class="fiori-field"><label>Payment Methods</label><div class="val filled">Bank Transfer, Check</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Triggering the Duplicate Invoice Warning</span>
+          <span class="sec-title-es">Disparando el aviso de factura duplicada</span>
+          <span class="sec-actor"><span class="dot">J</span>Jennifer</span>
+        </div>
+        <div class="sec-desc">Justo con Check Double Invoice activo, aparece un caso real.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Al ingresar una factura de prueba idéntica a otra ya registrada, el sistema detecta la coincidencia en los cinco campos comparados.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Create Supplier Invoice</div>
+      <div class="fiori-appbar"><div><h6>Duplicate Detected</h6></div></div>
+      <div class="fiori-body">
+        <div class="popover-box">
+          <div class="pt">⚠️ Possible Duplicate Invoice</div>
+          <p>Reference Document Number, Company Code, Supplier, Currency and Document Date match an existing invoice (4500019210). Please validate before saving.</p>
+        </div>
+        <div style="margin-top:10px;"><span class="fiori-status warn">Warning — validation required</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up the Alternative Payee</span>
+          <span class="sec-title-es">Configurando el pagador alternativo</span>
+          <span class="sec-actor"><span class="dot">J</span>Jennifer</span>
+        </div>
+        <div class="sec-desc">Una sucursal de Tireless Tires factura, pero cobra a través de la casa matriz.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jennifer completa el campo <strong>Alternative Payee</strong> en el maestro de la sucursal local, apuntando al business partner de la casa matriz de Tireless Tires.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Business Partner Master Data</div>
+      <div class="fiori-appbar"><div><h6>Tireless Tires — Hannover Branch</h6></div></div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Alternative Payee</label><div class="val filled">Tireless Tires — Head Office (BP 3000112)</div></div>
+        </div>
+        <div class="fiori-btnbar"><button class="fiori-btn primary">Save</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Choosing from the Allowed Payee List</span>
+          <span class="sec-title-es">Elegiendo de la lista de pagadores permitidos</span>
+          <span class="sec-actor"><span class="dot">J</span>Jennifer</span>
+        </div>
+        <div class="sec-desc">Un usuario de AP, al ingresar una factura, elige entre opciones ya validadas.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Al registrar la próxima factura de la sucursal, el usuario de AP ve la lista de pagadores alternativos ya autorizados para elegir — no puede escribir uno libremente.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Create Supplier Invoice</div>
+      <div class="fiori-appbar"><div><h6>Select Alternative Payee</h6></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Allowed Payee</th><th>Business Partner</th></tr></thead>
+          <tbody>
+            <tr><td>Tireless Tires — Head Office</td><td>3000112</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Complete Supplier Record</span>
+          <span class="sec-title-es">Revisando el registro completo del proveedor</span>
+          <span class="sec-actor"><span class="dot">J</span>Jennifer</span>
+        </div>
+        <div class="sec-desc">Con todo configurado, Jennifer revisa el panorama completo de una vez.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jennifer confirma que los tres niveles de datos de Tireless Tires — general, sociedad, y pagador alternativo — quedaron correctamente configurados.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Business Partner Master Data</div>
+      <div class="fiori-appbar"><div><h6>Tireless Tires — Summary</h6></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Sección</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>General Data — Address, Language, Bank</td><td><span class="fiori-status ok">Completo</span></td></tr>
+            <tr><td>Company Code DE01 — Finance Tab</td><td><span class="fiori-status ok">Completo</span></td></tr>
+            <tr><td>Alternative Payee — Hannover Branch</td><td><span class="fiori-status ok">Configurado</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Key Elements of Supplier Master Data · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

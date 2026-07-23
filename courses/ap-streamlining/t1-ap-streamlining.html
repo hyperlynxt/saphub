@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Supplier Invoice Optimization — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#7FBF8F;--t1-dark:#3D7A52;--t1-pale:rgba(127,191,143,0.14);--t1-pale-border:rgba(127,191,143,0.4);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-secondary:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-co:#1A6B99;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-sales:#E07B39;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#122A1C 55%,#1B4028 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;letter-spacing:.2px;}
+  .pill-primary{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-secondary{border:1.5px solid var(--pill-secondary);color:var(--pill-secondary);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.5rem);color:rgba(255,255,255,0.62);margin:0 0 18px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(127,191,143,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:640px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.5;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(61,122,82,0.35);}
+  .sec-titles{display:flex;flex-direction:column;gap:2px;flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;margin-top:2px;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:20px 20px;box-shadow:0 2px 8px rgba(10,15,28,0.04);}
+  .card.green{border-top:4px solid var(--t1-dark);}
+  .card.navy{border-top:4px solid var(--cat-fi);}
+  .card.teal{border-top:4px solid var(--cat-log);}
+  .card.purple{border-top:4px solid var(--cat-purchase);}
+  .card.orange{border-top:4px solid var(--cat-sales);}
+  .card.red{border-top:4px solid var(--cat-alert);}
+  .card.gold{border-top:4px solid var(--cat-legal);}
+  .card h4{font-family:'Syne',sans-serif;font-size:1rem;margin:0 0 6px;color:var(--ink);}
+  .card .sub{font-size:0.72rem;color:var(--muted);font-style:italic;}
+  .card p{font-size:0.84rem;color:var(--body);line-height:1.6;margin:8px 0 0;}
+  .card ul{margin:8px 0 0;padding-left:18px;}
+  .card ul li{font-size:0.82rem;color:var(--body);line-height:1.7;}
+  .icon-big{font-size:28px;display:block;margin-bottom:8px;}
+  /* Flow */
+  .flow4{display:flex;align-items:stretch;gap:12px;min-width:800px;}
+  .fstep{flex:1;display:flex;flex-direction:column;}
+  .fstep-head{border-radius:10px 10px 0 0;padding:12px 10px;text-align:center;color:white;}
+  .fstep-head .fi{font-size:18px;display:block;margin-bottom:3px;}
+  .fstep-head .fn{font-family:'Syne',sans-serif;font-weight:700;font-size:11.5px;}
+  .fstep-body{border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:10px 12px;flex:1;font-size:10.5px;color:var(--body);line-height:1.5;}
+  .farrow{display:flex;align-items:center;color:#94A3B8;font-size:20px;flex-shrink:0;padding-top:16px;}
+  /* Toggle indicator */
+  .toggle-row{display:flex;align-items:center;gap:8px;margin-top:12px;}
+  .toggle{width:36px;height:20px;border-radius:10px;display:flex;align-items:center;padding:0 3px;}
+  .toggle.on{background:#3D7A52;justify-content:flex-end;}
+  .toggle.off{background:#94A3B8;justify-content:flex-start;}
+  .toggle-dot{width:14px;height:14px;background:white;border-radius:50%;}
+  .toggle-label{font-size:11.5px;color:var(--muted);}
+  /* Table */
+  .data-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:0.85rem;box-shadow:0 2px 10px rgba(10,15,28,0.05);}
+  .data-table th{background:var(--navy-900);color:white;padding:11px 14px;text-align:left;font-size:0.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+  .data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:nth-child(even) td{background:#FAFBFD;}
+  .data-table .strong{font-weight:700;color:var(--ink);}
+  .data-table .section-head td{background:var(--t1-pale);font-weight:700;color:var(--t1-dark);font-size:0.78rem;text-transform:uppercase;letter-spacing:.3px;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;white-space:nowrap;}
+  .badge-red{background:rgba(192,57,43,0.1);color:#C0392B;}
+  .badge-gold{background:rgba(201,147,46,0.12);color:#C9932E;}
+  .badge-green{background:rgba(0,168,150,0.1);color:#00A896;}
+  /* Glossary */
+  .glossary{background:var(--navy-950);padding:64px 40px 72px;scroll-margin-top:64px;}
+  .glossary-inner{max-width:1100px;margin:0 auto;}
+  .glossary h2{font-family:'Syne',sans-serif;color:white;font-size:1.6rem;margin:0 0 6px;}
+  .glossary p.gloss-sub{color:rgba(255,255,255,0.55);font-size:0.9rem;margin:0 0 30px;}
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .gcard{background:var(--navy-800);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 18px;}
+  .term-en{font-family:'Syne',sans-serif;font-weight:700;color:var(--t1);font-size:1rem;}
+  .term-es{color:rgba(255,255,255,0.5);font-size:0.78rem;margin:2px 0 8px;}
+  .term-def{color:rgba(255,255,255,0.82);font-size:0.83rem;line-height:1.5;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+  .box-label{font-family:'Inter',sans-serif;font-weight:600;font-size:12px;}
+  .box-sub{font-family:'Inter',sans-serif;font-weight:400;font-size:9.5px;}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">Optimization Overview</a>
+  <a href="#s2">Invoice Settings</a>
+  <a href="#s3">Recurring Entries</a>
+  <a href="#s4">Recurring Template</a>
+  <a href="#s5">Recurring Program</a>
+  <a href="#s6">Import from Excel</a>
+  <a href="#s7">Upload Electronic</a>
+  <a href="#s8">Import vs Upload</a>
+  <a href="#s9">Changes — Principles</a>
+  <a href="#s10">Changeable Fields</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1>Supplier Invoice <span class="accent">Optimization</span></h1>
+    <h2>Optimización del Procesamiento de Facturas</h2>
+    <p class="desc">Cuatro técnicas para mejorar la eficiencia del procesamiento de facturas en AP: personalización de parámetros de usuario, entradas recurrentes, importación masiva desde Excel, carga de facturas electrónicas, y reglas de modificación de documentos ya contabilizados.</p>
+    <div class="hlbox">Resumen Visual — <b>Supplier Invoice Optimization (AP)</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">AP Efficiency — Four Optimization Techniques</span><span class="sec-title-es">Las cuatro técnicas de eficiencia</span></div>
+      <div class="sec-desc">Las herramientas que SAP S/4HANA pone a disposición del contador de AP para acelerar y automatizar el procesamiento de facturas.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Cuatro palancas de eficiencia:</strong> el procesamiento manual de facturas consume tiempo y es propenso a errores. SAP S/4HANA ofrece cuatro mecanismos clave para optimizarlo: <strong>parámetros de usuario personalizados</strong> (para adaptar la interfaz a la forma de trabajo individual), <strong>entradas recurrentes</strong> (para facturas idénticas que llegan periódicamente), <strong>importación masiva desde Excel</strong> (para procesar múltiples facturas a la vez), y <strong>modificación controlada de documentos</strong> ya contabilizados.</div>
+  <div class="visual-wrap">
+    <div class="g4">
+      <div class="card green"><span class="icon-big">⚙️</span><h4>User Settings</h4><p class="sub">Parámetros de usuario</p><p>Personalizar la pantalla de facturas para cada contador de AP — por ejemplo, mostrar el asiento al contabilizar o preconfigurar la sociedad.</p></div>
+      <div class="card teal"><span class="icon-big">🔁</span><h4>Recurring Entries</h4><p class="sub">Entradas recurrentes</p><p>Crear una plantilla de factura que el sistema usa para generar automáticamente documentos FI en forma diaria, semanal o mensual.</p></div>
+      <div class="card navy"><span class="icon-big">📊</span><h4>Import &amp; Upload</h4><p class="sub">Importación y carga</p><p>Procesar múltiples facturas de una vez, ya sea desde un archivo Excel o cargando documentos electrónicos (PDF) al sistema.</p></div>
+      <div class="card gold"><span class="icon-big">✏️</span><h4>Document Changes</h4><p class="sub">Cambios en documentos</p><p>Modificar campos específicos de facturas ya contabilizadas, de forma individual o masiva, respetando las reglas contables de inmutabilidad.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Edit Supplier Invoice Settings</span><span class="sec-title-es">Parámetros de usuario para facturas</span></div>
+      <div class="sec-desc">Cuatro parámetros que cada contador de AP puede activar o desactivar independientemente para personalizar su flujo de trabajo.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Parametrización por usuario, no por sistema:</strong> la app <strong>Edit Supplier Invoice Settings</strong> permite que cada contador de AP configure su propia experiencia sin afectar a otros usuarios. Los ajustes son individuales y persistentes. Colegas con los mismos roles pueden ver la pantalla de factura levemente distinta según sus preferencias personales — esto explica las diferencias visuales que el contador de AP nota entre colegas.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card green">
+        <span class="icon-big">📋</span>
+        <h4>Display Journal Entry <span class="sub">· Mostrar asiento contable</span></h4>
+        <p>Al activar este parámetro, después de contabilizar o estacionar una factura el sistema muestra <strong>tanto el número de factura como el número del asiento de diario</strong> generado. Útil para trazabilidad inmediata.</p>
+        <div class="toggle-row"><div class="toggle on"><div class="toggle-dot"></div></div><span class="toggle-label">Activado: muestra nro. de factura + nro. de asiento</span></div>
+      </div>
+      <div class="card teal">
+        <span class="icon-big">🏢</span>
+        <h4>Apply Company Code as Default <span class="sub">· Sociedad por defecto</span></h4>
+        <p>Si está activado, la <strong>sociedad ingresada en la factura se precarga automáticamente</strong> en el value help de referencias a Purchase Orders dentro de la app Create Supplier Invoice.</p>
+        <div class="toggle-row"><div class="toggle on"><div class="toggle-dot"></div></div><span class="toggle-label">Activado: Company Code se propaga al buscar POs</span></div>
+      </div>
+      <div class="card purple">
+        <span class="icon-big">🏭</span>
+        <h4>Apply Supplier as Default <span class="sub">· Proveedor por defecto</span></h4>
+        <p>Si está activado, el <strong>proveedor ingresado en la factura se precarga automáticamente</strong> en el value help de referencias a POs. Reduce clics al buscar órdenes del mismo proveedor.</p>
+        <div class="toggle-row"><div class="toggle on"><div class="toggle-dot"></div></div><span class="toggle-label">Activado: Proveedor se propaga al buscar POs</span></div>
+      </div>
+      <div class="card gold">
+        <span class="icon-big">💱</span>
+        <h4>Deactivate Default Currency <span class="sub">· Sin moneda por defecto</span></h4>
+        <p>Si está activado, <strong>la moneda no se precarga</strong> desde Finance al crear la factura. Útil cuando el contador trabaja frecuentemente con facturas en distintas monedas.</p>
+        <div class="toggle-row"><div class="toggle off"><div class="toggle-dot"></div></div><span class="toggle-label">Desactivado (default): moneda se propaga desde FI</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Recurring Entries — Concept and Use Case</span><span class="sec-title-es">Entradas recurrentes — concepto y caso de uso</span></div>
+      <div class="sec-desc">Cuándo y por qué usar entradas recurrentes: el problema del procesamiento repetitivo de la misma factura.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>El problema que resuelven:</strong> algunos proveedores envían facturas idénticas mes a mes — alquiler de oficina, suscripciones, honorarios fijos. Sin entradas recurrentes, el contador de AP debe ingresar manualmente la misma información cada período. La funcionalidad de <strong>Recurring Entries</strong> permite crear una <strong>plantilla de factura</strong> una sola vez, y que el sistema genere automáticamente los documentos FI según el <strong>patrón de recurrencia definido</strong>.</div>
+  <div class="visual-wrap">
+    <div class="flow4">
+      <div class="fstep">
+        <div class="fstep-head" style="background:#5A6B8C;"><span class="fi">📄</span><span class="fn">Business Agreement</span></div>
+        <div class="fstep-body">El casero envía factura de alquiler mensual idéntica (mismo importe, mismo proveedor, misma cuenta).</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:var(--t1-dark);"><span class="fi">📝</span><span class="fn">Create Template (Once)</span></div>
+        <div class="fstep-body">El contador crea UNA SOLA VEZ la plantilla de factura con los datos recurrentes + patrón de repetición.</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:var(--cat-fi);"><span class="fi">⚙️</span><span class="fn">Recurring Entry Program</span></div>
+        <div class="fstep-body">El programa de entradas recurrentes se ejecuta automáticamente y genera documentos FI para cada período.</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:var(--cat-log);"><span class="fi">📑</span><span class="fn">Monthly FI Documents</span></div>
+        <div class="fstep-body">Un documento FI por cada período (Mayo, Junio, Julio...) generado automáticamente sin intervención manual.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Recurring Entry Template — The Original Document</span><span class="sec-title-es">Plantilla de entrada recurrente</span></div>
+      <div class="sec-desc">Qué datos necesita la plantilla de factura recurrente — los campos estándar más los específicos de recurrencia.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>La plantilla combina datos de factura con datos de recurrencia:</strong> el primer documento creado es el <strong>Original Document</strong> (también llamado Recurring Entry Template). Contiene todos los datos normales de una factura de proveedor más dos campos adicionales exclusivos de la recurrencia: la <strong>fecha de inicio</strong> (a partir de cuándo generar documentos) y el <strong>patrón de recurrencia</strong> (diario, semanal o mensual). Este template en sí no es un asiento contable — es la fuente de la que el programa genera los documentos reales.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card navy">
+        <h4>📋 Standard Invoice Data <span class="sub">· Datos normales de factura</span></h4>
+        <p>Todos los campos que se completan en una factura estándar de proveedor:</p>
+        <ul>
+          <li>Proveedor (Supplier)</li>
+          <li>Sociedad (Company Code)</li>
+          <li>Importe bruto y moneda</li>
+          <li>Código de impuesto (Tax Code)</li>
+          <li>Condiciones de pago (Payment Terms)</li>
+          <li>Cuenta GL / referencia a PO</li>
+          <li>Centro de costo (si aplica)</li>
+        </ul>
+      </div>
+      <div class="card green">
+        <h4>🔁 Recurrence-Specific Data <span class="sub">· Datos exclusivos de la plantilla</span></h4>
+        <p>Los dos campos adicionales que convierten una factura en una <strong>plantilla de entrada recurrente</strong>:</p>
+        <ul>
+          <li><strong>Recurrence Start Date</strong> — a partir de qué fecha el programa debe empezar a generar documentos (ej. 01.05.2023 para el contrato de alquiler)</li>
+          <li><strong>Recurrence Pattern</strong> — con qué frecuencia: diario, semanal o mensual</li>
+        </ul>
+        <div style="margin-top:12px;background:var(--t1-pale);border-radius:8px;padding:10px 12px;font-size:0.82rem;color:var(--ink);">💡 El template no contabiliza nada. Solo el <strong>Recurring Entry Program</strong> genera los asientos FI reales.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">The Recurring Entry Program</span><span class="sec-title-es">El programa de entradas recurrentes</span></div>
+      <div class="sec-desc">Cómo el programa usa la plantilla para generar documentos FI automáticamente período a período.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>El programa transforma plantillas en asientos reales:</strong> el <strong>Recurring Entry Program</strong> es el motor de automatización. Lee todas las plantillas (Original Documents) activas y, para cada una, genera los <strong>documentos FI</strong> correspondientes al período de ejecución. No necesita iniciarse manualmente — puede ser <strong>programado por un empleado autorizado</strong> para que corra automáticamente para todos los colegas. Si el programa corre en mayo, genera los documentos FI de mayo para todas las plantillas activas.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a5r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker></defs>
+      <!-- Template box -->
+      <rect x="20" y="80" width="180" height="80" rx="10" fill="#3D7A52"/>
+      <text x="110" y="112" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Original Document</text>
+      <text x="110" y="130" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Recurring Entry Template</text>
+      <text x="110" y="148" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Pattern: Monthly</text>
+      <!-- Arrow to program -->
+      <line x1="200" y1="120" x2="250" y2="120" stroke="#3D7A52" stroke-width="2.5" marker-end="url(#a5r)"/>
+      <!-- Program box -->
+      <rect x="250" y="85" width="200" height="70" rx="10" fill="#0A0F1C"/>
+      <text x="350" y="115" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Recurring Entry</text>
+      <text x="350" y="133" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Program</text>
+      <text x="350" y="148" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-family="Inter" font-size="9">Automated / schedulable</text>
+      <!-- Arrow out -->
+      <line x1="450" y1="120" x2="500" y2="120" stroke="#3D7A52" stroke-width="2.5" marker-end="url(#a5r)"/>
+      <!-- Monthly docs -->
+      <rect x="500" y="20" width="90" height="60" rx="8" fill="#1A4B8C"/>
+      <text x="545" y="47" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">FI Doc</text>
+      <text x="545" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">May 2023</text>
+      <rect x="606" y="20" width="90" height="60" rx="8" fill="#1A4B8C" opacity="0.75"/>
+      <text x="651" y="47" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">FI Doc</text>
+      <text x="651" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">June 2023</text>
+      <rect x="712" y="20" width="90" height="60" rx="8" fill="#1A4B8C" opacity="0.55"/>
+      <text x="757" y="47" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">FI Doc</text>
+      <text x="757" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">July 2023</text>
+      <rect x="818" y="20" width="62" height="60" rx="8" fill="#1A4B8C" opacity="0.35"/>
+      <text x="849" y="50" text-anchor="middle" fill="white" font-family="Inter" font-size="12">···</text>
+      <!-- Connect program to docs -->
+      <line x1="545" y1="80" x2="545" y2="120" stroke="#3D7A52" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a5r)"/>
+      <line x1="651" y1="80" x2="600" y2="120" stroke="#3D7A52" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a5r)"/>
+      <line x1="757" y1="80" x2="660" y2="120" stroke="#3D7A52" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a5r)"/>
+      <!-- Benefits -->
+      <rect x="500" y="150" width="380" height="70" rx="8" fill="rgba(61,122,82,0.08)" stroke="rgba(61,122,82,0.3)" stroke-width="1"/>
+      <text x="690" y="175" text-anchor="middle" fill="#3D7A52" font-family="Syne" font-weight="700" font-size="11">Beneficios del Recurring Entry Program</text>
+      <text x="690" y="193" text-anchor="middle" fill="#3D4A5F" font-family="Inter" font-size="9.5">Sin ingreso manual por período · Mismo importe y datos cada vez</text>
+      <text x="690" y="210" text-anchor="middle" fill="#3D4A5F" font-family="Inter" font-size="9.5">Schedulable por un empleado para todos los colegas</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head">
+    <div class="sec-num">06</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Import Supplier Invoices from Excel</span><span class="sec-title-es">Importar facturas desde Excel</span></div>
+      <div class="sec-desc">Procesar múltiples facturas de una vez descargando una plantilla Excel, completándola y subiéndola al sistema.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>La importación resuelve el caso de múltiples facturas en Excel:</strong> cuando un proveedor envía datos de facturas en un archivo Excel, el proceso manual de ingresarlas una por una consume mucho tiempo. La app <strong>Import Supplier Invoices</strong> permite <strong>importar varias facturas de una sola vez</strong>: el contador descarga una plantilla Excel preformateada, completa los datos de cada factura en las columnas correspondientes, y sube el archivo. El sistema valida los datos y permite contabilizar o guardar todas las facturas en bloque, detectando errores antes de postear.</div>
+  <div class="visual-wrap">
+    <div class="flow4">
+      <div class="fstep">
+        <div class="fstep-head" style="background:var(--cat-log);"><span class="fi">⬇️</span><span class="fn">Download Template</span></div>
+        <div class="fstep-body">Descargar la plantilla Excel preformateada desde la app Import Supplier Invoices.</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:var(--cat-legal);"><span class="fi">📊</span><span class="fn">Fill in Invoice Data</span></div>
+        <div class="fstep-body">Completar los datos de cada factura en las columnas del Excel (proveedor, importe, fecha, etc.).</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:var(--cat-purchase);"><span class="fi">⬆️</span><span class="fn">Upload File</span></div>
+        <div class="fstep-body">Subir el archivo completado a la app. SAP valida los datos y detecta errores antes de proceder.</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:var(--cat-fi);"><span class="fi">✅</span><span class="fn">Post or Save</span></div>
+        <div class="fstep-body">Contabilizar (Post) o guardar como completas (Save as Complete) todas las facturas en bloque.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head">
+    <div class="sec-num">07</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Upload Electronic Supplier Invoices</span><span class="sec-title-es">Cargar facturas electrónicas</span></div>
+      <div class="sec-desc">Subir documentos de factura almacenados como archivos electrónicos y vincularlos a las facturas correspondientes.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Upload vs Import — canales distintos:</strong> la app <strong>Upload Supplier Invoices</strong> sirve para un caso diferente al de Import: aquí se suben <strong>archivos de documentos electrónicos</strong> (ej. PDFs de facturas) almacenados en el directorio local. El sistema puede reconocer automáticamente los datos de la imagen (OCR) y vincular cada archivo como adjunto a la factura correspondiente en SAP. Beneficio clave: el adjunto queda accesible para el contador de AP y para los auditores directamente desde SAP.</div>
+  <div class="visual-wrap">
+    <div class="flow4">
+      <div class="fstep">
+        <div class="fstep-head" style="background:#5A6B8C;"><span class="fi">🚀</span><span class="fn">Open App</span></div>
+        <div class="fstep-body">Abrir la app Upload Supplier Invoices desde el Fiori Launchpad.</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:var(--t1-dark);"><span class="fi">➕</span><span class="fn">Create Upload</span></div>
+        <div class="fstep-body">Hacer click en "Create Upload". Asignar la Company Code correspondiente.</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:var(--cat-purchase);"><span class="fi">📎</span><span class="fn">Select &amp; Upload File</span></div>
+        <div class="fstep-body">Seleccionar el archivo (ej. invoice_doc_ttmmyyyy.pdf) y hacer click en Open para subirlo.</div>
+      </div>
+      <div class="farrow">›</div>
+      <div class="fstep">
+        <div class="fstep-head" style="background:var(--cat-log);"><span class="fi">🔍</span><span class="fn">Confirm &amp; Monitor</span></div>
+        <div class="fstep-body">Mensaje: "All files were uploaded". Revisar estado con filtros de Company Code y Creation Day.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head">
+    <div class="sec-num">08</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Import vs Upload — Two Different Channels</span><span class="sec-title-es">Import vs Upload — dos canales distintos</span></div>
+      <div class="sec-desc">La distinción clave entre importar datos de facturas (Excel) y cargar documentos electrónicos de facturas (PDF).</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Mismo objetivo, distinto mecanismo:</strong> aunque ambos canales buscan reducir el trabajo manual, operan con <strong>tipos de insumo radicalmente distintos</strong>. Import trabaja con <strong>datos estructurados en Excel</strong> — el contador ingresa los valores en columnas y SAP los crea como facturas. Upload trabaja con <strong>archivos de imagen o PDF</strong> — el sistema reconoce los datos de la imagen y los vincula como adjunto al documento SAP correspondiente.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card navy">
+        <span class="icon-big">📊</span>
+        <h4>Import Supplier Invoices <span class="sub">· Desde Excel</span></h4>
+        <ul>
+          <li><strong>Insumo:</strong> archivo Excel con datos de facturas en columnas</li>
+          <li><strong>Origen:</strong> proveedor envía datos en formato tabular</li>
+          <li><strong>Proceso:</strong> descargar plantilla → completar → subir → validar → contabilizar</li>
+          <li><strong>Resultado:</strong> múltiples facturas creadas en SAP de una vez</li>
+          <li><strong>Ventaja:</strong> procesamiento masivo eficiente con validación previa</li>
+        </ul>
+      </div>
+      <div class="card teal">
+        <span class="icon-big">📎</span>
+        <h4>Upload Supplier Invoices <span class="sub">· Documentos electrónicos</span></h4>
+        <ul>
+          <li><strong>Insumo:</strong> archivos de imagen / PDF guardados en el directorio local</li>
+          <li><strong>Origen:</strong> facturas electrónicas recibidas como documentos (ej. scans)</li>
+          <li><strong>Proceso:</strong> abrir app → Create Upload → asignar Company Code → subir archivo</li>
+          <li><strong>Resultado:</strong> adjunto vinculado a la factura SAP · accesible para auditores</li>
+          <li><strong>Ventaja:</strong> centralización de documentos · OCR automático posible</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head">
+    <div class="sec-num">09</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Changes in Posted Documents — Accounting Principles</span><span class="sec-title-es">Modificaciones de documentos contabilizados</span></div>
+      <div class="sec-desc">Por qué los principios contables limitan las modificaciones de documentos FI ya contabilizados.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Inmutabilidad contable — el principio rector:</strong> los principios contables exigen que las modificaciones de asientos ya contabilizados sean <strong>mínimas</strong>. Toda la información contable relevante (claves de contabilización, números de cuenta, fechas de contabilización, importes) <strong>jamás puede modificarse</strong> una vez que el documento FI ha sido contabilizado, porque estos datos ya actualizaron los saldos de cuentas. SAP puede además ser configurado para que los cambios en campos adicionales solo sean posibles bajo condiciones específicas — por ejemplo, solo si el período contable está abierto o si la partida no ha sido reconciliada.</div>
+  <div class="visual-wrap">
+    <div class="g2">
+      <div class="card red">
+        <span class="icon-big">🔒</span>
+        <h4>Why Immutability Matters <span class="sub">· Por qué existe la restricción</span></h4>
+        <p>Una vez contabilizado, el documento FI <strong>actualizó saldos de cuentas</strong> en el GL. Cambiar datos contables retroactivamente rompería la <strong>trazabilidad</strong>, haría imposible la <strong>conciliación</strong> de partidas y comprometería la <strong>auditabilidad</strong> de los libros contables.</p>
+        <p style="margin-top:10px;">La restricción no es un límite técnico — es un <strong>requerimiento contable-legal</strong> que SAP implementa por diseño.</p>
+      </div>
+      <div class="card gold">
+        <span class="icon-big">⚙️</span>
+        <h4>Configurable Change Rules <span class="sub">· Reglas configurables</span></h4>
+        <p>SAP permite configurar qué campos <strong>no contables</strong> pueden modificarse después de la contabilización. Las condiciones típicas son:</p>
+        <ul>
+          <li>Solo si el <strong>período contable está abierto</strong></li>
+          <li>Solo si la <strong>partida no ha sido reconciliada</strong> (compensada)</li>
+          <li>Solo ciertos campos (texto de posición, referencia, condiciones de pago)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head">
+    <div class="sec-num">10</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Document Fields — Changeable vs Non-Changeable</span><span class="sec-title-es">Campos modificables vs no modificables</span></div>
+      <div class="sec-desc">El mapa completo de campos del documento FI y su estado de modificabilidad.</div>
+    </div>
+  </div>
+  <div class="theory-box"><strong>Dos categorías, cuatro tipos de campo:</strong> los campos de un documento FI (cabecera + posiciones) se dividen en: <strong>nunca modificables</strong> (tienen impacto contable directo en saldos), y <strong>modificables bajo condición</strong> (campos descriptivos o de gestión que pueden ajustarse según la configuración). El contador de AP debe conocer este mapa para saber qué correcciones puede hacer y cuáles requieren reversión del documento.</div>
+  <div class="visual-wrap">
+    <table class="data-table">
+      <thead><tr><th>Sección del documento</th><th>Campos NUNCA modificables</th><th>Campos modificables (según config.)</th></tr></thead>
+      <tbody>
+        <tr class="section-head"><td colspan="3">📋 Document Header / Cabecera del documento</td></tr>
+        <tr>
+          <td><span class="strong">Header — datos de control</span></td>
+          <td>Document Number · Document Date · Posting Date · Company Code · Document Type · Period · Currency · Fiscal Year <span class="badge badge-red" style="display:inline-block;margin-top:4px;">NEVER</span></td>
+          <td>Document Header Text · Reference <span class="badge badge-gold" style="display:inline-block;margin-top:4px;">Config.</span></td>
+        </tr>
+        <tr class="section-head"><td colspan="3">📑 Document Items / Posiciones del documento</td></tr>
+        <tr>
+          <td><span class="strong">Items — datos contables</span></td>
+          <td>Account · Posting Key · Amount · Tax ID <span class="badge badge-red" style="display:inline-block;margin-top:4px;">NEVER</span></td>
+          <td rowspan="3">Item Text · Assignment · <br><strong>Payment related:</strong><br>Payment Terms · Baseline Date · Due Date · Payment Block <span class="badge badge-gold" style="display:inline-block;margin-top:4px;">Config.</span></td>
+        </tr>
+        <tr>
+          <td><span class="strong">Items — información adicional</span></td>
+          <td>Cost Center · Profit Center · Business Area · Segment <span class="badge badge-red" style="display:inline-block;margin-top:4px;">NEVER</span></td>
+        </tr>
+        <tr>
+          <td><span class="strong">Items — pago</span></td>
+          <td style="color:var(--muted);font-size:0.8rem;font-style:italic;">(los campos de pago sí son modificables bajo condición)</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:6px;"><span class="badge badge-red">NEVER</span><span style="font-size:0.82rem;color:var(--muted);">= Nunca permitido · ya actualizó saldos de cuentas</span></div>
+      <div style="display:flex;align-items:center;gap:6px;"><span class="badge badge-gold">Config.</span><span style="font-size:0.82rem;color:var(--muted);">= Permitido según configuración y condiciones (período abierto / partida no reconciliada)</span></div>
+    </div>
+  </div>
+</section>
+
+</main>
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Recurring Entry</div><div class="term-es">Entrada recurrente</div><div class="term-def">Asiento contable generado automáticamente en forma periódica (diaria, semanal, mensual) a partir de una plantilla preconfigurada.</div></div>
+      <div class="gcard"><div class="term-en">Original Document (Recurring Template)</div><div class="term-es">Documento original / Plantilla</div><div class="term-def">El primer documento creado que contiene los datos fijos de la factura recurrente más el patrón y fecha de inicio. No genera asiento contable por sí mismo.</div></div>
+      <div class="gcard"><div class="term-en">Recurring Entry Program</div><div class="term-es">Programa de entradas recurrentes</div><div class="term-def">Programa SAP que lee las plantillas activas y genera los documentos FI reales para el período de ejecución. Puede programarse automáticamente.</div></div>
+      <div class="gcard"><div class="term-en">Recurrence Pattern</div><div class="term-es">Patrón de recurrencia</div><div class="term-def">La frecuencia con que el Recurring Entry Program debe generar documentos: diario, semanal o mensual.</div></div>
+      <div class="gcard"><div class="term-en">Recurrence Start Date</div><div class="term-es">Fecha de inicio de recurrencia</div><div class="term-def">La primera fecha a partir de la cual el programa comenzará a generar documentos FI basados en la plantilla.</div></div>
+      <div class="gcard"><div class="term-en">Import Supplier Invoices</div><div class="term-es">Importar facturas de proveedor</div><div class="term-def">Función que permite cargar datos de múltiples facturas desde un archivo Excel preformateado y contabilizarlas en bloque.</div></div>
+      <div class="gcard"><div class="term-en">Upload Supplier Invoices</div><div class="term-es">Cargar facturas electrónicas</div><div class="term-def">Función que permite subir archivos electrónicos de facturas (PDF, imágenes) y vincularlos como adjuntos a los documentos SAP correspondientes.</div></div>
+      <div class="gcard"><div class="term-en">Edit Supplier Invoice Settings</div><div class="term-es">Configurar parámetros de factura</div><div class="term-def">App Fiori que permite a cada usuario de AP personalizar su experiencia individual al procesar facturas (mostrar asiento, precarga de Company Code/proveedor, moneda).</div></div>
+      <div class="gcard"><div class="term-en">User-Specific Parameter</div><div class="term-es">Parámetro específico de usuario</div><div class="term-def">Configuración guardada por usuario individual en SAP que afecta la presentación y comportamiento de las apps sin impactar a otros usuarios.</div></div>
+      <div class="gcard"><div class="term-en">Mass Change</div><div class="term-es">Cambio masivo</div><div class="term-def">Modificación simultánea de un campo en múltiples partidas abiertas de proveedores. Ej: actualizar payment terms en todas las facturas abiertas de un proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Immutable Field</div><div class="term-es">Campo no modificable</div><div class="term-def">Campo del documento FI que NUNCA puede cambiarse después de la contabilización porque ya impactó en saldos de cuentas (ej. importe, cuenta, clave de contabilización).</div></div>
+      <div class="gcard"><div class="term-en">Changeable Field</div><div class="term-es">Campo modificable</div><div class="term-def">Campo del documento FI que puede modificarse bajo ciertas condiciones configurables (período abierto, partida no reconciliada). Ej: referencia, texto de partida, condiciones de pago.</div></div>
+    </div>
+  </div>
+</section>
+<footer>T1 · Básico — Supplier Invoice Optimization (AP) · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+</body>
+</html>

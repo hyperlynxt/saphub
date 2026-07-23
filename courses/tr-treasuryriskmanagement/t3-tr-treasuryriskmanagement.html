@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Treasury &amp; Risk Management — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-blue:#0070F2;
+    --sap-bg:#F5F6F7;
+    --sap-tile-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #132A36 55%, #1C4A5F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .actor-badge{ display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t3-dark); color:white; margin-left:8px; vertical-align:middle; }
+
+  .theory-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .breadcrumb-nav{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
+  .breadcrumb-nav .sep{ color:var(--t3-pale-border); }
+  .breadcrumb-nav .current{ color:var(--t3-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .fiori-mock{ background:var(--sap-bg); border:1px solid var(--sap-tile-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .fiori-shellbar{ background:var(--sap-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .fiori-shellbar .fs-title{ font-size:12.5px; }
+  .fiori-shellbar .fs-user{ width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:10px; }
+  .fiori-body{ padding:18px 20px; background:white; }
+  .fiori-page-title{ font-size:16px; font-weight:600; color:#1D2D3E; margin:0 0 12px; }
+
+  .fiori-tiles{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .fiori-tile{ background:white; border:1px solid var(--sap-tile-border); border-radius:6px; padding:14px; }
+  .fiori-tile .tile-num{ font-size:20px; font-weight:700; color:var(--sap-blue); }
+  .fiori-tile .tile-label{ font-size:11px; color:#5B738B; margin-top:4px; }
+  .fiori-tile.highlight{ border-color:var(--sap-blue); background:#EBF5FF; }
+  .fiori-tile.alert{ border-color:#C9932E; background:#FFF8E8; }
+  .fiori-tile.alert .tile-num{ color:#8A6A1E; }
+  .fiori-tile.good .tile-num{ color:#187A32; }
+
+  .fiori-list{ border:1px solid var(--sap-tile-border); border-radius:6px; overflow:hidden; }
+  .fiori-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid #EDEFF1; font-size:12.5px; background:white; }
+  .fiori-row:last-child{ border-bottom:none; }
+  .fiori-row .fr-main{ font-weight:600; color:#1D2D3E; }
+  .fiori-row .fr-sub{ font-size:10.5px; color:#5B738B; margin-top:2px; }
+  .fr-badge{ font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fr-badge.high{ background:#E3F7E6; color:#187A32; }
+  .fr-badge.medium{ background:#FFF3D6; color:#8A6A1E; }
+  .fr-badge.low{ background:#FDE7E7; color:#A32D2D; }
+  .fr-badge.open{ background:#E6F1FB; color:#0C447C; }
+  .fr-badge.ai{ background:#EDE7FB; color:#5D3E82; }
+
+  .fiori-btn{ background:var(--sap-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .fiori-btn.ghost{ background:white; color:var(--sap-blue); border:1px solid var(--sap-blue); }
+
+  .fiori-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .fiori-field{ flex:1; min-width:140px; }
+  .fiori-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .fiori-field .ffval{ border:1px solid var(--sap-tile-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+
+  .fiori-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .fiori-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sap-tile-border); }
+  .fiori-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .fiori-table td.neg{ color:#A32D2D; }
+  .fiori-table td.pos{ color:#187A32; }
+
+  .fiori-kpi-row{ display:flex; gap:14px; }
+  .fiori-kpi{ flex:1; background:white; border:1px solid var(--sap-tile-border); border-radius:6px; padding:14px; text-align:center; }
+  .fiori-kpi .kv{ font-size:20px; font-weight:700; color:var(--sap-blue); }
+  .fiori-kpi .kl{ font-size:10.5px; color:#5B738B; margin-top:3px; }
+  .fiori-kpi.good .kv{ color:#187A32; }
+  .fiori-kpi.warn .kv{ color:#8A6A1E; }
+
+  .situation-banner{ background:#FFF8E8; border:1px solid #E0D48A; border-radius:6px; padding:10px 14px; margin-bottom:12px;
+    display:flex; align-items:center; gap:10px; font-size:11.5px; color:#5C4A1E; }
+  .situation-banner .sb-icon{ font-size:16px; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px;
+    font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){ .fiori-tiles{ grid-template-columns:1fr; } .fiori-kpi-row{ flex-direction:column; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Trading Cockpit</a>
+  <a href="#s2">Requesting a Deal</a>
+  <a href="#s3">Executing via 360T</a>
+  <a href="#s4">Trade Correspondence</a>
+  <a href="#s5">Counterparty Limit Check</a>
+  <a href="#s6">Hedge Management Cockpit</a>
+  <a href="#s7">Posting the Hedge</a>
+  <a href="#s8">Reviewing Market Rates</a>
+  <a href="#s9">Consolidated Exposure</a>
+  <a href="#s10">Regulatory Report Export</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Treasury &amp; Risk Management</span>
+      <span class="pill pill-secondary">Market Rates Management</span>
+      <span class="pill pill-secondary">Trading Platform Integration</span>
+    </div>
+    <h1>Treasury &amp; Risk Management — <span class="accent">Día a Día</span></h1>
+    <h2>Tangibilización Usuario (Fiori)</h2>
+    <p class="desc">Un día de trading y gestión de riesgo real: pedir un deal, ejecutarlo en una plataforma externa, confirmarlo, cubrir una exposición, y cerrar el día con la posición consolidada lista para reportar.</p>
+    <div class="protagonist">
+      <div class="avatar">S</div>
+      <div>
+        <div class="p-name">Sofía</div>
+        <div class="p-role">Treasury Analyst — Bike GmbH (DE01) / Bike Inc (US01)</div>
+        <div class="p-note">tesorería global del grupo Bike Company</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Starting the Day at the Trading Cockpit</span>
+          <span class="sec-title-es">Arrancando el día en el trading cockpit</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">La primera pantalla de un día con posiciones y riesgo que revisar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía ve, de un vistazo, cuántos deals están pendientes de confirmación, cuántas coberturas necesitan atención y cómo está la valuación general de la cartera — insights en tiempo real, no un reporte de ayer.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Fiori Launchpad <span class="sep">›</span> <span class="current">Trading Overview</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">SAP Fiori · Bike Company Group</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">My Home — Treasury &amp; Risk</p>
+          <div class="fiori-tiles">
+            <div class="fiori-tile highlight"><div class="tile-num">3</div><div class="tile-label">Pending Confirmations</div></div>
+            <div class="fiori-tile"><div class="tile-num">€2.1M</div><div class="tile-label">Portfolio Valuation</div></div>
+            <div class="fiori-tile alert"><div class="tile-num">1</div><div class="tile-label">Limit Warnings</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Requesting a New FX Deal</span>
+          <span class="sec-title-es">Solicitando un deal FX nuevo</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">La primera etapa del ciclo de vida del deal: la solicitud.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Bike Inc necesita cubrir un pago en euros. Sofía inicia la solicitud del deal desde el sistema, no desde una llamada suelta a un banco.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Deal Management <span class="sep">›</span> <span class="current">New Deal Request</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Deal Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">New FX Deal Request</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Instrument</label><div class="ffval">FX Forward</div></div>
+            <div class="fiori-field"><label>Currency Pair</label><div class="ffval">EUR/USD</div></div>
+            <div class="fiori-field"><label>Notional</label><div class="ffval">€500,000.00</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Submit Request</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Executing via 360T</span>
+          <span class="sec-title-es">Ejecutando vía 360T</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">El beneficio de smart trading, en la pantalla real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El deal solicitado sale automáticamente a pedir cotización a varios bancos en 360T. Sofía ve las ofertas y ejecuta contra la mejor — sin llamar banco por banco.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Deal Management <span class="sep">›</span> <span class="current">360T Quotes</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Trading Platform Integration — 360T</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Live Quotes — EUR/USD Forward</p>
+          <table class="fiori-table">
+            <tr><th>Bank</th><th>Rate</th><th>Action</th></tr>
+            <tr><td>Deutsche Bank</td><td>1.0850</td><td>Execute</td></tr>
+            <tr><td>Commerzbank</td><td>1.0847</td><td>Execute</td></tr>
+            <tr><td>Wells Fargo</td><td>1.0852</td><td>Execute</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="visual-caption">Sofía ejecuta contra Commerzbank, la mejor cotización de las tres</div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Confirming Trade Correspondence</span>
+          <span class="sec-title-es">Confirmando la correspondencia del trade</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">El deal ejecutado llega ya estructurado, sin que Sofía tenga que re-tipearlo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Gracias a straight-through processing, el deal llega directo desde 360T con los términos ya cargados. Sofía solo valida que coincidan antes de que avance a valuación.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Deal Management <span class="sep">›</span> <span class="current">Confirm Correspondence</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Deal Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Deal FX-20456 — Commerzbank</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Notional (received)</label><div class="ffval">€500,000.00</div></div>
+            <div class="fiori-field"><label>Rate (received)</label><div class="ffval">1.0847</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Confirm Match</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">A Counterparty Limit Warning</span>
+          <span class="sec-title-es">Una alerta de límite por contraparte</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">El tile de alerta que Sofía vio en la sección 1, resuelto acá.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un segundo deal con Commerzbank llevaría la exposición total con ese banco casi al límite. El sistema lo marca antes de ejecutar — no después.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Deal Management <span class="sep">›</span> <span class="current">Limit Check</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Deal Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <div class="situation-banner"><span class="sb-icon">⚠️</span> Counterparty limit warning: Commerzbank exposure would reach 94% of approved limit</div>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Deal FX-20460 — pending</div><div class="fr-sub">Requires manager approval</div></div><span class="fr-badge open">Review</span></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Request Approval</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Hedge Management Cockpit</span>
+          <span class="sec-title-es">El cockpit de gestión de coberturas</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">Donde vive la vista consolidada de todas las coberturas activas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía revisa cómo está la relación entre el instrumento de cobertura y la exposición que protege — el forward de la sección 2 ya aparece cubriendo el flujo intercompañía.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Hedge Management Cockpit <span class="sep">›</span> <span class="current">Active Hedges</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Hedge Management Cockpit</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Active Hedges — Bike Company Group</p>
+          <table class="fiori-table">
+            <tr><th>Hedge</th><th>Exposure Covered</th><th>Effectiveness</th></tr>
+            <tr><td>FX-20456 (Forward)</td><td>DE01 → US01 intercompany flow</td><td class="pos">High</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Hedge Under IFRS</span>
+          <span class="sec-title-es">Contabilizando la cobertura bajo IFRS</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">De la valuación a un asiento real, cumpliendo el estándar contable correspondiente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Con la efectividad ya validada, Sofía contabiliza el resultado del hedge — el sistema aplica el tratamiento IFRS correspondiente sin que ella tenga que calcular nada a mano.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Hedge Accounting <span class="sep">›</span> <span class="current">Post Hedge Result</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Hedge Accounting</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Hedge Result — FX-20456 (IFRS)</p>
+          <table class="fiori-table">
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Hedge Reserve (OCI)</td><td>—</td><td>€3,150.00</td></tr>
+            <tr><td>FX Forward Asset</td><td>€3,150.00</td><td>—</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="dc-note">
+        <span class="dc-label">Debe / Haber</span>
+        Bajo hedge accounting IFRS, la ganancia efectiva del forward (€3.150) se <b>debita</b> a FX Forward Asset y se <b>acredita</b> a la reserva de cobertura en Other Comprehensive Income (OCI) — no impacta el resultado del período directamente, mientras la cobertura siga siendo efectiva.
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing Market Rates</span>
+          <span class="sec-title-es">Revisando tasas de mercado</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">El dato que hizo posible valuar el hedge de la sección anterior.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de confiar en la valuación, Sofía verifica que las tasas EUR/USD que usó el sistema vinieron de REFINITIV y están actualizadas al día.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Market Rates Management <span class="sep">›</span> <span class="current">Rate Feed Status</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Market Rates Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Rate Feed — EUR/USD</p>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">REFINITIV</div><div class="fr-sub">Last update: 2 minutes ago</div></div><span class="fr-badge high">Live</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking Consolidated Exposure</span>
+          <span class="sec-title-es">Revisando la exposición consolidada</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">El beneficio de "consolidated exposure positions" del T1, en su forma final del día.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Sofía ve la exposición total de FX del grupo, combinando datos de ERP, el forward recién ejecutado, y el forecast de flujos futuros — todo en una sola vista.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Exposure Management <span class="sep">›</span> <span class="current">Consolidated View</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Exposure Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">FX Exposure — Bike Company Group</p>
+          <div class="fiori-kpi-row">
+            <div class="fiori-kpi good"><div class="kv">€12,000</div><div class="kl">Net Exposure (After Hedge)</div></div>
+            <div class="fiori-kpi"><div class="kv">€500,000</div><div class="kl">Hedged Amount</div></div>
+            <div class="fiori-kpi warn"><div class="kv">€95,000</div><div class="kl">Unhedged (Forecast)</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Exporting the Regulatory Report</span>
+          <span class="sec-title-es">Exportando el reporte regulatorio</span>
+          <span class="actor-badge">S</span>
+        </div>
+        <div class="sec-desc">El beneficio de compliance regulatorio, en el cierre del día.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de cerrar, Sofía exporta el reporte de exposición y coberturas del día — el mismo dato que ya vio en pantalla, listo en el formato que Compliance necesita para Basel III e IFRS 7.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Exposure Management <span class="sep">›</span> <span class="current">Regulatory Export</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Exposure Management</span><span class="fs-user">S</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Export Regulatory Report</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Framework</label><div class="ffval">Basel III / IFRS 7</div></div>
+            <div class="fiori-field"><label>Scope</label><div class="ffval">Bike Company Group</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Export Report</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Treasury &amp; Risk Management · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

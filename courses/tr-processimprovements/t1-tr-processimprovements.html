@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Treasury Process Improvements — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t1); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t1-pale); border-left:4px solid var(--t1); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t1-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(61,122,82,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  .theory-box{ background:var(--t1-pale); border-left:4px solid var(--t1-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g2{ grid-template-columns:repeat(2,1fr); }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g7{ grid-template-columns:repeat(7,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card.compact{ padding:11px 8px; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card.compact .icon{ font-size:16px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card.compact h6{ font-size:0.68rem; line-height:1.3; }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:170px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t1-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t1-dark); font-weight:700; }
+
+  .before-after{ display:grid; grid-template-columns:1fr auto 1fr; gap:16px; align-items:center; min-width:600px; }
+  .ba-box{ border-radius:10px; padding:16px 18px; text-align:center; }
+  .ba-box.before{ background:#FDE7E7; border:1.5px solid #E0A5A5; }
+  .ba-box.after{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); }
+  .ba-box .ba-label{ font-size:9.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; margin-bottom:6px; display:block; }
+  .ba-box.before .ba-label{ color:#A32D2D; }
+  .ba-box.after .ba-label{ color:var(--t1-dark); }
+  .ba-box .ba-text{ font-size:0.86rem; color:var(--ink); line-height:1.5; }
+  .ba-arrow{ font-size:24px; color:var(--t1-dark); font-weight:700; }
+
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){
+    .cards-grid.g2, .cards-grid.g3, .cards-grid.g7{ grid-template-columns:1fr; }
+    .before-after{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">From Transactional to Strategic</a>
+  <a href="#s2">Real-Time Cash Visibility</a>
+  <a href="#s3">Automated Financial Processes</a>
+  <a href="#s4">Enhanced Risk Management</a>
+  <a href="#s5">Centralized Treasury Operations</a>
+  <a href="#s6">Improved Analytics &amp; Reporting</a>
+  <a href="#s7">Seamless Integration</a>
+  <a href="#s8">Scalability &amp; Flexibility</a>
+  <a href="#s9">How They Reinforce Each Other</a>
+  <a href="#s10">The Strategic Partner Outcome</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Treasury Portfolio</span>
+      <span class="pill pill-secondary">Cash Management</span>
+      <span class="pill pill-secondary">Treasury &amp; Risk Management</span>
+      <span class="pill pill-secondary">Embedded Analytics</span>
+    </div>
+    <h1>Treasury Process <span class="accent">Improvements</span></h1>
+    <h2>Mejoras de Proceso del Portfolio de Tesorería</h2>
+    <p class="desc">Siete mejoras de proceso concretas que trae implementar SAP S/4HANA Treasury and Cash Management — y cómo, juntas, transforman a tesorería de un área transaccional a un socio estratégico del negocio.</p>
+    <div class="hlbox">Resumen Visual — <b>Treasury Process Improvements</b>, Tipo 1 (Básico). 10 secciones — las siete mejoras de proceso, cómo se refuerzan entre sí, y el resultado final: tesorería como socio estratégico.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">From Transactional to Strategic</span>
+          <span class="sec-title-es">De transaccional a estratégico</span>
+        </div>
+        <div class="sec-desc">El hilo conductor de las siete mejoras que vienen a continuación.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> implementar SAP S/4HANA Treasury and Cash Management trae mejoras significativas de proceso y eficiencia, tanto para usuarios como para la organización. Las capacidades en tiempo real, la automatización, y la analítica avanzada permiten que los equipos de tesorería dejen de ser puramente transaccionales y se conviertan en verdaderos socios estratégicos del negocio.
+    </div>
+    <div class="visual-wrap">
+      <div class="before-after">
+        <div class="ba-box before">
+          <span class="ba-label">Antes</span>
+          <div class="ba-text">Equipo de tesorería enfocado en tareas transaccionales</div>
+        </div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-box after">
+          <span class="ba-label">Después</span>
+          <div class="ba-text">Socio estratégico del negocio, con decisiones más ágiles</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Real-Time Cash Visibility and Liquidity Management</span>
+          <span class="sec-title-es">Visibilidad de caja y liquidez en tiempo real</span>
+        </div>
+        <div class="sec-desc">La primera mejora: ver la posición financiera al minuto, no al cierre del día.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué habilita esto?</strong> SAP S/4HANA da visibilidad comprensiva y en tiempo real sobre posiciones de caja, a través de cuentas bancarias y subsidiarias. La capacidad de integrar datos en vivo de múltiples fuentes da a los tesoreros una vista al minuto de la posición financiera de la empresa, permitiendo una gestión de caja más ágil y estratégica.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🔮</span><h6>Better Forecasting</h6><p>Mejora el pronóstico de flujo de caja y la planificación de liquidez.</p></div>
+        <div class="mini-card"><span class="icon">⚡</span><h6>Faster Decisions</h6><p>Decisiones más rápidas y precisas sobre inversión y endeudamiento.</p></div>
+        <div class="mini-card"><span class="icon">💼</span><h6>Optimized Working Capital</h6><p>Gestión optimizada del capital de trabajo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Automated Financial Processes</span>
+          <span class="sec-title-es">Procesos financieros automatizados</span>
+        </div>
+        <div class="sec-desc">La segunda mejora: liberar a tesorería de tareas manuales repetitivas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> SAP S/4HANA automatiza muchas tareas manuales de tesorería, aumentando la eficiencia y reduciendo errores. Esta automatización libera al equipo de tesorería para enfocarse en actividades más estratégicas, a la vez que mejora la precisión y el control.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">💱</span><h6>FX Exposure Capture</h6><p>Captura automatizada de exposiciones de tipo de cambio.</p></div>
+        <div class="mini-card"><span class="icon">🏦</span><h6>Payment &amp; Reconciliation</h6><p>Procesamiento de pagos y conciliación bancaria más fluidos.</p></div>
+        <div class="mini-card"><span class="icon">📝</span><h6>Trading Deal Requests</h6><p>Solicitudes y confirmaciones de deals automatizadas.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Enhanced Risk Management</span>
+          <span class="sec-title-es">Gestión de riesgo mejorada</span>
+        </div>
+        <div class="sec-desc">La tercera mejora: anticipar el riesgo, en vez de solo reaccionar a él.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué permite esto?</strong> El sistema ofrece herramientas robustas para identificar, evaluar y mitigar riesgos financieros — incluyendo propuestas automatizadas de hedging, análisis de escenarios y stress testing, y compliance integrado con estándares contables como IFRS y US GAAP. Esto permite un enfoque más proactivo hacia el riesgo, potencialmente reduciendo pérdidas financieras y mejorando el compliance regulatorio.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🛡️</span><h6>Automated Hedging Proposals</h6><p>Propuestas automáticas para cubrir riesgo de FX.</p></div>
+        <div class="mini-card"><span class="icon">🌪️</span><h6>Scenario &amp; Stress Testing</h6><p>Análisis de escenarios adversos antes de que ocurran.</p></div>
+        <div class="mini-card"><span class="icon">📘</span><h6>IFRS &amp; US GAAP Compliance</h6><p>Compliance integrado con estándares contables clave.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Centralized Treasury Operations</span>
+          <span class="sec-title-es">Operaciones de tesorería centralizadas</span>
+        </div>
+        <div class="sec-desc">La cuarta mejora: un solo lugar en vez de operaciones dispersas por subsidiaria.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> SAP S/4HANA habilita la centralización de las actividades de tesorería, dando una vista consolidada de las operaciones globales, procesos estandarizados en toda la organización, y mejor coordinación entre tesorería y otras unidades de negocio. Esta centralización puede generar ahorros significativos de costos y una gestión más efectiva de los recursos financieros a nivel empresa.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Consolidated Global View</div><div class="t-es">vista global consolidada</div></div>
+        <div class="chain-arrow">+</div>
+        <div class="chain-box"><div class="t-en">Standardized Processes</div><div class="t-es">procesos estandarizados</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Cost Savings</div><div class="t-es">ahorro de costos</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Improved Analytics and Reporting</span>
+          <span class="sec-title-es">Analítica y reporting mejorados</span>
+        </div>
+        <div class="sec-desc">La quinta mejora: decisiones basadas en datos, no en intuición.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué ofrece esto?</strong> Las capacidades avanzadas de analítica del sistema dan insights en tiempo real sobre el desempeño de tesorería, dashboards personalizables por rol de usuario, y forecasting mejorado usando machine learning e IA — permitiendo decisiones basadas en datos e identificando tendencias y oportunidades más rápido.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📊</span><h6>Real-Time Performance Insights</h6><p>Visibilidad al instante sobre el desempeño de tesorería.</p></div>
+        <div class="mini-card"><span class="icon">🎛️</span><h6>Customizable Dashboards</h6><p>Distintas vistas según el rol del usuario.</p></div>
+        <div class="mini-card"><span class="icon">🤖</span><h6>ML/AI-Enhanced Forecasting</h6><p>Forecasting mejorado con machine learning e IA.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Seamless Integration</span>
+          <span class="sec-title-es">Integración sin fricción</span>
+        </div>
+        <div class="sec-desc">La sexta mejora: eliminar silos de datos, no solo conectar sistemas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> SAP S/4HANA Treasury se integra sin fricción con otros módulos SAP y sistemas externos — conexión directa con plataformas de trading y proveedores de datos de mercado, integración con sistemas de comunicación bancaria, y vinculación con procesos de negocio centrales. Esta integración elimina silos de datos, mejora la precisión de los datos, y da una vista más holística de las actividades financieras de la organización.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">📈</span><h6>Trading &amp; Market Data</h6><p>Conexión directa con plataformas de trading y proveedores de datos.</p></div>
+        <div class="mini-card"><span class="icon">🏦</span><h6>Bank Communication Systems</h6><p>Integración con los sistemas de comunicación bancaria.</p></div>
+        <div class="mini-card"><span class="icon">🔗</span><h6>Core Business Processes</h6><p>Vinculación directa con procesos centrales de SAP S/4HANA.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Scalability and Flexibility</span>
+          <span class="sec-title-es">Escalabilidad y flexibilidad</span>
+        </div>
+        <div class="sec-desc">La séptima mejora: crecer y adaptarse sin fricción, gracias al despliegue cloud.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> la opción de despliegue cloud de SAP S/4HANA Treasury ofrece implementación y actualizaciones rápidas, escalabilidad para acompañar el crecimiento del negocio, y flexibilidad para adaptarse a condiciones de mercado cambiantes — permitiendo que la organización se mantenga ágil y adopte nuevas capacidades de tesorería según las necesite.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🚀</span><h6>Rapid Implementation</h6><p>Implementación y actualizaciones rápidas en la nube.</p></div>
+        <div class="mini-card"><span class="icon">📈</span><h6>Scalability</h6><p>Se adapta al crecimiento del negocio sin fricción.</p></div>
+        <div class="mini-card"><span class="icon">🔀</span><h6>Market Flexibility</h6><p>Se ajusta a condiciones de mercado cambiantes.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How the Seven Improvements Reinforce Each Other</span>
+          <span class="sec-title-es">Cómo las siete mejoras se refuerzan entre sí</span>
+        </div>
+        <div class="sec-desc">No son siete beneficios sueltos — se alimentan unos a otros.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> la visibilidad en tiempo real solo es posible gracias a la integración sin silos; la automatización libera tiempo que se invierte en gestión de riesgo más proactiva; la centralización estandariza los datos que alimentan la analítica avanzada; y la escalabilidad cloud es lo que permite que todo lo anterior se implemente rápido y siga evolucionando.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g7">
+        <div class="mini-card compact"><span class="icon">👁️</span><h6>Real-Time Visibility</h6></div>
+        <div class="mini-card compact"><span class="icon">⚙️</span><h6>Automation</h6></div>
+        <div class="mini-card compact"><span class="icon">🛡️</span><h6>Risk Mgmt.</h6></div>
+        <div class="mini-card compact"><span class="icon">🎯</span><h6>Centralization</h6></div>
+        <div class="mini-card compact"><span class="icon">📊</span><h6>Analytics</h6></div>
+        <div class="mini-card compact"><span class="icon">🔗</span><h6>Integration</h6></div>
+        <div class="mini-card compact"><span class="icon">🚀</span><h6>Scalability</h6></div>
+      </div>
+      <div class="visual-caption">siete mejoras, un mismo sistema — cada una depende un poco de las demás</div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Strategic Partner Outcome</span>
+          <span class="sec-title-es">El resultado: socio estratégico</span>
+        </div>
+        <div class="sec-desc">Cerrando el círculo con el que arrancó esta guía.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> implementando SAP S/4HANA Treasury and Cash Management, las organizaciones pueden simplificar significativamente sus flujos de trabajo de tesorería, logrando mayor eficiencia, mejor gestión de riesgo, y una toma de decisiones financieras más estratégica. Las capacidades en tiempo real, la automatización y la analítica avanzada le permiten al equipo de tesorería dejar las actividades puramente transaccionales y convertirse en un socio estratégico real del negocio.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Streamlined Workflows</div><div class="t-es">flujos simplificados</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Efficiency + Risk Mgmt. + Decisions</div><div class="t-es">eficiencia, riesgo y decisiones</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Treasury as Strategic Partner</div><div class="t-es">tesorería como socio estratégico</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos clave de Treasury Process Improvements — Tipo 1</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Liquidity Planning</div><div class="term-es">Planificación de Liquidez</div><div class="term-def">Proceso de proyectar y organizar la disponibilidad futura de efectivo de la organización.</div></div>
+      <div class="gcard"><div class="term-en">FX Exposure</div><div class="term-es">Exposición Cambiaria</div><div class="term-def">Riesgo financiero derivado de movimientos en el tipo de cambio.</div></div>
+      <div class="gcard"><div class="term-en">Hedging Proposal</div><div class="term-es">Propuesta de Cobertura</div><div class="term-def">Sugerencia automática de un instrumento o estrategia para cubrir un riesgo financiero.</div></div>
+      <div class="gcard"><div class="term-en">Scenario Analysis</div><div class="term-es">Análisis de Escenarios</div><div class="term-def">Evaluación de cómo distintas condiciones futuras afectarían la posición financiera.</div></div>
+      <div class="gcard"><div class="term-en">Stress Testing</div><div class="term-es">Prueba de Estrés</div><div class="term-def">Simulación de condiciones extremas para evaluar la resiliencia financiera.</div></div>
+      <div class="gcard"><div class="term-en">US GAAP</div><div class="term-es">US GAAP</div><div class="term-def">Principios de contabilidad generalmente aceptados en Estados Unidos.</div></div>
+      <div class="gcard"><div class="term-en">Consolidated View</div><div class="term-es">Vista Consolidada</div><div class="term-def">Panorama unificado de operaciones que antes estaban dispersas entre subsidiarias.</div></div>
+      <div class="gcard"><div class="term-en">Customizable Dashboard</div><div class="term-es">Dashboard Personalizable</div><div class="term-def">Panel de indicadores que se adapta según el rol del usuario que lo consulta.</div></div>
+      <div class="gcard"><div class="term-en">Data Silo</div><div class="term-es">Silo de Datos</div><div class="term-def">Conjunto de información aislada en un sistema, sin conexión con el resto de la organización.</div></div>
+      <div class="gcard"><div class="term-en">Market Data Provider</div><div class="term-es">Proveedor de Datos de Mercado</div><div class="term-def">Entidad externa que suministra tasas de cambio, interés u otros datos de mercado.</div></div>
+      <div class="gcard"><div class="term-en">Cloud Deployment</div><div class="term-es">Despliegue en la Nube</div><div class="term-def">Modelo de implementación donde el proveedor gestiona la infraestructura técnica.</div></div>
+      <div class="gcard"><div class="term-en">Strategic Partner (Treasury Role)</div><div class="term-es">Socio Estratégico (Rol de Tesorería)</div><div class="term-def">Rol de tesorería enfocado en aportar valor al negocio más allá de tareas transaccionales.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Treasury Process Improvements · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

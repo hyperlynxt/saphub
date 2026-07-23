@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Advanced Payment Management — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A2020 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t2-pale); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-kind{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .sec-kind.depth{ background:rgba(169,68,68,0.12); color:var(--t2-dark); }
+  .sec-kind.adjacent{ background:#E8EDF6; color:#1A4B8C; }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .compare-card{ border:1.5px solid var(--t2-pale-border); border-radius:12px; padding:20px 20px; background:white; }
+  .compare-card h5{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:1rem; color:var(--t2-dark); }
+  .compare-card .en{ font-size:0.72rem; color:var(--muted); font-style:italic; display:block; margin-bottom:10px; }
+  .compare-card ul{ margin:0; padding-left:18px; }
+  .compare-card li{ font-size:0.86rem; color:var(--body); margin-bottom:6px; line-height:1.5; }
+
+  .cards-grid{ display:grid; gap:16px; }
+  .cards-grid.g3{ grid-template-columns:repeat(3,1fr); }
+  .cards-grid.g4{ grid-template-columns:repeat(4,1fr); }
+  .mini-card{ border:1px solid var(--border); border-radius:10px; padding:16px 16px; background:white; }
+  .mini-card .icon{ font-size:20px; display:block; margin-bottom:6px; }
+  .mini-card h6{ margin:0 0 4px; font-family:'Syne',sans-serif; font-size:0.86rem; color:var(--ink); }
+  .mini-card p{ margin:0; font-size:0.78rem; color:var(--muted); line-height:1.5; }
+
+  .vert-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:440px; }
+  .vf-box{ background:white; border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:12px 20px; text-align:center; min-width:320px; }
+  .vf-box.tier1{ border-color:var(--t2-dark); background:var(--t2-pale); font-weight:700; }
+  .vf-box.tier2{ border-style:dashed; }
+  .vf-arrow{ font-size:20px; color:var(--t2-dark); }
+
+  .chain-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; min-width:600px; }
+  .chain-box{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; min-width:150px; }
+  .chain-box .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; color:var(--t2-dark); }
+  .chain-box .t-es{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .chain-arrow{ font-size:20px; color:var(--t2-dark); font-weight:700; }
+
+  .glossary{ background:var(--navy-900); padding:56px 40px 64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:720px){
+    .compare-grid, .cards-grid.g3, .cards-grid.g4{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Intercompany Netting</a>
+  <a href="#s2">Virtual Bank Accounts</a>
+  <a href="#s3">Payment Screening &amp; Sanctions</a>
+  <a href="#s4">Real-Time Payment Rails</a>
+  <a href="#s5">Shared Service Center Model</a>
+  <a href="#s6">The Approval Workflow In Depth</a>
+  <a href="#s7">The Payment Factory In Depth</a>
+  <a href="#s8">The Four Scenarios, Compared</a>
+  <a href="#s9">EBICS, SWIFT and MBC, Layered</a>
+  <a href="#s10">IHB Cost Savings, Quantified</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Advanced Payment Management</span>
+      <span class="pill pill-secondary">In-House Banking</span>
+      <span class="pill pill-secondary">Fraud Prevention</span>
+      <span class="pill pill-secondary">Multi-Bank Connectivity</span>
+    </div>
+    <h1>Advanced Payment Management — <span class="accent">Profundización</span></h1>
+    <h2>Gestión Avanzada de Pagos</h2>
+    <p class="desc">Lo que rodea al hub de pagos del T1 y no vimos ahí: netting intercompañía, cuentas virtuales, screening de sanciones, y el mecanismo interno de cómo la fábrica de pagos, el workflow de aprobación y los cuatro escenarios de pago realmente funcionan.</p>
+    <div class="hlbox">Resumen Visual — <b>Advanced Payment Management</b>, Tipo 2 (Profundización). 5 secciones de temas adyacentes + 5 de profundidad sobre lo visto en el Tipo 1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Intercompany Netting</span>
+          <span class="sec-title-es">Netting intercompañía</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "pagos intercompañía" — acá vemos cómo se reduce su volumen antes de ejecutarlos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es netting?</strong> En vez de que cada entidad del grupo le pague a cada otra por separado, el sistema compensa todas las deudas intercompañía entre sí y solo ejecuta el saldo neto resultante — menos transacciones, menos comisiones bancarias, y menos riesgo de descalce de fechas.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Multiple Gross Payments</div><div class="t-es">pagos brutos múltiples</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Netting Calculation</div><div class="t-es">cálculo de compensación</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Single Net Settlement</div><div class="t-es">un solo saldo neto</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Virtual Bank Accounts</span>
+          <span class="sec-title-es">Cuentas bancarias virtuales</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 mencionó "creación de cuentas internas" — acá vemos que no todas necesitan ser cuentas reales en un banco.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> una cuenta virtual dentro del In-House Bank no tiene una cuenta física correspondiente en un banco externo — es un identificador interno que permite trackear movimientos de una entidad específica, mientras el dinero real vive concentrado en la cuenta física del in-house bank.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🏢</span><h6>Subsidiary A — Virtual Account</h6><p>Identificador interno, sin cuenta física propia.</p></div>
+        <div class="mini-card"><span class="icon">🏢</span><h6>Subsidiary B — Virtual Account</h6><p>Otro identificador, mismo mecanismo.</p></div>
+        <div class="mini-card"><span class="icon">🏦</span><h6>Physical IHB Account</h6><p>Donde el efectivo real está efectivamente concentrado.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Screening &amp; Sanctions Compliance</span>
+          <span class="sec-title-es">Screening de pagos y compliance de sanciones</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 dijo "adherencia a requerimientos regulatorios" — acá vemos un control concreto detrás de eso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué hace este control?</strong> Antes de ejecutar cualquier pago saliente, el sistema puede validar automáticamente al beneficiario contra listas de sanciones internacionales — si hay coincidencia, el pago se bloquea para revisión manual en lugar de ejecutarse.
+    </div>
+    <div class="visual-wrap">
+      <div class="chain-row">
+        <div class="chain-box"><div class="t-en">Outgoing Payment</div><div class="t-es">pago saliente</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Sanctions List Check</div><div class="t-es">verificación contra listas</div></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-box"><div class="t-en">Execute or Hold</div><div class="t-es">ejecuta o bloquea</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Real-Time Payment Rails</span>
+          <span class="sec-title-es">Rieles de pago en tiempo real</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 dijo "capacidades en tiempo real" — acá vemos que eso también depende de qué red bancaria se use.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> las capacidades en tiempo real del sistema son necesarias pero no suficientes — también hace falta que el banco destino soporte una red de pago instantáneo (real-time rail). Sin eso, el pago sigue siendo tan rápido como permita el riel bancario tradicional, aunque el sistema lo haya procesado al instante de su lado.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>Traditional Rail</h5>
+          <span class="en">liquidación por lotes</span>
+          <ul>
+            <li>Liquidación en ventanas horarias o al día siguiente</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>Real-Time Rail</h5>
+          <span class="en">liquidación instantánea</span>
+          <ul>
+            <li>El beneficiario recibe los fondos en segundos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Shared Service Center Model</span>
+          <span class="sec-title-es">El modelo de centro de servicios compartidos</span>
+          <span class="sec-kind adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El T1 habló de centralizar pagos — acá vemos cómo se organiza el equipo que opera esa centralización.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es un Shared Service Center (SSC) de pagos?</strong> Es la estructura organizativa que suele operar el hub de pagos centralizado — un equipo único que procesa pagos para todas las entidades del grupo, en vez de que cada subsidiaria tenga su propio equipo de pagos por separado.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">🏢🏢🏢</span><h6>Multiple Entities</h6><p>Cada subsidiaria antes tenía su propio equipo de pagos.</p></div>
+        <div class="mini-card"><span class="icon">🎯</span><h6>Shared Service Center</h6><p>Un equipo único procesa pagos para todo el grupo.</p></div>
+        <div class="mini-card"><span class="icon">📉</span><h6>Lower Overhead</h6><p>Menos duplicación de roles y procesos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Approval Workflow, in Depth</span>
+          <span class="sec-title-es">El workflow de aprobación, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo que IHB "implementa procesos de aprobación" — acá vemos qué pasos concretos incluye.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> crear o modificar una cuenta interna no es un cambio libre — típicamente pasa por una solicitud, una validación de que cumple la política interna del grupo, y una aprobación formal antes de quedar activa, igual que abrir una cuenta en un banco real.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">1. Solicitud de cuenta o cambio</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box tier2">2. Validación contra política interna</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box">3. Aprobación formal y activación</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Central Payment Factory, in Depth</span>
+          <span class="sec-title-es">La fábrica central de pagos, en detalle</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 la nombró como parte de la funcionalidad de IHB — acá vemos qué hace paso por paso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué hace la payment factory?</strong> Recibe instrucciones de pago desde cualquier entidad o sistema fuente, las agrupa y estandariza en un formato único, y decide el canal de salida correcto — ya sea vía IHB, netting, o directo a un banco externo — sin que cada entidad tenga que gestionar esa decisión por separado.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Instrucciones de pago desde cualquier fuente</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box tier2">Agrupación y estandarización de formato</div>
+        <div class="vf-arrow">↓</div>
+        <div class="vf-box">Decisión de canal: IHB, netting, o banco externo</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Four Payment Scenarios, Compared</span>
+          <span class="sec-title-es">Los cuatro escenarios de pago, comparados</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 los listó como cuatro opciones — acá vemos en qué se diferencia cada una realmente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> "in-name-of" y "on-behalf-of" suenan parecidos, pero no son lo mismo — in-name-of implica que el pago aparece formalmente como hecho por la otra entidad; on-behalf-of implica que una entidad ejecuta el pago pero la obligación sigue siendo de la entidad original. Inter-company payments resuelve deudas entre entidades del propio grupo; central incoming payments hace lo mismo, pero del lado de los cobros.
+    </div>
+    <div class="visual-wrap">
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5>In-Name-Of</h5>
+          <span class="en">aparece como pago de la otra entidad</span>
+          <ul>
+            <li>El registro formal atribuye el pago a esa entidad</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <h5>On-Behalf-Of</h5>
+          <span class="en">ejecutado por otra, obligación intacta</span>
+          <ul>
+            <li>La obligación sigue siendo de la entidad original</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">EBICS, SWIFT, and Multi-Bank Connectivity, Layered</span>
+          <span class="sec-title-es">EBICS, SWIFT y Multi-Bank Connectivity, en capas</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 los mostró como tres piezas separadas — acá vemos cómo se ordenan entre sí.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> EBICS y SWIFT son estándares de comunicación bancaria — el "idioma" técnico con el que se habla con cada banco. Multi-Bank Connectivity no compite con ellos, los usa por debajo: es la capa que le permite al sistema hablar EBICS con un banco y SWIFT con otro, sin que Advanced Payment Management tenga que saber cuál es cuál.
+    </div>
+    <div class="visual-wrap">
+      <div class="vert-flow">
+        <div class="vf-box tier1">Advanced Payment Management</div>
+        <div class="vf-arrow">↓ usa</div>
+        <div class="vf-box tier2">Multi-Bank Connectivity</div>
+        <div class="vf-arrow">↓ habla</div>
+        <div class="vf-box">EBICS (banco A) / SWIFT (banco B)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">In-House Bank Cost Savings, Quantified</span>
+          <span class="sec-title-es">Ahorros del banco interno, cuantificados</span>
+          <span class="sec-kind depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El T1 dijo "ahorros significativos" — acá vemos de dónde viene concretamente cada peso ahorrado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La idea central:</strong> el ahorro no viene de un solo lugar — se acumula de menos comisiones por transacción externa (porque muchos movimientos ahora son internos), de mejores tasas al prestar entre entidades del grupo en vez de pedir a un banco externo, y de menos necesidad de mantener saldos ociosos en múltiples cuentas separadas gracias al pooling.
+    </div>
+    <div class="visual-wrap">
+      <div class="cards-grid g3">
+        <div class="mini-card"><span class="icon">💳</span><h6>Fewer External Fees</h6><p>Menos transacciones externas que generan comisión.</p></div>
+        <div class="mini-card"><span class="icon">📉</span><h6>Better Internal Rates</h6><p>Préstamos internos a mejor tasa que el mercado externo.</p></div>
+        <div class="mini-card"><span class="icon">💧</span><h6>Less Idle Cash</h6><p>Pooling reduce saldos ociosos dispersos en cuentas separadas.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Advanced Payment Management — Tipo 2 (no repite T1)</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Intercompany Netting</div><div class="term-es">Netting Intercompañía</div><div class="term-def">Compensación de deudas entre entidades del grupo, liquidando solo el saldo neto.</div></div>
+      <div class="gcard"><div class="term-en">Virtual Bank Account</div><div class="term-es">Cuenta Bancaria Virtual</div><div class="term-def">Identificador interno sin cuenta física propia, usado para trackear movimientos de una entidad dentro del IHB.</div></div>
+      <div class="gcard"><div class="term-en">Sanctions Screening</div><div class="term-es">Screening de Sanciones</div><div class="term-def">Verificación automática de beneficiarios contra listas de sanciones antes de ejecutar un pago.</div></div>
+      <div class="gcard"><div class="term-en">Real-Time Payment Rail</div><div class="term-es">Riel de Pago en Tiempo Real</div><div class="term-def">Red bancaria que permite liquidar un pago en segundos, en vez de por lotes.</div></div>
+      <div class="gcard"><div class="term-en">Shared Service Center (SSC)</div><div class="term-es">Centro de Servicios Compartidos</div><div class="term-def">Estructura organizativa que centraliza el procesamiento de pagos para todo el grupo.</div></div>
+      <div class="gcard"><div class="term-en">Internal Policy Validation</div><div class="term-es">Validación de Política Interna</div><div class="term-def">Chequeo de que una solicitud cumple las reglas internas del grupo antes de aprobarse.</div></div>
+      <div class="gcard"><div class="term-en">Payment Channel Routing</div><div class="term-es">Enrutamiento de Canal de Pago</div><div class="term-def">Decisión automática de por qué canal (IHB, netting, banco externo) sale un pago.</div></div>
+      <div class="gcard"><div class="term-en">Idle Cash</div><div class="term-es">Efectivo Ocioso</div><div class="term-def">Saldos dispersos en cuentas separadas que no están siendo aprovechados activamente.</div></div>
+      <div class="gcard"><div class="term-en">Bank Communication Standard</div><div class="term-es">Estándar de Comunicación Bancaria</div><div class="term-def">Protocolo técnico (como EBICS o SWIFT) usado para intercambiar mensajes con un banco.</div></div>
+      <div class="gcard"><div class="term-en">Batch Settlement</div><div class="term-es">Liquidación por Lotes</div><div class="term-def">Procesamiento de pagos agrupados en ventanas horarias, en lugar de al instante.</div></div>
+      <div class="gcard"><div class="term-en">Internal Loan Rate</div><div class="term-es">Tasa de Préstamo Interno</div><div class="term-def">Tasa de interés aplicada a préstamos entre entidades del mismo grupo, vía IHB.</div></div>
+      <div class="gcard"><div class="term-en">Payment Instruction</div><div class="term-es">Instrucción de Pago</div><div class="term-def">Solicitud formal de pago que ingresa a la payment factory desde cualquier sistema fuente.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Advanced Payment Management · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

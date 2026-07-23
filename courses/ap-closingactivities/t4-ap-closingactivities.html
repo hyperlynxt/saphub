@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Closing Activities in Accounts Payable — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#6B4C8F;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --gui-bg:#ECECEC;
+    --gui-panel:#F5F4F0;
+    --gui-border:#8E8E8E;
+    --gui-titlebar1:#4A85B8;
+    --gui-titlebar2:#2E5C87;
+    --gui-tab-inactive:#C6C2B6;
+    --gui-tab-active:#F5F4F0;
+    --gui-field-border:#7F9DB9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241A2E 55%, #402C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4); border-radius:0 10px 10px 0; padding:14px 20px; max-width:680px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(107,76,143,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-area{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(107,76,143,0.1); color:var(--t4-dark); margin-left:8px; vertical-align:middle; }
+
+  .task-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t4-dark); font-weight:700; margin-bottom:10px; }
+
+  .spro-box{ background:white; border:1px solid var(--border); border-radius:10px; padding:16px 20px 16px 18px; margin-bottom:26px; box-shadow:0 2px 8px rgba(10,15,28,0.04); }
+  .spro-tree{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; line-height:1.5; }
+  .spro-tree, .spro-tree ul{ list-style:none; margin:0; padding-left:0; }
+  .spro-tree ul{ padding-left:20px; border-left:1.5px dashed #C9BEDD; margin-left:7px; }
+  .spro-tree li{ position:relative; padding:4px 0 4px 18px; color:var(--body); }
+  .spro-tree li::before{ content:''; position:absolute; left:0; top:14px; width:14px; height:1.5px; background:#C9BEDD; }
+  .spro-tree .folder .icon{ margin-right:5px; opacity:.8; }
+  .spro-tree .target{ background:var(--t4-pale); border:1.5px solid var(--t4-dark); border-radius:6px; padding:4px 12px; display:inline-flex; align-items:center; gap:7px; color:var(--t4-dark); font-weight:700; }
+
+  .gui-screen{ background:var(--gui-bg); border:1px solid #6E6E6E; border-radius:2px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.14); font-family:Arial,Tahoma,sans-serif; color:#000; }
+  .gui-titlebar{ background:linear-gradient(180deg,var(--gui-titlebar1),var(--gui-titlebar2)); color:white; padding:4px 10px; font-size:11px; display:flex; justify-content:space-between; align-items:center; }
+  .gui-titlebar .gt-icons{ opacity:.85; letter-spacing:3px; font-size:9px; }
+  .gui-menubar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:3px 10px; font-size:10.5px; color:#222; display:flex; gap:14px; }
+  .gui-toolbar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:5px 8px; display:flex; align-items:center; gap:5px; }
+  .gui-toolbar .t-btn{ width:22px; height:19px; background:#DEDEDE; border:1px solid #9A9A9A; border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:10.5px; color:#333; }
+  .gui-crumbbar{ background:#DEDEDE; border-bottom:1px solid #B8B8B8; padding:5px 10px; font-size:11.5px; font-weight:700; color:#111; }
+  .gui-tabs{ display:flex; background:var(--gui-bg); padding:5px 8px 0; gap:2px; }
+  .gui-tab{ padding:5px 14px; font-size:10.5px; background:var(--gui-tab-inactive); border:1px solid var(--gui-border); border-bottom:none; color:#333; }
+  .gui-tab.active{ background:var(--gui-tab-active); font-weight:700; color:#000; }
+  .gui-body{ background:var(--gui-panel); padding:18px; border-top:1px solid #fff; }
+  .gui-field-row{ display:grid; grid-template-columns:180px 1fr; gap:8px; align-items:center; margin-bottom:9px; font-size:11.5px; }
+  .gui-field-row label{ text-align:right; color:#000; }
+  .gui-field-row .val{ background:white; border:1px solid var(--gui-field-border); padding:3px 7px; font-family:'Courier New',monospace; font-size:11.5px; max-width:280px; }
+  .gui-field-row .val.grey{ background:#E8E8E8; border-color:#B8B8B8; color:#555; }
+  .gui-table{ width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+  .gui-table th{ background:var(--gui-tab-inactive); border:1px solid var(--gui-border); padding:5px 9px; text-align:left; font-weight:700; color:#111; }
+  .gui-table td{ border:1px solid #C6C2B6; padding:5px 9px; background:white; font-family:'Courier New',monospace; }
+  .gui-statusbar{ background:var(--gui-bg); border-top:1px solid #B8B8B8; padding:4px 10px; font-size:10px; color:#555; display:flex; justify-content:space-between; }
+  .gui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E; margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Posting Periods</a>
+  <a href="#s2">Assign Variant</a>
+  <a href="#s3">GR/IR Tolerances</a>
+  <a href="#s4">Automatic Clearing</a>
+  <a href="#s5">Reconciliation Accounts</a>
+  <a href="#s6">Exchange Rate Types</a>
+  <a href="#s7">Valuation Methods</a>
+  <a href="#s8">Automatic Postings FX</a>
+  <a href="#s9">Regrouping Accounts</a>
+  <a href="#s10">Document Types</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Materials Management</span>
+    </div>
+    <h1><span class="accent">Closing</span> Activities in Accounts Payable</h1>
+    <h2>Actividades de Cierre en Cuentas por Pagar — Configuración en SPRO</h2>
+    <p class="desc">El customizing que deja lista la base para que José, en Fiori (T3), pueda conciliar GR/IR, confirmar saldos, valorar moneda extranjera y reagrupar: períodos especiales, tolerancias, cuentas de enlace, tipos de cambio y métodos de valoración.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Implementación Bike Company · Financial Accounting</div>
+        <div class="p-note">Cada pantalla de este recorrido arma la base que José usa del otro lado, en Fiori (T3)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Special Periods for Closing</span>
+          <span class="sec-title-es">Definiendo períodos especiales para el cierre</span>
+          <span class="sec-area">Fiscal Year Variant</span>
+        </div>
+        <div class="sec-desc">Sin esto, José no tendría dónde contabilizar los ajustes de cierre sin pisar el período operativo normal.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de que exista cualquier actividad de cierre, la <strong>variante de ejercicio fiscal</strong> tiene que tener definidos sus períodos especiales. Se configuran hasta 4, además de los 12 regulares.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Fiscal Year and Posting Periods
+                      <ul>
+                        <li><span class="target">⚙️ Maintain Fiscal Year Variant</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Fiscal Year Variants": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Maintain Fiscal Year Variant — Bike GmbH</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>FV (Fiscal Year Variant)</label><div class="val">K4</div></div>
+        <div class="gui-field-row"><label>Number of posting periods</label><div class="val">12</div></div>
+        <div class="gui-field-row"><label>Number of special periods</label><div class="val">4</div></div>
+        <div class="gui-hint">💡 Los períodos especiales 13-16 solo se usan para contabilizaciones de cierre — nunca para operaciones normales del negocio.</div>
+      </div>
+      <div class="gui-statusbar"><span>K4 Bike GmbH — Fiscal Year Variant</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Opening and Closing Posting Periods</span>
+          <span class="sec-title-es">Abriendo y cerrando períodos contables</span>
+          <span class="sec-area">Posting Periods</span>
+        </div>
+        <div class="sec-desc">La variante de períodos abiertos decide en qué ventana puede contabilizar cada tipo de cuenta.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Al llegar el cierre, se cierra el período regular para cuentas normales y se <strong>abren los períodos especiales</strong> exclusivamente para los tipos de cuenta que necesitan seguir contabilizando ajustes — como proveedores (K) y Libro Mayor (S).
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Fiscal Year and Posting Periods
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Posting Periods
+                          <ul>
+                            <li><span class="target">⚙️ Open and Close Posting Periods</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Posting Period Variant": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Posting Period Variant DE01</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Account Type</th><th>From Period</th><th>Year</th><th>To Period</th><th>Year</th></tr>
+          <tr><td>+ (todas)</td><td>12</td><td>2026</td><td>12</td><td>2026</td></tr>
+          <tr><td>K (Vendors)</td><td>13</td><td>2026</td><td>16</td><td>2026</td></tr>
+          <tr><td>S (G/L accounts)</td><td>13</td><td>2026</td><td>16</td><td>2026</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>DE01 Bike GmbH — Posting Period Variant</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Tolerance Limits for GR/IR</span>
+          <span class="sec-title-es">Definiendo límites de tolerancia para GR/IR</span>
+          <span class="sec-area">Invoice Verification</span>
+        </div>
+        <div class="sec-desc">Estos márgenes son los que deciden si una partida GR/IR se compensa sola o necesita revisión manual, como vio José en T2.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se define, por sociedad, el margen de diferencia de cantidad y monto que el sistema puede compensar <strong>automáticamente</strong> entre entrada de mercadería y factura, sin que un usuario tenga que intervenir.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Materials Management
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Logistics Invoice Verification
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Invoice Block
+                      <ul>
+                        <li><span class="target">⚙️ Set Tolerance Limits</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Tolerance Limits": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Company Code DE01 — Tolerance Keys</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Tolerance Key</th><th>Description</th><th>% Upper Limit</th></tr>
+          <tr><td>SD</td><td>Quantity variance</td><td>5,0 %</td></tr>
+          <tr><td>PP</td><td>Price variance</td><td>3,0 %</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>DE01 — Tolerance Keys</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Preparing Automatic Clearing Criteria</span>
+          <span class="sec-title-es">Preparando los criterios de compensación automática</span>
+          <span class="sec-area">Open Item Clearing</span>
+        </div>
+        <div class="sec-desc">Define qué campos deben coincidir para que dos partidas se consideren la misma cosa y puedan compensarse solas.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se configuran los criterios (por ejemplo, el campo <strong>Assignment</strong>) que el programa de compensación automática usa para agrupar partidas de proveedor relacionadas entre sí antes de intentar cerrarlas.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Transactions
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Open Item Clearing
+                          <ul>
+                            <li><span class="target">⚙️ Prepare Automatic Clearing</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Criteria for Automatic Clearing": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Account Type K — Vendors</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Account Type</th><th>Field 1</th><th>Field 2</th></tr>
+          <tr><td>K (Vendors)</td><td>Assignment</td><td>Reference</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>K — Criteria for Automatic Clearing</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning the Reconciliation Account</span>
+          <span class="sec-title-es">Asignando la cuenta de enlace</span>
+          <span class="sec-area">Vendor Master Data</span>
+        </div>
+        <div class="sec-desc">Cada grupo de proveedores necesita una cuenta de enlace definida — sin esto, ninguna factura podría actualizar el Libro Mayor.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se define, por <strong>grupo de cuentas de proveedor</strong>, qué cuenta del Libro Mayor se actualiza automáticamente cada vez que se contabiliza una factura o un pago — la cuenta de enlace es lo que conecta AP con el GL en tiempo real.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Accounts Receivable and Accounts Payable
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Vendor Accounts
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Master Data
+                          <ul>
+                            <li><span class="target">⚙️ Define Account Groups with Screen Layout (Vendors)</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Vendor Account Groups": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Account Group KRED — Standard Vendors</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Account Group</label><div class="val">KRED</div></div>
+        <div class="gui-field-row"><label>Description</label><div class="val">Standard Vendors</div></div>
+        <div class="gui-field-row"><label>Reconciliation Account (default)</label><div class="val">21100000 — Trade Payables Domestic</div></div>
+      </div>
+      <div class="gui-statusbar"><span>KRED — Standard Vendors</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking Exchange Rate Types</span>
+          <span class="sec-title-es">Verificando los tipos de tasa de cambio</span>
+          <span class="sec-area">Currencies</span>
+        </div>
+        <div class="sec-desc">La valoración de moneda extranjera que José corre en T3 depende de qué tipo de tasa esté disponible acá.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se verifica que exista un <strong>tipo de tasa de cambio</strong> específico para valoración de cierre, distinto del que se usa para contabilizar transacciones del día a día.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>General Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Currencies
+                  <ul>
+                    <li><span class="target">⚙️ Check Exchange Rate Types</span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Exchange Rate Types": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Exchange Rate Types</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Type</th><th>Description</th><th>Use</th></tr>
+          <tr><td>M</td><td>Average rate</td><td>Transacciones del día a día</td></tr>
+          <tr><td>P</td><td>Closing rate</td><td>Valoración de cierre de período</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>Exchange Rate Types</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Valuation Method</span>
+          <span class="sec-title-es">Definiendo el método de valoración</span>
+          <span class="sec-area">Foreign Currency Valuation</span>
+        </div>
+        <div class="sec-desc">Acá se decide, a nivel de configuración, cuál de los métodos que vio José en T2 realmente aplica.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se configura si la valoración usa el <strong>principio del valor más bajo</strong> (solo pérdidas) o <strong>Always Valuate</strong> (ganancias y pérdidas), y con qué tipo de tasa de cambio.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Ledger
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Valuate Foreign Currency Balances
+                          <ul>
+                            <li><span class="target">⚙️ Define Valuation Methods</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Valuation Methods": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Valuation Method BIKE — Vendor Open Items</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Valuation Method</label><div class="val">BIKE</div></div>
+        <div class="gui-field-row"><label>Valuation Procedure</label><div class="val">Always Valuate</div></div>
+        <div class="gui-field-row"><label>Exchange Rate Type</label><div class="val">P (Closing rate)</div></div>
+        <div class="gui-field-row"><label>Document Type</label><div class="val grey">AB — G/L Account Document</div></div>
+      </div>
+      <div class="gui-statusbar"><span>BIKE — Valuation Method</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning G/L Accounts for Exchange Rate Differences</span>
+          <span class="sec-title-es">Asignando cuentas para diferencias de tipo de cambio</span>
+          <span class="sec-area">Automatic Postings</span>
+        </div>
+        <div class="sec-desc">Sin esta asignación, el sistema sabría CUÁNTO valorar pero no A QUÉ cuenta contabilizarlo.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se asignan las cuentas de <strong>ganancia</strong> y <strong>pérdida cambiaria</strong> que se van a usar automáticamente cada vez que corra la valoración — son las mismas cuentas que José vio aparecer en la pantalla de resultados en T3.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>General Ledger Accounting
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Periodic Processing
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Valuate
+                      <ul>
+                        <li><span class="target">⚙️ Prepare Automatic Postings for Foreign Currency Valuation</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Automatic Postings — Valuation": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Chart of Accounts BIKE</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Function</th><th>G/L Account</th></tr>
+          <tr><td>Expense account (Exchange Rate Loss)</td><td>78500000 — Exchange Rate Loss</td></tr>
+          <tr><td>Revenue account (Exchange Rate Gain)</td><td>68500000 — Exchange Rate Gain</td></tr>
+          <tr><td>Balance sheet adjustment account</td><td>21190000 — AP Valuation Adjustment</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>BIKE — Automatic Postings</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Alternative Account for Regrouping</span>
+          <span class="sec-title-es">Definiendo la cuenta alternativa para el regrouping</span>
+          <span class="sec-area">Closing Operations</span>
+        </div>
+        <div class="sec-desc">Es la cuenta destino que apareció en la pantalla de resultados de José cuando Tireless Tires quedó con saldo debe.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se define, por cuenta de enlace de proveedor, cuál es la <strong>cuenta alternativa de tipo activo</strong> a la que el regrouping reclasifica un saldo deudor — sin tocar nunca la cuenta original del proveedor.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Accounts Receivable and Accounts Payable
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Business Transactions
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Closing
+                          <ul>
+                            <li class="folder"><span class="icon">📁</span>Regrouping
+                              <ul>
+                                <li><span class="target">⚙️ Define Alternative Reconciliation Account for Payables</span></li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Alternative Reconciliation Account": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Reconciliation Account 21100000 — Trade Payables Domestic</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Chart of Accounts</label><div class="val">BIKE</div></div>
+        <div class="gui-field-row"><label>Reconciliation Account</label><div class="val">21100000 — Trade Payables Domestic</div></div>
+        <div class="gui-field-row"><label>Special G/L Ind.</label><div class="val grey">—</div></div>
+        <div class="gui-field-row"><label>Alternative Recon. Account</label><div class="val">13900000 — Other Receivables (Reclassified)</div></div>
+      </div>
+      <div class="gui-statusbar"><span>21100000 — Alternative Account</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Document Type for Closing Postings</span>
+          <span class="sec-title-es">Definiendo el tipo de documento para asientos de cierre</span>
+          <span class="sec-area">Document Header</span>
+        </div>
+        <div class="sec-desc">El último engranaje: qué tipo de documento identifica, en el sistema, que un asiento nació de una actividad de cierre.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Se confirma que el <strong>tipo de documento</strong> usado por los programas de valoración y regrouping esté correctamente definido — permite luego, en reportes, distinguir fácilmente qué asientos vinieron de actividades de cierre automáticas.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Header
+                      <ul>
+                        <li><span class="target">⚙️ Define Document Types for Entry View</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Document Types": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar"><div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div></div>
+      <div class="gui-crumbbar">Document Type AB — G/L Account Document</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <tr><th>Doc. Type</th><th>Description</th><th>Number Range</th><th>Used by</th></tr>
+          <tr><td>AB</td><td>G/L Account Document</td><td>01</td><td>Valoración, regrouping</td></tr>
+          <tr><td>KZ</td><td>Vendor Payment</td><td>15</td><td>Automatic Payment Program</td></tr>
+        </table>
+      </div>
+      <div class="gui-statusbar"><span>BIKE — Document Types</span><span>INS</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Closing Activities in Accounts Payable · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

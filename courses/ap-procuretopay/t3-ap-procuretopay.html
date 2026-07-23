@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Procure-to-Pay — Usuario Fiori | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FC4E0; --t1-dark:#2E7096;
+    --t1-pale:rgba(127,196,224,0.12); --t1-pale-border:rgba(127,196,224,0.38);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B;
+    --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE;
+    --white:#FFFFFF; --body:#3D4A5F;
+    --cat-fi:#1A4B8C; --cat-co:#1A6B99; --cat-log:#00A896;
+    --cat-purchase:#7E4FBF; --cat-sales:#E07B39;
+    --cat-alert:#C0392B; --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;} html{scroll-behavior:smooth;}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#0C1C2E 55%,#0C2838 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;letter-spacing:.2px;}
+  .pill-primary{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-secondary{border:1.5px solid var(--pill-secondary);color:var(--pill-secondary);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.5rem);color:rgba(255,255,255,0.62);margin:0 0 18px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(127,196,224,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(46,112,150,0.35);}
+  .actor-badge{width:36px;height:36px;border-radius:50%;background:var(--t1-dark);color:white;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(46,112,150,0.4);border:2px solid rgba(127,196,224,0.6);}
+  .sec-titles{display:flex;flex-direction:column;gap:2px;flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;margin-top:2px;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  /* Navigation trail */
+  .nav-trail{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 16px;margin-bottom:16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.82rem;}
+  .nav-trail .trail-step{color:var(--muted);font-weight:500;}
+  .nav-trail .trail-sep{color:var(--border);font-size:1rem;}
+  .nav-trail .trail-current{color:var(--t1-dark);font-weight:700;}
+  .nav-trail .trail-icon{font-size:14px;}
+  /* Screen mockup */
+  .screen-wrap{border:2px solid #C8D8E6;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(10,15,28,0.1);}
+  .screen-shell{background:#354A5E;padding:9px 16px;display:flex;align-items:center;gap:14px;}
+  .sap-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:white;letter-spacing:1px;flex-shrink:0;}
+  .app-title-bar{font-size:12.5px;font-weight:600;color:white;}
+  .user-chip{margin-left:auto;background:rgba(255,255,255,0.15);border-radius:20px;padding:3px 10px;font-size:11px;color:rgba(255,255,255,0.9);}
+  .screen-body{background:#F5F6F7;padding:16px 18px;}
+  .fiori-page-head{background:white;border-radius:8px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .fiori-page-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#32363A;}
+  .fiori-btns{display:flex;gap:8px;}
+  .btn-primary{background:#0070F2;color:white;border:none;border-radius:4px;padding:7px 16px;font-size:12px;font-weight:600;}
+  .btn-secondary{background:white;color:#0070F2;border:1.5px solid #0070F2;border-radius:4px;padding:7px 16px;font-size:12px;font-weight:600;}
+  /* Fiori form */
+  .fiori-form{background:white;border-radius:8px;padding:16px 18px;margin-bottom:10px;}
+  .form-section-title{font-size:12px;font-weight:700;color:#32363A;text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #F0F0F0;}
+  .form-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:12px;}
+  .form-row.two{grid-template-columns:1fr 1fr;}
+  .form-row.four{grid-template-columns:repeat(4,1fr);}
+  .ffield label{font-size:11px;color:#666;display:block;margin-bottom:4px;}
+  .ffield .fval{border:1px solid #89919A;border-radius:4px;padding:6px 10px;font-size:12px;color:#32363A;width:100%;background:white;}
+  .ffield .fval.filled{border-color:#0070F2;background:rgba(0,112,242,0.03);}
+  .ffield .fval.readonly{background:#F5F6F7;color:#888;}
+  /* Fiori table */
+  .fiori-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .fiori-table th{background:#F5F6F7;color:#666;padding:8px 12px;text-align:left;font-weight:600;border-bottom:2px solid #E0E0E0;font-size:11px;white-space:nowrap;}
+  .fiori-table td{padding:9px 12px;border-bottom:1px solid #F0F0F0;color:#32363A;vertical-align:middle;}
+  .fiori-table tr:last-child td{border-bottom:none;}
+  .fiori-status{display:inline-block;padding:3px 10px;border-radius:12px;font-size:10.5px;font-weight:600;}
+  .fs-green{background:#E8F5E9;color:#2E7D32;}
+  .fs-blue{background:#E3F2FD;color:#1565C0;}
+  .fs-orange{background:#FFF3E0;color:#E65100;}
+  /* Tiles */
+  .tile-grid{display:flex;flex-wrap:wrap;gap:12px;padding:16px;background:#F5F6F7;border-radius:8px;}
+  .tile{background:white;border:1px solid #E4E7E9;border-radius:8px;padding:16px 14px;text-align:center;min-width:130px;flex:1;}
+  .tile .tile-icon{font-size:26px;display:block;margin-bottom:8px;}
+  .tile .tile-title{font-size:11.5px;font-weight:600;color:#32363A;line-height:1.3;display:block;}
+  /* Document flow */
+  .docflow{display:flex;flex-direction:column;gap:0;}
+  .df-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:white;border:1px solid #E0E0E0;}
+  .df-item:first-child{border-radius:8px 8px 0 0;}
+  .df-item:last-child{border-radius:0 0 8px 8px;border-bottom:1px solid #E0E0E0;}
+  .df-item .df-icon{font-size:18px;flex-shrink:0;}
+  .df-item .df-label{font-size:12.5px;font-weight:600;color:#32363A;flex:1;}
+  .df-item .df-status{font-size:11px;color:#888;}
+  .df-connector{width:2px;height:12px;background:#D0D0D0;margin-left:22px;}
+  /* T-account fiori style */
+  .ta-box{background:white;border-radius:8px;border:1px solid #E0E0E0;overflow:hidden;}
+  .ta-header{background:#354A5E;color:white;padding:8px 14px;font-weight:700;font-size:12px;}
+  .ta-body{display:grid;grid-template-columns:1fr 1fr;}
+  .ta-side{padding:10px 14px;}
+  .ta-side-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#666;margin-bottom:6px;}
+  .ta-entry{font-size:12px;color:#32363A;padding:4px 0;border-bottom:1px solid #F5F6F7;}
+  .ta-entry:last-child{border-bottom:none;}
+  .ta-debit-side{border-right:1px solid #E0E0E0;}
+  /* Debe/Haber note */
+  .dh-note{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:12px 16px;margin-top:14px;font-size:0.82rem;color:var(--ink);}
+  .dh-note strong{color:var(--t1-dark);}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO / FIORI</span>
+  <a href="#s1">Fiori Launchpad</a>
+  <a href="#s2">Manage Purchase Orders</a>
+  <a href="#s3">Post Goods Receipt</a>
+  <a href="#s4">Create Supplier Invoice — Start</a>
+  <a href="#s5">Create Supplier Invoice — Header</a>
+  <a href="#s6">Create Supplier Invoice — Items</a>
+  <a href="#s7">Display Document Flow</a>
+  <a href="#s8">Display T-Account</a>
+  <a href="#s9">Display Process Flow — AP</a>
+  <a href="#s10">My Purchasing Document Items</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Materials Management</span>
+    </div>
+    <h1>Procure-<span class="accent">to-Pay</span></h1>
+    <h2>Tangibilización — Usuario Fiori</h2>
+    <p class="desc">El ciclo Procure-to-Pay visto desde la pantalla de Jennifer: cómo navegar, consultar y operar las apps Fiori de AP para verificar facturas, trazar documentos y monitorear el ciclo completo de compras.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">👤</span>
+      <b>Jennifer</b> · AP Accountant · Accounts Payable<br>
+      <span style="font-size:12.5px;opacity:0.85;">Objetivo: entender cómo los documentos MM generan documentos FI, y operar las apps Fiori del ciclo P2P para verificar facturas y trazar el flujo completo de documentos.</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — FIORI LAUNCHPAD -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="actor-badge">J</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Jennifer's Fiori Launchpad</span>
+          <span class="sec-title-es">El punto de partida de Jennifer en Fiori</span>
+        </div>
+        <div class="sec-desc">Las tiles del Fiori Launchpad relevantes para el ciclo P2P desde la perspectiva de AP.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El Launchpad es la pantalla de inicio:</strong> desde aquí Jennifer accede a todas las apps necesarias para su trabajo en AP. Las tiles más relevantes para el ciclo P2P se organizan en su grupo de trabajo. Algunas tiles son de <strong>operación</strong> (Create Supplier Invoice, Post Goods Receipt), otras de <strong>consulta y trazabilidad</strong> (Display Document Flow, Display Process Flow).
+    </div>
+    <div class="visual-wrap">
+      <div class="nav-trail">
+        <span class="trail-icon">🏠</span>
+        <span class="trail-step">SAP Fiori</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-current">Home — Accounts Payable Group</span>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-shell">
+          <span class="sap-logo">SAP</span>
+          <span class="app-title-bar">Fiori Launchpad</span>
+          <span class="user-chip">Jennifer</span>
+        </div>
+        <div class="screen-body">
+          <div style="font-size:12px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;padding:0 4px;">Accounts Payable — Procure-to-Pay</div>
+          <div class="tile-grid">
+            <div class="tile">
+              <span class="tile-icon">🧾</span>
+              <span class="tile-title">Create Supplier Invoice</span>
+            </div>
+            <div class="tile">
+              <span class="tile-icon">📦</span>
+              <span class="tile-title">Post Goods Receipt for Purch. Doc.</span>
+            </div>
+            <div class="tile">
+              <span class="tile-icon">📄</span>
+              <span class="tile-title">Manage Purchase Orders</span>
+            </div>
+            <div class="tile">
+              <span class="tile-icon">🔗</span>
+              <span class="tile-title">Display Document Flow</span>
+            </div>
+            <div class="tile">
+              <span class="tile-icon">🖥️</span>
+              <span class="tile-title">Display Process Flow – AP</span>
+            </div>
+            <div class="tile">
+              <span class="tile-icon">📊</span>
+              <span class="tile-title">Display T-Account</span>
+            </div>
+            <div class="tile">
+              <span class="tile-icon">📋</span>
+              <span class="tile-title">My Purchasing Document Items – Professional</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — MANAGE PURCHASE ORDERS -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="actor-badge">J</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Manage Purchase Orders</span>
+          <span class="sec-title-es">Consultar órdenes de compra</span>
+        </div>
+        <div class="sec-desc">Jennifer consulta el estado de la PO antes de procesar la factura del proveedor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Antes de ingresar la factura, Jennifer verifica la PO:</strong> aunque Jennifer no crea órdenes de compra, necesita consultarlas para <strong>verificar el precio acordado</strong> y confirmar que el Goods Receipt ya fue registrado. La app <strong>Manage Purchase Orders</strong> le permite buscar por proveedor, número de PO o material, y ver el historial de documentos relacionados con cada ítem de la orden.
+    </div>
+    <div class="visual-wrap">
+      <div class="nav-trail">
+        <span class="trail-icon">🏠</span>
+        <span class="trail-step">Fiori Launchpad</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-current">Manage Purchase Orders</span>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-shell">
+          <span class="sap-logo">SAP</span>
+          <span class="app-title-bar">Manage Purchase Orders</span>
+          <span class="user-chip">Jennifer</span>
+        </div>
+        <div class="screen-body">
+          <div class="fiori-form">
+            <div class="form-row four">
+              <div class="ffield">
+                <label>Supplier</label>
+                <div class="fval filled">Tireless Tires GmbH</div>
+              </div>
+              <div class="ffield">
+                <label>Purchasing Org.</label>
+                <div class="fval filled">1000</div>
+              </div>
+              <div class="ffield">
+                <label>Document Date</label>
+                <div class="fval">01.07.2025 – 31.07.2025</div>
+              </div>
+              <div class="ffield">
+                <label>Status</label>
+                <div class="fval">All</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+            <table class="fiori-table" style="width:100%;">
+              <thead>
+                <tr>
+                  <th>PO Number</th>
+                  <th>Supplier</th>
+                  <th>Item</th>
+                  <th>Material</th>
+                  <th>Qty Ordered</th>
+                  <th>Net Price</th>
+                  <th>GR Status</th>
+                  <th>Invoice Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color:#0070F2;font-weight:600;">4500001234</td>
+                  <td>Tireless Tires GmbH</td>
+                  <td>10</td>
+                  <td>Tires — Mountain 29"</td>
+                  <td>200 ST</td>
+                  <td>€ 45.00</td>
+                  <td><span class="fiori-status fs-green">GR Posted</span></td>
+                  <td><span class="fiori-status fs-orange">Invoice Open</span></td>
+                </tr>
+                <tr>
+                  <td style="color:#0070F2;font-weight:600;">4500001235</td>
+                  <td>Tireless Tires GmbH</td>
+                  <td>10</td>
+                  <td>Tires — Road 28"</td>
+                  <td>150 ST</td>
+                  <td>€ 38.00</td>
+                  <td><span class="fiori-status fs-green">GR Posted</span></td>
+                  <td><span class="fiori-status fs-green">Invoiced</span></td>
+                </tr>
+                <tr>
+                  <td style="color:#0070F2;font-weight:600;">4500001236</td>
+                  <td>Tireless Tires GmbH</td>
+                  <td>10</td>
+                  <td>Tubes — 29"</td>
+                  <td>500 ST</td>
+                  <td>€ 4.50</td>
+                  <td><span class="fiori-status fs-blue">Partial GR</span></td>
+                  <td><span class="fiori-status fs-orange">Invoice Open</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — POST GOODS RECEIPT -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="actor-badge">J</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Post Goods Receipt for Purchasing Document</span>
+          <span class="sec-title-es">Registrar la recepción de mercancías</span>
+        </div>
+        <div class="sec-desc">Cómo logística registra el GR (para que Jennifer entienda de dónde viene el doc. FI en GL).</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Jennifer no hace el GR, pero necesita entender qué genera:</strong> el Goods Receipt lo realiza el área de logística/almacén. Sin embargo, es clave que Jennifer entienda que al postear el GR, SAP genera automáticamente un <strong>documento FI</strong> que debita la cuenta de inventario y acredita la cuenta GR/IR — el mismo asiento que ella verá "del otro lado" al contabilizar la factura.
+    </div>
+    <div class="visual-wrap">
+      <div class="nav-trail">
+        <span class="trail-icon">🏠</span>
+        <span class="trail-step">Fiori Launchpad</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-current">Post Goods Receipt for Purchasing Document</span>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-shell">
+          <span class="sap-logo">SAP</span>
+          <span class="app-title-bar">Post Goods Receipt for Purchasing Document</span>
+          <span class="user-chip">Logistics Team</span>
+        </div>
+        <div class="screen-body">
+          <div class="fiori-form">
+            <div class="form-section-title">Purchase Order Reference</div>
+            <div class="form-row two">
+              <div class="ffield"><label>Purchase Order Number *</label><div class="fval filled">4500001234</div></div>
+              <div class="ffield"><label>Delivery Note</label><div class="fval">DN-20250715</div></div>
+            </div>
+          </div>
+          <div class="fiori-form">
+            <div class="form-section-title">Items to Receive</div>
+            <table class="fiori-table">
+              <thead><tr><th>☑</th><th>Item</th><th>Material</th><th>Qty Ordered</th><th>Qty Delivered</th><th>UoM</th><th>Storage Loc.</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><input type="checkbox" checked disabled style="accent-color:#0070F2;"></td>
+                  <td>10</td>
+                  <td>Tires — Mountain 29"</td>
+                  <td>200</td>
+                  <td style="font-weight:700;color:#2E7D32;">200</td>
+                  <td>ST</td>
+                  <td>0001 — Main WH</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="background:white;border-radius:8px;padding:12px 16px;display:flex;gap:10px;justify-content:flex-end;">
+            <button class="btn-secondary">Check</button>
+            <button class="btn-primary">Post Goods Receipt</button>
+          </div>
+        </div>
+      </div>
+      <div class="dh-note">
+        💡 <strong>Documento FI generado por el GR:</strong>
+        <strong>Inventory / Material Stock (Dr)</strong> — se activa el stock; la empresa tiene bienes. 
+        <strong>GR/IR Account (Cr)</strong> — obligación estimada con el proveedor registrada en la cuenta de tránsito, hasta que llegue la factura.
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — CREATE SUPPLIER INVOICE — START -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="actor-badge">J</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Create Supplier Invoice — Launch &amp; Supplier Selection</span>
+          <span class="sec-title-es">Crear factura de proveedor — inicio y selección</span>
+        </div>
+        <div class="sec-desc">Jennifer abre la app y selecciona el proveedor para comenzar a registrar la factura.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El primer paso es identificar el proveedor:</strong> Jennifer abre la app <strong>Create Supplier Invoice</strong> desde su Fiori Launchpad y lo primero que ingresa es el proveedor y la sociedad (Company Code). SAP trae automáticamente los datos del <strong>Vendor Master</strong> (condiciones de pago, moneda, cuenta de conciliación) para pre-cargar los campos del documento.
+    </div>
+    <div class="visual-wrap">
+      <div class="nav-trail">
+        <span class="trail-icon">🏠</span>
+        <span class="trail-step">Fiori Launchpad</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-current">Create Supplier Invoice</span>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-shell">
+          <span class="sap-logo">SAP</span>
+          <span class="app-title-bar">Create Supplier Invoice</span>
+          <span class="user-chip">Jennifer</span>
+        </div>
+        <div class="screen-body">
+          <div class="fiori-page-head">
+            <span class="fiori-page-title">Create Supplier Invoice</span>
+            <div class="fiori-btns">
+              <button class="btn-secondary">Check</button>
+              <button class="btn-primary">Post</button>
+            </div>
+          </div>
+          <div class="fiori-form">
+            <div class="form-section-title">Basic Information</div>
+            <div class="form-row">
+              <div class="ffield">
+                <label>Supplier *</label>
+                <div class="fval filled">100023 — Tireless Tires GmbH</div>
+              </div>
+              <div class="ffield">
+                <label>Company Code *</label>
+                <div class="fval filled">DE01 — Bike GmbH</div>
+              </div>
+              <div class="ffield">
+                <label>Currency</label>
+                <div class="fval readonly">EUR (auto)</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="ffield">
+                <label>Invoice Date *</label>
+                <div class="fval filled">10.07.2025</div>
+              </div>
+              <div class="ffield">
+                <label>Posting Date</label>
+                <div class="fval">15.07.2025</div>
+              </div>
+              <div class="ffield">
+                <label>Reference (Supplier Ref.)</label>
+                <div class="fval filled">TT-INV-20250710</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:rgba(0,112,242,0.05);border-radius:8px;padding:10px 14px;font-size:11.5px;color:#1565C0;">
+            ℹ Datos del proveedor cargados desde Vendor Master: Payment Terms <strong>NT30</strong> (net 30 days), Reconciliation Account <strong>160000</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — CREATE SUPPLIER INVOICE — HEADER DATA -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="actor-badge">J</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Create Supplier Invoice — Header &amp; Gross Amount</span>
+          <span class="sec-title-es">Datos de cabecera y monto bruto</span>
+        </div>
+        <div class="sec-desc">Jennifer ingresa el importe total de la factura y el código de impuesto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El gross amount es el importe total de la factura del proveedor:</strong> Jennifer ingresa el monto bruto (incluyendo impuestos) exactamente como aparece en la factura física. El sistema comparará este total con la suma de las partidas para detectar diferencias. También asigna el <strong>tax code</strong> correspondiente — SAP calculará automáticamente el desglose de impuesto.
+    </div>
+    <div class="visual-wrap">
+      <div class="nav-trail">
+        <span class="trail-icon">🏠</span>
+        <span class="trail-step">Fiori Launchpad</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-step">Create Supplier Invoice</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-current">Header Data / Amounts</span>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-shell">
+          <span class="sap-logo">SAP</span>
+          <span class="app-title-bar">Create Supplier Invoice · Tireless Tires GmbH</span>
+          <span class="user-chip">Jennifer</span>
+        </div>
+        <div class="screen-body">
+          <div class="fiori-form">
+            <div class="form-section-title">Invoice Amount</div>
+            <div class="form-row">
+              <div class="ffield">
+                <label>Gross Invoice Amount *</label>
+                <div class="fval filled" style="font-size:14px;font-weight:700;">10,710.00</div>
+              </div>
+              <div class="ffield">
+                <label>Currency</label>
+                <div class="fval readonly">EUR</div>
+              </div>
+              <div class="ffield">
+                <label>Tax Amount (calculated)</label>
+                <div class="fval readonly" style="color:#888;">1,710.00 EUR (auto)</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="ffield">
+                <label>Tax Code *</label>
+                <div class="fval filled">V1 — Input Tax 19%</div>
+              </div>
+              <div class="ffield">
+                <label>Calculate Tax</label>
+                <div class="fval" style="color:#0070F2;font-weight:600;">☑ Auto-calculate</div>
+              </div>
+              <div class="ffield">
+                <label>Payment Terms</label>
+                <div class="fval readonly">NT30 — Net 30 days (auto)</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:white;border-radius:8px;padding:10px 16px;display:flex;gap:16px;font-size:12px;">
+            <span>Net amount: <strong>9,000.00 EUR</strong></span>
+            <span style="color:#888;">|</span>
+            <span>Tax (19%): <strong>1,710.00 EUR</strong></span>
+            <span style="color:#888;">|</span>
+            <span>Gross total: <strong style="color:#0070F2;">10,710.00 EUR</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — CREATE SUPPLIER INVOICE — LINE ITEMS -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="actor-badge">J</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Create Supplier Invoice — Items &amp; PO Reference</span>
+          <span class="sec-title-es">Partidas de factura y referencia a PO</span>
+        </div>
+        <div class="sec-desc">Jennifer referencia la PO y el sistema trae los ítems automáticamente para la verificación en 3 pasos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La magia de la referencia a PO:</strong> al ingresar el número de PO en los ítems, SAP trae automáticamente el <strong>material, la cantidad pendiente de factura y el precio de la PO</strong>. Jennifer solo confirma o ajusta cantidades. El sistema verifica en segundo plano si la cantidad facturada coincide con el GR (Paso 2) y si el precio coincide con la PO (Paso 3). Si todo está OK, el documento puede contabilizarse.
+    </div>
+    <div class="visual-wrap">
+      <div class="nav-trail">
+        <span class="trail-icon">🏠</span>
+        <span class="trail-step">Fiori Launchpad</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-step">Create Supplier Invoice</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-current">Items Tab — PO Reference</span>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-shell">
+          <span class="sap-logo">SAP</span>
+          <span class="app-title-bar">Create Supplier Invoice · Items</span>
+          <span class="user-chip">Jennifer</span>
+        </div>
+        <div class="screen-body">
+          <div class="fiori-form">
+            <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-end;">
+              <div class="ffield" style="flex:1;">
+                <label>Purchase Order Number</label>
+                <div class="fval filled">4500001234</div>
+              </div>
+              <button class="btn-primary" style="height:32px;padding:0 14px;font-size:12px;">Get PO Items</button>
+            </div>
+            <table class="fiori-table">
+              <thead>
+                <tr>
+                  <th>☑</th>
+                  <th>PO Item</th>
+                  <th>Material</th>
+                  <th>Qty (GR)</th>
+                  <th>Qty (Invoice)</th>
+                  <th>UoM</th>
+                  <th>PO Price</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="checkbox" checked disabled style="accent-color:#0070F2;"></td>
+                  <td>10</td>
+                  <td>Tires — Mountain 29"</td>
+                  <td style="color:#2E7D32;font-weight:600;">200</td>
+                  <td style="font-weight:700;">200</td>
+                  <td>ST</td>
+                  <td>€ 45.00</td>
+                  <td style="font-weight:700;">€ 9,000.00</td>
+                  <td><span class="fiori-status fs-green">✔ OK</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="padding:10px 0;display:flex;gap:16px;font-size:12px;color:#666;border-top:1px solid #F0F0F0;margin-top:8px;">
+              <span>PO Price check: <strong style="color:#2E7D32;">✔ Match</strong></span>
+              <span>GR Quantity check: <strong style="color:#2E7D32;">✔ Match</strong></span>
+              <span>Net amount: <strong>€ 9,000.00</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dh-note">
+        💡 <strong>Documento FI generado al postear la factura:</strong>
+        <strong>GR/IR Account (Dr)</strong> — compensa el haber registrado en el GR; la obligación estimada queda cancelada.
+        <strong>Vendor Account (Cr)</strong> — registra la obligación real de pago con Tireless Tires GmbH en el AP subledger.
+        <strong>Tax Account (Cr)</strong> — registra el IVA (19%) para la declaración fiscal.
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — DISPLAY DOCUMENT FLOW -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="actor-badge">J</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Display Document Flow</span>
+          <span class="sec-title-es">Ver el flujo de documentos</span>
+        </div>
+        <div class="sec-desc">Jennifer traza la cadena completa de documentos vinculados a la transacción de compra.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El Document Flow conecta todo el ciclo:</strong> después de contabilizar la factura, Jennifer puede abrir la app <strong>Display Document Flow</strong> e ingresar cualquier documento del ciclo (la factura, el GR, la PO). El sistema muestra la cadena completa de documentos relacionados con esa transacción de negocio, con flechas que indican la relación. También puede ver los asientos de diario de cada ledger haciendo scroll.
+    </div>
+    <div class="visual-wrap">
+      <div class="nav-trail">
+        <span class="trail-icon">🏠</span>
+        <span class="trail-step">Fiori Launchpad</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-current">Display Document Flow</span>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-shell">
+          <span class="sap-logo">SAP</span>
+          <span class="app-title-bar">Display Document Flow</span>
+          <span class="user-chip">Jennifer</span>
+        </div>
+        <div class="screen-body">
+          <div class="fiori-form" style="margin-bottom:12px;">
+            <div class="form-row two">
+              <div class="ffield"><label>Document Number</label><div class="fval filled">5105600001 (Invoice FI doc)</div></div>
+              <div class="ffield"><label>Company Code</label><div class="fval filled">DE01</div></div>
+            </div>
+          </div>
+          <div style="background:white;border-radius:8px;padding:16px;">
+            <div style="font-size:12px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.3px;margin-bottom:12px;">Document Chain</div>
+            <div class="docflow">
+              <div class="df-item" style="border-radius:8px 8px 0 0;">
+                <span class="df-icon">📄</span>
+                <div>
+                  <div class="df-label">Purchase Order · 4500001234</div>
+                  <div class="df-status">MM · Logistics · No FI document</div>
+                </div>
+                <span class="fiori-status fs-blue" style="margin-left:auto;">PO</span>
+              </div>
+              <div class="df-connector"></div>
+              <div class="df-item">
+                <span class="df-icon">📦</span>
+                <div>
+                  <div class="df-label">Goods Receipt · 5000012345 (MM) + 4900001234 (FI)</div>
+                  <div class="df-status">Materials Document + Finance Document · Inventory Dr / GR-IR Cr</div>
+                </div>
+                <span class="fiori-status fs-green" style="margin-left:auto;">GR</span>
+              </div>
+              <div class="df-connector"></div>
+              <div class="df-item">
+                <span class="df-icon">🧾</span>
+                <div>
+                  <div class="df-label">Supplier Invoice · 5105600001 (FI)</div>
+                  <div class="df-status">Finance Document · GR-IR Dr / Vendor Cr / Tax Cr</div>
+                </div>
+                <span class="fiori-status fs-green" style="margin-left:auto;">IV</span>
+              </div>
+              <div class="df-connector"></div>
+              <div class="df-item" style="border-radius:0 0 8px 8px;">
+                <span class="df-icon">💳</span>
+                <div>
+                  <div class="df-label">Outgoing Payment · 2000054321 (FI)</div>
+                  <div class="df-status">Finance Document · Vendor Dr / Bank Cr · Clearing</div>
+                </div>
+                <span class="fiori-status fs-green" style="margin-left:auto;">PAY</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — DISPLAY T-ACCOUNT -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="actor-badge">J</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Display T-Account</span>
+          <span class="sec-title-es">Visualizar el impacto en cuentas T</span>
+        </div>
+        <div class="sec-desc">Jennifer ve el impacto contable del ciclo completo en las cuentas del GL.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La vista de T-accounts conecta el ciclo con la contabilidad:</strong> desde el Document Flow, Jennifer puede abrir la app <strong>Display T-Account</strong> para visualizar cómo cada documento impactó en las cuentas GL. Cada cuenta se muestra como una cuenta T clásica — partidas deudoras a la izquierda, acreedoras a la derecha. Ideal para entender por qué la GR/IR idealmente queda en cero.
+    </div>
+    <div class="visual-wrap">
+      <div class="nav-trail">
+        <span class="trail-icon">🏠</span>
+        <span class="trail-step">Fiori Launchpad</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-step">Display Document Flow</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-current">Display T-Account (link)</span>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-shell">
+          <span class="sap-logo">SAP</span>
+          <span class="app-title-bar">Display T-Account · Flow: PO 4500001234</span>
+          <span class="user-chip">Jennifer</span>
+        </div>
+        <div class="screen-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+            <div class="ta-box">
+              <div class="ta-header">Inventory / Stock Account</div>
+              <div class="ta-body">
+                <div class="ta-side ta-debit-side">
+                  <div class="ta-side-title">DEBE</div>
+                  <div class="ta-entry" style="color:#1565C0;font-weight:600;">€ 9,000 (GR)</div>
+                </div>
+                <div class="ta-side">
+                  <div class="ta-side-title">HABER</div>
+                  <div class="ta-entry" style="color:#888;">—</div>
+                </div>
+              </div>
+              <div style="background:#F5F6F7;padding:6px 10px;font-size:10.5px;color:#444;text-align:center;">Saldo Dr: 9,000</div>
+            </div>
+            <div class="ta-box">
+              <div class="ta-header">GR/IR Clearing Account</div>
+              <div class="ta-body">
+                <div class="ta-side ta-debit-side">
+                  <div class="ta-side-title">DEBE</div>
+                  <div class="ta-entry" style="color:#1565C0;font-weight:600;">€ 9,000 (IV)</div>
+                </div>
+                <div class="ta-side">
+                  <div class="ta-side-title">HABER</div>
+                  <div class="ta-entry" style="color:#2E7D32;font-weight:600;">€ 9,000 (GR)</div>
+                </div>
+              </div>
+              <div style="background:#E8F5E9;padding:6px 10px;font-size:10.5px;color:#2E7D32;font-weight:700;text-align:center;">✔ Saldo = 0</div>
+            </div>
+            <div class="ta-box">
+              <div class="ta-header">Vendor Account (AP)</div>
+              <div class="ta-body">
+                <div class="ta-side ta-debit-side">
+                  <div class="ta-side-title">DEBE</div>
+                  <div class="ta-entry" style="color:#888;">—</div>
+                </div>
+                <div class="ta-side">
+                  <div class="ta-side-title">HABER</div>
+                  <div class="ta-entry" style="color:#2E7D32;font-weight:600;">€ 10,710 (IV)</div>
+                </div>
+              </div>
+              <div style="background:#FFF3E0;padding:6px 10px;font-size:10.5px;color:#E65100;text-align:center;">Saldo Cr: 10,710 (pendiente pago)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — DISPLAY PROCESS FLOW — AP -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="actor-badge">J</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Display Process Flow — Accounts Payable</span>
+          <span class="sec-title-es">Ver el flujo de proceso de Cuentas por Pagar</span>
+        </div>
+        <div class="sec-desc">Una vista de las relaciones entre todos los documentos AP involucrados en el ciclo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Process Flow vs. Document Flow — diferencia clave:</strong> el Document Flow muestra la cadena de un documento específico. La app <strong>Display Process Flow — Accounts Payable</strong> muestra las <strong>relaciones entre categorías de documentos AP</strong> (órdenes, movimientos, facturas, asientos, partidas de compensación) de forma visual. Es útil para entender la arquitectura completa del proceso, no solo una transacción puntual.
+    </div>
+    <div class="visual-wrap">
+      <div class="nav-trail">
+        <span class="trail-icon">🏠</span>
+        <span class="trail-step">Fiori Launchpad</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-current">Display Process Flow — Accounts Payable</span>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-shell">
+          <span class="sap-logo">SAP</span>
+          <span class="app-title-bar">Display Process Flow — Accounts Payable</span>
+          <span class="user-chip">Jennifer</span>
+        </div>
+        <div class="screen-body">
+          <div style="background:white;border-radius:8px;padding:16px 18px;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:600px;">
+              <!-- PO node -->
+              <div style="background:#7E4FBF;border-radius:8px;padding:10px 14px;text-align:center;color:white;min-width:110px;">
+                <div style="font-size:16px;margin-bottom:4px;">📄</div>
+                <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;">Purchase Orders</div>
+                <div style="font-size:9.5px;opacity:0.75;margin-top:2px;">MM · Logistics</div>
+              </div>
+              <div style="color:#94A3B8;font-size:20px;">›</div>
+              <!-- GR node -->
+              <div style="background:#00A896;border-radius:8px;padding:10px 14px;text-align:center;color:white;min-width:120px;">
+                <div style="font-size:16px;margin-bottom:4px;">📦</div>
+                <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;">Goods Movements</div>
+                <div style="font-size:9.5px;opacity:0.75;margin-top:2px;">MM + FI · dual doc</div>
+              </div>
+              <div style="color:#94A3B8;font-size:20px;">›</div>
+              <!-- Invoice node -->
+              <div style="background:#1A4B8C;border-radius:8px;padding:10px 14px;text-align:center;color:white;min-width:120px;">
+                <div style="font-size:16px;margin-bottom:4px;">🧾</div>
+                <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;">Incoming Invoices</div>
+                <div style="font-size:9.5px;opacity:0.75;margin-top:2px;">FI · AP subledger</div>
+              </div>
+              <div style="color:#94A3B8;font-size:20px;">›</div>
+              <!-- Journal entries -->
+              <div style="background:#1A6B99;border-radius:8px;padding:10px 14px;text-align:center;color:white;min-width:110px;">
+                <div style="font-size:16px;margin-bottom:4px;">📒</div>
+                <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;">Journal Entries</div>
+                <div style="font-size:9.5px;opacity:0.75;margin-top:2px;">FI · GL</div>
+              </div>
+              <div style="color:#94A3B8;font-size:20px;">›</div>
+              <!-- Clearing -->
+              <div style="background:#3D7A52;border-radius:8px;padding:10px 14px;text-align:center;color:white;min-width:110px;">
+                <div style="font-size:16px;margin-bottom:4px;">✔</div>
+                <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;">Clearing Entries</div>
+                <div style="font-size:9.5px;opacity:0.75;margin-top:2px;">FI · Payment</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 — MY PURCHASING DOCUMENT ITEMS — PROFESSIONAL -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="actor-badge">J</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">My Purchasing Document Items — Professional</span>
+          <span class="sec-title-es">Mis documentos de compra — vista profesional</span>
+        </div>
+        <div class="sec-desc">Dashboard de Jennifer para monitorear el ciclo completo por proveedor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Vista consolidada de todo el ciclo por proveedor:</strong> la app <strong>My Purchasing Document Items — Professional</strong> le da a Jennifer una vista de panel con pestañas separadas para Requisitions, Purchase Orders, Goods Receipts y Supplier Invoices. Permite monitorear el estado de los documentos de cada proveedor y detectar rápidamente facturas abiertas, recepciones sin factura, o discrepancias en el ciclo.
+    </div>
+    <div class="visual-wrap">
+      <div class="nav-trail">
+        <span class="trail-icon">🏠</span>
+        <span class="trail-step">Fiori Launchpad</span>
+        <span class="trail-sep">›</span>
+        <span class="trail-current">My Purchasing Document Items — Professional</span>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-shell">
+          <span class="sap-logo">SAP</span>
+          <span class="app-title-bar">My Purchasing Document Items — Professional</span>
+          <span class="user-chip">Jennifer</span>
+        </div>
+        <div class="screen-body">
+          <!-- Filters -->
+          <div class="fiori-form" style="margin-bottom:10px;">
+            <div class="form-row four">
+              <div class="ffield"><label>Supplier</label><div class="fval filled">Tireless Tires GmbH</div></div>
+              <div class="ffield"><label>Purchasing Org.</label><div class="fval">All</div></div>
+              <div class="ffield"><label>Fiscal Year</label><div class="fval filled">2025</div></div>
+              <div class="ffield"><label>Status</label><div class="fval">All</div></div>
+            </div>
+          </div>
+          <!-- Tab bar -->
+          <div style="display:flex;gap:0;border-bottom:2px solid #E0E0E0;margin-bottom:12px;">
+            <div style="padding:8px 18px;font-size:12.5px;font-weight:600;color:#0070F2;border-bottom:2px solid #0070F2;margin-bottom:-2px;">Purchase Orders (3)</div>
+            <div style="padding:8px 18px;font-size:12.5px;color:#666;">Goods Receipts (3)</div>
+            <div style="padding:8px 18px;font-size:12.5px;color:#666;">Supplier Invoices (2)</div>
+            <div style="padding:8px 18px;font-size:12.5px;color:#666;">Requisitions (0)</div>
+          </div>
+          <!-- Table -->
+          <div style="background:white;border-radius:8px;overflow:hidden;border:1px solid #E0E0E0;">
+            <table class="fiori-table">
+              <thead>
+                <tr>
+                  <th>PO Number</th>
+                  <th>Material</th>
+                  <th>Qty Ordered</th>
+                  <th>Net Price</th>
+                  <th>GR Status</th>
+                  <th>Invoice Status</th>
+                  <th>Open Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color:#0070F2;font-weight:600;">4500001234</td>
+                  <td>Tires — Mountain 29"</td>
+                  <td>200 ST</td>
+                  <td>€ 45.00</td>
+                  <td><span class="fiori-status fs-green">GR Posted</span></td>
+                  <td><span class="fiori-status fs-green">Invoiced</span></td>
+                  <td style="color:#888;">—</td>
+                </tr>
+                <tr>
+                  <td style="color:#0070F2;font-weight:600;">4500001235</td>
+                  <td>Tires — Road 28"</td>
+                  <td>150 ST</td>
+                  <td>€ 38.00</td>
+                  <td><span class="fiori-status fs-green">GR Posted</span></td>
+                  <td><span class="fiori-status fs-green">Invoiced</span></td>
+                  <td style="color:#888;">—</td>
+                </tr>
+                <tr>
+                  <td style="color:#0070F2;font-weight:600;">4500001236</td>
+                  <td>Tubes — 29"</td>
+                  <td>500 ST</td>
+                  <td>€ 4.50</td>
+                  <td><span class="fiori-status fs-blue">Partial (250 ST)</span></td>
+                  <td><span class="fiori-status fs-orange">Open</span></td>
+                  <td style="color:#E65100;font-weight:600;">€ 1,125.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario Fiori — Procure-to-Pay (AP + MM) · Protagonista: Jennifer · Biblioteca de Guías SAP</footer>
+</body>
+</html>

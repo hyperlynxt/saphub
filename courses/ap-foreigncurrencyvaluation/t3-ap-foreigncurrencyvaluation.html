@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Foreign Currency Valuation — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-blue-dark:#0040A0;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+  .sec-actor.mgr .dot{ background:#C9932E; }
+  .sec-actor.mgr{ color:#8A6A1E; background:rgba(201,147,46,0.1); }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-body{ padding:22px 20px; }
+  .wizard-steps{ display:flex; align-items:center; gap:0; margin-bottom:20px; }
+  .wizard-step{ display:flex; align-items:center; gap:8px; font-size:0.78rem; color:var(--sap-muted); }
+  .wizard-step .num{ width:22px; height:22px; border-radius:50%; border:2px solid var(--sap-border); display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; color:var(--sap-muted); flex-shrink:0; }
+  .wizard-step.done .num{ border-color:var(--sap-blue); color:var(--sap-blue); }
+  .wizard-step.active .num{ background:var(--sap-blue); border-color:var(--sap-blue); color:white; }
+  .wizard-step.active{ color:var(--sap-blue); font-weight:700; }
+  .wizard-line{ flex:1; height:1px; background:var(--sap-border); margin:0 10px; min-width:40px; }
+  .fiori-section-title{ font-weight:700; font-size:0.92rem; color:var(--sap-text); margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid #EAEAEA; }
+  .fiori-2col{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .fiori-subhead{ font-size:0.76rem; font-weight:700; color:var(--sap-text); margin-bottom:10px; }
+  .fiori-checkfield{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-size:0.8rem; color:var(--sap-text); }
+  .fiori-checkfield .chk{ width:16px; height:16px; border:1.5px solid var(--sap-border); border-radius:3px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; color:var(--sap-blue); flex-shrink:0; }
+  .fiori-checkfield .chk.on{ background:var(--sap-blue); border-color:var(--sap-blue); color:white; }
+  .fiori-textfield{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-size:0.8rem; color:var(--sap-text); gap:10px; }
+  .fiori-textfield .val{ background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; padding:5px 9px; font-size:0.78rem; flex:1; max-width:220px; }
+  .fiori-textfield .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .delta-box{ border:2px solid #D4AF37; border-radius:8px; padding:14px 16px; margin-top:6px; }
+  .delta-box .dt{ font-weight:700; font-size:0.82rem; color:var(--sap-text); margin-bottom:10px; }
+  .error-popover{ border:2px solid #D4AF37; background:white; border-radius:6px; padding:10px 14px; margin-top:14px; font-size:0.78rem; color:#B23A3A; display:flex; align-items:center; gap:8px; box-shadow:0 3px 10px rgba(10,15,28,0.12); }
+  .error-popover .x{ color:#B23A3A; font-weight:800; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-table td.num{ text-align:right; font-family:'JetBrains Mono',monospace; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.warn{ background:#FFF3CD; color:#8A6A1E; }
+
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:760px){ .fiori-2col{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">The Assignment</a>
+  <a href="#s2">Template Selection</a>
+  <a href="#s3">Scheduling Options</a>
+  <a href="#s4">Setting Parameters</a>
+  <a href="#s5">Testing Sandbox</a>
+  <a href="#s6">Reviewing Results</a>
+  <a href="#s7">Delta Logic Error</a>
+  <a href="#s8">Fixing the Run</a>
+  <a href="#s9">Delta Logic Success</a>
+  <a href="#s10">Reading the Log</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Foreign</span> Currency Valuation</h1>
+    <h2>Valoración de Moneda Extranjera — Vivida por el Usuario</h2>
+    <p class="desc">Cómo Jake, key user de AP, prepara y corre su primera valoración de moneda extranjera desde Fiori — desde elegir el template correcto hasta entender por qué la lógica delta no siempre está disponible.</p>
+    <div class="protagonist">
+      <div class="avatar">J</div>
+      <div>
+        <div class="p-name">Jake</div>
+        <div class="p-role">Accounts Payable · Bike GmbH (DE01)</div>
+        <div class="p-note">Guía principal de este recorrido — Sandra, su manager, aparece en la sección 1 y en la sección 5.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Getting the Assignment</span>
+          <span class="sec-title-es">Recibiendo la tarea</span>
+          <span class="sec-actor"><span class="dot">J</span>Jake</span>
+        </div>
+        <div class="sec-desc">Antes de tocar Fiori, Jake necesita entender qué le están pidiendo.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jake va a apoyar la <strong>valoración de moneda extranjera</strong> en Accounts Payable en el próximo cierre de período. Para prepararse, primero se familiariza con tres términos básicos: método de valoración, área de valoración y lógica de contabilización — antes de abrir la app.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Opening the App and Selecting the Template</span>
+          <span class="sec-title-es">Abriendo la app y eligiendo el template</span>
+          <span class="sec-actor"><span class="dot">J</span>Jake</span>
+        </div>
+        <div class="sec-desc">El primer paso del wizard: confirmar que el template correcto es Foreign Currency Valuation.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jake abre <strong>Schedule General Ledger Jobs</strong> y busca el template de <strong>Foreign Currency Valuation</strong> entre los distintos jobs periódicos disponibles.
+    </div>
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Schedule General Ledger Jobs</div>
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> New Job: Foreign Currency Valuation</div>
+      <div class="fiori-appbar"><div><h6>Foreign Currency Valuation — Company Code DE01</h6></div></div>
+      <div class="fiori-body">
+        <div class="wizard-steps">
+          <div class="wizard-step active"><span class="num">1</span>Template Selection</div>
+          <div class="wizard-line"></div>
+          <div class="wizard-step"><span class="num">2</span>Scheduling Options</div>
+          <div class="wizard-line"></div>
+          <div class="wizard-step"><span class="num">3</span>Parameters</div>
+        </div>
+        <div class="fiori-section-title">Available Templates</div>
+        <div class="fiori-textfield"><span>Foreign Currency Valuation</span><span class="fiori-status ok">Selected</span></div>
+        <div class="fiori-textfield"><span>Regroup Receivables/Payables</span><span></span></div>
+        <div class="fiori-textfield"><span>Balance Carryforward</span><span></span></div>
+        <div class="fiori-btnbar"><button class="fiori-btn primary">Next: Scheduling Options</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting the Scheduling Options</span>
+          <span class="sec-title-es">Definiendo las opciones de programación</span>
+          <span class="sec-actor"><span class="dot">J</span>Jake</span>
+        </div>
+        <div class="sec-desc">Antes de los parámetros de negocio, hay que decidir cuándo y con qué frecuencia corre el job.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jake decide que este job corre <strong>una sola vez</strong>, ejecutándose inmediatamente después de guardarlo — no lo necesita recurrente todavía.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> New Job: Foreign Currency Valuation</div>
+      <div class="fiori-appbar"><div><h6>Foreign Currency Valuation — Company Code DE01</h6></div></div>
+      <div class="fiori-body">
+        <div class="wizard-steps">
+          <div class="wizard-step done"><span class="num">✓</span>Template Selection</div>
+          <div class="wizard-line"></div>
+          <div class="wizard-step active"><span class="num">2</span>Scheduling Options</div>
+          <div class="wizard-line"></div>
+          <div class="wizard-step"><span class="num">3</span>Parameters</div>
+        </div>
+        <div class="fiori-textfield"><span>Job Name</span><div class="val filled">FCV_DE01_PERIOD12</div></div>
+        <div class="fiori-textfield"><span>Run</span><div class="val filled">Immediately, once</div></div>
+        <div class="fiori-btnbar"><button class="fiori-btn">Back</button><button class="fiori-btn primary">Next: Parameters</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting the Vendor and Central Parameters</span>
+          <span class="sec-title-es">Definiendo los parámetros de proveedor y centrales</span>
+          <span class="sec-actor"><span class="dot">J</span>Jake</span>
+        </div>
+        <div class="sec-desc">Jake activa la revaluación de proveedores y define la fecha clave del cierre.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jake marca <strong>Valuate Vendors</strong> y deja sin marcar Customers y G/L Accounts — este job es específicamente para el saldo de proveedores en Bike GmbH.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> New Job: Foreign Currency Valuation</div>
+      <div class="fiori-appbar"><div><h6>Foreign Currency Valuation — Company Code DE01</h6></div></div>
+      <div class="fiori-body">
+        <div class="wizard-steps">
+          <div class="wizard-step done"><span class="num">✓</span>Template Selection</div>
+          <div class="wizard-line"></div>
+          <div class="wizard-step done"><span class="num">✓</span>Scheduling Options</div>
+          <div class="wizard-line"></div>
+          <div class="wizard-step active"><span class="num">3</span>Parameters</div>
+        </div>
+        <div class="fiori-section-title">Open Items: Subledger</div>
+        <div class="fiori-2col">
+          <div>
+            <div class="fiori-subhead">Vendor Selection</div>
+            <div class="fiori-checkfield"><span>Valuate Vendors</span><span class="chk on">✓</span></div>
+            <div class="fiori-textfield"><span>Vendor</span><div class="val filled">Tireless Tires</div></div>
+          </div>
+          <div>
+            <div class="fiori-subhead">Central Selections</div>
+            <div class="fiori-textfield"><span>Currency</span><div class="val">—</div></div>
+            <div class="fiori-textfield"><span>Key Date</span><div class="val filled">31.12.2026</div></div>
+          </div>
+        </div>
+        <div class="fiori-btnbar"><button class="fiori-btn">Back</button><button class="fiori-btn primary">Schedule</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Testing in a Sandbox First</span>
+          <span class="sec-title-es">Probando primero en un entorno de prueba</span>
+          <span class="sec-actor mgr"><span class="dot">S</span>Sandra</span>
+        </div>
+        <div class="sec-desc">Antes de correr en productivo, Sandra le pide a Jake que valide todo en un entorno de testing.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Sandra, la manager de Jake, le pide que pruebe la valoración de moneda extranjera en un <strong>entorno de testing</strong>. Jake revisa su balance general, accede a la cuenta del Libro Mayor, y ubica una factura de <strong>USD 10.000</strong> para seguirla paso a paso.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Display G/L Account Line Items</div>
+      <div class="fiori-appbar"><div><h6>Test Environment — Before Valuation</h6></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Document</th><th>Vendor</th><th>Currency</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>4500019002</td><td>Tireless Tires</td><td>USD</td><td class="num">10.000,00</td><td><span class="fiori-status warn">Open, not yet valuated</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Valuation Results</span>
+          <span class="sec-title-es">Revisando los resultados de la valoración</span>
+          <span class="sec-actor"><span class="dot">J</span>Jake</span>
+        </div>
+        <div class="sec-desc">La factura de USD 10.000 ya tiene su diferencia de valoración contabilizada.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Después de correr el job, Jake analiza el impacto en el balance y en el estado de resultado — exactamente lo que el ejercicio del curso le pide revisar.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Foreign Currency Valuation — Results</div>
+      <div class="fiori-appbar"><div><h6>Posting Journal — Tireless Tires (USD 10.000)</h6></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Account</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>Exchange Rate Loss (Income Statement)</td><td class="num">€300,00</td><td class="num">—</td></tr>
+            <tr><td>Financial Statement Adjustment Account (Balance Sheet)</td><td class="num">—</td><td class="num">€300,00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>Exchange Rate Loss → Debe:</b> reconoce que la deuda en USD ahora vale más en EUR. <b>Financial Statement Adjustment Account → Haber:</b> registra el ajuste sin tocar directamente la cuenta de enlace de Tireless Tires.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Attempting Year-End Valuation Delta Logic</span>
+          <span class="sec-title-es">Intentando la lógica delta de Year-End Valuation</span>
+          <span class="sec-actor"><span class="dot">J</span>Jake</span>
+        </div>
+        <div class="sec-desc">Jake prueba la lógica delta para Company Code 1010 — y el sistema lo frena.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Probando en la sociedad <strong>1010</strong>, Jake marca por error <strong>Year-End Valuation</strong> dentro de Delta Logic. El sistema le devuelve un error: esa lógica no está permitida para el área de valoración <strong>IF</strong>.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> New Job: Foreign Currency Valuation</div>
+      <div class="fiori-appbar"><div><h6>Foreign Currency Valuation Company Code 1010</h6></div></div>
+      <div class="fiori-body">
+        <div class="wizard-steps">
+          <div class="wizard-step done"><span class="num">✓</span>Template Selection</div>
+          <div class="wizard-line"></div>
+          <div class="wizard-step done"><span class="num">✓</span>Scheduling Options</div>
+          <div class="wizard-line"></div>
+          <div class="wizard-step active"><span class="num">3</span>Parameters</div>
+        </div>
+        <div class="fiori-section-title">Open Items: Subledger</div>
+        <div class="fiori-2col">
+          <div>
+            <div class="fiori-subhead">Vendor Selection</div>
+            <div class="fiori-checkfield"><span>Valuate Vendors</span><span class="chk on">✓</span></div>
+            <div class="fiori-textfield"><span>Vendor</span><div class="val filled">DE (S4C00)</div></div>
+            <div class="fiori-subhead" style="margin-top:14px;">Central Selections</div>
+            <div class="fiori-textfield"><span>Currency</span><div class="val">—</div></div>
+            <div class="fiori-textfield"><span>Document Number</span><div class="val">—</div></div>
+          </div>
+          <div>
+            <div class="fiori-subhead">Customer Selection</div>
+            <div class="fiori-checkfield"><span>Valuate Customers</span><span class="chk">—</span></div>
+            <div class="fiori-textfield"><span>Customer</span><div class="val">—</div></div>
+            <div class="delta-box">
+              <div class="dt">Delta Logic</div>
+              <div class="fiori-checkfield"><span>Year-End Valuation</span><span class="chk on">✓</span></div>
+              <div class="fiori-checkfield"><span>Mid-Year Valuation</span><span class="chk">—</span></div>
+              <div class="error-popover"><span class="x">⊗</span> Year-End/Mid-Year Valuation is not permitted for area IF</div>
+            </div>
+          </div>
+        </div>
+        <div class="fiori-btnbar"><button class="fiori-btn">Template</button><button class="fiori-btn">Check</button><button class="fiori-btn primary">Schedule</button><button class="fiori-btn">Cancel</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Fixing the Selection</span>
+          <span class="sec-title-es">Corrigiendo la selección</span>
+          <span class="sec-actor"><span class="dot">J</span>Jake</span>
+        </div>
+        <div class="sec-desc">Área IF no admite lógica delta — Jake vuelve a la lógica estándar para esta sociedad.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jake destildA <strong>Year-End Valuation</strong> y deja ambas casillas de Delta Logic sin marcar. Sin lógica delta seleccionada, el sistema aplica la <strong>lógica estándar</strong> — valoración con reversión al día siguiente — y el job corre sin error.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> New Job: Foreign Currency Valuation</div>
+      <div class="fiori-appbar"><div><h6>Foreign Currency Valuation Company Code 1010</h6></div></div>
+      <div class="fiori-body">
+        <div class="delta-box">
+          <div class="dt">Delta Logic</div>
+          <div class="fiori-checkfield"><span>Year-End Valuation</span><span class="chk">—</span></div>
+          <div class="fiori-checkfield"><span>Mid-Year Valuation</span><span class="chk">—</span></div>
+        </div>
+        <div class="fiori-btnbar"><button class="fiori-btn">Check</button><button class="fiori-btn primary">Schedule</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running Delta Logic on an Eligible Area</span>
+          <span class="sec-title-es">Corriendo la lógica delta en un área habilitada</span>
+          <span class="sec-actor"><span class="dot">J</span>Jake</span>
+        </div>
+        <div class="sec-desc">En el área de valoración local, Year-End Valuation sí está permitida — Jake completa la prueba de fin de año.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Con el área de valoración correcta (la de GAAP local, no IF), Jake vuelve a marcar <strong>Year-End Valuation</strong> — esta vez el sistema acepta la selección sin error.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> New Job: Foreign Currency Valuation</div>
+      <div class="fiori-appbar"><div><h6>Foreign Currency Valuation Company Code 1010 — Area 01</h6></div></div>
+      <div class="fiori-body">
+        <div class="delta-box" style="border-color:#1D7A3E;">
+          <div class="dt">Delta Logic</div>
+          <div class="fiori-checkfield"><span>Year-End Valuation</span><span class="chk on">✓</span></div>
+          <div class="fiori-checkfield"><span>Mid-Year Valuation</span><span class="chk">—</span></div>
+          <div style="margin-top:10px;"><span class="fiori-status ok">Job scheduled successfully</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reading the Delta Logic Log</span>
+          <span class="sec-title-es">Leyendo el log de la lógica delta</span>
+          <span class="sec-actor"><span class="dot">J</span>Jake</span>
+        </div>
+        <div class="sec-desc">Un solo documento financiero — sin reversión — tal como esperaba Jake.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Jake abre el log de la corrida y revisa las columnas <strong>New Difference</strong> y <strong>Amount Posted</strong>. Confirma que aparece un solo asiento financiero, sin documento de reversión.
+    </div>
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Foreign Currency Valuation — Posting Log</div>
+      <div class="fiori-appbar"><div><h6>Area 01 — Year-End Valuation</h6></div></div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Document</th><th>New Difference</th><th>Amount Posted</th><th>Reversal Doc.</th></tr></thead>
+          <tbody>
+            <tr><td>4900002210</td><td class="num">€180,00</td><td class="num">€180,00</td><td><span class="fiori-status ok">None</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Foreign Currency Valuation · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

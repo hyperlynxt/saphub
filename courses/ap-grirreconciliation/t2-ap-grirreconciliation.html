@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · GR/IR Reconciliation — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A1F1F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:680px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,133,133,0.14); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px; max-width:680px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .kind-tag{ display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase; padding:3px 9px; border-radius:20px; margin-left:2px; }
+  .kind-adjacent{ background:rgba(26,107,153,0.1); color:#1A6B99; }
+  .kind-depth{ background:var(--t2-pale); color:var(--t2-dark); }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t2-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:20px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:190px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t2-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-desc{ font-size:0.72rem; color:var(--body); margin-top:6px; line-height:1.4; display:block; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:760px){ .cmp-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Access &amp; Roles</a>
+  <a href="#s2">Machine Learning Option</a>
+  <a href="#s3">The BNG/GNB Accounts</a>
+  <a href="#s4">Drilling Down Between Apps</a>
+  <a href="#s5">Finance Meets Purchasing</a>
+  <a href="#s6">Quantity vs Price Reasons</a>
+  <a href="#s7">What Surplus Really Means</a>
+  <a href="#s8">Defining Items, in Detail</a>
+  <a href="#s9">When a Write-Off Is Enough</a>
+  <a href="#s10">Situation Handling for GR/IR</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Materials Management</span>
+    </div>
+    <h1><span class="accent">GR/IR</span> Reconciliation</h1>
+    <h2>Reconciliación GR/IR — Profundización</h2>
+    <p class="desc">Cinco temas adyacentes que el Tipo 1 no cubrió — accesos y roles, la opción de machine learning, las cuentas de reclasificación BNG/GNB, la navegación entre apps, y la colaboración con Compras — más el mecanismo interno de lo ya visto: las razones por cantidad vs. precio, qué es realmente un excedente, y cuándo alcanza con un write-off.</p>
+    <div class="hlbox">Resumen Visual — <b>GR/IR Reconciliation</b>, Tipo 2 (Profundización). 10 secciones — 5 de temas adyacentes, 5 de mayor profundidad sobre lo visto en T1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Access and Roles Behind Both Apps</span>
+          <span class="sec-title-es">Accesos y roles detrás de ambas apps</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Antes de que alguien pueda abrir estas apps, necesita el catálogo de negocio correcto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para usar <strong>Monitor GR/IR Account Reconciliation</strong> y <strong>Reconcile GR/IR Accounts</strong>, los usuarios deben tener asignado el catálogo de negocio <strong>Finance — Account Reconciliation</strong>. En la práctica, esto suele configurarse copiando el rol de negocio <strong>General Ledger Accountant</strong> y ajustándolo según lo que cada usuario realmente necesita.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Machine Learning Option</span>
+          <span class="sec-title-es">La opción de machine learning</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El monitoreo de T1 puede volverse más inteligente — con una condición.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Existe una variante de <strong>reconciliación inteligente de GR/IR</strong> que usa un servicio de machine learning para asistir el proceso de reconciliación. Esta capacidad requiere una <strong>suscripción separada</strong> — no viene incluida por defecto en el monitoreo estándar de T1.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Two Reclassification Accounts Behind the Scenes</span>
+          <span class="sec-title-es">Las dos cuentas de reclasificación detrás de escena</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Cuando mercadería y factura no coinciden, el sistema no las deja indiferenciadas en una sola cuenta.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando entrada de mercadería y entrada de factura no corresponden a la misma transacción, el sistema puede reclasificarlas en dos cuentas separadas: una para partidas <strong>facturadas pero no recibidas</strong> (comúnmente llamada BNG), y otra para partidas <strong>recibidas pero no facturadas</strong> (GNB). Mantener estas cuentas configuradas correctamente es lo que permite esa reclasificación automática.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4>BNG <span class="en-tag">Billed, Not Goods</span></h4>
+        <p>La factura ya llegó, pero la mercadería todavía no se recibió físicamente.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4>GNB <span class="en-tag">Goods, Not Billed</span></h4>
+        <p>La mercadería ya se recibió, pero la factura todavía no llegó.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Drilling Down from Monitor to Reconcile</span>
+          <span class="sec-title-es">Navegando de Monitor a Reconcile</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Las dos apps de T1 no son pantallas aisladas — una lleva directo a la otra.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Desde <strong>Monitor GR/IR Account Reconciliation</strong>, seleccionar un segmento puntual del gráfico (por ejemplo, partidas con excedente de factura de un grupo de compras específico) navega <strong>directamente</strong> a <strong>Reconcile GR/IR Accounts</strong>, ya filtrado para ese mismo recorte — sin tener que volver a armar el filtro a mano.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Finance and Purchasing Need the Same Data</span>
+          <span class="sec-title-es">Por qué Finance y Compras necesitan los mismos datos</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">La colaboración con el equipo de verificación de facturas que menciona T1 no es opcional.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Clarificar partidas abiertas de GR/IR exige que <strong>Financial Accounting</strong> y <strong>Compras (Purchasing)</strong> trabajen sobre la <strong>misma información</strong> — ninguno de los dos tiene, por sí solo, todo el contexto necesario para decidir si una diferencia es un error de datos o un problema real con el proveedor.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Sorting the Four Reasons: Quantity vs. Price</span>
+          <span class="sec-title-es">Ordenando las cuatro razones: cantidad vs. precio</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 las presentó como una lista — acá se ven agrupadas según qué tipo de discrepancia generan.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Las cuatro razones de T1 no son homogéneas: algunas generan discrepancias de <strong>cantidad</strong>, otras de <strong>monto</strong> — y esa distinción es justamente la que separan los dos KPIs de excedente.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Razón (T1, sección 3)</th><th>Tipo de discrepancia</th></tr></thead>
+        <tbody>
+          <tr><td>Falta factura o entrada de mercadería</td><td><span class="badge badge-accent">Cantidad o monto, según cuál falte</span></td></tr>
+          <tr><td>Los montos no coinciden</td><td><span class="badge badge-neutral">Monto</span></td></tr>
+          <tr><td>Lista de precios vieja en la orden</td><td><span class="badge badge-neutral">Monto</span></td></tr>
+          <tr><td>Costos de entrega en cuenta equivocada</td><td><span class="badge badge-accent">Cuenta, no cantidad ni monto</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What "Surplus" Actually Means</span>
+          <span class="sec-title-es">Qué significa realmente "excedente"</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 definió los dos KPIs — acá se conectan con las cuentas BNG/GNB de la sección 3.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un <strong>GR Amount Surplus</strong> es, en la práctica, el mismo tipo de situación que termina en la cuenta <strong>GNB</strong> (mercadería recibida, no facturada) — y un <strong>IR Amount Surplus</strong> corresponde al tipo de situación que termina en <strong>BNG</strong> (facturada, mercadería no recibida). Los KPIs son el conteo; las cuentas de reclasificación son el destino contable.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What "Define Items" Actually Involves</span>
+          <span class="sec-title-es">Qué implica realmente "definir las partidas"</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El segundo de los tres pasos de T1 no es solo "mirar" — es clasificar antes de actuar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      "Definir las partidas" (T1, sección 5) significa agrupar cada partida abierta según <strong>cuál de las cuatro razones</strong> probablemente la está causando — sin esa clasificación previa, el tercer paso (procesar) no sabría si conviene esperar, investigar, o contabilizar un ajuste directo.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">When a Write-Off Is Enough</span>
+          <span class="sec-title-es">Cuándo alcanza con un write-off</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 mencionó el write-off como resolución posible — acá se ve cuándo tiene sentido usarlo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Una <strong>contabilización de write-off</strong> tiene sentido cuando la diferencia es <strong>pequeña</strong> y seguir investigándola cuesta más que simplemente absorberla contablemente. Diferencias grandes, en cambio, sí ameritan volver a los tres pasos de clarificación (T1, sección 5) antes de decidir cómo cerrarlas.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Situation Handling Can Watch For Here</span>
+          <span class="sec-title-es">Qué puede vigilar Situation Handling acá</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 lo presentó como una función genérica — acá se aplica específicamente a GR/IR.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Aplicada a GR/IR, <strong>Situation Handling</strong> puede alertar proactivamente cuando una partida lleva demasiado tiempo abierta, o cuando un excedente supera un umbral relevante — anticipando el trabajo que, de otro modo, alguien tendría que descubrir revisando el monitor manualmente.
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos introducidos en este archivo (Tipo 2 — Profundización). No repite los ya vistos en el glosario de Tipo 1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Finance — Account Reconciliation (Business Catalog)</div><div class="term-es">Catálogo de Negocio de Reconciliación</div><div class="term-def">Catálogo de negocio que otorga acceso a las apps de reconciliación GR/IR.</div></div>
+      <div class="gcard"><div class="term-en">General Ledger Accountant (Role)</div><div class="term-es">Rol Contador de Libro Mayor</div><div class="term-def">Plantilla de rol de negocio comúnmente usada como base para dar acceso a estas apps.</div></div>
+      <div class="gcard"><div class="term-en">Intelligent GR/IR Reconciliation</div><div class="term-es">Reconciliación GR/IR Inteligente</div><div class="term-def">Variante que usa un servicio de machine learning para asistir la reconciliación; requiere suscripción separada.</div></div>
+      <div class="gcard"><div class="term-en">BNG Account</div><div class="term-es">Cuenta BNG</div><div class="term-def">Cuenta de reclasificación para partidas facturadas pero cuya mercadería aún no se recibió.</div></div>
+      <div class="gcard"><div class="term-en">GNB Account</div><div class="term-es">Cuenta GNB</div><div class="term-def">Cuenta de reclasificación para partidas de mercadería recibida cuya factura aún no llegó.</div></div>
+      <div class="gcard"><div class="term-en">Drill-Down Navigation</div><div class="term-es">Navegación por Desglose</div><div class="term-def">Mecanismo que permite pasar de un gráfico agregado en Monitor a la lista filtrada correspondiente en Reconcile.</div></div>
+      <div class="gcard"><div class="term-en">Purchasing Group</div><div class="term-es">Grupo de Compras</div><div class="term-def">Dimensión usada para segmentar partidas de orden de compra dentro del monitoreo GR/IR.</div></div>
+      <div class="gcard"><div class="term-en">Cross-Functional Clarification</div><div class="term-es">Clarificación Cross-Funcional</div><div class="term-def">Necesidad de que Financial Accounting y Compras compartan datos para resolver una partida abierta.</div></div>
+      <div class="gcard"><div class="term-en">Discrepancy Threshold</div><div class="term-es">Umbral de Discrepancia</div><div class="term-def">Límite que distingue una diferencia menor, resoluble por write-off, de una que amerita investigación completa.</div></div>
+      <div class="gcard"><div class="term-en">Item Classification</div><div class="term-es">Clasificación de Partidas</div><div class="term-def">Agrupación de partidas abiertas según su causa probable, previa al procesamiento.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — GR/IR Reconciliation · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

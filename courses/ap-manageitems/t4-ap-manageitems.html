@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Manage Supplier Items — Configurador GUI | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#A78BC9;--t1-dark:#6B4C8F;--t1-pale:rgba(167,139,201,0.12);--t1-pale-border:rgba(167,139,201,0.38);--navy-950:#0A0F1C;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#160C24 55%,#200E32 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(167,139,201,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(107,76,143,0.35);}
+  .area-tag{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);color:var(--t1-dark);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;white-space:nowrap;align-self:center;}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 26px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .spro-tree{background:#FAFAFA;border:1px solid #D0D4DC;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:12px;}
+  .spro-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--t1-dark);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+  .spro-node{display:flex;align-items:center;gap:6px;padding:2px 0;color:var(--body);}
+  .spro-node .sn-text{font-size:11.5px;}
+  .spro-node.active .sn-text{font-weight:700;color:var(--t1-dark);background:rgba(167,139,201,0.15);border-radius:4px;padding:1px 6px;}
+  .i1{padding-left:18px;}.i2{padding-left:36px;}.i3{padding-left:54px;}.i4{padding-left:72px;}
+  .sapgui{border:2px solid #A8B0BC;border-radius:4px;overflow:hidden;box-shadow:0 4px 14px rgba(10,15,28,0.1);}
+  .gui-bar{background:linear-gradient(180deg,#3A5A80,#2A4060);padding:7px 14px;display:flex;align-items:center;gap:12px;}
+  .tcode{font-family:'JetBrains Mono',monospace;font-size:11px;color:white;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:3px;padding:3px 8px;flex-shrink:0;}
+  .gui-title{font-size:12.5px;font-weight:600;color:white;}
+  .gui-tools{background:#C8D0DA;padding:5px 10px;display:flex;gap:6px;border-bottom:1px solid #A8B0BC;}
+  .gbtn{background:#D8E0E8;border:1px solid #9AA0AA;border-radius:2px;padding:3px 8px;font-size:10.5px;color:#2A2A2A;}
+  .gui-body{background:white;padding:14px 16px;}
+  .gui-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .gui-table th{background:#C8D0DA;color:#1A1A1A;padding:6px 10px;text-align:left;border:1px solid #A8B0BC;font-weight:700;font-size:11px;}
+  .gui-table td{padding:5px 10px;border:1px solid #D4D8DC;color:#2A2A2A;vertical-align:middle;}
+  .gui-table tr:nth-child(even) td{background:#F5F7FA;}
+  .gui-table .hi td{background:#CCE0F5;border-left:2px solid #0070C8;}
+  .gui-status{background:#C8D0DA;border-top:1px solid #A8B0BC;padding:4px 12px;font-size:10.5px;color:#444;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR / GUI</span>
+  <a href="#s1">Reversal Reasons</a>
+  <a href="#s2">Document Types AP</a>
+  <a href="#s3">Number Ranges</a>
+  <a href="#s4">Posting Periods</a>
+  <a href="#s5">Clearing Variants</a>
+  <a href="#s6">Special G/L Indicators</a>
+  <a href="#s7">Vendor Account Groups</a>
+  <a href="#s8">Correspondence Types</a>
+  <a href="#s9">Authorization for Reversal</a>
+  <a href="#s10">View Variants — Line Items</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+    </div>
+    <h1>Manage Supplier <span class="accent">Line Items</span></h1>
+    <h2>Tangibilización — Configurador SAP GUI</h2>
+    <p class="desc">Las 10 configuraciones que habilitan y controlan las funciones del curso: razones de reversión, tipos de documento, rangos de numeración, períodos, compensación, GL especial, autorizaciones y variantes de vista.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">🔧</span>
+      <b>Vos, en el rol de Configurador</b> · SAP Consultant<br>
+      <span style="font-size:12.5px;opacity:0.85;">Estas configuraciones determinan qué puede hacer Jennifer al analizar cuentas, compensar partidas y reversar documentos.</span>
+    </div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Define Reversal Reasons</span><span class="sec-title-es">Definir razones de reversión</span></div><div class="sec-desc">Los códigos de razón de reversión y las reglas de fecha que se aplican al crear el documento de reversión.</div></div></div>
+  <div class="theory-box"><strong>Las Reversal Reasons controlan la fecha del documento de reversión:</strong> el configurador define los códigos de reversión disponibles para el usuario. Cada código puede tener dos reglas: (1) si la fecha de contabilización del documento de reversión debe ser la misma del original, y (2) si el documento de reversión debe caer en el período siguiente al original. El usuario de Fiori solo elige el código — las reglas de fecha son consecuencia de la configuración.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Define Reasons for Reversal</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Define Reasons for Reversal</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Reason</th><th>Description</th><th>Alt. Posting Date</th><th>Neg. Posting</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>01</strong></td><td>Wrong posting</td><td></td><td></td></tr>
+            <tr class="hi"><td><strong>02</strong></td><td>Reversal in next period</td><td>✔ (forces next period)</td><td></td></tr>
+            <tr><td>03</td><td>Accrual (reversal in subsequent period)</td><td>✔</td><td>✔</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">"Alt. Posting Date" = forces next period · "Neg. Posting" = uses negative amounts instead of opposite sides</div>
+      </div>
+      <div class="gui-status">Reversal Reasons 01 and 02 are standard SAP reasons · 01 appears in image1 (wrong posting)</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Document Types for AP Transactions</span><span class="sec-title-es">Tipos de documento para transacciones de AP</span></div><div class="sec-desc">Los tipos de documento KR, KZ, KG y sus propiedades — cuentas permitidas, control de reversión.</div></div></div>
+  <div class="theory-box"><strong>El tipo de documento controla qué cuentas se pueden usar y cómo se numeran:</strong> cada tipo de documento AP (KR para facturas, KZ para pagos, KG para notas de crédito) tiene configurado qué tipos de cuenta puede incluir (Vendor, GL, etc.) y qué rangos de numeración usa. Al reversar un documento KR, el documento de reversión también tiene tipo KR — el tipo no cambia con la reversión.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Define Document Types for Entry View</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Define Document Types — AP</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">📋 Detail</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>DocType</th><th>Description</th><th>Account Types</th><th>Net Document Type</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>KR</strong></td><td>Vendor Invoice</td><td>K, S, D, A</td><td>KR (same for reversal)</td></tr>
+            <tr class="hi"><td><strong>KZ</strong></td><td>Vendor Payment</td><td>K, S, B</td><td>KZ</td></tr>
+            <tr><td>KG</td><td>Vendor Credit Memo</td><td>K, S</td><td>KG</td></tr>
+            <tr><td>RE</td><td>Invoice – Gross (MM)</td><td>K, S, M</td><td>RE</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">K=Vendor · S=GL · D=Customer · A=Asset · B=Bank · M=Material</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Number Ranges for AP Documents</span><span class="sec-title-es">Rangos de numeración para documentos de AP</span></div><div class="sec-desc">Los rangos que controlan la numeración de facturas, pagos, notas de crédito y reversiones.</div></div></div>
+  <div class="theory-box"><strong>Los documentos de reversión usan el mismo rango que el original:</strong> como el tipo de documento no cambia al reversar (KR reversa como KR), el número del documento de reversión cae en el mismo rango de numeración que el original. El configurador gestiona la capacidad de estos rangos para que no se agoten durante el ejercicio. Los rangos pueden ser internos (SAP asigna el número automáticamente) o externos (el usuario ingresa el número).</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Document Number Ranges — Entry View</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Number Range Maintenance — Company Code: DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Intervals</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>No.</th><th>From Number</th><th>To Number</th><th>Current No.</th><th>Int/Ext</th><th>Doc Types</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>19</strong></td><td>1900000000</td><td>1999999999</td><td>1900000022</td><td>Internal</td><td>KR, KG (incl. reversals)</td></tr>
+            <tr class="hi"><td><strong>15</strong></td><td>1500000000</td><td>1599999999</td><td>1500000006</td><td>Internal</td><td>KZ (incl. reversals)</td></tr>
+            <tr><td>17</td><td>1700000000</td><td>1799999999</td><td>1700000005</td><td>Internal</td><td>KG (credit memos)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Range 19 for KR invoices · Range 15 for KZ payments · Both seen in image2 line items</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Posting Period Control — Open/Close</span><span class="sec-title-es">Control de períodos de contabilización</span></div><div class="sec-desc">La gestión de períodos abiertos — condición necesaria para contabilizar reversiones en períodos anteriores.</div></div></div>
+  <div class="theory-box"><strong>El período debe estar abierto para contabilizar cualquier documento — incluyendo reversiones:</strong> cuando Jennifer reversa un documento con la fecha del período anterior, SAP verifica si ese período está abierto para el tipo de cuenta K (Vendor). Si el período está cerrado, la reversión fallará con un error de período. El configurador gestiona esta apertura/cierre con OB52.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 T-code: OB52</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Fiscal Year</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Open and Close Posting Periods</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">OB52</span><span class="gui-title">Open and Close Posting Periods — DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Var.</th><th>Acct Type</th><th>From Acct</th><th>To Acct</th><th>From Per.1</th><th>Year</th><th>To Per.1</th><th>Year</th></tr></thead>
+          <tbody>
+            <tr><td>DE01</td><td>+ (all)</td><td>—</td><td>—</td><td>7</td><td>2025</td><td>8</td><td>2025</td></tr>
+            <tr class="hi"><td>DE01</td><td>K (Vendor)</td><td>100000</td><td>199999</td><td><strong>7</strong></td><td>2025</td><td><strong>8</strong></td><td>2025</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Periods 1–6 closed · 7–8 open · Reversals posting to period 9 with a date in period 9 will succeed · Backdating to closed period 6 will fail</div>
+      </div>
+      <div class="gui-status">Open: July–August 2025 · Account Type K (Vendor) · DE01</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Clearing Variants — Manual Clearing Setup</span><span class="sec-title-es">Variantes de compensación manual</span></div><div class="sec-desc">La configuración que controla qué criterios usa SAP para sugerir partidas a compensar en la compensación manual.</div></div></div>
+  <div class="theory-box"><strong>Los Clearing Variants definen qué partidas se proponen para compensar:</strong> en la app Clear Outgoing Payments – Manual Clearing, SAP puede proponer automáticamente qué partidas tienen el mismo importe o la misma referencia (para facilitar la compensación). El configurador define los <strong>Clearing Variants</strong> que determinan estos criterios de propuesta — por ejemplo, compensar partidas por Assignment Number o por importe exacto.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Business Transactions</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Open Item Clearing — Define Clearing Variants</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Define Clearing Variants</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Variant</th><th>Account Type</th><th>Clearing Criterion 1</th><th>Criterion 2</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>0001</strong></td><td>K (Vendor)</td><td>ZUONR (Assignment)</td><td>WRBTR (Amount)</td></tr>
+            <tr><td>0002</td><td>K (Vendor)</td><td>XBLNR (Reference)</td><td>WRBTR (Amount)</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Variant 0001: items are proposed for clearing if they have same Assignment AND same Amount</div>
+      </div>
+      <div class="gui-status">Clearing Variant 0001 active for Vendor accounts · DE01</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Special G/L Indicators</span><span class="sec-title-es">Indicadores de GL especial</span></div><div class="sec-desc">La configuración de los indicadores de GL especial que redirigen los anticipos y otras transacciones especiales a cuentas separadas.</div></div></div>
+  <div class="theory-box"><strong>El Special G/L Indicator redirige la contabilización a una cuenta alternativa:</strong> cuando se contabiliza un anticipo con el indicador "A", SAP no usa la cuenta de reconciliación estándar sino la cuenta de anticipos configurada. Esto mantiene los anticipos separados del saldo normal de AP, evitando que distorsionen los estados financieros. El configurador define qué cuenta alternativa corresponde a cada indicador.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Business Transactions</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Special G/L Transactions — Define Account Assignments</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Special G/L Account Assignment — K (Vendor) · DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Sp.G/L Indicator</th><th>Description</th><th>Reconciliation Acct</th><th>Alt. G/L Account</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>A</strong></td><td>Down Payment</td><td>191100 (Standard AP Rec.)</td><td><strong>191200 (Vendor Down Payments)</strong></td></tr>
+            <tr><td>B</td><td>Bill of Exchange</td><td>191100</td><td>192000 (Bills of Exchange)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Indicator A (Down Payment) redirects posting from 191100 to 191200 · visible in Special G/L tab</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Vendor Account Groups</span><span class="sec-title-es">Grupos de cuentas de proveedor</span></div><div class="sec-desc">Los grupos que controlan el layout del Vendor Master y el rango de numeración de los proveedores.</div></div></div>
+  <div class="theory-box"><strong>El Account Group determina qué campos son obligatorios/opcionales en el Vendor Master:</strong> el Account Group controla la pantalla de creación del Vendor Master — qué campos son obligatorios, opcionales o suprimidos. También determina el rango de numeración de los números de proveedor. Un proveedor del grupo LIEF (proveedores estándar) tendrá todos los campos de AP habilitados; un proveedor de una sola vez (KRED) puede tener campos suprimidos.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Vendor Accounts</span></div>
+      <div class="spro-node i3"><span>📁</span><span class="sn-text">Master Data</span></div>
+      <div class="spro-node i4 active"><span>🔷</span><span class="sn-text">Define Account Groups with Screen Layout</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Vendor Account Groups</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">📋 Detail</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Acct Grp</th><th>Name</th><th>One-time</th><th>Number Range</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>LIEF</strong></td><td>Standard Vendors</td><td></td><td>100000–199999</td></tr>
+            <tr><td>SERV</td><td>Service Providers</td><td></td><td>200000–299999</td></tr>
+            <tr><td>KRED</td><td>One-time Vendors</td><td>✔</td><td>990000–999999</td></tr>
+            <tr><td>INTE</td><td>Intercompany Vendors</td><td></td><td>500000–599999</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">LIEF = standard vendor group with full field layout</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Correspondence Types</span><span class="sec-title-es">Tipos de correspondencia</span></div><div class="sec-desc">La configuración de los tipos de correspondencia disponibles en Manage Supplier Line Items.</div></div></div>
+  <div class="theory-box"><strong>Los tipos de correspondencia se configuran con su formato y datos:</strong> la función "Create Correspondence" en Manage Supplier Line Items genera documentos formales según los tipos configurados. El configurador define qué tipos están disponibles (extracto de cuenta, confirmación de saldo, etc.), el layout del documento impreso, y si se genera automáticamente o requiere acción manual.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span>📁</span><span class="sn-text">Business Transactions</span></div>
+      <div class="spro-node i3 active"><span>🔷</span><span class="sn-text">Correspondence — Make/Receive Settings</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Correspondence Types — FI-AP</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Type</th><th>Description</th><th>Usage in Manage Line Items</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>SAP01</strong></td><td>Account Statement</td><td>List of open and cleared items in a period</td></tr>
+            <tr><td>SAP06</td><td>Internal Document</td><td>Internal account summary</td></tr>
+            <tr><td>SAP08</td><td>Balance Confirmation</td><td>Formal balance confirmation for audit</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">SAP01 Account Statement = most common from Manage Supplier Line Items</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="area-tag">Basis / Authorization</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Authorization for Reversal and Clearing</span><span class="sec-title-es">Autorización para reversión y compensación</span></div><div class="sec-desc">Los objetos de autorización que controlan quién puede reversar documentos y quién puede compensar partidas manualmente.</div></div></div>
+  <div class="theory-box"><strong>Reversar y compensar son acciones de alto impacto — requieren autorización:</strong> las reversiones y las compensaciones manuales son operaciones irreversibles con impacto contable directo. Por eso requieren objetos de autorización específicos en el rol del usuario. Un AP accountant estándar puede procesar facturas pero puede no tener autorización para reversar — esa autorización puede estar reservada para un AP supervisor.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 T-code: PFCG</div>
+      <div class="spro-node"><span>📁</span><span class="sn-text">System Administration</span></div>
+      <div class="spro-node i1 active"><span>🔷</span><span class="sn-text">PFCG — Role: AP_SENIOR_ACCOUNTANT</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">PFCG</span><span class="gui-title">Role: AP_SENIOR_ACCOUNTANT — Authorization objects</span></div>
+      <div class="gui-tools"><button class="gbtn">Authorizations</button><button class="gbtn">💾 Generate</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Auth. Object</th><th>Description</th><th>Activity (ACTVT)</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>F_BKPF_BUK</strong></td><td>FI: Company Code Auth.</td><td>01 (Create), 02 (Change)</td><td>Needed for reversal posting</td></tr>
+            <tr class="hi"><td><strong>F_BKPF_BLA</strong></td><td>FI: Document Type</td><td>KR, KZ, KG</td><td>Must include all AP doc types</td></tr>
+            <tr><td>F_KNA1_APP</td><td>Vendor: Change</td><td>02</td><td>Needed for clearing operations</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Reversal = create document + change status · requires F_BKPF_BUK with activity 01+02</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">View Variants — Manage Supplier Line Items</span><span class="sec-title-es">Variantes de vista para la app de partidas</span></div><div class="sec-desc">Cómo el equipo de proyecto crea y asigna variantes de vista personalizadas para la organización.</div></div></div>
+  <div class="theory-box"><strong>Las variantes de vista estandarizan el análisis para el equipo de AP:</strong> el documento del curso menciona que el equipo de proyecto puede crear vistas específicas para la organización en la app Manage Supplier Line Items. Una variante de vista define qué columnas aparecen, en qué orden, y qué campos son visibles por defecto. Crear una variante estándar para el equipo de AP garantiza que todos los contadores analicen los datos con los mismos campos relevantes.</div>
+  <div class="visual-wrap">
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Manage Supplier Line Items — Save View Variant</span></div>
+      <div class="gui-tools"><button class="gbtn">Save As View</button><button class="gbtn">Set As Default</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Column</th><th>Standard Layout</th><th>SAP-Clearing Data Layout</th><th>Project Custom "BIKE-AP-STD"</th></tr></thead>
+          <tbody>
+            <tr><td>Clearing Status (✓/✗)</td><td>✔</td><td>✔</td><td>✔</td></tr>
+            <tr><td>Journal Entry</td><td>✔</td><td>✔</td><td>✔</td></tr>
+            <tr><td>Journal Entry Type</td><td>✔</td><td>✔</td><td>✔</td></tr>
+            <tr><td>Due Net Date</td><td>✔</td><td></td><td>✔ (added by project)</td></tr>
+            <tr class="hi"><td>Clearing Journal Entry</td><td>✔</td><td>✔</td><td>✔</td></tr>
+            <tr class="hi"><td>Clearing Date</td><td></td><td>✔</td><td>✔ (added by project)</td></tr>
+            <tr class="hi"><td>Clearing User</td><td></td><td>✔</td><td>✔ (added by project)</td></tr>
+            <tr><td>Assignment</td><td>✔</td><td>✔</td><td>✔</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Project variant "BIKE-AP-STD" combines Standard + Clearing Data columns relevant to Bike Company AP team</div>
+      </div>
+      <div class="gui-status">View variants can be set as default for specific user roles</div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>T4 · Configurador SAP GUI — Manage Supplier Line Items (AP) · 🔧 Rol: Configurador · Biblioteca de Guías SAP</footer>
+</body>
+</html>

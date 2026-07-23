@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · Procure-to-Pay — Holístico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E0A56F;--t1-dark:#A85F2B;--t1-pale:rgba(224,165,111,0.12);--t1-pale-border:rgba(224,165,111,0.38);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-secondary:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-co:#1A6B99;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-sales:#E07B39;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#1C1206 55%,#2A1A08 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;letter-spacing:.2px;}
+  .pill-primary{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-secondary{border:1.5px solid var(--pill-secondary);color:var(--pill-secondary);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.5rem);color:rgba(255,255,255,0.62);margin:0 0 18px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,165,111,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(168,95,43,0.35);}
+  .sec-titles{display:flex;flex-direction:column;gap:2px;flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;margin-top:2px;}
+  /* Orbit + type tags — own row, below title */
+  .sec-tags{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .orbit-tag{background:rgba(10,15,28,0.08);border:1px solid #CBD5E1;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--muted);}
+  .type-tag-pos{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--t1-dark);}
+  .type-tag-flow{background:rgba(26,75,140,0.08);border:1.5px solid rgba(26,75,140,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--cat-fi);}
+  .type-tag-map{background:rgba(0,168,150,0.08);border:1.5px solid rgba(0,168,150,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--cat-log);}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;}
+  /* Flow cards */
+  .flow-section{margin-bottom:16px;}
+  .flow-section h5{font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:0 0 10px;}
+  .flow-cards{display:flex;flex-wrap:wrap;gap:10px;}
+  .fcard{border-radius:10px;padding:12px 14px;color:white;flex:1;min-width:160px;}
+  .fcard .fc-icon{font-size:18px;display:block;margin-bottom:4px;}
+  .fcard .fc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:11.5px;display:block;}
+  .fcard .fc-sub{font-size:9.5px;color:rgba(255,255,255,0.72);display:block;margin-top:3px;}
+  .arrow-down{text-align:center;color:var(--t1-dark);font-size:22px;margin:8px 0;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+  .box-label{font-family:'Inter',sans-serif;font-weight:600;font-size:12px;}
+  .box-sub{font-family:'Inter',sans-serif;font-weight:400;font-size:9.5px;}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">P2P within S/4HANA Finance</a>
+  <a href="#s2">AP at MM ∩ FI</a>
+  <a href="#s3">Supply Chain Foundation</a>
+  <a href="#s4">Finance Architecture Stack</a>
+  <a href="#s5">Flows In — Demand to P2P</a>
+  <a href="#s6">Flows Out — Goods Receipt</a>
+  <a href="#s7">Flows Out — Invoice</a>
+  <a href="#s8">Cross-Module Touchpoints</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">S/4HANA Finance</span>
+    </div>
+    <h1>Procure-<span class="accent">to-Pay</span></h1>
+    <h2>Holístico — Ecosistema y Posicionamiento</h2>
+    <p class="desc">Dónde vive el proceso P2P dentro de SAP S/4HANA, cómo se posiciona en el ecosistema de módulos, y qué fluye hacia adentro y hacia afuera en cada etapa clave del ciclo.</p>
+    <div class="hlbox">Holístico — <b>Procure-to-Pay (AP + MM)</b>, Tipo 5. 4 secciones de posicionamiento + 4 secciones de flujos. Sin glosario.</div>
+  </div>
+</header>
+
+<main>
+
+<!-- S1 — P2P WITHIN S/4HANA FINANCE (MAMUSHKA) -->
+<section class="section" id="s1">
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">P2P within S/4HANA Finance</span><span class="sec-title-es">Cadena de contenedores</span></div>
+      <div class="sec-desc">Cada proceso es contenido por el siguiente nivel — contención pura en una sola cadena.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 S/4HANA Finance</span>
+    <span class="type-tag-pos">📍 Posicionamiento</span>
+  </div>
+  <div class="theory-box"><strong>Contención pura:</strong> el proceso P2P no está suelto en SAP — vive dentro de una cadena de contenedores anidados. El módulo <strong>Accounts Payable</strong> es el hogar de P2P dentro de <strong>Financial Accounting (FI)</strong>, que a su vez es parte de <strong>S/4HANA Finance</strong>, el componente financiero del <strong>S/4HANA Digital Core</strong>. Cada nivel añade contexto: la transacción individual de pago solo tiene sentido dentro del proceso completo.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 320" xmlns="http://www.w3.org/2000/svg">
+      <!-- S/4HANA Core — outermost -->
+      <rect x="20" y="20" width="820" height="280" rx="14" fill="none" stroke="#0A0F1C" stroke-width="2.5"/>
+      <text x="44" y="44" fill="#0A0F1C" font-family="Syne" font-weight="800" font-size="13">S/4HANA Digital Core</text>
+      <!-- S/4HANA Finance -->
+      <rect x="50" y="54" width="760" height="222" rx="12" fill="none" stroke="#1A4B8C" stroke-width="2"/>
+      <text x="70" y="74" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="12">S/4HANA Finance</text>
+      <!-- Financial Accounting -->
+      <rect x="80" y="84" width="700" height="168" rx="10" fill="rgba(26,75,140,0.06)" stroke="#1A4B8C" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="100" y="104" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="11.5">Financial Accounting (FI)</text>
+      <!-- Accounts Payable -->
+      <rect x="110" y="114" width="640" height="120" rx="10" fill="rgba(126,79,191,0.07)" stroke="#7E4FBF" stroke-width="2"/>
+      <text x="130" y="136" fill="#7E4FBF" font-family="Syne" font-weight="700" font-size="11.5">Accounts Payable (FI-AP)</text>
+      <!-- P2P Process -->
+      <rect x="145" y="148" width="570" height="72" rx="8" fill="#A85F2B"/>
+      <text x="430" y="179" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Procure-to-Pay Process</text>
+      <text x="430" y="199" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="10.5">Invoice Verification · GR/IR · Payment Program · Vendor Master</text>
+      <!-- Legend -->
+      <rect x="580" y="30" width="12" height="12" rx="2" fill="#0A0F1C"/>
+      <text x="596" y="41" font-size="10" fill="#64748B" font-family="Inter">S/4HANA Core</text>
+      <rect x="680" y="30" width="12" height="12" rx="2" fill="#1A4B8C"/>
+      <text x="696" y="41" font-size="10" fill="#64748B" font-family="Inter">S/4HANA Finance</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S2 — AP AT MM ∩ FI (BIFURCATION TREE) -->
+<section class="section" id="s2">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">AP at the Intersection of MM and FI</span><span class="sec-title-es">El punto de cruce</span></div>
+      <div class="sec-desc">S/4HANA se bifurca en Logística y Finanzas — AP es el nodo de convergencia entre ambas ramas.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 MM + FI Integration</span>
+    <span class="type-tag-pos">📍 Posicionamiento</span>
+  </div>
+  <div class="theory-box"><strong>Árbol de bifurcación:</strong> S/4HANA se divide en dos grandes ramas. La rama de <strong>Materials Management (MM / Logistics)</strong> maneja la cadena de aprovisionamiento. La rama de <strong>Financial Accounting (FI)</strong> registra el valor. El proceso P2P y el módulo <strong>Accounts Payable</strong> viven en la rama FI pero son el punto de convergencia donde los eventos logísticos de MM generan impacto contable.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a5t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+        </marker>
+        <marker id="a5b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/>
+        </marker>
+      </defs>
+      <!-- Root -->
+      <rect x="310" y="16" width="240" height="52" rx="10" fill="#0A0F1C"/>
+      <text x="430" y="39" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">S/4HANA</text>
+      <text x="430" y="57" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Digital Core</text>
+      <!-- Branch lines -->
+      <line x1="430" y1="68" x2="430" y2="88" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="180" y1="88" x2="680" y2="88" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="180" y1="88" x2="180" y2="110" stroke="#94A3B8" stroke-width="2" marker-end="url(#a5t)"/>
+      <line x1="680" y1="88" x2="680" y2="110" stroke="#A85F2B" stroke-width="2.5" marker-end="url(#a5b)"/>
+      <!-- MM Branch (left, atenuated) -->
+      <rect x="60" y="110" width="240" height="60" rx="10" fill="#7E4FBF" opacity="0.55"/>
+      <text x="180" y="137" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Materials Management</text>
+      <text x="180" y="155" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Purchasing · Inventory · Goods Receipt</text>
+      <!-- MM sub-items -->
+      <rect x="60" y="192" width="110" height="40" rx="8" fill="#7E4FBF" opacity="0.4"/>
+      <text x="115" y="210" text-anchor="middle" fill="#3D2A60" font-family="Inter" font-weight="600" font-size="10.5">Purchase Orders</text>
+      <text x="115" y="225" text-anchor="middle" fill="#5A6B8C" font-family="Inter" font-size="9">Logistics doc.</text>
+      <rect x="190" y="192" width="110" height="40" rx="8" fill="#7E4FBF" opacity="0.4"/>
+      <text x="245" y="210" text-anchor="middle" fill="#3D2A60" font-family="Inter" font-weight="600" font-size="10.5">Goods Receipt</text>
+      <text x="245" y="225" text-anchor="middle" fill="#5A6B8C" font-family="Inter" font-size="9">MM + FI docs</text>
+      <line x1="180" y1="170" x2="115" y2="192" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="180" y1="170" x2="245" y2="192" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <!-- Convergence arrow -->
+      <line x1="300" y1="212" x2="500" y2="212" stroke="#A85F2B" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#a5b)"/>
+      <text x="400" y="206" text-anchor="middle" fill="#A85F2B" font-family="Inter" font-size="9.5" font-weight="600">GR generates FI doc</text>
+      <!-- FI Branch (right, main) -->
+      <rect x="560" y="110" width="240" height="60" rx="10" fill="#1A4B8C"/>
+      <text x="680" y="137" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Financial Accounting</text>
+      <text x="680" y="155" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">GL · AP · AR · AA</text>
+      <!-- FI sub-items -->
+      <rect x="560" y="192" width="110" height="48" rx="8" fill="#A85F2B"/>
+      <text x="615" y="213" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Accounts</text>
+      <text x="615" y="228" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Payable</text>
+      <text x="615" y="244" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">P2P lives here ★</text>
+      <rect x="690" y="192" width="110" height="48" rx="8" fill="#1A4B8C" opacity="0.6"/>
+      <text x="745" y="213" text-anchor="middle" fill="white" font-family="Inter" font-weight="600" font-size="10.5">General Ledger</text>
+      <text x="745" y="229" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">Universal Journal</text>
+      <line x1="680" y1="170" x2="615" y2="192" stroke="#A85F2B" stroke-width="2"/>
+      <line x1="680" y1="170" x2="745" y2="192" stroke="#94A3B8" stroke-width="1.5"/>
+      <!-- Bottom note -->
+      <text x="430" y="305" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">★ AP es la rama de FI donde vive P2P — pero recibe impactos de MM (GR dual document)</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S3 — SUPPLY CHAIN FOUNDATION + PILLARS -->
+<section class="section" id="s3">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">P2P within the Supply Chain Ecosystem</span><span class="sec-title-es">Fundación y pilares de la cadena logística</span></div>
+      <div class="sec-desc">La Enterprise Structure como base común que sostiene todos los procesos de la cadena.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 Logistics Supply Chain</span>
+    <span class="type-tag-pos">📍 Posicionamiento</span>
+  </div>
+  <div class="theory-box"><strong>Fundación compartida:</strong> todos los procesos de la cadena logística y financiera se apoyan sobre una base común: la <strong>Enterprise Structure</strong> (Company Code, Plant, Purchasing Org., Sales Org.). P2P usa la Purchasing Org. para comprar y la Company Code para registrar el impacto financiero. Sin esta base configurada, ningún pilar puede funcionar.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Foundation bar -->
+      <rect x="20" y="220" width="820" height="48" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="242" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Enterprise Structure</text>
+      <text x="430" y="258" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Company Code · Plant · Purchasing Org. · Sales Org. · Controlling Area</text>
+      <!-- Pillar connectors -->
+      <line x1="110" y1="76" x2="110" y2="220" stroke="#D4D8DC" stroke-width="1.5"/>
+      <line x1="270" y1="76" x2="270" y2="220" stroke="#D4D8DC" stroke-width="1.5"/>
+      <line x1="430" y1="76" x2="430" y2="220" stroke="#A85F2B" stroke-width="2.5"/>
+      <line x1="590" y1="76" x2="590" y2="220" stroke="#D4D8DC" stroke-width="1.5"/>
+      <line x1="750" y1="76" x2="750" y2="220" stroke="#D4D8DC" stroke-width="1.5"/>
+      <!-- Pillars -->
+      <rect x="20" y="20" width="180" height="56" rx="10" fill="#7E4FBF"/>
+      <text x="110" y="45" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Materials Mgmt</text>
+      <text x="110" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Purchase Orders · GR</text>
+      <rect x="180" y="20" width="180" height="56" rx="10" fill="#1A4B8C"/>
+      <text x="270" y="45" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Financial Acctg</text>
+      <text x="270" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">GL · AP · AR · AA</text>
+      <!-- AP/P2P highlighted -->
+      <rect x="340" y="14" width="180" height="64" rx="10" fill="#A85F2B"/>
+      <text x="430" y="40" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Procure-to-Pay</text>
+      <text x="430" y="57" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">AP · MM Integration</text>
+      <text x="430" y="72" text-anchor="middle" fill="#FFD9A8" font-family="Inter" font-size="9">★ Foco de este curso</text>
+      <rect x="500" y="20" width="180" height="56" rx="10" fill="#E07B39"/>
+      <text x="590" y="45" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Sales &amp; Distrib.</text>
+      <text x="590" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Sales Orders · Billing</text>
+      <rect x="660" y="20" width="180" height="56" rx="10" fill="#1A6B99"/>
+      <text x="750" y="45" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Controlling (CO)</text>
+      <text x="750" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Cost Centers · Profits</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S4 — FINANCE ARCHITECTURE STACK -->
+<section class="section" id="s4">
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">AP's Position in the Finance Architecture</span><span class="sec-title-es">La pila de capas financieras</span></div>
+      <div class="sec-desc">Cómo AP se inserta en el stack de capas desde las transacciones operativas hasta el reporte de gestión.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 Finance Architecture</span>
+    <span class="type-tag-pos">📍 Posicionamiento</span>
+  </div>
+  <div class="theory-box"><strong>Stack de capas:</strong> AP no es la capa superior ni la más profunda de la arquitectura financiera — es la <strong>capa operativa de FI</strong> que se sienta entre las transacciones de negocio y el Libro Mayor. Las facturas que Jennifer contabiliza en AP generan partidas que suben al GL (Universal Journal) y desde ahí alimentan el Controlling y el reporting.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a4d" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+        </marker>
+      </defs>
+      <!-- Layers (top to bottom = reporting to operations, display bottom to top for readability) -->
+      <!-- Layer 5: Management Reporting -->
+      <rect x="200" y="18" width="460" height="40" rx="8" fill="#1A4B8C"/>
+      <text x="430" y="34" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Management Reporting</text>
+      <text x="430" y="50" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Profit Centers · Segments · Functional Areas</text>
+      <!-- Layer 4: Controlling -->
+      <rect x="140" y="70" width="580" height="40" rx="8" fill="#1A6B99"/>
+      <text x="430" y="86" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Controlling (CO)</text>
+      <text x="430" y="102" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Cost Center Accounting · Internal Orders · Profitability Analysis</text>
+      <!-- Layer 3: General Ledger -->
+      <rect x="60" y="122" width="740" height="40" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="138" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">General Ledger (GL) — Universal Journal</text>
+      <text x="430" y="154" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Single source of truth · all FI + CO postings</text>
+      <!-- Layer 2: AP / AR / AA (highlighted) -->
+      <rect x="20" y="174" width="820" height="52" rx="8" fill="#A85F2B"/>
+      <text x="430" y="197" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Accounts Payable · Accounts Receivable · Asset Accounting</text>
+      <text x="430" y="215" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">AP subledger ← P2P process lives here · real-time update to GL via reconciliation accounts</text>
+      <!-- Layer 1: Business Transactions -->
+      <rect x="20" y="238" width="820" height="40" rx="8" fill="#5A6B8C"/>
+      <text x="430" y="254" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Business Transactions</text>
+      <text x="430" y="270" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Purchase Orders · Goods Receipts · Supplier Invoices · Payments</text>
+      <!-- Arrows between layers -->
+      <line x1="830" y1="278" x2="830" y2="194" stroke="#3D7A52" stroke-width="2" marker-end="url(#a4d)"/>
+      <line x1="830" y1="184" x2="830" y2="162" stroke="#3D7A52" stroke-width="2" marker-end="url(#a4d)"/>
+      <line x1="830" y1="152" x2="830" y2="112" stroke="#3D7A52" stroke-width="2" marker-end="url(#a4d)"/>
+      <line x1="830" y1="102" x2="830" y2="60" stroke="#3D7A52" stroke-width="2" marker-end="url(#a4d)"/>
+      <text x="850" y="200" fill="#64748B" font-family="Inter" font-size="9" transform="rotate(-90 850 200)">flujo de datos ↑</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S5 — FLOWS IN: DEMAND TO P2P -->
+<section class="section" id="s5">
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Flows In — What Triggers the P2P Process</span><span class="sec-title-es">Flujos de entrada — qué dispara el ciclo</span></div>
+      <div class="sec-desc">Las señales y procesos que generan la necesidad de compra y ponen en marcha el P2P.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 Procurement / Operations</span>
+    <span class="type-tag-flow">🔄 Flujo de entrada</span>
+  </div>
+  <div class="theory-box"><strong>P2P no se dispara solo:</strong> el ciclo Procure-to-Pay comienza cuando existe una <strong>necesidad de compra</strong>. Esta necesidad puede provenir de distintos puntos del ecosistema SAP — una orden de venta que activa MRP, un requerimiento manual de un departamento, una compra de activo fijo, o una necesidad de material de consumo. Todos estos disparadores generan una <strong>Purchase Requisition</strong> que el área de compras convierte en PO.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 260" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a5in" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/>
+        </marker>
+      </defs>
+      <!-- Input nodes -->
+      <rect x="20" y="30" width="170" height="50" rx="8" fill="#E07B39"/>
+      <text x="105" y="53" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Sales &amp; Distribution</text>
+      <text x="105" y="70" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Customer order → MRP demand</text>
+
+      <rect x="20" y="100" width="170" height="50" rx="8" fill="#1A6B99"/>
+      <text x="105" y="123" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Production (PP/MRP)</text>
+      <text x="105" y="140" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Component shortage → purchase req.</text>
+
+      <rect x="20" y="170" width="170" height="50" rx="8" fill="#1A4B8C"/>
+      <text x="105" y="190" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Asset Accounting</text>
+      <text x="105" y="207" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Capital expenditure → PO for asset</text>
+
+      <!-- Right side inputs -->
+      <rect x="670" y="30" width="170" height="50" rx="8" fill="#5A6B8C"/>
+      <text x="755" y="53" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Manual Requisition</text>
+      <text x="755" y="70" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Department direct request</text>
+
+      <rect x="670" y="100" width="170" height="50" rx="8" fill="#5A6B8C"/>
+      <text x="755" y="123" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Maintenance (PM)</text>
+      <text x="755" y="140" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Spare parts or service order</text>
+
+      <rect x="670" y="170" width="170" height="50" rx="8" fill="#5A6B8C"/>
+      <text x="755" y="190" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Office Supplies</text>
+      <text x="755" y="207" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Consumable / non-stock purchase</text>
+
+      <!-- Arrows pointing to center -->
+      <line x1="190" y1="55" x2="340" y2="120" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5in)"/>
+      <line x1="190" y1="125" x2="340" y2="130" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5in)"/>
+      <line x1="190" y1="195" x2="340" y2="140" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5in)"/>
+      <line x1="670" y1="55" x2="520" y2="120" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5in)"/>
+      <line x1="670" y1="125" x2="520" y2="130" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5in)"/>
+      <line x1="670" y1="195" x2="520" y2="140" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5in)"/>
+
+      <!-- Center: P2P trigger -->
+      <rect x="340" y="98" width="180" height="64" rx="10" fill="#A85F2B"/>
+      <text x="430" y="124" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">P2P Process</text>
+      <text x="430" y="142" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Purchase Requisition → PO</text>
+      <text x="430" y="155" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">→ GR → Invoice → Payment</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S6 — FLOWS OUT: GOODS RECEIPT -->
+<section class="section" id="s6">
+  <div class="sec-head">
+    <div class="sec-num">06</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Flows Out — Goods Receipt Impact</span><span class="sec-title-es">Flujos de salida — qué genera el GR</span></div>
+      <div class="sec-desc">Los documentos y actualizaciones que el Goods Receipt dispara a través del ecosistema SAP.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 Financial Accounting</span>
+    <span class="type-tag-flow">🔄 Flujo de salida (GR)</span>
+  </div>
+  <div class="theory-box"><strong>El GR irradia hacia múltiples destinos:</strong> cuando se postea un Goods Receipt, el impacto no se limita a crear dos documentos. Actualiza el <strong>stock de materiales</strong> en MM, genera el <strong>documento FI</strong> que debita inventario y acredita GR/IR en el GL (Universal Journal), y si la PO tiene asignación de cuenta (account-assigned), genera también un <strong>posteo en Controlling</strong> a la orden o centro de costos correspondiente.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/>
+        </marker>
+      </defs>
+      <!-- GR source -->
+      <rect x="330" y="16" width="200" height="56" rx="10" fill="#00A896"/>
+      <text x="430" y="42" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Goods Receipt</text>
+      <text x="430" y="60" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">MM · Post GR for Purchasing Doc.</text>
+
+      <!-- Arrows out -->
+      <line x1="330" y1="44" x2="200" y2="96" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a6)"/>
+      <line x1="400" y1="72" x2="320" y2="110" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a6)"/>
+      <line x1="460" y1="72" x2="540" y2="110" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a6)"/>
+      <line x1="530" y1="44" x2="660" y2="96" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a6)"/>
+
+      <!-- Destination nodes -->
+      <rect x="60" y="96" width="200" height="64" rx="8" fill="#7E4FBF"/>
+      <text x="160" y="122" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Materials Document</text>
+      <text x="160" y="140" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">MM · Stock updated</text>
+      <text x="160" y="154" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">PO history updated</text>
+
+      <rect x="280" y="110" width="145" height="60" rx="8" fill="#1A4B8C"/>
+      <text x="352" y="135" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Inventory Dr</text>
+      <text x="352" y="152" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">GL: BSX account key</text>
+      <text x="352" y="164" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="8.5">Stock value on balance sheet</text>
+
+      <rect x="435" y="110" width="145" height="60" rx="8" fill="#00A896"/>
+      <text x="507" y="135" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">GR/IR Cr</text>
+      <text x="507" y="152" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">GL: WRX account key</text>
+      <text x="507" y="164" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="8.5">Clearing account (transit)</text>
+
+      <rect x="600" y="96" width="200" height="64" rx="8" fill="#1A6B99"/>
+      <text x="700" y="118" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">CO Posting</text>
+      <text x="700" y="136" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Only if account-assigned PO</text>
+      <text x="700" y="152" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Cost Center / Internal Order Dr</text>
+
+      <text x="430" y="220" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">El FI Document combina los docs de Inventory Dr y GR/IR Cr en un único asiento contable (Universal Journal)</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S7 — FLOWS OUT: INVOICE VERIFICATION -->
+<section class="section" id="s7">
+  <div class="sec-head">
+    <div class="sec-num">07</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Flows Out — Invoice Verification Impact</span><span class="sec-title-es">Flujos de salida — qué genera la factura</span></div>
+      <div class="sec-desc">Qué sistemas y sub-libros reciben el impacto cuando Jennifer contabiliza la factura del proveedor.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 Accounts Payable</span>
+    <span class="type-tag-flow">🔄 Flujo de salida (Invoice)</span>
+  </div>
+  <div class="theory-box"><strong>La factura del proveedor irradia a cuatro destinos:</strong> al contabilizar la Invoice Verification, SAP actualiza simultáneamente el <strong>AP sub-ledger</strong> (crea la obligación con el proveedor), el <strong>GL</strong> (GR/IR se debita — cierra la posición abierta del GR), la <strong>cuenta de impuesto</strong> (input tax para la declaración de IVA), y alimenta el <strong>Cash Management / Treasury</strong> para la planificación de liquidez.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/>
+        </marker>
+      </defs>
+      <!-- Invoice source -->
+      <rect x="305" y="16" width="250" height="56" rx="10" fill="#1A4B8C"/>
+      <text x="430" y="42" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Invoice Verification</text>
+      <text x="430" y="60" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">FI · Create Supplier Invoice (Fiori)</text>
+
+      <!-- Arrows -->
+      <line x1="340" y1="68" x2="140" y2="100" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7)"/>
+      <line x1="390" y1="72" x2="320" y2="108" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7)"/>
+      <line x1="470" y1="72" x2="540" y2="108" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7)"/>
+      <line x1="520" y1="68" x2="720" y2="100" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7)"/>
+
+      <!-- Destination nodes -->
+      <rect x="20" y="100" width="200" height="70" rx="8" fill="#A85F2B"/>
+      <text x="120" y="125" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Vendor Account (AP)</text>
+      <text x="120" y="143" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">AP Subledger · Vendor Cr</text>
+      <text x="120" y="160" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Open item → available for payment</text>
+
+      <rect x="240" y="108" width="160" height="58" rx="8" fill="#00A896"/>
+      <text x="320" y="132" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">GR/IR Dr</text>
+      <text x="320" y="150" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">GL · WRX key clears GR credit</text>
+      <text x="320" y="162" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="8.5">GR/IR → ideally balanced to 0</text>
+
+      <rect x="460" y="108" width="160" height="58" rx="8" fill="#C9932E"/>
+      <text x="540" y="132" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Tax Account Cr</text>
+      <text x="540" y="150" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Input Tax (Vorsteuer)</text>
+      <text x="540" y="162" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="8.5">Tax declaration (Finanzamt)</text>
+
+      <rect x="640" y="100" width="200" height="70" rx="8" fill="#1A6B99"/>
+      <text x="740" y="122" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Cash Management</text>
+      <text x="740" y="140" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Treasury · Liquidity planning</text>
+      <text x="740" y="158" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Payment due date → cash forecast</text>
+
+      <text x="430" y="215" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Un solo evento (contabilización de factura) genera impacto simultáneo en AP, GL, Tax y Treasury</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S8 — CROSS-MODULE TOUCHPOINTS -->
+<section class="section" id="s8">
+  <div class="sec-head">
+    <div class="sec-num">08</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">P2P Cross-Module Touchpoints</span><span class="sec-title-es">Mapa de conexiones entre módulos</span></div>
+      <div class="sec-desc">Vista de órbita: todos los módulos con los que el ciclo P2P intercambia datos o depende de configuración.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 S/4HANA Ecosystem</span>
+    <span class="type-tag-map">🗺 Mapa de conexiones</span>
+  </div>
+  <div class="theory-box"><strong>P2P no es un proceso aislado:</strong> el ciclo Procure-to-Pay toca directa o indirectamente <strong>seis módulos distintos de SAP</strong>. MM es el módulo de orígen logístico, FI-AP es el hogar contable, GL recibe todos los posteos, CO recibe imputaciones opcionales de costo, SD genera señales de demanda, FI-AA puede generar POs para activos, y Treasury recibe la información de liquidez. Conocer estas conexiones permite que el área de AP coordine efectivamente con sus colegas de otros módulos.
+  </div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 360" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/>
+        </marker>
+      </defs>
+      <!-- Center: P2P -->
+      <rect x="310" y="140" width="240" height="80" rx="14" fill="#A85F2B"/>
+      <text x="430" y="172" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="16">P2P Process</text>
+      <text x="430" y="192" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="10.5">Invoice Verification · GR/IR</text>
+      <text x="430" y="208" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="10">Payment Program · Vendor AP</text>
+
+      <!-- MM (top-left) -->
+      <rect x="40" y="20" width="190" height="60" rx="10" fill="#7E4FBF"/>
+      <text x="135" y="46" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Materials Mgmt (MM)</text>
+      <text x="135" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">PO · GR · Valuation</text>
+      <line x1="230" y1="65" x2="340" y2="155" stroke="#7E4FBF" stroke-width="1.8" marker-end="url(#a8)"/>
+      <text x="268" y="118" fill="#7E4FBF" font-family="Inter" font-size="9">GR triggers FI doc</text>
+
+      <!-- GL (top-center) -->
+      <rect x="310" y="20" width="240" height="55" rx="10" fill="#0A0F1C"/>
+      <text x="430" y="44" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">General Ledger (FI-GL)</text>
+      <text x="430" y="61" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Universal Journal · all FI postings</text>
+      <line x1="430" y1="75" x2="430" y2="140" stroke="#0A0F1C" stroke-width="2" marker-end="url(#a8)"/>
+
+      <!-- SD (top-right) -->
+      <rect x="630" y="20" width="190" height="60" rx="10" fill="#E07B39"/>
+      <text x="725" y="46" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Sales &amp; Distribution</text>
+      <text x="725" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Customer orders → MRP demand</text>
+      <line x1="630" y1="65" x2="520" y2="155" stroke="#E07B39" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#a8)"/>
+      <text x="592" y="118" fill="#E07B39" font-family="Inter" font-size="9">demand signal →</text>
+
+      <!-- CO (middle-left) -->
+      <rect x="20" y="150" width="190" height="58" rx="10" fill="#1A6B99"/>
+      <text x="115" y="173" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Controlling (CO)</text>
+      <text x="115" y="191" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Cost centers · Internal orders</text>
+      <text x="115" y="204" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="8.5">Account-assigned PO only</text>
+      <line x1="210" y1="179" x2="310" y2="179" stroke="#1A6B99" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#a8)"/>
+
+      <!-- Treasury (middle-right) -->
+      <rect x="650" y="150" width="190" height="58" rx="10" fill="#1A4B8C"/>
+      <text x="745" y="173" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Treasury / CM</text>
+      <text x="745" y="191" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Cash management</text>
+      <text x="745" y="204" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="8.5">Payment due date → liquidity</text>
+      <line x1="550" y1="179" x2="650" y2="179" stroke="#1A4B8C" stroke-width="1.8" marker-end="url(#a8)"/>
+
+      <!-- FI-AA (bottom-left) -->
+      <rect x="40" y="280" width="190" height="60" rx="10" fill="#00A896"/>
+      <text x="135" y="306" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Asset Accounting (AA)</text>
+      <text x="135" y="323" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Asset purchase → PO → P2P</text>
+      <line x1="230" y1="298" x2="340" y2="210" stroke="#00A896" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#a8)"/>
+
+      <!-- Tax (bottom-right) -->
+      <rect x="630" y="280" width="190" height="60" rx="10" fill="#C9932E"/>
+      <text x="725" y="306" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Tax / Finanzamt</text>
+      <text x="725" y="323" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Input tax on invoices</text>
+      <line x1="630" y1="298" x2="520" y2="212" stroke="#C9932E" stroke-width="1.8" marker-end="url(#a8)"/>
+
+      <!-- Legend -->
+      <line x1="310" y1="340" x2="350" y2="340" stroke="#A85F2B" stroke-width="2"/>
+      <text x="355" y="344" font-size="10" fill="#64748B" font-family="Inter">Direct integration</text>
+      <line x1="470" y1="340" x2="510" y2="340" stroke="#A85F2B" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="515" y="344" font-size="10" fill="#64748B" font-family="Inter">Indirect / optional integration</text>
+    </svg>
+  </div>
+</section>
+
+</main>
+<footer>T5 · Holístico — Procure-to-Pay (AP + MM) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

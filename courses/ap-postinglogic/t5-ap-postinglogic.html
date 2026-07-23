@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · AP Posting Logic — Holístico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E0A56F;--t1-dark:#A85F2B;--t1-pale:rgba(224,165,111,0.12);--t1-pale-border:rgba(224,165,111,0.38);--navy-950:#0A0F1C;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#1C1206 55%,#2A1A08 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,165,111,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .sec-tags{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .orbit-tag{background:rgba(10,15,28,0.07);border:1px solid #CBD5E1;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--muted);}
+  .type-tag-pos{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--t1-dark);}
+  .type-tag-flow{background:rgba(26,75,140,0.08);border:1.5px solid rgba(26,75,140,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:#1A4B8C;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">AP Posting within Source to Pay</a>
+  <a href="#s2">Invoice to Pay — Two Branches</a>
+  <a href="#s3">Invoice within Double-Entry System</a>
+  <a href="#s4">AP as Foundation for Downstream</a>
+  <a href="#s5">Invoice Lifecycle Flow</a>
+  <a href="#s6">Invoice Posting Flow</a>
+  <a href="#s7">4 Transaction Types Impact</a>
+  <a href="#s8">Cross-Module Connections</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+      <span class="pill pill-sec">Procurement</span>
+    </div>
+    <h1>AP <span class="accent">Posting Logic</span></h1>
+    <h2>Holístico — Ecosistema y Posicionamiento</h2>
+    <p class="desc">Donde vive el proceso de contabilizacion de AP dentro del ecosistema Source to Pay, como cada posting conecta con GL, Controlling y Pagos, y que fluye hacia dentro y fuera de cada tipo de transaccion.</p>
+    <div class="hlbox">Holístico — <b>AP Posting Logic (AP)</b>, Tipo 5. 4 secciones de posicionamiento + 4 secciones de flujos. Sin glosario.</div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">AP Invoice Posting within Source to Pay</span><span class="sec-title-es">El posteo de AP dentro de Source to Pay</span></div><div class="sec-desc">La contabilizacion de facturas vive dentro del cuarto sub-proceso de Source to Pay y es el eje del que dependen los pagos.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; Procurement — Finance</span><span class="type-tag-pos">&#128205; Posicionamiento — Stack</span></div>
+  <div class="theory-box"><strong>La factura contabilizada es el eslabón que conecta la compra con el pago:</strong> sin el posting correcto de la factura, los procesos aguas abajo (Payment Preparation, Payment, Correspondence) no pueden ejecutarse. El AP posting es el eje central del sub-proceso Invoice to Pay.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 270" xmlns="http://www.w3.org/2000/svg">
+      <rect x="240" y="12" width="380" height="36" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="35" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Source to Pay</text>
+      <line x1="90" y1="48" x2="90" y2="64" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="250" y1="48" x2="250" y2="64" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="430" y1="48" x2="430" y2="64" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="620" y1="48" x2="620" y2="64" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="770" y1="48" x2="770" y2="64" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="90" y1="48" x2="770" y2="48" stroke="#94A3B8" stroke-width="1.5"/>
+      <rect x="20" y="64" width="140" height="36" rx="7" fill="#1A6B99" opacity="0.7"/>
+      <text x="90" y="86" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10">Source to Contract</text>
+      <rect x="176" y="64" width="148" height="36" rx="7" fill="#1A6B99" opacity="0.7"/>
+      <text x="250" y="86" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10">Procure to Receipt</text>
+      <rect x="340" y="58" width="180" height="48" rx="7" fill="#A85F2B" stroke="#D4AF37" stroke-width="2"/>
+      <text x="430" y="80" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">Invoice to Pay</text>
+      <text x="430" y="97" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="9.5">Jennifer's area</text>
+      <rect x="540" y="64" width="160" height="36" rx="7" fill="#1A6B99" opacity="0.7"/>
+      <text x="620" y="86" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10">Request to Resolution</text>
+      <rect x="706" y="64" width="128" height="36" rx="7" fill="#1A6B99" opacity="0.7"/>
+      <text x="770" y="83" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="9.5">Manage Supplier</text>
+      <rect x="80" y="122" width="700" height="48" rx="8" fill="#A85F2B" opacity="0.85"/>
+      <text x="430" y="144" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">AP Invoice Posting</text>
+      <text x="430" y="160" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">Invoice + Credit Memo + Subsequent Debit/Credit</text>
+      <rect x="80" y="184" width="210" height="38" rx="7" fill="#1A4B8C" opacity="0.8"/>
+      <text x="185" y="207" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Payment Preparation</text>
+      <rect x="300" y="184" width="210" height="38" rx="7" fill="#1A4B8C" opacity="0.8"/>
+      <text x="405" y="207" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Payment Execution</text>
+      <rect x="520" y="184" width="260" height="38" rx="7" fill="#1A4B8C" opacity="0.8"/>
+      <text x="650" y="207" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Correspondence</text>
+      <text x="430" y="246" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Without correct AP posting, payment cannot be made</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Invoice to Pay — Two Parallel Branches</span><span class="sec-title-es">Invoice to Pay — dos ramas paralelas</span></div><div class="sec-desc">Supplier Invoice Management y Payables Management son hermanas paralelas que dependen del mismo dato base.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; FI — Accounts Payable</span><span class="type-tag-pos">&#128205; Posicionamiento — Bifurcación</span></div>
+  <div class="theory-box"><strong>El posting de facturas crea el dato que alimenta a ambas ramas en paralelo:</strong> no son secuenciales — son simultaneas. El Accounting Document es el origen comun del que ambas ramas toman su informacion de trabajo.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a2t5plb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker></defs>
+      <rect x="280" y="12" width="300" height="48" rx="10" fill="#0A0F1C"/>
+      <text x="430" y="33" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">AP Invoice Posting</text>
+      <text x="430" y="50" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Creates Accounting Document + Open Item</text>
+      <line x1="430" y1="60" x2="430" y2="76" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="200" y1="76" x2="660" y2="76" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="200" y1="76" x2="200" y2="92" stroke="#A85F2B" stroke-width="2" marker-end="url(#a2t5plb)"/>
+      <line x1="660" y1="76" x2="660" y2="92" stroke="#1A4B8C" stroke-width="2" marker-end="url(#a2t5plb)"/>
+      <rect x="50" y="92" width="300" height="58" rx="10" fill="#A85F2B"/>
+      <text x="200" y="118" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">Supplier Invoice Management</text>
+      <text x="200" y="138" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Process Invoices + Credit Memos · Corrections</text>
+      <rect x="510" y="92" width="300" height="58" rx="10" fill="#1A4B8C"/>
+      <text x="660" y="118" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">Payables Management</text>
+      <text x="660" y="138" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Process A/P + Open Items + Payments</text>
+      <rect x="50" y="166" width="140" height="40" rx="8" fill="#A85F2B" opacity="0.75"/>
+      <text x="120" y="190" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Post Invoices</text>
+      <rect x="200" y="166" width="140" height="40" rx="8" fill="#A85F2B" opacity="0.75"/>
+      <text x="270" y="190" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Credit Memos</text>
+      <rect x="510" y="166" width="140" height="40" rx="8" fill="#1A4B8C" opacity="0.75"/>
+      <text x="580" y="187" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Monitor Open Items</text>
+      <rect x="660" y="166" width="140" height="40" rx="8" fill="#1A4B8C" opacity="0.75"/>
+      <text x="730" y="187" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Execute Payments</text>
+      <text x="430" y="222" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Both branches use the same Accounting Documents — parallel, not sequential</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Invoice within the Double-Entry Accounting System</span><span class="sec-title-es">La factura dentro del sistema de partida doble</span></div><div class="sec-desc">La cadena de contencion contable: factura fisica genera Journal Entry que vive en FI Document que vive en ACDOCA.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; FI — Accounting</span><span class="type-tag-pos">&#128205; Posicionamiento — Mamushka</span></div>
+  <div class="theory-box"><strong>La factura del proveedor dispara una cadena de contencion contable:</strong> la factura fisica es el estimulo externo. Al procesarse, genera documentos en capas. El Journal Entry (el asiento de partida doble) es el corazon de la cadena — siempre balanceado, siempre en ACDOCA.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 250" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="18" width="820" height="212" rx="14" fill="none" stroke="#0A0F1C" stroke-width="2.5"/>
+      <text x="56" y="42" fill="#0A0F1C" font-family="Syne" font-weight="800" font-size="12.5">Financial Accounting (FI Module)</text>
+      <rect x="50" y="56" width="760" height="150" rx="12" fill="none" stroke="#1A4B8C" stroke-width="2"/>
+      <text x="72" y="76" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="12">Universal Journal — ACDOCA</text>
+      <rect x="80" y="90" width="700" height="98" rx="10" fill="rgba(168,95,43,0.07)" stroke="#A85F2B" stroke-width="1.8" stroke-dasharray="5,3"/>
+      <text x="100" y="110" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="11.5">FI Document (Accounting Document — KR / KG)</text>
+      <rect x="110" y="122" width="660" height="58" rx="9" fill="#A85F2B"/>
+      <text x="430" y="147" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Journal Entry (Double-Entry) &#9733;</text>
+      <text x="430" y="166" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">Dr: Expense GL · Dr: Input Tax · Cr: Supplier Account (AP) — Balance = 0</text>
+      <text x="430" y="222" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="10.5">Supplier Invoice (external trigger) processed via Fiori app</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">AP Posting as Foundation for Downstream</span><span class="sec-title-es">El posting de AP como base para los procesos posteriores</span></div><div class="sec-desc">El Accounting Document es la fundacion sobre la que se apoyan todos los procesos del ciclo de vida de la factura.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; AP Operations</span><span class="type-tag-pos">&#128205; Posicionamiento — Fundacion + Pilares</span></div>
+  <div class="theory-box"><strong>Sin el posting correcto de la factura, ningun proceso siguiente puede ejecutarse:</strong> el Accounting Document con su Open Item y su Due Date es la fundacion que sostiene los pilares del proceso completo.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 218" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="180" width="820" height="36" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="198" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">AP Invoice Posting (Foundation)</text>
+      <text x="430" y="212" text-anchor="middle" fill="rgba(255,255,255,0.62)" font-family="Inter" font-size="9.5">Accounting Document · Open item · GL Recon. updated · Due Date calculated</text>
+      <line x1="100" y1="50" x2="100" y2="180" stroke="#D0D4DC" stroke-width="1.5"/>
+      <line x1="250" y1="50" x2="250" y2="180" stroke="#A85F2B" stroke-width="3"/>
+      <line x1="430" y1="50" x2="430" y2="180" stroke="#A85F2B" stroke-width="3"/>
+      <line x1="610" y1="50" x2="610" y2="180" stroke="#1A4B8C" stroke-width="3"/>
+      <line x1="760" y1="50" x2="760" y2="180" stroke="#1A4B8C" stroke-width="3"/>
+      <rect x="20" y="12" width="160" height="38" rx="8" fill="#5A6B8C" opacity="0.8"/>
+      <text x="100" y="28" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">GL Update</text>
+      <text x="100" y="43" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Recon. Account 191100</text>
+      <rect x="170" y="4" width="160" height="46" rx="8" fill="#A85F2B"/>
+      <text x="250" y="26" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">Open Item &#9733;</text>
+      <text x="250" y="42" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">AP subledger</text>
+      <rect x="350" y="4" width="160" height="46" rx="8" fill="#A85F2B"/>
+      <text x="430" y="26" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">Due Date &#9733;</text>
+      <text x="430" y="42" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">From payment terms</text>
+      <rect x="530" y="12" width="160" height="38" rx="8" fill="#1A4B8C"/>
+      <text x="610" y="28" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Payment Run</text>
+      <text x="610" y="43" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Clears open item</text>
+      <rect x="680" y="12" width="160" height="38" rx="8" fill="#1A4B8C"/>
+      <text x="760" y="28" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">AP KPIs</text>
+      <text x="760" y="43" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">DPO · Aging · Overdue</text>
+      <text x="430" y="160" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="10.5">Open Item + Due Date = critical outputs of every AP invoice posting</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Invoice Lifecycle Flow</span><span class="sec-title-es">Flujo del ciclo de vida completo</span></div><div class="sec-desc">Las 6 etapas del ciclo de vida y donde vive el posting de AP dentro del flujo.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; AP Invoice Lifecycle</span><span class="type-tag-flow">&#128260; Flujo — Invoice Lifecycle</span></div>
+  <div class="theory-box"><strong>Las 3 primeras etapas son la responsabilidad de AP — las 3 siguientes son consecuencia:</strong> sin completar bien las primeras 3 (Arrival, Processing, Correction), las 3 siguientes no pueden ejecutarse correctamente. El posting es el paso 2 — el mas critico.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 148" xmlns="http://www.w3.org/2000/svg">
+      <rect x="14" y="26" width="380" height="72" rx="10" fill="rgba(168,95,43,0.08)" stroke="#A85F2B" stroke-width="2"/>
+      <text x="204" y="18" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="10">This course</text>
+      <rect x="22" y="36" width="105" height="52" rx="8" fill="#A85F2B"/>
+      <text x="74" y="59" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Arrival</text>
+      <text x="74" y="75" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Received</text>
+      <polygon points="127,62 140,53 140,71" fill="#A85F2B"/>
+      <rect x="140" y="36" width="105" height="52" rx="8" fill="#A85F2B"/>
+      <text x="192" y="59" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Processing</text>
+      <text x="192" y="75" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Post in SAP &#9733;</text>
+      <polygon points="245,62 258,53 258,71" fill="#A85F2B"/>
+      <rect x="258" y="36" width="130" height="52" rx="8" fill="#A85F2B"/>
+      <text x="323" y="59" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Correction</text>
+      <text x="323" y="75" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Credit memo</text>
+      <polygon points="388,62 400,53 400,71" fill="#1A6B99"/>
+      <rect x="400" y="36" width="113" height="52" rx="8" fill="#1A6B99"/>
+      <text x="456" y="57" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Payment Prep.</text>
+      <polygon points="513,62 525,53 525,71" fill="#1A6B99"/>
+      <rect x="525" y="36" width="100" height="52" rx="8" fill="#1A6B99"/>
+      <text x="575" y="65" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Payment</text>
+      <polygon points="625,62 637,53 637,71" fill="#1A6B99"/>
+      <rect x="637" y="36" width="145" height="52" rx="8" fill="#1A6B99"/>
+      <text x="714" y="65" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Correspondence</text>
+      <text x="430" y="124" text-anchor="middle" fill="#5A6B8C" font-family="Inter" font-size="10">Processing (posting) enables all downstream stages</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Invoice Posting Flow — From Paper to FI Document</span><span class="sec-title-es">Del papel al documento FI</span></div><div class="sec-desc">Como los datos de la factura y del maestro del proveedor se combinan para crear el Journal Entry permanente.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; AP Posting Process</span><span class="type-tag-flow">&#128260; Flujo — Invoice Posting</span></div>
+  <div class="theory-box"><strong>Dos fuentes de datos + la app Fiori = el Accounting Document:</strong> la factura fisica aporta los datos variables (importe, fecha, referencia). El Supplier Master aporta los datos fijos (cuenta AP, condiciones de pago, banco). SAP combina ambos y genera el Journal Entry.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 190" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a6t5plb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker></defs>
+      <rect x="14" y="50" width="130" height="90" rx="9" fill="#E07B39"/>
+      <text x="79" y="80" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Supplier</text>
+      <text x="79" y="97" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Invoice</text>
+      <text x="79" y="114" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9.5">Amount · Date · Ref</text>
+      <text x="79" y="130" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Currency</text>
+      <line x1="144" y1="95" x2="205" y2="80" stroke="#3D7A52" stroke-width="2" marker-end="url(#a6t5plb)"/>
+      <rect x="144" y="130" width="130" height="70" rx="9" fill="#5A6B8C"/>
+      <text x="209" y="160" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Supplier</text>
+      <text x="209" y="176" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Master</text>
+      <text x="209" y="191" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Recon.Acct · Pymt Terms</text>
+      <line x1="274" y1="165" x2="325" y2="120" stroke="#3D7A52" stroke-width="1.5" marker-end="url(#a6t5plb)"/>
+      <rect x="205" y="40" width="180" height="90" rx="9" fill="#A85F2B"/>
+      <text x="295" y="67" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Fiori App</text>
+      <text x="295" y="83" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="9.5">Create Supplier Invoice</text>
+      <text x="295" y="97" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">or Create Incoming Invoices</text>
+      <text x="295" y="113" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="8.5">Select Transaction Type</text>
+      <line x1="385" y1="85" x2="435" y2="85" stroke="#3D7A52" stroke-width="2" marker-end="url(#a6t5plb)"/>
+      <rect x="435" y="40" width="190" height="90" rx="9" fill="#0A0F1C"/>
+      <text x="530" y="72" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Accounting</text>
+      <text x="530" y="89" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Document</text>
+      <text x="530" y="108" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Posted to ACDOCA</text>
+      <line x1="625" y1="70" x2="670" y2="50" stroke="#3D7A52" stroke-width="1.5" marker-end="url(#a6t5plb)"/>
+      <rect x="670" y="22" width="168" height="32" rx="7" fill="#3D7A52"/>
+      <text x="754" y="42" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">AP Subledger updated</text>
+      <line x1="625" y1="85" x2="670" y2="85" stroke="#3D7A52" stroke-width="1.5" marker-end="url(#a6t5plb)"/>
+      <rect x="670" y="70" width="168" height="32" rx="7" fill="#1A4B8C"/>
+      <text x="754" y="90" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">GL Recon. Acct updated</text>
+      <line x1="625" y1="105" x2="670" y2="120" stroke="#3D7A52" stroke-width="1.5" marker-end="url(#a6t5plb)"/>
+      <rect x="670" y="105" width="168" height="32" rx="7" fill="#00A896"/>
+      <text x="754" y="125" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Expense/Tax Acct Dr.</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">4 Transaction Types — Account Impact Flow</span><span class="sec-title-es">Los 4 tipos de transaccion — impacto en la cuenta del proveedor</span></div><div class="sec-desc">Como cada tipo de transaccion afecta el saldo de la cuenta del proveedor — siempre desde la misma app pero con distinto resultado.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; AP Posting Logic</span><span class="type-tag-flow">&#128260; Flujo — Transaction Type Impact</span></div>
+  <div class="theory-box"><strong>Los 4 tipos generan movimientos opuestos dos a dos:</strong> Invoice y Subsequent Debit incrementan la deuda (CREDIT en cuenta del proveedor). Credit Memo y Subsequent Credit la reducen (DEBIT en cuenta del proveedor). La logica es siempre la misma — el tipo de transaccion determina la direccion del asiento.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a7t5plcr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker>
+        <marker id="a7t5pldr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C0392B"/></marker>
+      </defs>
+      <!-- Supplier Account T-account center -->
+      <rect x="340" y="60" width="180" height="120" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="86" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Supplier Account</text>
+      <line x1="340" y1="98" x2="520" y2="98" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      <text x="365" y="116" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="10">DEBIT</text>
+      <text x="480" y="116" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="10">CREDIT</text>
+      <text x="480" y="138" fill="#3D7A52" font-family="JetBrains Mono" font-size="11" font-weight="700">XXXXX</text>
+      <text x="480" y="158" fill="#3D7A52" font-family="JetBrains Mono" font-size="11" font-weight="700">XXX</text>
+      <text x="365" y="138" fill="#C0392B" font-family="JetBrains Mono" font-size="11" font-weight="700">XX</text>
+      <text x="365" y="158" fill="#C0392B" font-family="JetBrains Mono" font-size="11" font-weight="700">X</text>
+      <!-- Invoice (right top) -->
+      <rect x="590" y="20" width="240" height="60" rx="9" fill="#E07B39"/>
+      <text x="710" y="44" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">1. Invoice</text>
+      <text x="710" y="60" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Initial supplier invoice receipt</text>
+      <line x1="590" y1="50" x2="522" y2="122" stroke="#3D7A52" stroke-width="2" marker-end="url(#a7t5plcr)"/>
+      <text x="558" y="80" fill="#3D7A52" font-family="Syne" font-weight="700" font-size="9.5">CREDIT</text>
+      <!-- Subsequent Debit (right bottom) -->
+      <rect x="590" y="140" width="240" height="60" rx="9" fill="#C9932E"/>
+      <text x="710" y="164" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">3. Subsequent Debit</text>
+      <text x="710" y="180" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Extra charges after invoice</text>
+      <line x1="590" y1="160" x2="522" y2="145" stroke="#3D7A52" stroke-width="2" marker-end="url(#a7t5plcr)"/>
+      <text x="558" y="150" fill="#3D7A52" font-family="Syne" font-weight="700" font-size="9.5">CREDIT</text>
+      <!-- Credit Memo (left top) -->
+      <rect x="30" y="20" width="240" height="60" rx="9" fill="#3D7A52"/>
+      <text x="150" y="44" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">2. Credit Memo</text>
+      <text x="150" y="60" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Supplier refund</text>
+      <line x1="270" y1="50" x2="338" y2="122" stroke="#C0392B" stroke-width="2" marker-end="url(#a7t5pldr)"/>
+      <text x="295" y="80" fill="#C0392B" font-family="Syne" font-weight="700" font-size="9.5">DEBIT</text>
+      <!-- Subsequent Credit (left bottom) -->
+      <rect x="30" y="140" width="240" height="60" rx="9" fill="#1A4B8C"/>
+      <text x="150" y="164" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">4. Subsequent Credit</text>
+      <text x="150" y="180" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Extra credit after credit memo</text>
+      <line x1="270" y1="160" x2="338" y2="145" stroke="#C0392B" stroke-width="1.5" marker-end="url(#a7t5pldr)"/>
+      <text x="295" y="150" fill="#C0392B" font-family="Syne" font-weight="700" font-size="9.5">DEBIT</text>
+      <!-- Legend -->
+      <text x="430" y="218" text-anchor="middle" fill="#3D7A52" font-family="Inter" font-size="10" font-weight="700">CREDIT = increases AP balance (company owes more)</text>
+      <text x="430" y="234" text-anchor="middle" fill="#C0392B" font-family="Inter" font-size="10" font-weight="700">DEBIT = decreases AP balance (company owes less)</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Cross-Module Connections of AP Posting</span><span class="sec-title-es">Conexiones de los posteos de AP con otros modulos</span></div><div class="sec-desc">Que modulos y procesos se conectan con — y dependen de — cada posting de factura de proveedor.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">&#127729; Finance Ecosystem</span><span class="type-tag-flow">&#128260; Flujo — Cross-Modulo</span></div>
+  <div class="theory-box"><strong>El posting de AP no es un evento aislado — activa actualizaciones en cuatro modulos simultaneamente:</strong> cada vez que Jennifer contabiliza una factura, SAP actualiza el subledger de AP, la cuenta de reconciliacion del GL, la cuenta de gasto o activo, y la cuenta de impuesto. Si hay moneda extranjera, Treasury tambien queda impactado por la posicion de FX.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 260" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a8t5plo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker>
+        <marker id="a8t5pli" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1A6B99"/></marker>
+      </defs>
+      <!-- Central -->
+      <rect x="310" y="96" width="240" height="68" rx="12" fill="#A85F2B"/>
+      <text x="430" y="122" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">AP Invoice Posting</text>
+      <text x="430" y="142" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">KR / KG · Any Transaction Type</text>
+      <text x="430" y="157" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Create Supplier Invoice / Create Incoming Invoices</text>
+      <!-- MM (top) -->
+      <rect x="310" y="14" width="240" height="50" rx="9" fill="#00A896"/>
+      <text x="430" y="37" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Materials Management (MM)</text>
+      <text x="430" y="55" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Provides GR/IR · Goods Receipt reference · Subsequent Debit source</text>
+      <line x1="430" y1="64" x2="430" y2="96" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5plo)"/>
+      <!-- GL (left) -->
+      <rect x="20" y="106" width="200" height="50" rx="9" fill="#1A4B8C"/>
+      <text x="120" y="130" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">General Ledger (GL)</text>
+      <text x="120" y="148" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Recon. Account · Expense/Tax accounts updated</text>
+      <line x1="220" y1="131" x2="308" y2="131" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5plo)"/>
+      <!-- Treasury / FX (right) -->
+      <rect x="640" y="106" width="200" height="50" rx="9" fill="#5A6B8C" opacity="0.85"/>
+      <text x="740" y="130" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Treasury (FX)</text>
+      <text x="740" y="148" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">FX position if foreign currency · Exchange rate P&amp;L</text>
+      <line x1="550" y1="131" x2="638" y2="131" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5plo)"/>
+      <!-- Payment Program (bottom) -->
+      <rect x="310" y="196" width="240" height="50" rx="9" fill="#5A6B8C" opacity="0.85"/>
+      <text x="430" y="220" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Payment Program</text>
+      <text x="430" y="238" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Reads open items · Due dates · Clears after payment</text>
+      <line x1="430" y1="164" x2="430" y2="196" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5plo)"/>
+    </svg>
+  </div>
+</section>
+
+</main>
+<footer>T5 · Holístico — AP Posting Logic (AP) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

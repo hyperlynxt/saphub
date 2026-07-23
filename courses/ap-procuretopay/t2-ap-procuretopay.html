@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Procure-to-Pay — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#E08585; --t1-dark:#A94444;
+    --t1-pale:rgba(224,133,133,0.12); --t1-pale-border:rgba(224,133,133,0.38);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B;
+    --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE;
+    --white:#FFFFFF; --body:#3D4A5F;
+    --cat-fi:#1A4B8C; --cat-co:#1A6B99; --cat-log:#00A896;
+    --cat-purchase:#7E4FBF; --cat-sales:#E07B39; --cat-legal:#C9932E;
+    --cat-alert:#C0392B; --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;} html{scroll-behavior:smooth;}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#28100C 55%,#3B1818 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;font-family:'Inter',sans-serif;background:transparent;letter-spacing:.2px;}
+  .pill-primary{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-secondary{border:1.5px solid var(--pill-secondary);color:var(--pill-secondary);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.5rem);color:rgba(255,255,255,0.62);margin:0 0 18px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,133,133,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:640px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.5;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(169,68,68,0.35);}
+  .sec-titles{display:flex;flex-direction:column;gap:2px;flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;margin-top:2px;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;min-width:640px;}
+  /* Grids */
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  /* Cards */
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:20px 22px;box-shadow:0 2px 8px rgba(10,15,28,0.04);}
+  .card.accent{border-top:4px solid var(--t1-dark);}
+  .card.navy{border-top:4px solid var(--cat-fi);}
+  .card.teal{border-top:4px solid var(--cat-log);}
+  .card.purple{border-top:4px solid var(--cat-purchase);}
+  .card.steel{border-top:4px solid var(--cat-steel);}
+  .card.red{border-top:4px solid var(--cat-alert);}
+  .card h4{font-family:'Syne',sans-serif;font-size:1rem;margin:0 0 4px;color:var(--ink);}
+  .card .sub{font-size:0.72rem;color:var(--muted);font-style:italic;font-weight:400;}
+  .card p{font-size:0.84rem;color:var(--body);line-height:1.6;margin:8px 0 0;}
+  .card ul{margin:8px 0 0;padding-left:18px;}
+  .card ul li{font-size:0.82rem;color:var(--body);line-height:1.7;}
+  /* Table */
+  .data-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:0.85rem;box-shadow:0 2px 10px rgba(10,15,28,0.05);}
+  .data-table th{background:var(--navy-900);color:white;padding:11px 14px;text-align:left;font-size:0.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+  .data-table td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--body);}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:nth-child(even) td{background:#FAFBFD;}
+  .data-table .strong{font-weight:700;color:var(--ink);}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;white-space:nowrap;}
+  .badge-green{background:rgba(0,168,150,0.1);color:#00A896;}
+  .badge-red{background:rgba(192,57,43,0.08);color:#C0392B;}
+  .badge-blue{background:rgba(26,75,140,0.08);color:#1A4B8C;}
+  .badge-gold{background:rgba(201,147,46,0.09);color:#C9932E;}
+  .badge-gray{background:#E8EDF6;color:#5A6B8C;}
+  /* Flow */
+  .hflow{display:flex;align-items:center;gap:0;flex-wrap:nowrap;min-width:700px;}
+  .hflow-step{flex:1;padding:14px 12px;border-radius:10px;text-align:center;color:white;}
+  .hflow-arrow{padding:0 8px;color:#94A3B8;font-size:20px;flex-shrink:0;}
+  .hflow-step .hs-icon{font-size:20px;display:block;margin-bottom:4px;}
+  .hflow-step .hs-title{font-family:'Syne',sans-serif;font-weight:700;font-size:11.5px;display:block;}
+  .hflow-step .hs-sub{font-size:9.5px;color:rgba(255,255,255,0.72);display:block;margin-top:2px;}
+  /* Timeline */
+  .timeline-wrap{position:relative;padding:20px 0 10px;}
+  .timeline-bar{height:6px;background:linear-gradient(90deg,var(--cat-log) 0%,var(--cat-fi) 40%,var(--cat-steel) 100%);border-radius:3px;margin:0 30px;}
+  .timeline-markers{display:flex;justify-content:space-between;margin:0 30px;padding-top:8px;}
+  .tmark{text-align:center;width:1px;position:relative;}
+  .tmark::before{content:'';position:absolute;top:-14px;left:-1px;width:2px;height:10px;background:var(--ink);}
+  .tmark .tday{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--ink);white-space:nowrap;}
+  .tmark .tlabel{font-size:9.5px;color:var(--muted);white-space:nowrap;display:block;margin-top:2px;}
+  /* Glossary */
+  .glossary{background:var(--navy-950);padding:64px 40px 72px;scroll-margin-top:64px;}
+  .glossary-inner{max-width:1100px;margin:0 auto;}
+  .glossary h2{font-family:'Syne',sans-serif;color:white;font-size:1.6rem;margin:0 0 6px;}
+  .glossary p.gloss-sub{color:rgba(255,255,255,0.55);font-size:0.9rem;margin:0 0 30px;}
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .gcard{background:var(--navy-800);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 18px;}
+  .term-en{font-family:'Syne',sans-serif;font-weight:700;color:var(--t1);font-size:1rem;}
+  .term-es{font-family:'Inter',sans-serif;color:rgba(255,255,255,0.5);font-size:0.78rem;margin:2px 0 8px;}
+  .term-def{color:rgba(255,255,255,0.82);font-size:0.83rem;line-height:1.5;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+  .box-label{font-family:'Inter',sans-serif;font-weight:600;font-size:12px;}
+  .box-sub{font-family:'Inter',sans-serif;font-weight:400;font-size:9.5px;}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Vendor Master</a>
+  <a href="#s2">Discrepancies &amp; Tolerances</a>
+  <a href="#s3">Credit Memo</a>
+  <a href="#s4">ERS</a>
+  <a href="#s5">Subsequent Debit/Credit</a>
+  <a href="#s6">GR/IR at Period End</a>
+  <a href="#s7">Invoice Parking</a>
+  <a href="#s8">Payment Terms</a>
+  <a href="#s9">Blocking Indicators</a>
+  <a href="#s10">Account Determination</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1>Procure-<span class="accent">to-Pay</span></h1>
+    <h2>Profundización — Adyacentes y Mecanismos</h2>
+    <p class="desc">Cinco temas adyacentes al P2P (Vendor Master, tolerancias, credit memos, ERS, ajustes posteriores) y cinco mecanismos internos en mayor profundidad (GR/IR a período, parking, payment terms, bloqueos y determinación automática de cuentas).</p>
+    <div class="hlbox">Profundización — <b>Procure-to-Pay (AP + MM)</b>, Tipo 2. ~5 temas adyacentes + ~5 mecanismos internos en detalle.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — VENDOR MASTER DATA -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Vendor Master Record</span>
+          <span class="sec-title-es">Registro maestro del proveedor</span>
+        </div>
+        <div class="sec-desc">Los tres niveles de datos del proveedor y cómo cada uno alimenta el proceso P2P.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El Vendor Master alimenta todo el ciclo P2P:</strong> el registro maestro del proveedor tiene tres bloques de datos con diferente alcance organizativo. Los <strong>datos generales</strong> (nombre, dirección, datos bancarios) son válidos en todo el cliente SAP. Los <strong>datos de la organización de compras</strong> controlan las condiciones de aprovisionamiento. Los <strong>datos de la sociedad (FI)</strong> definen la cuenta de conciliación, el método de pago y las condiciones de pago para <strong>Accounts Payable</strong>.
+    </div>
+    <div class="visual-wrap">
+      <div class="g3">
+        <div class="card steel">
+          <h4>🌐 General Data <span class="sub">· Datos Generales</span></h4>
+          <p>Válido para <strong>todo el cliente SAP</strong>. Incluye la información de identificación y contacto del proveedor.</p>
+          <ul>
+            <li>Nombre y dirección</li>
+            <li>Datos bancarios (para pagos)</li>
+            <li>Idioma de correspondencia</li>
+            <li>Datos de comunicación (teléfono, email)</li>
+          </ul>
+        </div>
+        <div class="card purple">
+          <h4>📦 Purchasing Org. Data <span class="sub">· Datos de Compras</span></h4>
+          <p>Válido por <strong>organización de compras</strong>. Controla las condiciones de aprovisionamiento con ese proveedor.</p>
+          <ul>
+            <li>Condiciones de entrega (Incoterms)</li>
+            <li>Moneda de compra</li>
+            <li>Condiciones de pago (payment terms)</li>
+            <li>Indicador de ERS (Evaluated Receipt Settlement)</li>
+          </ul>
+        </div>
+        <div class="card navy">
+          <h4>💳 Company Code (FI) Data <span class="sub">· Datos de Sociedad</span></h4>
+          <p>Válido por <strong>sociedad (Company Code)</strong>. Es la pieza de FI que hace al proveedor visible en Accounts Payable.</p>
+          <ul>
+            <li>Cuenta de conciliación (Reconciliation Account)</li>
+            <li>Condiciones de pago para AP</li>
+            <li>Método de pago (transferencia, cheque)</li>
+            <li>Clave de clasificación de pagos</li>
+          </ul>
+        </div>
+      </div>
+      <div style="background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:12px 16px;margin-top:16px;font-size:0.82rem;color:var(--ink);">
+        💡 El proveedor no existe para AP hasta que se crean los <strong>datos de sociedad (Company Code data)</strong>. Los datos de organización de compras controlan el aprovisionamiento. Ambos pueden existir independientemente del otro.
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — DISCREPANCIES & TOLERANCES -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Invoice Discrepancies &amp; Tolerance Keys</span>
+          <span class="sec-title-es">Diferencias y límites de tolerancia</span>
+        </div>
+        <div class="sec-desc">Qué ocurre cuando el precio o la cantidad facturada no coincide con la PO o el GR.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Las diferencias disparan la lógica de tolerancia:</strong> al registrar una factura, SAP compara automáticamente el <strong>precio facturado vs. el precio de la PO</strong> y la <strong>cantidad facturada vs. la cantidad del GR</strong>. Si la diferencia supera las <strong>tolerance keys</strong> configuradas, el sistema bloquea automáticamente el pago. Solo las diferencias dentro del límite de tolerancia se contabilizan sin intervención.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a2a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+          </marker>
+          <marker id="a2b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#C0392B"/>
+          </marker>
+        </defs>
+        <!-- Invoice entry -->
+        <rect x="20" y="100" width="160" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="100" y="126" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Supplier Invoice</text>
+        <text x="100" y="144" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">precio · cantidad · ref. PO</text>
+
+        <!-- Check box -->
+        <rect x="225" y="85" width="180" height="90" rx="10" fill="#0A0F1C"/>
+        <text x="315" y="114" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">Tolerance Check</text>
+        <text x="315" y="132" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Precio vs PO · Cantidad vs GR</text>
+        <text x="315" y="148" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Inter" font-size="9">Tolerance keys configuradas en SPRO</text>
+        <line x1="180" y1="130" x2="225" y2="130" stroke="#94A3B8" stroke-width="2" marker-end="url(#a2a)"/>
+
+        <!-- Within tolerance -->
+        <line x1="405" y1="110" x2="460" y2="70" stroke="#00A896" stroke-width="2" marker-end="url(#a2a)"/>
+        <rect x="460" y="40" width="210" height="60" rx="10" fill="#00A896"/>
+        <text x="565" y="66" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">✔ Within Tolerance</text>
+        <text x="565" y="83" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Postea sin bloqueo · diferencia a cuenta de variación</text>
+
+        <!-- Outside tolerance -->
+        <line x1="405" y1="150" x2="460" y2="190" stroke="#C0392B" stroke-width="2" marker-end="url(#a2b)"/>
+        <rect x="460" y="160" width="210" height="60" rx="10" fill="#C0392B"/>
+        <text x="565" y="186" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">✘ Outside Tolerance</text>
+        <text x="565" y="203" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Payment block automático · requiere aclaración</text>
+
+        <!-- Labels -->
+        <text x="100" y="210" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Diferencia de precio</text>
+        <text x="100" y="226" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Diferencia de cantidad</text>
+        <text x="315" y="210" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Tolerance key DW (precio)</text>
+        <text x="315" y="226" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Tolerance key BD/BW (cantidad)</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- S3 — CREDIT MEMO -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Credit Memo &amp; Invoice Correction</span>
+          <span class="sec-title-es">Nota de crédito y corrección de factura</span>
+        </div>
+        <div class="sec-desc">Cómo el proveedor corrige una factura ya contabilizada mediante un documento inverso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La nota de crédito invierte la factura:</strong> si el proveedor envía una corrección por bienes devueltos, precios incorrectos o entregas parciales, se contabiliza una <strong>Credit Memo</strong> (nota de crédito). Sus partidas contables son exactamente el <strong>espejo de la factura original</strong>: la cuenta GR/IR pasa al haber y la cuenta del proveedor al debe, reduciendo la obligación de pago. No es un asiento de reversión del sistema — es un documento de negocio nuevo.
+    </div>
+    <div class="visual-wrap">
+      <div class="g2">
+        <div class="card navy">
+          <h4>🧾 Standard Invoice <span class="sub">· Factura estándar</span></h4>
+          <p>Contabilización normal de la factura del proveedor con referencia a la PO y GR.</p>
+          <div style="margin-top:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:0.8rem;">
+            <div style="background:var(--navy-900);color:white;padding:7px 12px;font-weight:700;font-size:0.72rem;letter-spacing:.4px;text-transform:uppercase;">Partidas del documento FI</div>
+            <div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+              <span>GR/IR Account</span><span style="color:var(--cat-fi);font-weight:700;">DEBE</span>
+            </div>
+            <div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+              <span>Vendor Account</span><span style="color:var(--cat-log);font-weight:700;">HABER</span>
+            </div>
+            <div style="padding:10px 12px;display:flex;justify-content:space-between;">
+              <span>Tax Account</span><span style="color:var(--cat-log);font-weight:700;">HABER</span>
+            </div>
+          </div>
+        </div>
+        <div class="card red">
+          <h4>🔄 Credit Memo <span class="sub">· Nota de crédito</span></h4>
+          <p>Documento emitido por el proveedor que <strong>corrige parcial o totalmente</strong> la factura original.</p>
+          <div style="margin-top:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:0.8rem;">
+            <div style="background:var(--navy-900);color:white;padding:7px 12px;font-weight:700;font-size:0.72rem;letter-spacing:.4px;text-transform:uppercase;">Partidas del documento FI</div>
+            <div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+              <span>Vendor Account</span><span style="color:var(--cat-fi);font-weight:700;">DEBE ← inverso</span>
+            </div>
+            <div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+              <span>GR/IR Account</span><span style="color:var(--cat-log);font-weight:700;">HABER ← inverso</span>
+            </div>
+            <div style="padding:10px 12px;display:flex;justify-content:space-between;">
+              <span>Tax Account</span><span style="color:var(--cat-log);font-weight:700;">HABER ← inverso</span>
+            </div>
+          </div>
+          <p style="margin-top:10px;">Reduce la obligación de pago con el proveedor. Puede compensarse contra la factura abierta o generar un anticipo a favor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — EVALUATED RECEIPT SETTLEMENT -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Evaluated Receipt Settlement (ERS)</span>
+          <span class="sec-title-es">Liquidación automática basada en la recepción</span>
+        </div>
+        <div class="sec-desc">Una alternativa al ingreso manual de facturas: el sistema genera la factura desde el GR.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>ERS invierte el flujo tradicional:</strong> en el proceso estándar, el proveedor envía una factura que el contador de AP ingresa manualmente. Con <strong>Evaluated Receipt Settlement</strong>, el sistema <strong>genera automáticamente el documento de factura</strong> al registrar el Goods Receipt, tomando la cantidad del GR y el precio de la PO. Se activa por acuerdo con el proveedor y se configura en el registro maestro del proveedor (Purchasing Org. data).
+    </div>
+    <div class="visual-wrap">
+      <div class="g2">
+        <div class="card steel">
+          <h4>👤 Manual Invoice Entry <span class="sub">· Proceso estándar</span></h4>
+          <p>El flujo habitual requiere que el área de AP reciba e ingrese manualmente cada factura del proveedor.</p>
+          <ul>
+            <li>Proveedor envía factura en papel/email</li>
+            <li>El contador de AP la ingresa en SAP (Create Supplier Invoice)</li>
+            <li>SAP verifica precio (vs PO) y cantidad (vs GR)</li>
+            <li>Esfuerzo manual en AP · riesgo de errores de ingreso</li>
+          </ul>
+        </div>
+        <div class="card teal">
+          <h4>⚡ ERS — Automatic Invoice <span class="sub">· Proceso automático</span></h4>
+          <p>El sistema crea automáticamente la factura usando los datos de la PO y el GR confirmado.</p>
+          <ul>
+            <li>Se activa: flag ERS en Vendor Master (Purchasing Org. data)</li>
+            <li>Al confirmar el GR, SAP calcula: Qty (GR) × Precio (PO)</li>
+            <li>Genera el documento de Invoice Verification automáticamente</li>
+            <li>Reduce carga operativa de AP · requiere confianza en el proveedor</li>
+          </ul>
+          <div style="margin-top:12px;background:rgba(0,168,150,0.1);border-radius:6px;padding:10px 12px;font-size:0.8rem;color:var(--body);">
+            ⚠️ No aplicable cuando hay discrepancias habituales de precio. Requiere acuerdo explícito con el proveedor.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — SUBSEQUENT DEBIT/CREDIT -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Subsequent Debit &amp; Credit</span>
+          <span class="sec-title-es">Débito y crédito posterior</span>
+        </div>
+        <div class="sec-desc">Ajustes de valor después de que la factura original ya fue contabilizada.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Ajustes posteriores sin revertir la factura original:</strong> cuando el proveedor ajusta el precio de una entrega ya facturada (por ejemplo, un incremento de precio acordado después de la entrega), SAP permite registrar un <strong>Subsequent Debit</strong> (cargo adicional) o un <strong>Subsequent Credit</strong> (abono) que impacta en la cuenta de inventario o en la cuenta de diferencias de precio, <strong>sin necesidad de revertir</strong> el documento original.
+    </div>
+    <div class="visual-wrap">
+      <div class="hflow">
+        <div class="hflow-step" style="background:#7E4FBF;">
+          <span class="hs-icon">📄</span>
+          <span class="hs-title">Purchase Order</span>
+          <span class="hs-sub">Precio inicial: €100/u</span>
+        </div>
+        <div class="hflow-arrow">›</div>
+        <div class="hflow-step" style="background:#00A896;">
+          <span class="hs-icon">📦</span>
+          <span class="hs-title">Goods Receipt</span>
+          <span class="hs-sub">10 unidades recibidas</span>
+        </div>
+        <div class="hflow-arrow">›</div>
+        <div class="hflow-step" style="background:#1A4B8C;">
+          <span class="hs-icon">🧾</span>
+          <span class="hs-title">Original Invoice</span>
+          <span class="hs-sub">€1.000 contabilizada</span>
+        </div>
+        <div class="hflow-arrow">›</div>
+        <div class="hflow-step" style="background:#C9932E;">
+          <span class="hs-icon">📬</span>
+          <span class="hs-title">Price Adjustment</span>
+          <span class="hs-sub">Proveedor ajusta precio a €110/u</span>
+        </div>
+        <div class="hflow-arrow">›</div>
+        <div class="hflow-step" style="background:#A94444;">
+          <span class="hs-icon">➕</span>
+          <span class="hs-title">Subsequent Debit</span>
+          <span class="hs-sub">€100 adicionales · inventario Dr · vendor Cr</span>
+        </div>
+      </div>
+      <div style="margin-top:16px;" class="g2">
+        <div class="card accent">
+          <h4>➕ Subsequent Debit <span class="sub">· Cargo posterior</span></h4>
+          <p>El proveedor cobra más de lo facturado originalmente. SAP registra el diferencial: <strong>Inventory / Price Diff Dr · Vendor Cr</strong>.</p>
+        </div>
+        <div class="card teal">
+          <h4>➖ Subsequent Credit <span class="sub">· Abono posterior</span></h4>
+          <p>El proveedor devuelve parte del importe facturado. SAP registra el diferencial: <strong>Vendor Dr · Inventory / Price Diff Cr</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — GR/IR AT PERIOD END -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">GR/IR Account at Period End</span>
+          <span class="sec-title-es">Cuenta GR/IR al cierre de período</span>
+        </div>
+        <div class="sec-desc">Los escenarios de saldo abierto en la cuenta GR/IR y su gestión al cierre.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Idealmente la GR/IR es cero, pero en la práctica hay partidas abiertas:</strong> al cierre de período, la cuenta GR/IR puede tener posiciones abiertas que representan <strong>desfases temporales</strong> entre la entrega y la factura. SAP provee el reporte GR/IR Maintenance para identificarlas y, en cierres legales, pueden generarse <strong>asientos de regularización</strong> automáticos para diferir el valor al período correcto.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Escenario</th><th>Estado GR/IR</th><th>Partida abierta</th><th>Acción recomendada</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="strong">GR recibido · Factura recibida</span><br><span style="font-size:0.75rem;color:var(--muted);">Proceso completo</span></td>
+            <td><span class="badge badge-green">Balanceado (0)</span></td>
+            <td>Ninguna — las partidas se compensan mutuamente</td>
+            <td>Ninguna acción requerida</td>
+          </tr>
+          <tr>
+            <td><span class="strong">GR recibido · Sin factura</span><br><span style="font-size:0.75rem;color:var(--muted);">Entrega sin cobro</span></td>
+            <td><span class="badge badge-red">Saldo Cr abierto</span></td>
+            <td>Haber en GR/IR — obligación estimada</td>
+            <td>Accrual al cierre · seguimiento con proveedor</td>
+          </tr>
+          <tr>
+            <td><span class="strong">Factura recibida · Sin GR</span><br><span style="font-size:0.75rem;color:var(--muted);">Cobro sin entrega</span></td>
+            <td><span class="badge badge-red">Saldo Dr abierto</span></td>
+            <td>Debe en GR/IR — anticipo imputado</td>
+            <td>Investigar entrega pendiente o bloquear factura</td>
+          </tr>
+          <tr>
+            <td><span class="strong">Diferencia de cantidad</span><br><span style="font-size:0.75rem;color:var(--muted);">Parcial o exceso</span></td>
+            <td><span class="badge badge-gold">Saldo residual</span></td>
+            <td>Partial match — saldo menor al esperado</td>
+            <td>Aclarar con logística y proveedor · nota de crédito</td>
+          </tr>
+          <tr>
+            <td><span class="strong">Diferencia de precio</span><br><span style="font-size:0.75rem;color:var(--muted);">Invoice price ≠ PO price</span></td>
+            <td><span class="badge badge-gold">Diferencia de precio</span></td>
+            <td>Imputada a cuenta de variación si dentro de tolerancia</td>
+            <td>Revisar PO · gestionar nota de crédito / débito posterior</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- S7 — INVOICE PARKING -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Invoice Parking &amp; Workflow</span>
+          <span class="sec-title-es">Estacionamiento de facturas y flujo de aprobación</span>
+        </div>
+        <div class="sec-desc">Cómo guardar una factura incompleta o pendiente de aprobación sin impactar el Libro Mayor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Parked vs. Posted — diferencia fundamental:</strong> una factura <strong>"parked"</strong> se guarda en SAP con un número de documento pero <strong>sin impacto en el GL</strong>. No afecta saldos de cuentas, no genera partidas contables y no bloquea ni libera la obligación con el proveedor. Permite completar el ingreso en etapas, pasar el documento por un <strong>workflow de aprobación</strong>, o simplemente sostener la factura hasta que lleguen datos adicionales.
+    </div>
+    <div class="visual-wrap">
+      <div class="hflow" style="min-width:800px;">
+        <div class="hflow-step" style="background:#5A6B8C;">
+          <span class="hs-icon">📬</span>
+          <span class="hs-title">Invoice Received</span>
+          <span class="hs-sub">Factura en papel / email</span>
+        </div>
+        <div class="hflow-arrow">›</div>
+        <div class="hflow-step" style="background:#C9932E;">
+          <span class="hs-icon">🅿</span>
+          <span class="hs-title">Park Invoice</span>
+          <span class="hs-sub">Guardada · sin impacto GL · doc. con número</span>
+        </div>
+        <div class="hflow-arrow">›</div>
+        <div class="hflow-step" style="background:#1A6B99;">
+          <span class="hs-icon">✉</span>
+          <span class="hs-title">Approval Workflow</span>
+          <span class="hs-sub">Revisión por supervisor / segunda vista</span>
+        </div>
+        <div class="hflow-arrow">›</div>
+        <div class="hflow-step" style="background:#3D7A52;">
+          <span class="hs-icon">✔</span>
+          <span class="hs-title">Post Invoice</span>
+          <span class="hs-sub">Aprobada · impacta GL · partidas creadas</span>
+        </div>
+      </div>
+      <div style="margin-top:20px;" class="g2">
+        <div class="card" style="border-top:4px solid #C9932E;">
+          <h4>🅿 Parked Document <span class="sub">· Documento estacionado</span></h4>
+          <ul>
+            <li>Tiene número de documento SAP</li>
+            <li><strong>Sin impacto en GL</strong> (no genera partidas)</li>
+            <li>Puede modificarse libremente</li>
+            <li>No visible en reports de AP como obligación real</li>
+          </ul>
+        </div>
+        <div class="card teal">
+          <h4>📌 Posted Document <span class="sub">· Documento contabilizado</span></h4>
+          <ul>
+            <li>Genera <strong>partidas contables en GL</strong></li>
+            <li>Aparece en cuenta del proveedor (AP subledger)</li>
+            <li>Solo reversión para corrección (no edición libre)</li>
+            <li>Disponible para el programa de pagos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — PAYMENT TERMS & CASH DISCOUNT -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Terms &amp; Cash Discount</span>
+          <span class="sec-title-es">Condiciones de pago y descuento por pronto pago</span>
+        </div>
+        <div class="sec-desc">Cómo las condiciones pactadas con el proveedor determinan cuándo y cuánto se paga.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Las payment terms gobiernan el timing y el costo del pago:</strong> las condiciones de pago definen la <strong>fecha de vencimiento</strong> de la obligación y los posibles <strong>descuentos por pago anticipado (cash discount)</strong>. Se configuran en la sociedad y se asignan al Vendor Master. Al contabilizar la factura, SAP calcula automáticamente las fechas y porcentajes aplicables según la <strong>fecha base</strong> (habitualmente la fecha de la factura).
+    </div>
+    <div class="visual-wrap">
+      <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin-bottom:20px;">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:4px;">Ejemplo: condiciones "2/10 net 30"</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">2% de descuento si el pago se realiza en los primeros 10 días · vencimiento total a los 30 días</div>
+        <div class="timeline-wrap">
+          <div style="height:8px;background:linear-gradient(90deg,#00A896 0% 33%, #C9932E 33% 66%, #C0392B 66% 100%);border-radius:4px;margin:0 40px;"></div>
+          <div style="display:flex;justify-content:space-between;margin:0 40px;padding-top:10px;">
+            <div style="text-align:center;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--ink);">Día 0</div>
+              <div style="font-size:9.5px;color:var(--muted);display:block;margin-top:2px;">Fecha base<br>(fecha factura)</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#00A896;">Día 10</div>
+              <div style="font-size:9.5px;color:var(--muted);display:block;margin-top:2px;">Fin período de<br><strong style="color:#00A896;">descuento (2%)</strong></div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#C0392B;">Día 30</div>
+              <div style="font-size:9.5px;color:var(--muted);display:block;margin-top:2px;"><strong style="color:#C0392B;">Vencimiento</strong><br>100% del importe</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="g3">
+        <div class="card teal">
+          <h4>📅 Base Date <span class="sub">· Fecha base</span></h4>
+          <p>Punto de partida para el cálculo. Normalmente la fecha de la factura. Puede configurarse como: fecha de contabilización, fecha de entrega o fecha de factura.</p>
+        </div>
+        <div class="card" style="border-top:4px solid #C9932E;">
+          <h4>💸 Cash Discount <span class="sub">· Descuento por pronto pago</span></h4>
+          <p>Porcentaje de descuento aplicable si el pago se realiza antes de la fecha límite. El programa de pagos lo calcula automáticamente y lo contabiliza.</p>
+        </div>
+        <div class="card red">
+          <h4>🗓️ Net Due Date <span class="sub">· Fecha de vencimiento neta</span></h4>
+          <p>Fecha en que vence el 100% del importe sin descuento. El programa de pagos selecciona facturas según esta fecha para optimizar el cash flow.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 — BLOCKING INDICATORS -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Payment Blocking Indicators — Detail</span>
+          <span class="sec-title-es">Indicadores de bloqueo de pago — en detalle</span>
+        </div>
+        <div class="sec-desc">Los distintos tipos de bloqueo que impiden que el programa de pagos procese una factura.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>El bloqueo puede ser automático o manual:</strong> una factura bloqueada tiene un <strong>payment blocking indicator</strong> en la partida del proveedor. El indicador puede ser puesto automáticamente por el sistema al detectar diferencias fuera de tolerancia, o manualmente por el contador de AP. En ambos casos, el <strong>programa de pagos omite</strong> la factura bloqueada hasta que el bloqueo sea levantado explícitamente.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Tipo de bloqueo</th><th>Quién lo activa</th><th>Causa típica</th><th>Cómo se levanta</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="strong">Tolerancia de precio excedida</span><br><span style="font-size:0.75rem;color:var(--muted);">Price variance</span></td>
+            <td><span class="badge badge-red">Sistema</span></td>
+            <td>Precio facturado &gt; precio PO + límite de tolerancia</td>
+            <td>Aclaración con proveedor · nota de crédito o ajuste de PO</td>
+          </tr>
+          <tr>
+            <td><span class="strong">Tolerancia de cantidad excedida</span><br><span style="font-size:0.75rem;color:var(--muted);">Quantity variance</span></td>
+            <td><span class="badge badge-red">Sistema</span></td>
+            <td>Cantidad facturada &gt; cantidad GR + tolerancia</td>
+            <td>Esperar GR complementario o gestionar nota de crédito</td>
+          </tr>
+          <tr>
+            <td><span class="strong">Bloqueo estocástico</span><br><span style="font-size:0.75rem;color:var(--muted);">Stochastic block</span></td>
+            <td><span class="badge badge-red">Sistema (aleatorio)</span></td>
+            <td>Configurado para revisar aleatoriamente un % de facturas</td>
+            <td>Revisión y liberación manual por supervisor de AP</td>
+          </tr>
+          <tr>
+            <td><span class="strong">Bloqueo manual</span><br><span style="font-size:0.75rem;color:var(--muted);">Manual block</span></td>
+            <td><span class="badge badge-blue">Usuario AP</span></td>
+            <td>Disputa con proveedor, datos faltantes, revisión pendiente</td>
+            <td>Liberación manual por el mismo usuario o supervisor</td>
+          </tr>
+          <tr>
+            <td><span class="strong">GR aún no registrado</span><br><span style="font-size:0.75rem;color:var(--muted);">No GR posted</span></td>
+            <td><span class="badge badge-red">Sistema</span></td>
+            <td>Se exige GR previo y el GR no existe aún en SAP</td>
+            <td>Coordinación con logística para postear el GR pendiente</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- S10 — MM-FI ACCOUNT DETERMINATION (OBYC) -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">MM-FI Automatic Account Determination</span>
+          <span class="sec-title-es">Determinación automática de cuentas MM-FI</span>
+        </div>
+        <div class="sec-desc">Cómo SAP determina qué cuentas del GL afectar al postear un GR, sin que el usuario tenga que elegirlas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>La integración MM-FI es automática por configuración:</strong> cuando el área de logística registra un Goods Receipt, SAP determina automáticamente qué <strong>cuentas del GL</strong> afectar. La lógica vive en la transacción <strong>OBYC</strong> ("Configurar contabilizaciones automáticas"): cada <strong>Transaction/Event Key</strong> mapea un evento logístico a una cuenta GL específica. Los dos más relevantes en P2P son <strong>BSX</strong> (inventario / stock) y <strong>WRX</strong> (GR/IR clearing account).
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+          </marker>
+        </defs>
+        <!-- Event -->
+        <rect x="20" y="105" width="160" height="70" rx="10" fill="#00A896"/>
+        <text x="100" y="132" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="13">Goods Receipt</text>
+        <text x="100" y="150" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Evento logístico MM</text>
+        <text x="100" y="165" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">→ dispara OBYC</text>
+
+        <!-- OBYC box -->
+        <rect x="225" y="90" width="200" height="100" rx="10" fill="#0A0F1C"/>
+        <text x="325" y="117" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">OBYC</text>
+        <text x="325" y="135" text-anchor="middle" fill="#7FC4E0" font-family="Inter" font-size="9.5">Automatic Account Determination</text>
+        <text x="325" y="152" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Chart of Accts · Valuation class</text>
+        <text x="325" y="168" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-family="Inter" font-size="9">Transaction/Event Key</text>
+        <line x1="180" y1="140" x2="225" y2="140" stroke="#3D7A52" stroke-width="2" marker-end="url(#a10)"/>
+
+        <!-- Two keys branching -->
+        <line x1="425" y1="125" x2="470" y2="80" stroke="#3D7A52" stroke-width="1.8" marker-end="url(#a10)"/>
+        <line x1="425" y1="155" x2="470" y2="200" stroke="#3D7A52" stroke-width="1.8" marker-end="url(#a10)"/>
+
+        <!-- BSX -->
+        <rect x="470" y="40" width="200" height="65" rx="8" fill="#1A4B8C"/>
+        <text x="570" y="65" text-anchor="middle" fill="white" font-family="Inter" font-weight="700" font-size="12">BSX — Inventory Posting</text>
+        <text x="570" y="82" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">→ cuenta de inventario/stock</text>
+
+        <!-- WRX -->
+        <rect x="470" y="175" width="200" height="65" rx="8" fill="#00A896"/>
+        <text x="570" y="200" text-anchor="middle" fill="white" font-family="Inter" font-weight="700" font-size="12">WRX — GR/IR Clearing</text>
+        <text x="570" y="217" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">→ cuenta GR/IR clearing</text>
+
+        <!-- Right: GL accounts -->
+        <line x1="670" y1="72" x2="710" y2="72" stroke="#3D7A52" stroke-width="1.8" marker-end="url(#a10)"/>
+        <line x1="670" y1="207" x2="710" y2="207" stroke="#3D7A52" stroke-width="1.8" marker-end="url(#a10)"/>
+
+        <rect x="710" y="48" width="160" height="48" rx="8" fill="#16233B"/>
+        <text x="790" y="70" text-anchor="middle" fill="white" font-family="Inter" font-weight="600" font-size="11">GL: 790000</text>
+        <text x="790" y="87" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Raw Materials Stock</text>
+
+        <rect x="710" y="183" width="160" height="48" rx="8" fill="#16233B"/>
+        <text x="790" y="205" text-anchor="middle" fill="white" font-family="Inter" font-weight="600" font-size="11">GL: 191100</text>
+        <text x="790" y="222" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">GR/IR Clearing Acct</text>
+
+        <text x="450" y="268" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Los números de cuenta GL son ejemplos ilustrativos — varían por cliente SAP</text>
+      </svg>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos de Tipo 2 — Profundización. No repiten los del glosario de T1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Vendor Master Record</div><div class="term-es">Registro maestro del proveedor</div><div class="term-def">Registro central en SAP con tres niveles: datos generales (cliente), datos de Purchasing Org y datos de sociedad (FI-AP).</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Account</div><div class="term-es">Cuenta de conciliación</div><div class="term-def">Cuenta GL que recibe automáticamente las partidas del sub-libro de AP (proveedor). Garantiza que el GL y el AP subledger siempre estén sincronizados.</div></div>
+      <div class="gcard"><div class="term-en">Tolerance Key</div><div class="term-es">Clave de tolerancia</div><div class="term-def">Configuración que define el margen aceptable de diferencia (porcentaje o importe absoluto) entre factura, PO y GR antes de generar un bloqueo automático.</div></div>
+      <div class="gcard"><div class="term-en">Evaluated Receipt Settlement (ERS)</div><div class="term-es">Liquidación automática por recepción</div><div class="term-def">Proceso donde SAP genera automáticamente la factura del proveedor al confirmar el GR, usando cantidad del GR y precio de la PO, sin intervención manual de AP.</div></div>
+      <div class="gcard"><div class="term-en">Credit Memo</div><div class="term-es">Nota de crédito</div><div class="term-def">Documento emitido por el proveedor que corrige parcial o totalmente una factura previa. Sus partidas FI son el inverso de la factura original.</div></div>
+      <div class="gcard"><div class="term-en">Subsequent Debit / Credit</div><div class="term-es">Débito / crédito posterior</div><div class="term-def">Ajuste de valor después de que la factura original fue contabilizada. No revierte el documento original — registra solo la diferencia.</div></div>
+      <div class="gcard"><div class="term-en">Invoice Parking</div><div class="term-es">Estacionamiento de factura</div><div class="term-def">Guardado de una factura en SAP con número de documento pero sin impacto en el GL ni en el AP subledger. Permite completar datos o pasar por aprobación.</div></div>
+      <div class="gcard"><div class="term-en">Payment Terms</div><div class="term-es">Condiciones de pago</div><div class="term-def">Acuerdo con el proveedor que define la fecha base, plazos de vencimiento y posibles descuentos por pago anticipado.</div></div>
+      <div class="gcard"><div class="term-en">Cash Discount</div><div class="term-es">Descuento por pronto pago</div><div class="term-def">Porcentaje de descuento aplicable si el pago se efectúa dentro de un período determinado (ej. 2% si se paga en 10 días).</div></div>
+      <div class="gcard"><div class="term-en">Transaction/Event Key (OBYC)</div><div class="term-es">Clave de transacción (OBYC)</div><div class="term-def">Código interno de SAP (ej. BSX, WRX) que mapea un evento logístico de MM a las cuentas GL correspondientes de forma automática.</div></div>
+      <div class="gcard"><div class="term-en">Stochastic Block</div><div class="term-es">Bloqueo estocástico</div><div class="term-def">Bloqueo de pago aleatorio configurado para revisar un porcentaje definido de facturas, como control interno de Accounts Payable.</div></div>
+      <div class="gcard"><div class="term-en">Purchasing Organization</div><div class="term-es">Organización de compras</div><div class="term-def">Unidad organizativa en SAP que negocia condiciones de compra con los proveedores y a cuyo nivel se guardan datos específicos del Vendor Master.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Procure-to-Pay (AP + MM) · Biblioteca de Guías SAP · Fuente: documento del curso + SAP general knowledge</footer>
+</body>
+</html>

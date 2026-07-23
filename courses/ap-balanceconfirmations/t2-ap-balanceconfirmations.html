@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Balance Confirmations for Suppliers — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A1F1F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:680px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,133,133,0.14); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px; max-width:680px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .kind-tag{ display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase; padding:3px 9px; border-radius:20px; margin-left:2px; }
+  .kind-adjacent{ background:rgba(26,107,153,0.1); color:#1A6B99; }
+  .kind-depth{ background:var(--t2-pale); color:var(--t2-dark); }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t2-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:20px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; margin-bottom:4px; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ background:#FAFBFD; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:190px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t2-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-desc{ font-size:0.72rem; color:var(--body); margin-top:6px; line-height:1.4; display:block; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:760px){ .cmp-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Neighboring Closing Controls</a>
+  <a href="#s2">Annual Book Inventory</a>
+  <a href="#s3">Creating a New Reply Business Partner</a>
+  <a href="#s4">Business Partner Categories</a>
+  <a href="#s5">Monitoring App in Depth</a>
+  <a href="#s6">Checking the Reply Address</a>
+  <a href="#s7">Jake's Exact Dates</a>
+  <a href="#s8">Why Confirmation Helps Audit</a>
+  <a href="#s9">Why by Post</a>
+  <a href="#s10">Cloud vs On-Premise, Deeper</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Balance</span> Confirmations for Suppliers</h1>
+    <h2>Confirmaciones de Saldo para Proveedores — Profundización</h2>
+    <p class="desc">Cinco temas adyacentes que el Tipo 1 no cubrió — controles vecinos, el inventario anual de libros, cómo crear un business partner de respuesta, categorías, y la app de monitoreo — más el mecanismo interno de lo ya visto: la dirección postal real, las fechas exactas del caso de Jake, y por qué el cambio de procedimiento realmente ayuda a auditoría.</p>
+    <div class="hlbox">Resumen Visual — <b>Balance Confirmations for Suppliers</b>, Tipo 2 (Profundización). 10 secciones — 5 de temas adyacentes, 5 de mayor profundidad sobre lo visto en T1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Two Reconciliation Controls Right Before SBC</span>
+          <span class="sec-title-es">Los dos controles de reconciliación justo antes de SBC</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">GR/IR e Intercompañía llegan primero — y por algo, en ese orden.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de confirmar saldos con proveedores externos, conviene resolver primero los desajustes <strong>internos</strong>: <strong>GR/IR Reconciliation</strong> limpia diferencias de timing entre mercadería y factura, e <strong>Intercompany Reconciliation</strong> asegura que las sociedades del grupo coincidan entre sí. Solo después tiene sentido preguntarle al proveedor externo si está de acuerdo con lo que queda.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">🔄</span><span class="title-en">GR/IR Reconciliation</span><span class="title-es">Interno</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Limpia diferencias de timing internas</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">🏢</span><span class="title-en">Intercompany Reconciliation</span><span class="title-es">Interno</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Alinea sociedades del mismo grupo</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">✅</span><span class="title-en">Supplier Balance Confirmation</span><span class="title-es">Externo</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Recién ahora se contacta al proveedor externo</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Annual Book Inventory</span>
+          <span class="sec-title-es">El inventario anual de libros</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Jennifer no le escribe a Jake sobre SBC aislado — es parte de algo más grande.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Jennifer le agradece a Jake por ayudar con el <strong>inventario anual de libros</strong> — la confirmación de saldo de proveedores es una de las tareas dentro de ese ejercicio más amplio de revisión contable de fin de año, no un pedido aislado de auditoría.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Creating a New Business Partner for a Reply Address</span>
+          <span class="sec-title-es">Creando un nuevo business partner para una dirección de respuesta</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Jake hace la pregunta correcta: ¿y si necesitamos otra dirección de respuesta?</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando se necesita <strong>otra dirección de respuesta</strong> distinta a la ya configurada, la respuesta es crear un <strong>nuevo business partner</strong> — con categoría <strong>Organization</strong> o <strong>Group</strong>, igual que exige la regla de T1, sección 7.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Business Partner Categories, Beyond Organization and Group</span>
+          <span class="sec-title-es">Categorías de business partner, más allá de Organization y Group</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">La regla de T1 excluye una categoría específica — y hay una razón conceptual para eso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un business partner también puede tener categoría <strong>Person</strong> — pero esa categoría queda <strong>excluida</strong> como dirección de respuesta válida para la confirmación de saldo, porque la carta representa a la empresa como entidad, no a un individuo puntual.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip">
+          <span class="chip-icon">🏢</span>
+          <span class="chip-title">Organization</span>
+          <span class="chip-en">Organización</span>
+          <span class="chip-desc">Válida como dirección de respuesta.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">👥</span>
+          <span class="chip-title">Group</span>
+          <span class="chip-en">Grupo</span>
+          <span class="chip-desc">Válida como dirección de respuesta.</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">🚫</span>
+          <span class="chip-title">Person</span>
+          <span class="chip-en">Persona</span>
+          <span class="chip-desc">No válida para este propósito.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What the Monitoring App Actually Shows</span>
+          <span class="sec-title-es">Qué muestra realmente la app de monitoreo</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">T1 la nombró como "la app para monitorear" — acá se ve qué hay adentro.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Manage Balance Confirmations for Suppliers</strong> permite revisar, por cada carta generada, el proveedor destinatario, el monto informado, y si la respuesta ya llegó o sigue pendiente — el mismo tipo de seguimiento que Jake necesita antes de la fecha de respuesta límite.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Jennifer Asked Jake to Check the Reply Address</span>
+          <span class="sec-title-es">Por qué Jennifer le pidió a Jake revisar la dirección de respuesta</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">No es un detalle menor — si la carta se envía por correo postal, una dirección vieja significa cartas perdidas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La empresa se mudó al <strong>campus corporativo</strong> el año anterior. Como las cartas de confirmación se envían <strong>por correo postal</strong>, una dirección de respuesta desactualizada en el business partner haría que las respuestas de los proveedores nunca lleguen — por eso Jennifer le pide a Jake que la revise antes de programar el job.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Jake's Exact Dates and Business Partner</span>
+          <span class="sec-title-es">Las fechas y el business partner exactos de Jake</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 explicó qué es cada fecha — este es el caso real que Jennifer le mandó por mail.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El mail de Jennifer especifica valores concretos para las tres fechas de T1, sección 8, más el business partner exacto a usar como dirección de respuesta.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Parámetro</th><th>Valor</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">Reconciliation Date</span></td><td>31 de octubre de 2022</td></tr>
+          <tr><td><span class="mod-name">Issue Date</span></td><td>No más tarde del 5 de noviembre de 2022</td></tr>
+          <tr><td><span class="mod-name">Reply Date</span></td><td>30 de noviembre de 2022</td></tr>
+          <tr><td><span class="mod-name">Business Partner for Reply</span></td><td>1000048</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why Balance Confirmation Actually Helps Audit</span>
+          <span class="sec-title-es">Por qué la confirmación de saldo realmente ayuda a auditoría</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 explicó el cambio como una cuestión de tasa de respuesta — hay una razón más de fondo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Una <strong>Balance Request</strong> sin respuesta no le dice nada a auditoría — es simplemente evidencia ausente. Una <strong>Balance Confirmation</strong> sin respuesta también es un vacío, pero al exigir respuesta siempre (esté o no de acuerdo el proveedor), el diseño del proceso deja más rastro entre "no contestó" y "contestó y confirmó" — información más útil para el expediente de auditoría.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Why the Letters Go Out by Post</span>
+          <span class="sec-title-es">Por qué las cartas se envían por correo postal</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 mencionó el canal de pasada — acá se conecta directamente con por qué la dirección tenía que revisarse.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Jennifer confirma explícitamente que este año las cartas <strong>"se enviarán por correo postal"</strong> (<em>we'll send them by post</em>). Ese detalle no es anecdótico: es exactamente la razón por la que la <strong>dirección de respuesta</strong> (sección 6) necesita ser una dirección física válida y actualizada, no solo un dato de sistema.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Cloud vs. On-Premise Reply Address, Side by Side</span>
+          <span class="sec-title-es">Dirección de respuesta en Cloud vs. on-premise, en detalle</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 mencionó ambos casos por separado — acá se ve por qué son enfoques distintos, no solo dos pasos distintos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      En <strong>Public Cloud</strong>, la dirección de respuesta se resuelve vía maestro de business partner — un dato de negocio, editable sin tocar customizing. En <strong>on-premise</strong>, se resuelve en <strong>customizing</strong> — un dato de configuración de sistema, con otro ciclo de cambio y otro dueño típico (el equipo de configuración, no el usuario de negocio).
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4>Public Cloud <span class="en-tag">Business Partner</span></h4>
+        <p>Dato de negocio. Lo puede mantener un key user como Jake, sin pasar por un consultor de configuración.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4>On-Premise <span class="en-tag">Customizing</span></h4>
+        <p>Dato de configuración. Requiere acceso y ciclo de cambio de customizing, típicamente fuera del alcance de un key user de negocio.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos introducidos en este archivo (Tipo 2 — Profundización). No repite los ya vistos en el glosario de Tipo 1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Annual Book Inventory</div><div class="term-es">Inventario Anual de Libros</div><div class="term-def">Ejercicio anual de revisión contable dentro del cual se ejecuta, entre otras, la confirmación de saldo de proveedores.</div></div>
+      <div class="gcard"><div class="term-en">Postal Address</div><div class="term-es">Dirección Postal</div><div class="term-def">Dirección física a la que se envían las cartas de confirmación, y a la que el proveedor responde por correo.</div></div>
+      <div class="gcard"><div class="term-en">Response Rate</div><div class="term-es">Tasa de Respuesta</div><div class="term-def">Proporción de proveedores que efectivamente responden a la carta enviada.</div></div>
+      <div class="gcard"><div class="term-en">Person (BP Category)</div><div class="term-es">Persona (Categoría BP)</div><div class="term-def">Categoría de business partner que representa a un individuo; no válida como dirección de respuesta en SBC.</div></div>
+      <div class="gcard"><div class="term-en">Vendor Master Record</div><div class="term-es">Registro Maestro de Proveedor</div><div class="term-def">Datos maestros que identifican a un proveedor y sostienen sus transacciones en AP.</div></div>
+      <div class="gcard"><div class="term-en">Confirmation Status</div><div class="term-es">Estado de Confirmación</div><div class="term-def">Indicador, visible en la app de monitoreo, de si la respuesta de un proveedor ya llegó o sigue pendiente.</div></div>
+      <div class="gcard"><div class="term-en">Reconciliation Discrepancy</div><div class="term-es">Discrepancia de Reconciliación</div><div class="term-def">Diferencia entre el saldo que la empresa tiene registrado y el que confirma o informa el proveedor.</div></div>
+      <div class="gcard"><div class="term-en">Job Run Log</div><div class="term-es">Log de Ejecución del Job</div><div class="term-def">Registro de los resultados de una corrida de job, incluidas las cartas generadas y su estado.</div></div>
+      <div class="gcard"><div class="term-en">Customizing</div><div class="term-es">Personalización de Sistema</div><div class="term-def">Configuración a nivel sistema, distinta de datos de negocio, típicamente mantenida por consultores.</div></div>
+      <div class="gcard"><div class="term-en">Address Validation</div><div class="term-es">Validación de Dirección</div><div class="term-def">Verificación de que la dirección postal de respuesta esté actualizada y sea correcta.</div></div>
+      <div class="gcard"><div class="term-en">Audit Evidence</div><div class="term-es">Evidencia de Auditoría</div><div class="term-def">Documentación (como una respuesta confirmada) que respalda la correctitud de un saldo ante auditoría.</div></div>
+      <div class="gcard"><div class="term-en">Non-Response Handling</div><div class="term-es">Manejo de No-Respuesta</div><div class="term-def">Criterio que define qué se asume o qué acción se toma cuando un proveedor no contesta la carta.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Balance Confirmations for Suppliers · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

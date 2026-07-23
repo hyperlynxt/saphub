@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Supplier Master Data Maintenance — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A1F1F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:680px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,133,133,0.14); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px; max-width:680px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .kind-tag{ display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase; padding:3px 9px; border-radius:20px; margin-left:2px; }
+  .kind-adjacent{ background:rgba(26,107,153,0.1); color:#1A6B99; }
+  .kind-depth{ background:var(--t2-pale); color:var(--t2-dark); }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; margin-bottom:4px; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  @media (max-width:760px){ .cmp-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Three Data Levels</a>
+  <a href="#s2">Number Ranges</a>
+  <a href="#s3">Full Block vs 4-Eyes Block</a>
+  <a href="#s4">One-Time Suppliers</a>
+  <a href="#s5">Archiving &amp; Deletion Flags</a>
+  <a href="#s6">What Copying Really Copies</a>
+  <a href="#s7">How Similarity Is Calculated</a>
+  <a href="#s8">Beyond Recon. Account &amp; Terms</a>
+  <a href="#s9">Which Fields Get Flagged</a>
+  <a href="#s10">Selecting Zones in Mass Change</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Business Partner</span>
+      <span class="pill pill-secondary">Procurement</span>
+    </div>
+    <h1><span class="accent">Supplier</span> Master Data Maintenance</h1>
+    <h2>Datos Maestros de Proveedores — Profundización</h2>
+    <p class="desc">Cinco temas adyacentes que el Tipo 1 no cubrió — los tres niveles de datos, la numeración de business partners, el bloqueo total vs. el de cuatro ojos, proveedores ocasionales y archivado — más el mecanismo interno de lo ya visto: qué se copia realmente, cómo se calcula la similitud, qué más varía por sociedad, qué campos se marcan como sensibles, y cómo se seleccionan zonas en el cambio masivo.</p>
+    <div class="hlbox">Resumen Visual — <b>Supplier Master Data Maintenance</b>, Tipo 2 (Profundización). 10 secciones — 5 de temas adyacentes, 5 de mayor profundidad sobre lo visto en T1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — ADYACENTE -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Three Data Levels of a Supplier Master Record</span>
+          <span class="sec-title-es">Los tres niveles de datos de un maestro de proveedor</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">T1 mencionó estos tres tipos de datos al hablar de la app de cambios — acá se ven como estructura completa.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Todo maestro de proveedor se organiza en <strong>tres niveles</strong>: datos generales (compartidos entre todas las sociedades), datos de sociedad (cuenta de enlace, condiciones de pago), y datos de organización de compras (condiciones de negociación, moneda de compra). Entender esta estructura es la base para todo lo demás en este curso — desde qué se copia hasta qué se audita.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead><tr><th>Nivel</th><th>Ejemplo de datos</th><th>Compartido entre sociedades</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mod-name">General Data</span></td><td>Nombre, dirección, business partner category</td><td><span class="badge badge-accent">Sí</span></td></tr>
+          <tr><td><span class="mod-name">Company Code Data</span></td><td>Cuenta de enlace, condiciones de pago</td><td><span class="badge badge-neutral">No — propio de cada sociedad</span></td></tr>
+          <tr><td><span class="mod-name">Purchasing Organization Data</span></td><td>Condiciones de negociación, moneda de compra</td><td><span class="badge badge-neutral">No — propio de cada organización</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — ADYACENTE -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Business Partner Number Ranges</span>
+          <span class="sec-title-es">Rangos de numeración de business partner</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Cada proveedor nuevo necesita un número — y ese número puede asignarse de dos formas distintas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando se crea un business partner, su número puede asignarse por <strong>numeración interna</strong> (el sistema lo genera automáticamente) o por <strong>numeración externa</strong> (el usuario lo ingresa, dentro de un rango permitido) — una decisión de diseño que afecta tanto a proveedores nuevos como a los creados por copia.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — ADYACENTE -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Full Block vs. the 4-Eyes Payment Block</span>
+          <span class="sec-title-es">Bloqueo total vs. el bloqueo de cuatro ojos</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El bloqueo de T1 es parcial y temporal — existe otro tipo de bloqueo, más definitivo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El bloqueo por 4-eyes (T1, sección 9) es <strong>parcial</strong>: solo afecta pagos, y es temporal hasta la validación. Existe también un <strong>bloqueo total</strong> del proveedor, que impide cualquier transacción nueva — usado, por ejemplo, cuando se decide dejar de operar con un proveedor por completo, no solo mientras se valida un cambio puntual.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card accent">
+        <h4>4-Eyes Payment Block</h4>
+        <p>Parcial y temporal. Bloquea solo pagos, hasta que otro usuario valide el cambio sensible.</p>
+      </div>
+      <div class="cmp-card neutral">
+        <h4>Full Supplier Block</h4>
+        <p>Total y sostenido. Bloquea cualquier transacción nueva, sin fecha de resolución automática.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — ADYACENTE -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">One-Time Suppliers</span>
+          <span class="sec-title-es">Proveedores ocasionales</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">No todos los proveedores necesitan un maestro completo — algunos se usan una sola vez.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para proveedores que se usan <strong>una sola vez</strong>, existe la figura de <strong>one-time supplier</strong>: un maestro genérico donde los datos específicos (nombre, dirección) se ingresan directamente en el documento de la transacción, en vez de crear un registro maestro completo — evita saturar la base de datos con proveedores que nunca se volverán a usar.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — ADYACENTE -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Archiving and the Deletion Flag</span>
+          <span class="sec-title-es">Archivado y la marca de eliminación</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Un proveedor viejo no se borra de un día para el otro — primero se marca.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando un proveedor deja de usarse, se le asigna una <strong>marca de eliminación</strong> (deletion flag) en lugar de borrarlo directamente — esto lo excluye de nuevas transacciones mientras se preserva el historial, hasta que un proceso de archivado posterior lo remueva definitivamente según las políticas de retención de datos.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — PROFUNDIDAD -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Copying Really Copies, by Data Level</span>
+          <span class="sec-title-es">Qué copia realmente la copia, por nivel de datos</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 dijo "todo se copia" — acá se ve qué significa "todo" según los tres niveles de la sección 1.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando se copia un proveedor (T1, sección 2), se copian los tres niveles completos — pero el <strong>General Data</strong> es justamente el que casi siempre necesita actualizarse (nombre, dirección), mientras que <strong>Company Code Data</strong> y <strong>Purchasing Organization Data</strong> suelen mantenerse si el nuevo proveedor opera en condiciones similares.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — PROFUNDIDAD -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How the Similarity Percentage Is Calculated</span>
+          <span class="sec-title-es">Cómo se calcula el porcentaje de similitud</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 mencionó el "índice de datos de dirección" — acá se ve qué compara ese índice.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El índice de datos de dirección compara elementos como <strong>calle, ciudad, código postal y país</strong> entre el nuevo registro y los existentes, usando coincidencia aproximada (no exacta) para tolerar pequeñas diferencias de tipeo — de ahí que el resultado sea un <strong>porcentaje de similitud</strong>, no un simple sí/no.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — PROFUNDIDAD -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Beyond the Reconciliation Account and Payment Terms</span>
+          <span class="sec-title-es">Más allá de la cuenta de enlace y las condiciones de pago</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 dio dos ejemplos de configuración por sociedad — hay más datos que también varían.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Además de la cuenta de enlace y las condiciones de pago (T1, sección 6), otros datos de sociedad que suelen configurarse por separado incluyen el <strong>grupo de tolerancia</strong>, los parámetros de <strong>dunning</strong> (gestión de reclamos), y la <strong>vía de pago</strong> preferida — cada sociedad puede necesitar una combinación distinta según sus propias políticas.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — PROFUNDIDAD -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Which Fields Typically Get Flagged as Sensitive</span>
+          <span class="sec-title-es">Qué campos suelen marcarse como sensibles</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 explicó el mecanismo — acá se ve qué tipo de dato lo dispara con más frecuencia.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los campos marcados como <strong>sensibles</strong> con más frecuencia son los que, si se modifican maliciosamente, permitirían <strong>desviar un pago</strong>: datos bancarios, dirección de pago, y en algunos casos las condiciones de pago mismas — de ahí que su cambio dispare el bloqueo de pagos hasta la validación (T1, sección 9).
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — PROFUNDIDAD -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Selecting Zones in the Mass Change App</span>
+          <span class="sec-title-es">Seleccionando zonas en la app de cambio masivo</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 dijo "seleccionar zonas y valores" — acá se ve qué es una zona en la práctica.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Una <strong>zona</strong>, en el contexto de la app de cambio masivo (T1, sección 10), es un grupo de campos relacionados dentro de uno de los tres niveles de datos (por ejemplo, todos los campos de condiciones de pago dentro de Company Code Data) — seleccionar la zona correcta evita tener que tocar campo por campo en cada uno de los cientos de proveedores afectados.
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos introducidos en este archivo (Tipo 2 — Profundización). No repite los ya vistos en el glosario de Tipo 1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">General Data</div><div class="term-es">Datos Generales</div><div class="term-def">Nivel de datos del maestro de proveedor compartido entre todas las sociedades.</div></div>
+      <div class="gcard"><div class="term-en">Internal Numbering</div><div class="term-es">Numeración Interna</div><div class="term-def">Asignación automática del número de business partner por parte del sistema.</div></div>
+      <div class="gcard"><div class="term-en">External Numbering</div><div class="term-es">Numeración Externa</div><div class="term-def">Asignación manual del número de business partner por parte del usuario, dentro de un rango permitido.</div></div>
+      <div class="gcard"><div class="term-en">Full Supplier Block</div><div class="term-es">Bloqueo Total de Proveedor</div><div class="term-def">Bloqueo sostenido que impide cualquier transacción nueva con el proveedor.</div></div>
+      <div class="gcard"><div class="term-en">One-Time Supplier</div><div class="term-es">Proveedor Ocasional</div><div class="term-def">Maestro genérico para proveedores usados una sola vez, con datos ingresados directamente en la transacción.</div></div>
+      <div class="gcard"><div class="term-en">Deletion Flag</div><div class="term-es">Marca de Eliminación</div><div class="term-def">Indicador que excluye a un proveedor de nuevas transacciones antes de su archivado definitivo.</div></div>
+      <div class="gcard"><div class="term-en">Fuzzy Matching</div><div class="term-es">Coincidencia Aproximada</div><div class="term-def">Técnica de comparación que tolera pequeñas diferencias entre registros al calcular similitud.</div></div>
+      <div class="gcard"><div class="term-en">Tolerance Group</div><div class="term-es">Grupo de Tolerancia</div><div class="term-def">Configuración de sociedad que define márgenes aceptables de diferencia en pagos y facturas.</div></div>
+      <div class="gcard"><div class="term-en">Dunning</div><div class="term-es">Gestión de Reclamos</div><div class="term-def">Parámetros de sociedad relacionados con el seguimiento de pagos y reclamos.</div></div>
+      <div class="gcard"><div class="term-en">Bank Data</div><div class="term-es">Datos Bancarios</div><div class="term-def">Información de cuenta bancaria del proveedor, frecuentemente marcada como campo sensible.</div></div>
+      <div class="gcard"><div class="term-en">Field Zone</div><div class="term-es">Zona de Campos</div><div class="term-def">Grupo de campos relacionados dentro de un nivel de datos, usado como unidad de selección en cambio masivo.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Supplier Master Data Maintenance · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

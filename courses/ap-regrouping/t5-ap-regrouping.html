@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · Accounts Payable Regrouping — Holístico/Ecosistema | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t5:#E0A56F;
+    --t5-dark:#A85F2B;
+    --t5-pale:rgba(224,165,111,0.14);
+    --t5-pale-border:rgba(224,165,111,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t5); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t5); border-bottom-color:var(--t5); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1D14 55%, #4A2E14 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t5); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,165,111,0.14); border-left:4px solid var(--t5); border-radius:0 8px 8px 0; padding:13px 18px; max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t5); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:52px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:18px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t5-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(168,95,43,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .tag-row{ display:flex; align-items:center; gap:8px; margin-top:4px; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .orbit-tag{ display:inline-flex; align-items:center; gap:5px; font-size:9.5px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(168,95,43,0.1); color:var(--t5-dark); vertical-align:middle; }
+  .kind-tag{ display:inline-flex; align-items:center; font-size:9px; line-height:1.4; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; color:white; vertical-align:middle; }
+  .kind-tag.kind-nest{ background:#5A6B8C; }
+  .kind-tag.flow{ background:var(--cat-sales); }
+
+  .theory-box{ background:var(--t5-pale); border-left:4px solid var(--t5-dark); border-radius:0 10px 10px 0; padding:15px 22px; margin-bottom:22px; font-size:0.93rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t5-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:30px 30px; box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:600px; }
+
+  .nest-stage{ display:flex; justify-content:center; padding:6px 0; }
+  .nest{ border:2px dashed; border-radius:26px; padding:36px 32px 26px; position:relative; display:inline-flex; flex-direction:column; align-items:center; }
+  .nest-label{ position:absolute; top:-11px; left:24px; background:white; padding:0 10px; font-size:10.5px; font-weight:700; letter-spacing:.3px; }
+  .nest-core{ border-radius:14px; padding:18px 30px; color:white; font-family:'Syne',sans-serif; font-weight:800; text-align:center; font-size:1rem; }
+  .nest-core .sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:0.72rem; opacity:.85; margin-top:5px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">Where Regrouping Lives</a>
+  <a href="#s2">Assets vs Liabilities Structure</a>
+  <a href="#s3">Statement Version Foundation</a>
+  <a href="#s4">From Master Data to Balance Sheet</a>
+  <a href="#s5">Regroup by Term Flow</a>
+  <a href="#s6">Debit Balance Flow</a>
+  <a href="#s7">Account Change Flow</a>
+  <a href="#s8">Toward Group Accounting</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+    </div>
+    <h1><span class="accent">Accounts</span> Payable Regrouping</h1>
+    <h2>Reagrupación de Cuentas por Pagar — Ecosistema</h2>
+    <p class="desc">Dónde vive la reagrupación dentro de capas más grandes de presentación de balance, y qué entra y sale hacia actividades puntuales de datos maestros, customizing y reporte de grupo.</p>
+    <div class="hlbox">Resumen Visual — <b>Accounts Payable Regrouping</b>, Tipo 5 (Holístico). 8 secciones — 4 de posicionamiento, 4 de flujo de entrada/salida con actividades puntuales.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — mamushka -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Where Regrouping Lives</span>
+          <span class="sec-title-es">Dónde vive la reagrupación</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Una cadena de contención simple, sin ramas que mostrar todavía.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Regrouping no es un ajuste aislado — vive <strong>adentro</strong> de los ajustes de presentación de balance, que a su vez viven adentro de Financial Accounting, que corre sobre el núcleo de SAP S/4HANA Finance.
+    </div>
+    <div class="visual-wrap">
+      <div class="nest-stage">
+        <div class="nest" style="border-color:#94A3B8;">
+          <span class="nest-label" style="color:#64748B;">SAP S/4HANA Finance</span>
+          <div class="nest" style="border-color:#B08A6F;">
+            <span class="nest-label" style="color:#8A6A4E;">Financial Accounting (FI)</span>
+            <div class="nest" style="border-color:#C2843F;">
+              <span class="nest-label" style="color:#A85F2B;">Balance Sheet Presentation Adjustments</span>
+              <div class="nest-core" style="background:var(--t5-dark);">
+                Regrouping/Reclassification
+                <div class="sub">Por plazo · saldo deudor · cuenta cambiada</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — bifurcación -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assets and Liabilities Structures, Side by Side</span>
+          <span class="sec-title-es">Estructuras de activos y pasivos, en paralelo</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Legal Reporting</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Receivables y payables no comparten las mismas categorías — son dos estructuras paralelas, no una jerarquía.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La versión de estado 1010 se abre en <strong>dos ramas paralelas</strong>: el lado de <strong>Receivables</strong> (solo dos categorías) y el lado de <strong>Payables</strong> (tres categorías) — ninguna contiene a la otra, y el regrouping de este curso vive específicamente en la rama de payables.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="65" x2="450" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="630" y2="90" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="270" y1="90" x2="270" y2="115" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="630" y1="90" x2="630" y2="115" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="350" y="10" width="200" height="55" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="42" text-anchor="middle" fill="white" class="box-label">Statement Version 1010</text>
+
+        <rect x="140" y="115" width="260" height="70" rx="10" fill="#1A4B8C"/>
+        <text x="270" y="141" text-anchor="middle" fill="white" class="box-label">Receivables</text>
+        <text x="270" y="158" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">&lt; 1 año · &gt; 1 año</text>
+        <text x="270" y="174" text-anchor="middle" fill="rgba(255,255,255,0.65)" class="box-sub" font-size="9">2 categorías</text>
+
+        <rect x="500" y="115" width="260" height="70" rx="10" fill="#A85F2B"/>
+        <text x="630" y="141" text-anchor="middle" fill="white" class="box-label">Payables</text>
+        <text x="630" y="158" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">&lt; 1 año · 1-5 años · &gt; 5 años</text>
+        <text x="630" y="174" text-anchor="middle" fill="rgba(255,255,255,0.65)" class="box-sub" font-size="9">3 categorías — foco de este curso</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — fundación + pilares -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Statement Version as Shared Foundation</span>
+          <span class="sec-title-es">La versión de estado como fundación compartida</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Fundación Cross-Escenario</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Los tres escenarios de este curso no son independientes — todos escriben sobre la misma estructura.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La <strong>versión de estado 1010</strong> no es exclusiva de un escenario — es la fundación sobre la que se apoyan los tres tipos de regrouping de este curso, y también la que eventualmente sostiene la presentación consolidada de grupo.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="50" width="180" height="115" rx="8" fill="#A85F2B"/>
+        <text x="150" y="100" text-anchor="middle" fill="white" class="box-label">Regroup by Term</text>
+        <text x="150" y="118" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">plazo remanente</text>
+
+        <rect x="260" y="50" width="180" height="115" rx="8" fill="#1A4B8C"/>
+        <text x="350" y="100" text-anchor="middle" fill="white" class="box-label">Debit Balance Reclass.</text>
+        <text x="350" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">saldo deudor</text>
+
+        <rect x="460" y="50" width="180" height="115" rx="8" fill="#1A6B99"/>
+        <text x="550" y="100" text-anchor="middle" fill="white" class="box-label">Rec. Account Change</text>
+        <text x="550" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">cambio de cuenta</text>
+
+        <rect x="660" y="50" width="180" height="115" rx="8" fill="#00A896"/>
+        <text x="750" y="100" text-anchor="middle" fill="white" class="box-label">Group Consolidation</text>
+        <text x="750" y="118" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">presentación de grupo</text>
+
+        <rect x="30" y="165" width="840" height="60" rx="8" fill="#5A6B8C"/>
+        <text x="450" y="190" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Financial Statement Version 1010</text>
+        <text x="450" y="208" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">la base que los cuatro comparten</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — stack de capas -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">From Vendor Master Data to the Balance Sheet</span>
+          <span class="sec-title-es">Del maestro de proveedor al balance</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Datos Maestros &amp; Legal Reporting</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Tres niveles apilados, cada uno traduciendo al siguiente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un solo campo del <strong>maestro de proveedor</strong> (su cuenta de enlace) determina, en cascada, a qué <strong>ítem del balance</strong> llega su saldo — el regrouping es lo que permite corregir esa cascada cuando la realidad (plazos, saldo deudor, cambio de cuenta) no coincide con la asignación original.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="450" y1="95" x2="450" y2="118" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a4)"/>
+        <line x1="450" y1="190" x2="450" y2="213" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#t5a4)"/>
+
+        <rect x="60" y="15" width="780" height="80" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="48" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Vendor Master Data</text>
+        <text x="450" y="68" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">una cuenta de enlace por proveedor</text>
+
+        <rect x="60" y="120" width="780" height="70" rx="10" fill="#1A6B99"/>
+        <text x="450" y="150" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Reconciliation Account Assignment</text>
+        <text x="450" y="168" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">asignación 1 a 1 a un ítem de balance</text>
+
+        <rect x="60" y="215" width="780" height="70" rx="10" fill="#A85F2B"/>
+        <text x="450" y="245" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Balance Sheet Item</text>
+        <text x="450" y="263" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">lo que ve el reporte legal — corregible vía regrouping</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — flujo -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds Regrouping by Term, What It Feeds</span>
+          <span class="sec-title-es">Qué alimenta la reagrupación por plazo, qué alimenta ella</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance &amp; Compliance</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">El insumo es un dato de negocio puntual — el plazo de pago acordado — no todo AP.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El insumo no es "todos los pasivos" — es específicamente el <strong>plazo de pago acordado</strong> con cada proveedor. La salida tampoco es un reporte genérico: es la presentación de <strong>liquidez</strong> que los externos usan para evaluar la empresa.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="240" y1="65" x2="330" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a5)"/>
+        <line x1="570" y1="65" x2="660" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a5)"/>
+        <rect x="20" y="35" width="220" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Vendor Payment Terms</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Datos maestros — AP</text>
+
+        <rect x="330" y="35" width="240" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Regroup by Remaining Term</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Accounts Payable</text>
+
+        <rect x="660" y="35" width="220" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">Balance Sheet by Liquidity</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">visión para externos</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra desde el maestro de proveedor</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale hacia el reporte externo</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — flujo -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds the Debit Balance Check, What It Feeds</span>
+          <span class="sec-title-es">Qué alimenta el chequeo de saldo deudor, qué alimenta él</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Finance</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">El insumo es el saldo real de la cuenta — no una decisión manual de alguien.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El chequeo de saldo deudor no depende de que alguien lo marque a mano: se dispara directamente del <strong>saldo abierto real</strong> del proveedor. La salida es puntual también: una línea específica de <strong>Other Receivables</strong>, no una reclasificación genérica del balance.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="240" y1="65" x2="330" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6)"/>
+        <line x1="570" y1="65" x2="660" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a6)"/>
+        <rect x="20" y="35" width="220" height="60" rx="10" fill="#7E4FBF"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Vendor Open Balance</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Accounts Payable</text>
+
+        <rect x="330" y="35" width="240" height="60" rx="10" fill="#A85F2B"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Debit Balance Check</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">automático, por saldo</text>
+
+        <rect x="660" y="35" width="220" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">Other Receivables Line</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Balance Sheet</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra desde el saldo real</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale hacia una línea puntual</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — flujo -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">What Feeds the Reconciliation Account Change Scenario</span>
+          <span class="sec-title-es">Qué alimenta el escenario de cambio de cuenta de enlace</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Datos Maestros &amp; Customizing</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Un evento de datos maestros y una definición de customizing se combinan para generar el ajuste.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Este escenario combina dos insumos de naturaleza distinta: el <strong>cambio de cuenta registrado en el maestro</strong> del proveedor, y las <strong>cuentas vieja/nueva/de ajuste definidas en customizing</strong> (T4). Juntos generan las contabilizaciones de traspaso vistas en T1.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="150" y1="75" x2="150" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="75" x2="450" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="150" y1="100" x2="450" y2="100" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="100" x2="450" y2="122" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a7)"/>
+
+        <rect x="40" y="15" width="220" height="60" rx="10" fill="#5A6B8C"/>
+        <text x="150" y="39" text-anchor="middle" fill="white" class="box-label">Vendor Master Change</text>
+        <text x="150" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Datos maestros</text>
+
+        <rect x="340" y="15" width="220" height="60" rx="10" fill="#6B4C8F"/>
+        <text x="450" y="39" text-anchor="middle" fill="white" class="box-label">Old/New/Adjustment Accounts</text>
+        <text x="450" y="56" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">Customizing (T4)</text>
+
+        <rect x="310" y="125" width="280" height="62" rx="10" fill="#A85F2B"/>
+        <text x="450" y="152" text-anchor="middle" fill="white" class="box-label">Transfer &amp; Adjustment Postings</text>
+        <text x="450" y="169" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">General Ledger Accounting</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — flujo -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Toward Group Accounting's Report</span>
+          <span class="sec-title-es">Hacia el reporte de Group Accounting</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Corporate Finance</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">El balance ya reagrupado vuelve al mismo departamento que originó la regla.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El balance ya reagrupado por Jake alimenta directamente el <strong>reporte de liquidez</strong> que <strong>Group Accounting</strong> presenta a nivel de grupo — cerrando el círculo que empezó en la capacitación donde Jake escuchó por primera vez esta regla (T2, sección 1).
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="t5a8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <line x1="240" y1="65" x2="330" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+        <line x1="570" y1="65" x2="660" y2="65" stroke="#94A3B8" stroke-width="2" marker-end="url(#t5a8)"/>
+        <rect x="20" y="35" width="220" height="60" rx="10" fill="#A85F2B"/>
+        <text x="130" y="59" text-anchor="middle" fill="white" class="box-label">Regrouped Balance Sheet</text>
+        <text x="130" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Bike GmbH (DE01)</text>
+
+        <rect x="330" y="35" width="240" height="60" rx="10" fill="#1A4B8C"/>
+        <text x="450" y="59" text-anchor="middle" fill="white" class="box-label">Group Accounting Report</text>
+        <text x="450" y="76" text-anchor="middle" fill="rgba(255,255,255,0.8)" class="box-sub">liquidez de grupo</text>
+
+        <rect x="660" y="35" width="220" height="60" rx="10" fill="#5A6B8C"/>
+        <text x="770" y="59" text-anchor="middle" fill="white" class="box-label">External Stakeholders</text>
+        <text x="770" y="76" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">evaluación de liquidez</text>
+
+        <text x="130" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">entra desde AP</text>
+        <text x="770" y="130" text-anchor="middle" fill="#64748B" font-size="10.5">sale hacia quien evalúa la empresa</text>
+      </svg>
+    </div>
+  </section>
+
+</main>
+
+<footer>T5 · Holístico/Ecosistema — Accounts Payable Regrouping · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

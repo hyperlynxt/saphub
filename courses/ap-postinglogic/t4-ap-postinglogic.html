@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · AP Posting Logic — Configurador GUI | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#A78BC9;--t1-dark:#6B4C8F;--t1-pale:rgba(167,139,201,0.12);--t1-pale-border:rgba(167,139,201,0.38);--navy-950:#0A0F1C;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#160C24 55%,#200E32 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(167,139,201,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;}
+  .area-tag{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);color:var(--t1-dark);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;white-space:nowrap;align-self:center;}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 26px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .spro-tree{background:#FAFAFA;border:1px solid #D0D4DC;border-radius:8px;padding:12px 16px;margin-bottom:14px;}
+  .spro-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--t1-dark);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+  .spro-node{display:flex;align-items:center;gap:6px;padding:2px 0;color:var(--body);}
+  .spro-node .sn-text{font-size:11.5px;}
+  .spro-node.active .sn-text{font-weight:700;color:var(--t1-dark);background:rgba(167,139,201,0.15);border-radius:4px;padding:1px 6px;}
+  .i1{padding-left:18px;}.i2{padding-left:36px;}.i3{padding-left:54px;}.i4{padding-left:72px;}
+  .sapgui{border:2px solid #A8B0BC;border-radius:4px;overflow:hidden;box-shadow:0 4px 14px rgba(10,15,28,0.1);}
+  .gui-bar{background:linear-gradient(180deg,#3A5A80,#2A4060);padding:7px 14px;display:flex;align-items:center;gap:12px;}
+  .tcode{font-family:'JetBrains Mono',monospace;font-size:11px;color:white;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:3px;padding:3px 8px;flex-shrink:0;}
+  .gui-title{font-size:12.5px;font-weight:600;color:white;}
+  .gui-tools{background:#C8D0DA;padding:5px 10px;display:flex;gap:6px;border-bottom:1px solid #A8B0BC;}
+  .gbtn{background:#D8E0E8;border:1px solid #9AA0AA;border-radius:2px;padding:3px 8px;font-size:10.5px;color:#2A2A2A;}
+  .gui-body{background:white;padding:14px 16px;}
+  .gui-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .gui-table th{background:#C8D0DA;color:#1A1A1A;padding:6px 10px;text-align:left;border:1px solid #A8B0BC;font-weight:700;font-size:11px;}
+  .gui-table td{padding:5px 10px;border:1px solid #D4D8DC;color:#2A2A2A;vertical-align:middle;}
+  .gui-table tr:nth-child(even) td{background:#F5F7FA;}
+  .gui-table .hi td{background:#CCE0F5;border-left:2px solid #0070C8;}
+  .gui-status{background:#C8D0DA;border-top:1px solid #A8B0BC;padding:4px 12px;font-size:10.5px;color:#444;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR / GUI</span>
+  <a href="#s1">Company Code — AP Settings</a>
+  <a href="#s2">Document Types KR / KG</a>
+  <a href="#s3">Number Ranges</a>
+  <a href="#s4">Payment Terms</a>
+  <a href="#s5">Reconciliation Account</a>
+  <a href="#s6">Exchange Rate Configuration</a>
+  <a href="#s7">Tax Codes</a>
+  <a href="#s8">Field Status Variant</a>
+  <a href="#s9">Posting Periods</a>
+  <a href="#s10">Authorization for Invoice Posting</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+    </div>
+    <h1>AP <span class="accent">Posting Logic</span></h1>
+    <h2>Tangibilización — Configurador SAP GUI</h2>
+    <p class="desc">Las 10 configuraciones que habilitan el ingreso correcto de facturas y credit memos de proveedor: sociedad, tipos de documento, rangos de numeración, condiciones de pago, cuenta de reconciliación, tipos de cambio, impuestos, status de campos, períodos y autorizaciones.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">&#128296;</span>
+      <b>Vos, en el rol de Configurador</b> · SAP Consultant<br>
+      <span style="font-size:12.5px;opacity:0.85;">Estas configuraciones determinan qué campos son obligatorios al ingresar una factura, qué tipos de cambio usa SAP, qué impuestos aplican, y quién puede contabilizar.</span>
+    </div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Company Code Settings for AP</span><span class="sec-title-es">Configuración de sociedad para AP</span></div><div class="sec-desc">Los parámetros de la sociedad DE01 que afectan el comportamiento del ingreso de facturas de AP.</div></div></div>
+  <div class="theory-box"><strong>La sociedad es el marco de todo el proceso de AP:</strong> todos los documentos de AP (facturas, credit memos) pertenecen a una sociedad. La sociedad define la moneda local, el plan de cuentas y el ejercicio fiscal. Al ingresar una factura, el contador selecciona la Company Code y el sistema aplica automáticamente todos los parámetros configurados para esa sociedad.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">&#128205; SPRO Path</div>
+      <div class="spro-node"><span>&#128193;</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>&#128193;</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2 active"><span>&#128311;</span><span class="sn-text">Define Company Code Global Settings</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">&#8212;</span><span class="gui-title">Company Code DE01 — Bike GmbH</span></div>
+      <div class="gui-tools"><button class="gbtn">&#9999;&#65039; Edit</button><button class="gbtn">&#128190; Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Parameter</th><th>Value</th><th>Impact on AP Invoice Entry</th></tr></thead>
+          <tbody>
+            <tr><td>Company Code</td><td>DE01</td><td>Context for all AP postings</td></tr>
+            <tr class="hi"><td><strong>Local Currency</strong></td><td><strong>EUR</strong></td><td>Default currency in invoice entry · base for FX translation</td></tr>
+            <tr><td>Chart of Accounts</td><td>BIKE</td><td>Determines valid GL accounts for expense lines</td></tr>
+            <tr><td>Fiscal Year Variant</td><td>K4 (Calendar Year)</td><td>Period control for invoice posting dates</td></tr>
+            <tr><td>Field Status Variant</td><td>BIKE</td><td>Controls which fields are required in invoice entry</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">DE01 Bike GmbH · EUR · Chart BIKE · FY K4</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Document Types KR and KG for AP Transactions</span><span class="sec-title-es">Tipos de documento KR y KG para transacciones de AP</span></div><div class="sec-desc">Los tipos de documento que controlan el comportamiento de las facturas (KR) y las notas de crédito (KG) de proveedor.</div></div></div>
+  <div class="theory-box"><strong>El tipo de documento determina el comportamiento de cada transacción:</strong> KR (Kreditor Rechnung = factura de proveedor) y KG (Kreditor Gutschrift = nota de crédito de proveedor) son los dos tipos de documento que Jennifer usa a diario. El tipo de documento controla qué cuentas pueden incluirse en el asiento, el rango de numeración y si el asiento puede revertirse.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">&#128205; SPRO Path</div>
+      <div class="spro-node"><span>&#128193;</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>&#128193;</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span>&#128193;</span><span class="sn-text">Document</span></div>
+      <div class="spro-node i3 active"><span>&#128311;</span><span class="sn-text">Define Document Types for Entry View</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">&#8212;</span><span class="gui-title">Document Types — KR and KG</span></div>
+      <div class="gui-tools"><button class="gbtn">&#9999;&#65039; Edit</button><button class="gbtn">&#128203; Detail</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>DocType</th><th>Description</th><th>Account Types</th><th>Reversible</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>KR</strong></td><td>Vendor Invoice (Kreditor Rechnung)</td><td>K, S, D, A, M</td><td>Yes</td><td>Invoice + Subsequent Debit</td></tr>
+            <tr class="hi"><td><strong>KG</strong></td><td>Vendor Credit Memo (Kreditor Gutschrift)</td><td>K, S</td><td>Yes</td><td>Credit Memo + Subsequent Credit</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">K=Vendor · S=GL · D=Customer · A=Asset · M=Material · All AP invoices use KR or KG</div>
+      </div>
+      <div class="gui-status">KR = Vendor Invoice (all 4 transaction types depending on entry) · KG = Credit documents</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Number Ranges for AP Documents</span><span class="sec-title-es">Rangos de numeración para documentos de AP</span></div><div class="sec-desc">Los rangos que controlan la numeración automática de facturas y credit memos de proveedor.</div></div></div>
+  <div class="theory-box"><strong>SAP asigna automáticamente números de documento según el rango configurado:</strong> al hacer click en Post, SAP asigna el siguiente número disponible del rango correspondiente. Las facturas KR y los credit memos KG tienen rangos distintos. Esto es lo que generó los números 1900000031 (KR) y 1700000018 (KG) en el ejemplo de Jennifer.</div>
+  <div class="visual-wrap">
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">&#8212;</span><span class="gui-title">Number Ranges — Company Code DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">&#9999;&#65039; Intervals</button><button class="gbtn">&#128190; Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Range</th><th>From Number</th><th>To Number</th><th>Current No.</th><th>Document Types</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>19</strong></td><td>1900000000</td><td>1999999999</td><td>1900000031</td><td>KR — Vendor Invoices + Subsequent Debit</td></tr>
+            <tr class="hi"><td><strong>17</strong></td><td>1700000000</td><td>1799999999</td><td>1700000018</td><td>KG — Vendor Credit Memos + Subsequent Credit</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Range 19 for KR · Range 17 for KG · both internal (auto-assigned)</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Payment Terms Configuration</span><span class="sec-title-es">Configuración de condiciones de pago</span></div><div class="sec-desc">Las condiciones de pago que determinan cuándo vencen las facturas de proveedor — dato que SAP toma automáticamente del Supplier Master.</div></div></div>
+  <div class="theory-box"><strong>Las Payment Terms definen la fecha de vencimiento automática de cada factura:</strong> cuando Jennifer contabiliza la factura de Tireless Tires, el vencimiento (Due Date = 21.08.2025) se calcula automáticamente a partir de la Invoice Date y las Payment Terms configuradas en el Supplier Master (NT30 = 30 días neto). El configurador define los codes de Payment Terms disponibles.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">&#128205; SPRO Path</div>
+      <div class="spro-node"><span>&#128193;</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>&#128193;</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span>&#128193;</span><span class="sn-text">Business Transactions</span></div>
+      <div class="spro-node i3 active"><span>&#128311;</span><span class="sn-text">Maintain Terms of Payment</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">&#8212;</span><span class="gui-title">Payment Terms — Bike Company</span></div>
+      <div class="gui-tools"><button class="gbtn">&#9999;&#65039; Edit</button><button class="gbtn">&#128190; Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Code</th><th>Description</th><th>Net Days</th><th>Disc. Days</th><th>Disc. %</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>NT30</strong></td><td>Net 30 days</td><td>30</td><td>&#8212;</td><td>0%</td></tr>
+            <tr><td>NT45</td><td>Net 45 days</td><td>45</td><td>&#8212;</td><td>0%</td></tr>
+            <tr><td>D210</td><td>2% 10 days, net 30</td><td>30</td><td>10</td><td>2.000%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">NT30 assigned to Tireless Tires GmbH in Supplier Master · Due Date = Invoice Date + 30 days</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reconciliation Account Assignment</span><span class="sec-title-es">Asignación de la cuenta de reconciliación</span></div><div class="sec-desc">La cuenta del GL que recibe automáticamente todos los posteos del subledger de AP.</div></div></div>
+  <div class="theory-box"><strong>La cuenta de reconciliación conecta el subledger de AP con el GL:</strong> cada vez que Jennifer contabiliza una factura, SAP actualiza automáticamente la cuenta de reconciliación en el GL (ej. 191100 Accounts Payable). El configurador asigna esta cuenta en el Supplier Master (o en el grupo de cuentas del proveedor). No se puede contabilizar directamente en esta cuenta — solo a través del subledger de AP.</div>
+  <div class="visual-wrap">
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">FK02</span><span class="gui-title">Change Vendor — Tireless Tires GmbH (100023) · DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">Company Code Data</button><button class="gbtn">Account Management</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Field</th><th>Value</th><th>Impact</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>Reconciliation Account</strong></td><td><strong>191100 — Accounts Payable</strong></td><td>Every KR/KG posting updates this GL account automatically</td></tr>
+            <tr><td>Payment Terms</td><td>NT30</td><td>Auto-calculated due date on invoice</td></tr>
+            <tr><td>Payment Method</td><td>T (Transfer)</td><td>Bank transfer as payment method for this supplier</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Recon. Account 191100 · All invoices for Tireless Tires update this GL account</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Exchange Rate Configuration</span><span class="sec-title-es">Configuración del tipo de cambio</span></div><div class="sec-desc">Dónde y cómo el configurador mantiene los tipos de cambio que SAP usa para convertir facturas en moneda extranjera.</div></div></div>
+  <div class="theory-box"><strong>Los tipos de cambio se mantienen manualmente o via feed automático en OB08:</strong> cuando Jennifer ingresa la factura en USD, SAP busca automáticamente el tipo de cambio USD/EUR en la tabla de tipos de cambio. El configurador (o el equipo de Treasury) mantiene estos tipos actualizados. Si no hay tipo de cambio para la fecha, SAP usa el más reciente disponible o muestra un error.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">&#128205; T-code: OB08</div>
+      <div class="spro-node"><span>&#128193;</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span>&#128193;</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2 active"><span>&#128311;</span><span class="sn-text">Enter Exchange Rates (OB08)</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">OB08</span><span class="gui-title">Maintain Exchange Rates</span></div>
+      <div class="gui-tools"><button class="gbtn">&#9999;&#65039; New Entries</button><button class="gbtn">&#128190; Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Exchange Rate Type</th><th>From Currency</th><th>To Currency</th><th>Valid From</th><th>Rate</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>M (Standard)</td><td>USD</td><td>EUR</td><td>22.07.2025</td><td><strong>0.9200</strong></td></tr>
+            <tr><td>M (Standard)</td><td>AUD</td><td>EUR</td><td>22.07.2025</td><td>0.6100</td></tr>
+            <tr><td>M (Standard)</td><td>GBP</td><td>EUR</td><td>22.07.2025</td><td>1.1700</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">USD rate 0.9200 on 22.07.2025 used for Jennifer's USD 5.000 invoice = EUR 4.600</div>
+      </div>
+      <div class="gui-status">Exchange Rate Type M · Valid from 22.07.2025 · Updated by Treasury team</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Tax Code Configuration for AP Invoices</span><span class="sec-title-es">Configuración de códigos de impuesto para AP</span></div><div class="sec-desc">Los tax codes que determinan el porcentaje de IVA/impuesto aplicado y las cuentas de impuesto usadas.</div></div></div>
+  <div class="theory-box"><strong>El Tax Code determina el porcentaje de impuesto y la cuenta GL del IVA:</strong> cuando Jennifer ingresa una factura con Tax Code V2 (19%), SAP calcula automáticamente el importe de impuesto y lo registra en la cuenta de Input Tax (175000). El configurador define qué tax codes están disponibles, qué porcentaje corresponde a cada uno y en qué cuenta GL se registra el impuesto.</div>
+  <div class="visual-wrap">
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">&#8212;</span><span class="gui-title">Tax Code V2 — Input Tax 19% · DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">&#9999;&#65039; Edit</button><button class="gbtn">&#128190; Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Tax Code</td><td>V2</td></tr>
+            <tr class="hi"><td><strong>Tax Rate</strong></td><td><strong>19.000% (German VAT)</strong></td></tr>
+            <tr class="hi"><td><strong>Account for Tax</strong></td><td><strong>175000 — Input Tax (recoverable)</strong></td></tr>
+            <tr><td>Tax Type</td><td>V (Input Tax)</td></tr>
+            <tr><td>Check indicator</td><td>Calculation check on posting</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Invoice EUR 8.800 net + V2 = EUR 1.672 tax → Total EUR 10.472 · Tax goes to account 175000</div>
+      </div>
+      <div class="gui-status">V2 = 19% Input VAT · Germany · Account 175000</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Field Status Variant — Required Fields for AP Entry</span><span class="sec-title-es">Variante de status de campo para AP</span></div><div class="sec-desc">Qué campos son obligatorios, opcionales o suprimidos al ingresar una factura de proveedor.</div></div></div>
+  <div class="theory-box"><strong>El Field Status Variant define qué campos debe completar Jennifer al ingresar una factura:</strong> el configurador define, para cada cuenta GL (como la cuenta de gastos 516000), si el campo Cost Center es obligatorio, opcional o suprimido. Si el costo center es Required y Jennifer lo deja vacío, SAP no permitirá publicar la factura. Esta es la configuración que determina los "must fields" del proceso de ingreso.</div>
+  <div class="visual-wrap">
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">&#8212;</span><span class="gui-title">Field Status Variant BIKE — GL Account 516000</span></div>
+      <div class="gui-tools"><button class="gbtn">&#9999;&#65039; Edit</button><button class="gbtn">&#128190; Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Field Group</th><th>Field</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>General Data</td><td>Invoice Date</td><td><strong>Required</strong></td></tr>
+            <tr><td>General Data</td><td>Reference</td><td><strong>Required</strong></td></tr>
+            <tr class="hi"><td>Account Assignment</td><td><strong>Cost Center</strong></td><td><strong>Required</strong></td></tr>
+            <tr><td>Account Assignment</td><td>WBS Element</td><td>Optional</td></tr>
+            <tr><td>Tax</td><td>Tax Code</td><td><strong>Required</strong></td></tr>
+            <tr><td>Payment</td><td>Payment Terms</td><td>Optional (auto from master)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Field Status Variant BIKE · GL 516000 · Cost Center Required · Tax Code Required</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Posting Periods for AP Invoice Dates</span><span class="sec-title-es">Períodos de contabilización para facturas AP</span></div><div class="sec-desc">El control de períodos abiertos que determina en qué fechas se pueden contabilizar facturas.</div></div></div>
+  <div class="theory-box"><strong>El período de contabilización debe estar abierto para postear facturas:</strong> cuando Jennifer postea una factura con Posting Date 22.07.2025, SAP verifica que el período 07/2025 esté abierto para el tipo de cuenta K (Vendor). Si el período está cerrado (por ej. período de julio ya cerrado en agosto), el posteo fallará. El configurador gestiona qué períodos están abiertos con la transacción OB52.</div>
+  <div class="visual-wrap">
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">OB52</span><span class="gui-title">Open and Close Posting Periods — DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">&#9999;&#65039; Edit</button><button class="gbtn">&#128190; Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Var.</th><th>Acct Type</th><th>From Per.</th><th>Year</th><th>To Per.</th><th>Year</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>DE01</td><td><strong>K (Vendor)</strong></td><td><strong>7</strong></td><td>2025</td><td><strong>8</strong></td><td>2025</td></tr>
+            <tr><td>DE01</td><td>+ (all)</td><td>7</td><td>2025</td><td>8</td><td>2025</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Period 7 (July) and 8 (August) 2025 open · Jennifer can post invoices with Posting Date in July or August 2025</div>
+      </div>
+      <div class="gui-status">Period 7–8/2025 open for Vendor postings · DE01</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="area-tag">Basis / Authorization</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Authorization for Invoice Posting</span><span class="sec-title-es">Autorización para contabilizar facturas</span></div><div class="sec-desc">Los objetos de autorización que controlan quién puede contabilizar facturas y credit memos de proveedor.</div></div></div>
+  <div class="theory-box"><strong>El acceso a la contabilización de facturas está controlado por objetos de autorización:</strong> Jennifer no puede postear facturas automáticamente por ser empleada de AP — necesita el rol correcto con los objetos de autorización correspondientes. El configurador asigna el rol AP_ACCOUNTANT a Jennifer, que incluye permisos para crear, modificar y publicar documentos KR y KG en la sociedad DE01.</div>
+  <div class="visual-wrap">
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">PFCG</span><span class="gui-title">Role AP_ACCOUNTANT — Authorization Objects</span></div>
+      <div class="gui-tools"><button class="gbtn">Authorizations</button><button class="gbtn">&#128190; Generate</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Auth. Object</th><th>Description</th><th>Activity / Value</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>F_BKPF_BUK</strong></td><td>FI: Company Code</td><td>01 Create · 02 Change · CC: DE01</td></tr>
+            <tr class="hi"><td><strong>F_BKPF_BLA</strong></td><td>FI: Document Type</td><td>KR (Invoice) · KG (Credit Memo)</td></tr>
+            <tr><td>F_BKPF_GSB</td><td>FI: Business Area</td><td>All or specific business areas</td></tr>
+            <tr><td>F_LFA1_BUK</td><td>Vendor: Company Code</td><td>Display vendor master · DE01</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Jennifer assigned role AP_ACCOUNTANT · Can post KR and KG in DE01</div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>T4 · Configurador SAP GUI — AP Posting Logic (AP) · &#128296; Rol: Configurador · Biblioteca de Guías SAP</footer>
+</body>
+</html>

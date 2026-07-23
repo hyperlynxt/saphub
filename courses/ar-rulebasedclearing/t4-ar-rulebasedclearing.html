@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Rule-Based Clearing — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9; --t4-dark:#5D3E82; --t4-pale:rgba(167,139,201,0.14); --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+    --sscui-blue:#0070F2; --sscui-bg:#F5F6F7; --sscui-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241C33 55%, #3C2C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(93,62,130,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .spro-area-tag{ display:inline-flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t4-dark); color:white; margin-left:8px; vertical-align:middle; }
+  .theory-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t4-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .part-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--t4-dark); margin:0 0 8px; }
+  .part-label:not(:first-child){ margin-top:22px; }
+  .sscui-tree, .sscui-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'JetBrains Mono',monospace; font-size:11.5px; }
+  .sscui-tree ul{ padding-left:20px; border-left:1px dotted #B399D4; margin-left:7px; }
+  .sscui-tree li{ position:relative; padding:4px 0 4px 16px; color:var(--body); }
+  .sscui-tree li::before{ content:''; position:absolute; left:0; top:13px; width:12px; height:1px; background:#B399D4; }
+  .sscui-tree .folder{ font-weight:700; color:var(--ink); }
+  .sscui-tree .leaf{ color:var(--t4-dark); font-weight:700; }
+  .sscui-mock{ background:var(--sscui-bg); border:1px solid var(--sscui-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .sscui-shellbar{ background:var(--sscui-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .sscui-body{ padding:18px 20px; background:white; }
+  .sscui-page-title{ font-size:15px; font-weight:600; color:#1D2D3E; margin:0 0 4px; }
+  .sscui-page-sub{ font-size:11px; color:#5B738B; margin:0 0 14px; }
+  .sscui-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .sscui-field{ flex:1; min-width:160px; }
+  .sscui-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .sscui-field .ffval{ border:1px solid var(--sscui-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+  .sscui-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .sscui-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sscui-border); }
+  .sscui-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .sscui-toggle-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid #EDEFF1; font-size:12px; }
+  .sscui-toggle{ width:34px; height:18px; border-radius:20px; background:var(--sscui-blue); position:relative; flex-shrink:0; }
+  .sscui-toggle::after{ content:''; position:absolute; top:2px; right:2px; width:14px; height:14px; border-radius:50%; background:white; }
+  .sscui-toggle.off{ background:#C9CDD2; }
+  .sscui-toggle.off::after{ right:auto; left:2px; }
+  .sscui-btn{ background:var(--sscui-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .sscui-btn.ghost{ background:white; color:var(--sscui-blue); border:1px solid var(--sscui-blue); }
+  .sscui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E;
+    margin-top:12px; display:flex; align-items:center; gap:7px; }
+  .to-t3-note{ background:var(--t4-pale); border:1px dashed var(--t4-dark); border-radius:8px; padding:10px 14px;
+    margin-top:14px; font-size:0.8rem; color:var(--t4-dark); }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Activate Rule-Based Clearing</a>
+  <a href="#s2">Posting Rule Reference</a>
+  <a href="#s3">Interpretation Algorithm Mapping</a>
+  <a href="#s4">External Transaction Type Assignment</a>
+  <a href="#s5">Processing Rule Authorizations</a>
+  <a href="#s6">Two-Step Posting Setup</a>
+  <a href="#s7">Template Generation Settings</a>
+  <a href="#s8">Payment Advice Extraction Setup</a>
+  <a href="#s9">Extraction Confidence Threshold</a>
+  <a href="#s10">Business Role Authorizations</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">Cash Application</span>
+      <span class="pill pill-secondary">SAP Business AI</span>
+    </div>
+    <h1>Rule-Based Clearing — <span class="accent">Customizing</span></h1>
+    <h2>Tangibilización Configurador (GUI)</h2>
+    <p class="desc">La base que hay que armar antes de que Linda pueda crear su propia regla de procesamiento: la asociación entre transacciones y reglas de contabilización, los permisos de la app, y los umbrales de confianza de la extracción de payment advice.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Configure Your Solution — Bike GmbH (DE01)</div>
+        <div class="p-note">esto arma la base que Linda usa del otro lado, en Fiori</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Activating Rule-Based Clearing</span>
+          <span class="sec-title-es">Activando la compensación basada en reglas</span>
+          <span class="spro-area-tag">Cash Application</span>
+        </div>
+        <div class="sec-desc">El interruptor general — sin esto, ningún ítem de extracto se compensa automáticamente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Punto de partida:</strong> se activa el escenario de negocio que habilita la compensación por reglas de contabilización y reglas de procesamiento, en conjunto con la importación de extractos vía Multi-Bank Connectivity.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Receivable
+                  <ul>
+                    <li class="leaf">Activate Rule-Based Clearing</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Configure Your Solution</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Activate Rule-Based Clearing</p>
+          <p class="sscui-page-sub">Company Code DE01 — Bike GmbH</p>
+          <div class="sscui-toggle-row"><span>Enable Posting Rules</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Enable Processing Rules</span><div class="sscui-toggle"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Posting Rule Reference</span>
+          <span class="sec-title-es">Revisando el catálogo de reglas de contabilización</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">Las reglas que Linda vio aclarar solas en T3 vienen predefinidas — acá solo se consultan.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué se ve acá?</strong> Como las posting rules vienen predefinidas y preconfiguradas por SAP, esta pantalla es de consulta — sirve para entender qué reglas ya existen antes de decidir qué necesita una processing rule adicional.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Bank Accounting
+                  <ul>
+                    <li class="leaf">Display Posting Rules (Predefined)</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Posting Rules — Predefined</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Standard Posting Rules — SAP-Delivered</p>
+          <table class="sscui-table">
+            <tr><th>Rule</th><th>Match Basis</th></tr>
+            <tr><td>Standard-01</td><td>Document Number Search</td></tr>
+            <tr><td>Standard-02</td><td>Reference Document Number Search</td></tr>
+          </table>
+          <div class="sscui-hint">⚠ estas reglas no son editables — no hay botón de modificar</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Mapping the Interpretation Algorithm</span>
+          <span class="sec-title-es">Mapeando el algoritmo de interpretación</span>
+          <span class="spro-area-tag">Electronic Bank Statement</span>
+        </div>
+        <div class="sec-desc">Se decide qué dato del memo bancario el sistema va a comparar contra las partidas abiertas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué se configura?</strong> Dentro de la configuración global del Electronic Bank Statement, se elige qué algoritmo de interpretación aplica por defecto — depende de qué información trae la factura y qué le pedís al cliente que devuelva al pagar.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Bank Accounting
+                  <ul>
+                    <li class="leaf">Make Global Settings for Electronic Bank Statement</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Electronic Bank Statement — Global Settings</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Interpretation Algorithm — Default</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Algorithm</label><div class="ffval">Document Number Search</div></div>
+            <div class="sscui-field"><label>Fallback</label><div class="ffval">Reference Document Number Search</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning External Transaction Types to Posting Rules</span>
+          <span class="sec-title-es">Asignando tipos de transacción externos a reglas de contabilización</span>
+          <span class="spro-area-tag">Electronic Bank Statement</span>
+        </div>
+        <div class="sec-desc">La asociación puntual mencionada en el documento fuente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se especifica la asociación entre los tipos de transacción externos que llegan del banco y las reglas de contabilización internas correspondientes — es esta asignación la que dispara el primer intento de matching automático.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Bank Accounting
+                  <ul>
+                    <li class="leaf">Assign External Transaction Type to Posting Rule</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Transaction Type Assignment</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">External Transaction Type — Posting Rule Mapping</p>
+          <table class="sscui-table">
+            <tr><th>External Type</th><th>Posting Rule</th></tr>
+            <tr><td>NTRF (Bank Transfer)</td><td>Standard-01</td></tr>
+            <tr><td>CHK (Check Deposit)</td><td>Standard-02</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Authorizing Access to Manage Processing Rules</span>
+          <span class="sec-title-es">Autorizando el acceso a Manage Processing Rules</span>
+          <span class="spro-area-tag">Authorizations</span>
+        </div>
+        <div class="sec-desc">Que Linda pueda crear su propia regla en T3 depende de este permiso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué habilita esto?</strong> Se asigna qué rol de negocio puede crear, editar, compartir y automatizar reglas de procesamiento — sin esta autorización, un usuario solo podría ver las reglas ya existentes, no crear las suyas.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Receivable
+                  <ul>
+                    <li class="leaf">Assign Business Roles to Manage Processing Rules</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Business Role Assignment</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Manage Processing Rules — Access</p>
+          <table class="sscui-table">
+            <tr><th>Business Role</th><th>Access Level</th></tr>
+            <tr><td>Accounts Receivable Accountant</td><td>Create / Share / Automate</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up Two-Step Posting</span>
+          <span class="sec-title-es">Configurando la contabilización en dos pasos</span>
+          <span class="spro-area-tag">Bank Accounting</span>
+        </div>
+        <div class="sec-desc">Se habilita la opción para que una regla automatizada pueda usar una cuenta puente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué configura esto?</strong> Se define la cuenta puente que una regla automatizada puede usar como primer paso, antes de mover el monto a la cuenta final en un segundo paso.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Bank Accounting
+                  <ul>
+                    <li class="leaf">Configure Two-Step Posting for Processing Rules</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Two-Step Posting Configuration</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Two-Step Posting — Bridge Account</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Bridge Account</label><div class="ffval">140000 — Unallocated Cash</div></div>
+            <div class="sscui-field"><label>Enable for Automated Rules</label><div class="ffval">Yes</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring Template Generation Settings</span>
+          <span class="sec-title-es">Configurando la generación de plantillas</span>
+          <span class="spro-area-tag">Cash Application</span>
+        </div>
+        <div class="sec-desc">La sugerencia de plantilla que vio Linda en T3 depende de cuánto historial se le da al motor.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se define cuántos meses de historial de contabilizaciones y compensaciones analiza el sistema antes de sugerir una plantilla de regla nueva.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Cash Application
+                  <ul>
+                    <li class="leaf">Configure Template-Based Rule Generation</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Template Generation Settings</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Historical Analysis Window</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Lookback Period</label><div class="ffval">6 months</div></div>
+            <div class="sscui-field"><label>Minimum Pattern Occurrences</label><div class="ffval">5</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up Payment Advice Extraction</span>
+          <span class="sec-title-es">Configurando la extracción de payment advice</span>
+          <span class="spro-area-tag">SAP Business AI</span>
+        </div>
+        <div class="sec-desc">Sin esto, el PDF que Linda subió en T3 seguiría siendo solo una referencia manual.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué habilita esto?</strong> Se activa SAP Cash Application - Payment Advice Extraction, habilitando la lectura automática con machine learning de documentos PDF no estructurados.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Cash Application
+                  <ul>
+                    <li class="leaf">Activate Payment Advice Extraction</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Configure Your Solution</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Activate Payment Advice Extraction</p>
+          <div class="sscui-toggle-row"><span>Enable ML-Based PDF Extraction</span><div class="sscui-toggle"></div></div>
+          <div class="sscui-toggle-row"><span>Auto-Apply High Confidence Extractions</span><div class="sscui-toggle off"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting the Extraction Confidence Threshold</span>
+          <span class="sec-title-es">Configurando el umbral de confianza de extracción</span>
+          <span class="spro-area-tag">SAP Business AI</span>
+        </div>
+        <div class="sec-desc">El punto donde Linda revisa a mano en vez de confiar directo en la extracción.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué define esto?</strong> Se define el nivel de confianza mínimo requerido para que un dato extraído se aplique automáticamente — por debajo de ese umbral, el ítem queda para revisión humana, como Linda hizo en T3.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Cash Application
+                  <ul>
+                    <li class="leaf">Configure Extraction Confidence Threshold</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Confidence Threshold Settings</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Payment Advice Extraction — Threshold</p>
+          <div class="sscui-field-row">
+            <div class="sscui-field"><label>Auto-Apply Threshold</label><div class="ffval">90%</div></div>
+            <div class="sscui-field"><label>Human Review Below</label><div class="ffval">90%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Authorizing Business Roles</span>
+          <span class="sec-title-es">Autorizando roles de negocio</span>
+          <span class="spro-area-tag">Authorizations</span>
+        </div>
+        <div class="sec-desc">Quién puede automatizar una regla, y quién solo puede aplicarla manualmente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Concepto clave:</strong> se asigna qué puede hacer cada rol de negocio dentro de las apps de este tema — desde crear y automatizar reglas propias, hasta solo confirmar extracciones de payment advice sin poder modificar reglas.
+    </div>
+    <div class="visual-wrap">
+      <p class="part-label">Cómo llegaste</p>
+      <ul class="sscui-tree">
+        <li class="folder">Configure Your Solution
+          <ul>
+            <li class="folder">Finance
+              <ul>
+                <li class="folder">Accounts Receivable
+                  <ul>
+                    <li class="leaf">Assign Business Roles to Rule-Based Clearing Apps</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p class="part-label">Pantalla</p>
+      <div class="sscui-mock">
+        <div class="sscui-shellbar"><span>Business Role Assignment</span><span>DE01</span></div>
+        <div class="sscui-body">
+          <p class="sscui-page-title">Rule-Based Clearing Apps — Access</p>
+          <table class="sscui-table">
+            <tr><th>Business Role</th><th>Access Level</th></tr>
+            <tr><td>Accounts Receivable Accountant</td><td>Create / Automate Rules</td></tr>
+            <tr><td>AR Manager</td><td>View Only</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="to-t3-note">🔧 → 👤 esto es exactamente lo que determina qué botones ve Linda en cada app de este tema en T3.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Rule-Based Clearing · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

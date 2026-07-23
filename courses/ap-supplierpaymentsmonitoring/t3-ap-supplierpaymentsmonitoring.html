@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Supplier Payments Monitoring — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0; --t3-dark:#2E7096; --t3-pale:rgba(127,196,224,0.14); --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+    --sap-blue:#0070F2; --sap-bg:#F5F6F7; --sap-tile-border:#D9DCDF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t3); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #132A36 55%, #1C4A5F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3);
+    border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center;
+    justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .actor-badge{ display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--t3-dark); color:white; margin-left:8px; vertical-align:middle; }
+  .theory-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t3-dark); font-weight:700; }
+  .breadcrumb-nav{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
+  .breadcrumb-nav .sep{ color:var(--t3-pale-border); }
+  .breadcrumb-nav .current{ color:var(--t3-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:24px 26px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .fiori-mock{ background:var(--sap-bg); border:1px solid var(--sap-tile-border); border-radius:8px; overflow:hidden; min-width:640px; }
+  .fiori-shellbar{ background:var(--sap-blue); color:white; padding:8px 16px; font-size:12px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; }
+  .fiori-shellbar .fs-title{ font-size:12.5px; }
+  .fiori-shellbar .fs-user{ width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:10px; }
+  .fiori-body{ padding:18px 20px; background:white; }
+  .fiori-page-title{ font-size:16px; font-weight:600; color:#1D2D3E; margin:0 0 12px; }
+  .fiori-tiles{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .fiori-tile{ background:white; border:1px solid var(--sap-tile-border); border-radius:6px; padding:14px; }
+  .fiori-tile .tile-num{ font-size:20px; font-weight:700; color:var(--sap-blue); }
+  .fiori-tile .tile-label{ font-size:11px; color:#5B738B; margin-top:4px; }
+  .fiori-tile.highlight{ border-color:var(--sap-blue); background:#EBF5FF; }
+  .fiori-tile.alert{ border-color:#C9932E; background:#FFF8E8; }
+  .fiori-tile.alert .tile-num{ color:#8A6A1E; }
+  .fiori-tile.good .tile-num{ color:#187A32; }
+  .fiori-tabs{ display:flex; gap:2px; border-bottom:1px solid var(--sap-tile-border); margin-bottom:14px; flex-wrap:wrap; }
+  .fiori-tab{ font-size:11px; padding:7px 12px; color:#5B738B; border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-list{ border:1px solid var(--sap-tile-border); border-radius:6px; overflow:hidden; }
+  .fiori-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid #EDEFF1; font-size:12.5px; background:white; }
+  .fiori-row:last-child{ border-bottom:none; }
+  .fiori-row .fr-main{ font-weight:600; color:#1D2D3E; }
+  .fiori-row .fr-sub{ font-size:10.5px; color:#5B738B; margin-top:2px; }
+  .fr-badge{ font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fr-badge.high{ background:#E3F7E6; color:#187A32; }
+  .fr-badge.medium{ background:#FFF3D6; color:#8A6A1E; }
+  .fr-badge.low{ background:#FDE7E7; color:#A32D2D; }
+  .fr-badge.open{ background:#E6F1FB; color:#0C447C; }
+  .fiori-btn{ background:var(--sap-blue); color:white; border:none; border-radius:4px; padding:6px 14px; font-size:11.5px; font-weight:600; }
+  .fiori-btn.ghost{ background:white; color:var(--sap-blue); border:1px solid var(--sap-blue); }
+  .fiori-field-row{ display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .fiori-field{ flex:1; min-width:140px; }
+  .fiori-field label{ display:block; font-size:10.5px; color:#5B738B; margin-bottom:3px; }
+  .fiori-field .ffval{ border:1px solid var(--sap-tile-border); border-radius:4px; padding:6px 9px; font-size:12px; background:#FAFBFC; color:#1D2D3E; font-family:'JetBrains Mono',monospace; }
+  .fiori-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+  .fiori-table th{ text-align:left; background:#F5F6F7; color:#5B738B; font-weight:600; padding:7px 10px; border-bottom:1px solid var(--sap-tile-border); }
+  .fiori-table td{ padding:7px 10px; border-bottom:1px solid #EDEFF1; color:#1D2D3E; }
+  .fiori-table td.neg{ color:#A32D2D; }
+  .fiori-table td.pos{ color:#187A32; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  @media (max-width:720px){ .fiori-tiles{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Opening the Monitor</a>
+  <a href="#s2">Checking New Batches</a>
+  <a href="#s3">A Batch In Approval</a>
+  <a href="#s4">Confirming Approved Status</a>
+  <a href="#s5">Sent to Bank</a>
+  <a href="#s6">Reaching Completed</a>
+  <a href="#s7">An Exception Appears</a>
+  <a href="#s8">Checking a Single Document</a>
+  <a href="#s9">Reviewing Discount Utilization</a>
+  <a href="#s10">Exporting for the Team</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Bank Communication Management</span>
+    </div>
+    <h1>Supplier Payments Monitoring — <span class="accent">Día a Día</span></h1>
+    <h2>Tangibilización Usuario (Fiori)</h2>
+    <p class="desc">Un día siguiendo el ciclo de vida completo de los lotes de pago: desde que salen como nuevos hasta que el extracto confirma que llegaron, con una excepción en el medio que Jennifer tiene que resolver.</p>
+    <div class="protagonist">
+      <div class="avatar">J</div>
+      <div>
+        <div class="p-name">Jennifer</div>
+        <div class="p-role">Payables Management — Bike Company</div>
+        <div class="p-note">monitorea los lotes de pago del día</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Opening the Monitor Payments App</span>
+          <span class="sec-title-es">Abriendo la app Monitor Payments</span>
+          <span class="actor-badge">J</span>
+        </div>
+        <div class="sec-desc">El primer vistazo del día a todos los lotes en curso.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Jennifer abre Monitor Payments y ve, de un vistazo, cuántos lotes hay en cada estado del ciclo de vida.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Fiori Launchpad <span class="sep">›</span> <span class="current">Monitor Payments</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Monitor Payments</span><span class="fs-user">J</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">All Batches — Bike GmbH (DE01)</p>
+          <div class="fiori-tiles">
+            <div class="fiori-tile highlight"><div class="tile-num">3</div><div class="tile-label">New</div></div>
+            <div class="fiori-tile"><div class="tile-num">1</div><div class="tile-label">In Approval</div></div>
+            <div class="fiori-tile alert"><div class="tile-num">1</div><div class="tile-label">Exceptions</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking the New Tab</span>
+          <span class="sec-title-es">Revisando el tab New</span>
+          <span class="actor-badge">J</span>
+        </div>
+        <div class="sec-desc">Tres lotes esperan su primera aprobación.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Jennifer entra al tab New y ve los lotes recién generados por la tanda de pagos, todavía sin ninguna aprobación.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Monitor Payments <span class="sep">›</span> <span class="current">New</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Monitor Payments</span><span class="fs-user">J</span></div>
+        <div class="fiori-body">
+          <div class="fiori-tabs">
+            <div class="fiori-tab">All Batches</div>
+            <div class="fiori-tab active">New</div>
+            <div class="fiori-tab">In Approval</div>
+            <div class="fiori-tab">Approved</div>
+          </div>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Batch PB-2201 — €48,300.00</div><div class="fr-sub">12 payments · awaiting first approval</div></div><span class="fr-badge open">New</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">A Batch In Approval</span>
+          <span class="sec-title-es">Un lote en aprobación</span>
+          <span class="actor-badge">J</span>
+        </div>
+        <div class="sec-desc">Este lote ya pasó el primer nivel — le falta uno más.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un lote de monto alto ya recibió su primera aprobación, pero necesita un segundo nivel antes de avanzar.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Monitor Payments <span class="sep">›</span> <span class="current">In Approval</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Monitor Payments</span><span class="fs-user">J</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Batch PB-2198 — €95,000.00</p>
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Level 1: Supervisor</div><div class="fr-sub">Approved</div></div><span class="fr-badge high">Done</span></div>
+            <div class="fiori-row"><div><div class="fr-main">Level 2: Treasury Manager</div><div class="fr-sub">Pending</div></div><span class="fr-badge medium">Waiting</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Confirming Approved Status</span>
+          <span class="sec-title-es">Confirmando el estado Aprobado</span>
+          <span class="actor-badge">J</span>
+        </div>
+        <div class="sec-desc">El lote de la sección anterior ya avanzó.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El segundo nivel aprobó — el lote pasa a "Approved" con el estado Payment Medium Created.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Monitor Payments <span class="sep">›</span> <span class="current">Approved</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Monitor Payments</span><span class="fs-user">J</span></div>
+        <div class="fiori-body">
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Batch PB-2198 — €95,000.00</div><div class="fr-sub">Both approvals complete</div></div><span class="fr-badge high">Payment Medium Created</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Sent to Bank</span>
+          <span class="sec-title-es">Enviado al banco</span>
+          <span class="actor-badge">J</span>
+        </div>
+        <div class="sec-desc">El banco ya recibió el lote y lo confirma.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El acuse de recibo del banco llegó — el lote pasa a "Sent to Bank", ya cargado en el sistema.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Monitor Payments <span class="sep">›</span> <span class="current">Sent to Bank</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Monitor Payments</span><span class="fs-user">J</span></div>
+        <div class="fiori-body">
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Batch PB-2198 — €95,000.00</div><div class="fr-sub">Bank acknowledgment received</div></div><span class="fr-badge high">Sent to Bank</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reaching Completed</span>
+          <span class="sec-title-es">Llegando a Completado</span>
+          <span class="actor-badge">J</span>
+        </div>
+        <div class="sec-desc">El día siguiente, el extracto confirma que el pago llegó de verdad.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Al importarse el extracto bancario del día anterior, el lote finalmente cierra su ciclo de vida — Completed.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Monitor Payments <span class="sep">›</span> <span class="current">Completed</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Monitor Payments</span><span class="fs-user">J</span></div>
+        <div class="fiori-body">
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Batch PB-2198 — €95,000.00</div><div class="fr-sub">Prior day statement imported</div></div><span class="fr-badge high">Completed</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">An Exception Appears</span>
+          <span class="sec-title-es">Aparece una excepción</span>
+          <span class="actor-badge">J</span>
+        </div>
+        <div class="sec-desc">Un lote diferente no tuvo tan buena suerte — el banco lo rechazó.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Jennifer entra al tab Exceptions y ve que un lote fue rechazado por datos de cuenta incorrectos de un proveedor.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Monitor Payments <span class="sep">›</span> <span class="current">Exceptions</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Monitor Payments</span><span class="fs-user">J</span></div>
+        <div class="fiori-body">
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Batch PB-2205 — €3,100.00</div><div class="fr-sub">Bank rejection: incorrect account data</div></div><span class="fr-badge low">Exception</span></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Investigate</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking a Single Document</span>
+          <span class="sec-title-es">Revisando un documento individual</span>
+          <span class="actor-badge">J</span>
+        </div>
+        <div class="sec-desc">Un proveedor pregunta puntualmente por su pago — Jennifer no necesita abrir el lote entero.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Con Display Status of Payment Documents, Jennifer busca directamente el documento de pago del proveedor que preguntó, sin navegar el lote completo.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Display Status of Payment Documents <span class="sep">›</span> <span class="current">Document Search</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Display Status of Payment Documents</span><span class="fs-user">J</span></div>
+        <div class="fiori-body">
+          <div class="fiori-list">
+            <div class="fiori-row"><div><div class="fr-main">Payment Document 2200450 — Tireless Tires</div><div class="fr-sub">Belongs to Batch PB-2198</div></div><span class="fr-badge high">Completed</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing Cash Discount Utilization</span>
+          <span class="sec-title-es">Revisando el aprovechamiento de descuento</span>
+          <span class="actor-badge">J</span>
+        </div>
+        <div class="sec-desc">Más allá del estado del pago — cuánto se está ahorrando realmente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Jennifer abre el tile de Cash Discount Utilization dentro de Accounts Payable Overview, y nota que Bike Inc (US01) está aprovechando menos descuentos que Bike GmbH.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Accounts Payable Overview <span class="sep">›</span> <span class="current">Cash Discount Utilization</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Accounts Payable Overview</span><span class="fs-user">J</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Cash Discount Utilization — Real Time</p>
+          <table class="fiori-table">
+            <tr><th>Company Code</th><th>Utilization</th></tr>
+            <tr><td>DE01 — Bike GmbH</td><td class="pos">87%</td></tr>
+            <tr><td>US01 — Bike Inc</td><td class="neg">54%</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Exporting the Day for the Team</span>
+          <span class="sec-title-es">Exportando el día para el equipo</span>
+          <span class="actor-badge">J</span>
+        </div>
+        <div class="sec-desc">Antes de cerrar, Jennifer deja un registro que el equipo pueda revisar sin abrir el sistema.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Jennifer exporta los lotes del día a CSV para compartir con su supervisor un resumen del estado de todos los pagos, incluyendo la excepción pendiente.
+    </div>
+    <div class="visual-wrap">
+      <div class="breadcrumb-nav">Monitor Payments <span class="sep">›</span> <span class="current">Export</span></div>
+      <div class="fiori-mock">
+        <div class="fiori-shellbar"><span class="fs-title">Monitor Payments</span><span class="fs-user">J</span></div>
+        <div class="fiori-body">
+          <p class="fiori-page-title">Export Batches — Today</p>
+          <div class="fiori-field-row">
+            <div class="fiori-field"><label>Format</label><div class="ffval">CSV</div></div>
+            <div class="fiori-field"><label>Scope</label><div class="ffval">All Batches — Today</div></div>
+          </div>
+          <div style="margin-top:12px;"><button class="fiori-btn">Export to CSV</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Supplier Payments Monitoring · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

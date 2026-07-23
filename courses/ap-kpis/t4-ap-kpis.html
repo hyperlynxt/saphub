@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Payables KPIs — Configurador GUI | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#A78BC9;--t1-dark:#6B4C8F;--t1-pale:rgba(167,139,201,0.12);--t1-pale-border:rgba(167,139,201,0.38);--navy-950:#0A0F1C;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-log:#00A896;--cat-purchase:#7E4FBF;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#160C24 55%,#200E32 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(167,139,201,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(107,76,143,0.35);}
+  .area-tag{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);color:var(--t1-dark);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;white-space:nowrap;align-self:center;}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:20px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .spro-tree{background:#FAFAFA;border:1px solid #D0D4DC;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:12px;}
+  .spro-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--t1-dark);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+  .spro-node{display:flex;align-items:center;gap:6px;padding:2px 0;color:var(--body);}
+  .spro-node .sn-text{font-size:11.5px;}
+  .spro-node.active .sn-text{font-weight:700;color:var(--t1-dark);background:rgba(167,139,201,0.15);border-radius:4px;padding:1px 6px;}
+  .i1{padding-left:18px;}.i2{padding-left:36px;}.i3{padding-left:54px;}.i4{padding-left:72px;}
+  .sapgui{border:2px solid #A8B0BC;border-radius:4px;overflow:hidden;box-shadow:0 4px 14px rgba(10,15,28,0.1);}
+  .gui-bar{background:linear-gradient(180deg,#3A5A80,#2A4060);padding:7px 14px;display:flex;align-items:center;gap:12px;}
+  .tcode{font-family:'JetBrains Mono',monospace;font-size:11px;color:white;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:3px;padding:3px 8px;flex-shrink:0;}
+  .gui-title{font-size:12.5px;font-weight:600;color:white;}
+  .gui-tools{background:#C8D0DA;padding:5px 10px;display:flex;gap:6px;border-bottom:1px solid #A8B0BC;}
+  .gbtn{background:#D8E0E8;border:1px solid #9AA0AA;border-radius:2px;padding:3px 8px;font-size:10.5px;color:#2A2A2A;}
+  .gui-body{background:white;padding:14px 16px;}
+  .gui-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .gui-table th{background:#C8D0DA;color:#1A1A1A;padding:6px 10px;text-align:left;border:1px solid #A8B0BC;font-weight:700;font-size:11px;}
+  .gui-table td{padding:5px 10px;border:1px solid #D4D8DC;color:#2A2A2A;vertical-align:middle;}
+  .gui-table tr:nth-child(even) td{background:#F5F7FA;}
+  .gui-table .hi td{background:#CCE0F5;border-left:2px solid #0070C8;}
+  .gui-status{background:#C8D0DA;border-top:1px solid #A8B0BC;padding:4px 12px;font-size:10.5px;color:#444;}
+  .gui-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .gui-field label{font-size:11px;color:#444;display:block;margin-bottom:2px;}
+  .gui-field .gfv{border:1px solid #A8B0BC;padding:5px 8px;font-size:12px;color:#2A2A2A;background:white;width:100%;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR / GUI</span>
+  <a href="#s1">Payment Terms</a>
+  <a href="#s2">Cash Discount Terms</a>
+  <a href="#s3">Payment Block Reasons</a>
+  <a href="#s4">Posting Periods</a>
+  <a href="#s5">Accounting Clerk — Vendor Master</a>
+  <a href="#s6">Tolerance for Cash Discounts</a>
+  <a href="#s7">Fiscal Year Config</a>
+  <a href="#s8">Authorization — Analytical Apps</a>
+  <a href="#s9">KPI App Default Filter Variants</a>
+  <a href="#s10">Supplier Acct Group — Master Data</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+      <span class="pill pill-sec">Analytics</span>
+    </div>
+    <h1>Payables <span class="accent">KPIs</span></h1>
+    <h2>Tangibilización — Configurador SAP GUI</h2>
+    <p class="desc">Las 10 parametrizaciones que determinan qué valores muestran los KPIs de AP: condiciones de pago, descuentos, motivos de bloqueo, períodos, asignación de responsables, y autorizaciones para las apps analíticas.</p>
+    <div class="hlbox">
+      <span style="font-size:18px;display:block;margin-bottom:6px;">🔧</span>
+      <b>Vos, en el rol de Configurador</b> · SAP Consultant<br>
+      <span style="font-size:12.5px;opacity:0.85;">Estas configuraciones determinan los valores que Jennifer ve en sus KPIs — payment terms incorrectos, descuentos mal configurados o responsables sin asignar distorsionan todos los indicadores.</span>
+    </div>
+  </div>
+</header>
+<main>
+
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Define Payment Terms</span><span class="sec-title-es">Definir condiciones de pago</span></div><div class="sec-desc">Las condiciones de pago son la base del DPO, del Cash Discount Utilization y del Aging Report — todos los KPIs de timing dependen de esta configuración.</div></div></div>
+  <div class="theory-box"><strong>Payment Terms = la línea de tiempo de cada factura:</strong> las condiciones de pago definen el número de días al vencimiento y, si aplica, la ventana y porcentaje del descuento por pronto pago. Sin esta configuración correcta, el sistema no puede calcular cuándo vence una factura (base del DPO y del Aging) ni si hay descuento disponible (base del Cash Discount Utilization KPI).</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Business Transactions</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Incoming Invoices / Credit Memos</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Maintain Terms of Payment</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Maintain Terms of Payment</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">📋 Detail</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>PayTerms</th><th>Description</th><th>Day Limit</th><th>Disc. Days 1</th><th>Disc. % 1</th><th>Net Days</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>NT30</strong></td><td>Net 30 days</td><td>—</td><td>—</td><td>0%</td><td>30</td></tr>
+            <tr class="hi"><td><strong>NT45</strong></td><td>Net 45 days</td><td>—</td><td>—</td><td>0%</td><td>45</td></tr>
+            <tr><td>D210</td><td>2% 10 days, net 30</td><td>—</td><td>10</td><td>2.000%</td><td>30</td></tr>
+            <tr><td>D310</td><td>3% 10 days, net 45</td><td>—</td><td>10</td><td>3.000%</td><td>45</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">D210: 2% discount if paid within 10 days · Otherwise full amount due at day 30</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Cash Discount Terms — Automatic Posting</span><span class="sec-title-es">Descuento por pronto pago — contabilización automática</span></div><div class="sec-desc">La configuración que permite a SAP calcular y contabilizar automáticamente el descuento cuando el pago se realiza dentro de la ventana.</div></div></div>
+  <div class="theory-box"><strong>El descuento por pronto pago se registra automáticamente si está bien configurado:</strong> cuando el programa de pagos ejecuta un pago dentro de la ventana de descuento, SAP calcula el importe del descuento y lo contabiliza automáticamente en la cuenta de cash discount configurada. Para que el KPI de <strong>Cash Discount Utilization</strong> muestre datos correctos, las cuentas de descuento deben estar asignadas correctamente en la configuración de pagos.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Business Transactions</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Outgoing Payments</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Accounts for Cash Discount Taken</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Cash Discount Taken — Account Assignment · DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Chart of Accts</th><th>Account Determination</th><th>GL Account (Cash Disc. Taken)</th><th>Currency</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>BIKE</td><td>K (Vendor)</td><td><strong>730000 — Cash Discounts Received</strong></td><td>EUR</td></tr>
+            <tr><td>BIKE</td><td>D (Customer)</td><td>431000 — Cash Discounts Granted</td><td>EUR</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;font-size:11px;color:#666;">Account 730000 receives credit when payment is made within discount window · feeds Cash Discount Utilization KPI data</div>
+      </div>
+      <div class="gui-status">Cash discount account 730000 assigned · automatic posting on payment run</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Payment Block Reasons</span><span class="sec-title-es">Motivos de bloqueo de pago</span></div><div class="sec-desc">Los códigos que explican por qué una factura está bloqueada para el programa de pagos — base del KPI Blocked Invoices y del análisis "By Reason of Block" en Overdue Payables.</div></div></div>
+  <div class="theory-box"><strong>Los motivos de bloqueo son la clave para el análisis de Overdue Payables:</strong> la app Overdue Payables permite analizar los vencidos "By Reason of Payment Block". Para que este análisis sea informativo, los motivos de bloqueo deben estar bien configurados y ser usados consistentemente por el equipo de AP. Sin esta configuración, todos los bloqueos aparecen sin clasificar, haciendo imposible identificar patrones (ej: mayoría de bloqueos son por discrepancias de precio vs por aprobación pendiente).</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Business Transactions</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Outgoing Payments</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Payment Block Reasons</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Define Payment Block Reasons</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Block Key</th><th>Description</th><th>Changeable by AP?</th><th>Not due for payment?</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>R</strong></td><td>Manual Payment Block</td><td>✔ Yes</td><td></td></tr>
+            <tr><td>A</td><td>Blocked for Payment — Automatic (tolerance exceeded)</td><td></td><td></td></tr>
+            <tr><td>B</td><td>Blocked due to Workflow / Approval Pending</td><td></td><td>✔ Yes</td></tr>
+            <tr><td>I</td><td>Invoices in Supplier Master Data Blocked</td><td></td><td>✔ Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Block key R = manually set by AP accountant · Block key A = automatically set by system</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Open and Close Posting Periods</span><span class="sec-title-es">Apertura y cierre de períodos contables</span></div><div class="sec-desc">La gestión de períodos afecta directamente el Aging Report y qué facturas aparecen como "current month" vs "past periods".</div></div></div>
+  <div class="theory-box"><strong>Los períodos abiertos definen el horizonte temporal de los KPIs de aging:</strong> el Aging Report clasifica facturas por intervalos basándose en la fecha de vencimiento vs la fecha del análisis. Si los períodos no están correctamente configurados, el sistema puede asignar facturas a intervalos incorrectos. El configurador gestiona qué períodos están abiertos para contabilización con la transacción <strong>OB52</strong>.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 T-code: OB52</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Fiscal Year</span></div>
+      <div class="spro-node i3 active"><span class="sn-icon">🔷</span><span class="sn-text">Open and Close Posting Periods</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">OB52</span><span class="gui-title">Open and Close Posting Periods — DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Var.</th><th>Acct Type</th><th>From Acct</th><th>To Acct</th><th>From Per.</th><th>Year</th><th>To Per.</th><th>Year</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>DE01</td><td>K (Vendor)</td><td>100000</td><td>199999</td><td><strong>7</strong></td><td>2025</td><td><strong>8</strong></td><td>2025</td></tr>
+            <tr><td>DE01</td><td>+ (all)</td><td>—</td><td>—</td><td>7</td><td>2025</td><td>8</td><td>2025</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Jul–Aug 2025 open · Periods 1–6 closed · Aging KPI reflects open periods correctly</div>
+      </div>
+      <div class="gui-status">Open periods: July–August 2025 · DE01</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Accounting Clerk — Assignment in Vendor Master</span><span class="sec-title-es">Responsable AP — asignación en el maestro de proveedores</span></div><div class="sec-desc">El campo del Vendor Master que conecta cada proveedor con el contador de AP responsable, habilitando el filtro del AP Overview.</div></div></div>
+  <div class="theory-box"><strong>El Accounting Clerk es el filtro de responsabilidad en los KPIs:</strong> para que Jennifer pueda filtrar los KPIs del AP Overview por "su" cartera de proveedores, el campo <strong>Accounting Clerk</strong> debe estar correctamente asignado en el Vendor Master de cada proveedor. Sin esta asignación, el AP Overview mostraría datos de todos los proveedores sin posibilidad de segmentar por responsabilidad.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 Vendor Master — Company Code Data</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Transaction: FK02 (Change Vendor)</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Company Code Data</span></div>
+      <div class="spro-node i2 active"><span class="sn-icon">🔷</span><span class="sn-text">Payment Transactions tab → Accounting Clerk field</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">FK02</span><span class="gui-title">Change Vendor 100023 — Tireless Tires GmbH · DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">Company Code Data</button><button class="gbtn">Payment Transactions</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <div class="gui-form">
+          <div class="gui-field"><label>Vendor (Supplier)</label><div class="gfv">100023</div></div>
+          <div class="gui-field"><label>Company Code</label><div class="gfv">DE01 — Bike GmbH</div></div>
+          <div class="gui-field"><label>Payment Terms</label><div class="gfv">NT30</div></div>
+          <div class="gui-field"><label>Payment Methods</label><div class="gfv">T (Bank Transfer)</div></div>
+        </div>
+        <table class="gui-table">
+          <thead><tr><th>Field</th><th>Value</th><th>Impact on KPIs</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>Accounting Clerk (BUSAB)</strong></td><td><strong>JK — Jennifer K.</strong></td><td>→ Jennifer sees this vendor in her filtered AP Overview view</td></tr>
+            <tr><td>Payment Block</td><td>— (none)</td><td>→ Vendor NOT included in "Invoices Blocked in Supplier Master Data" KPI</td></tr>
+            <tr><td>Payment Methods</td><td>T</td><td>→ Only bank transfer invoices included in payment runs</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Accounting Clerk JK assigned to Tireless Tires GmbH · DE01</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Tolerance for Cash Discounts</span><span class="sec-title-es">Tolerancias para descuentos por pronto pago</span></div><div class="sec-desc">Los límites de tolerancia que permiten al sistema procesar pagos con pequeñas diferencias de descuento sin bloquear la factura.</div></div></div>
+  <div class="theory-box"><strong>Las tolerancias evitan bloqueos innecesarios por diferencias mínimas de descuento:</strong> cuando el importe del descuento calculado difiere ligeramente del esperado (por redondeos, tipos de cambio, etc.), la tolerancia determina si la diferencia genera un bloqueo o se absorbe automáticamente. Sin tolerancias configuradas, pequeñas diferencias centésimas pueden bloquear facturas que debería procesar, deteriorando el Cash Discount Utilization KPI artificialmente.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Business Transactions</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Outgoing Payments</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Tolerances (Vendors)</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Define Tolerances (Vendors) — DE01</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Company Code</td><td>DE01 — Bike GmbH</td></tr>
+            <tr class="hi"><td><strong>Permitted Payment Differences — Gain (cash discount)</strong></td><td>EUR 5.00 · 2.000%</td></tr>
+            <tr class="hi"><td><strong>Permitted Payment Differences — Loss (cash discount)</strong></td><td>EUR 5.00 · 2.000%</td></tr>
+            <tr><td>Adjust Discount by Deduction</td><td>✔ Yes</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Differences ≤ EUR 5.00 or ≤ 2% posted to cash discount account · prevents blocking for minor rounding differences</div>
+      </div>
+      <div class="gui-status">Cash discount tolerance: ±EUR 5.00 / ±2% · DE01</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="area-tag">FI Global Settings</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Fiscal Year Configuration</span><span class="sec-title-es">Configuración del ejercicio fiscal</span></div><div class="sec-desc">El ejercicio fiscal define los períodos del Aging Report y determina el denominador en el cálculo del DPO.</div></div></div>
+  <div class="theory-box"><strong>El ejercicio fiscal establece el marco temporal de todos los KPIs:</strong> el Aging Report organiza las facturas en intervalos mensuales que corresponden a los períodos del ejercicio fiscal. Si la empresa no tiene un ejercicio fiscal estándar (enero-diciembre), los períodos del aging deben corresponderse con el año fiscal real. La configuración del ejercicio fiscal también afecta el denominador del DPO (número de días del período analizado).</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting Global Settings</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Fiscal Year</span></div>
+      <div class="spro-node i3 active"><span class="sn-icon">🔷</span><span class="sn-text">Maintain Fiscal Year Variant</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Fiscal Year Variant — K4 (Calendar Year, 4 special periods)</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">📋 Periods</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Period</th><th>Month</th><th>Days</th><th>KPI Aging Interval</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>January</td><td>31</td><td>Month 1 — past due bucket if today = July</td></tr>
+            <tr><td>6</td><td>June</td><td>30</td><td>Next month bucket if today = May</td></tr>
+            <tr class="hi"><td><strong>7</strong></td><td><strong>July</strong></td><td>31</td><td><strong>Current month — due now</strong></td></tr>
+            <tr><td>8</td><td>August</td><td>31</td><td>Next month bucket (plan ahead)</td></tr>
+            <tr><td>9–12</td><td>Sep–Dec</td><td>30–31</td><td>Future / forecast buckets</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Variant K4 — Calendar year · 12 regular + 4 special periods · DE01</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="area-tag">Basis / Authorization</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Authorization for AP Analytical Apps</span><span class="sec-title-es">Autorización para acceder a las apps analíticas de AP</span></div><div class="sec-desc">Los objetos de autorización que controlan quién puede ver los KPIs de AP y con qué alcance de datos.</div></div></div>
+  <div class="theory-box"><strong>No todos ven los mismos KPIs:</strong> las apps analíticas de AP no están disponibles para todos los usuarios. El configurador asigna roles que incluyen los objetos de autorización necesarios para acceder a la app Accounts Payable Overview, Overdue Payables, Cash Discount Utilization, etc. Además, los filtros de datos (por Company Code, Accounting Clerk) están controlados por los valores autorizados en los objetos de autorización del usuario.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 T-code: PFCG (Role Maintenance)</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">System Administration</span></div>
+      <div class="spro-node i1 active"><span class="sn-icon">🔷</span><span class="sn-text">PFCG — Role: AP_ANALYST_FIORI</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">PFCG</span><span class="gui-title">Role Maintenance — AP_ANALYST_FIORI</span></div>
+      <div class="gui-tools"><button class="gbtn">Menu</button><button class="gbtn">Authorizations</button><button class="gbtn">💾 Generate</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Fiori App ID</th><th>App Name</th><th>Authorization Object</th><th>Access</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>F0762</td><td>Accounts Payable Overview</td><td>F_BKPF_BUK</td><td>DE01 (full)</td></tr>
+            <tr class="hi"><td>F1469</td><td>Overdue Payables</td><td>F_BKPF_BUK + ZTERM</td><td>DE01</td></tr>
+            <tr><td>F1471</td><td>Cash Discount Utilization</td><td>F_BKPF_BUK</td><td>DE01</td></tr>
+            <tr><td>F1472</td><td>Aging Report for AP</td><td>F_BKPF_BUK</td><td>DE01</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Role AP_ANALYST_FIORI · Analytical apps authorized · Company Code DE01</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">KPI App Default Filter Variants</span><span class="sec-title-es">Variantes de filtro por defecto para las apps de KPI</span></div><div class="sec-desc">Cómo guardar variantes de filtro predefinidas para que los contadores de AP vean sus KPIs con los parámetros correctos desde el primer click.</div></div></div>
+  <div class="theory-box"><strong>Las variantes de filtro estandarizan el análisis:</strong> en lugar de que cada contador configure manualmente los filtros cada vez que abre las apps de KPI (Company Code, Accounting Clerk, Critical Threshold, Key Date), el configurador puede crear <strong>variantes guardadas</strong> con los valores estándar de la empresa. Estas variantes aparecen disponibles en la app como opciones predefinidas, garantizando que todos los contadores analicen los datos con los mismos criterios base.</div>
+  <div class="visual-wrap">
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Overdue Payables — Save Filter Variant</span></div>
+      <div class="gui-tools"><button class="gbtn">Save As Variant</button><button class="gbtn">Set As Default</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Parameter</th><th>Standard Variant: "DE01_STANDARD"</th></tr></thead>
+          <tbody>
+            <tr><td>Open on Key Date</td><td>TODAY (dynamic — always today's date)</td></tr>
+            <tr class="hi"><td><strong>Number of Days</strong></td><td><strong>30</strong></td></tr>
+            <tr class="hi"><td><strong>Critical Overdue Threshold</strong></td><td><strong>60 days</strong></td></tr>
+            <tr><td>Display Currency</td><td>EUR</td></tr>
+            <tr><td>Company Code</td><td>DE01</td></tr>
+            <tr><td>Default Visualization</td><td>By Company Code</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:#666;">Variant "DE01_STANDARD" appears as a saved option when Jennifer opens the app · no manual filter setup required</div>
+      </div>
+      <div class="gui-status">Variant DE01_STANDARD saved · Critical threshold: 60 days · Dynamic key date: TODAY</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="s10">
+  <div class="sec-head"><div class="sec-num">10</div><div class="area-tag">FI — AP</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Supplier Account Group — Master Data Control</span><span class="sec-title-es">Grupo de cuentas de proveedor — control de maestros</span></div><div class="sec-desc">Cómo el Supplier Account Group afecta el filtro "By Supplier Acct Group" en la app Overdue Payables y la granularidad del análisis.</div></div></div>
+  <div class="theory-box"><strong>Supplier Account Groups permiten segmentar KPIs por tipo de proveedor:</strong> la app Overdue Payables ofrece el filtro <strong>Supplier Acct Group</strong>, que agrupa los proveedores según categoría (estándar, intercompany, one-time, etc.). Para que este filtro sea analíticamente útil, los grupos de cuenta deben estar definidos de forma que reflejen categorías de negocio relevantes — no solo categorías técnicas. Un buen diseño de grupos de cuenta permite al contador de AP identificar, por ejemplo, si los vencidos críticos se concentran en proveedores de materias primas vs servicios.</div>
+  <div class="visual-wrap">
+    <div class="spro-tree">
+      <div class="spro-title">📍 SPRO Path</div>
+      <div class="spro-node"><span class="sn-icon">📁</span><span class="sn-text">Financial Accounting</span></div>
+      <div class="spro-node i1"><span class="sn-icon">📁</span><span class="sn-text">Accounts Receivable and Payable</span></div>
+      <div class="spro-node i2"><span class="sn-icon">📁</span><span class="sn-text">Vendor Accounts</span></div>
+      <div class="spro-node i3"><span class="sn-icon">📁</span><span class="sn-text">Master Data</span></div>
+      <div class="spro-node i4 active"><span class="sn-icon">🔷</span><span class="sn-text">Define Account Groups with Screen Layout (Vendors)</span></div>
+    </div>
+    <div class="sapgui">
+      <div class="gui-bar"><span class="tcode">—</span><span class="gui-title">Vendor Account Groups — Chart BIKE</span></div>
+      <div class="gui-tools"><button class="gbtn">✏️ Edit</button><button class="gbtn">💾 Save</button></div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Acct Group</th><th>Name</th><th>KPI filter relevance</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td><strong>LIEF</strong></td><td>Vendors — Standard (Materials)</td><td>Primary group for Overdue analysis by supplier category</td></tr>
+            <tr><td>SERV</td><td>Vendors — Services</td><td>Separate segment for service providers in aging/overdue</td></tr>
+            <tr><td>INTE</td><td>Intercompany Vendors</td><td>Typically excluded from external overdue escalation</td></tr>
+            <tr><td>KRED</td><td>One-Time Vendors</td><td>Monitored separately — no Accounting Clerk typically assigned</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gui-status">Account Groups defined · Enable "By Supplier Acct Group" filter in Overdue Payables app</div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>T4 · Configurador SAP GUI — Payables KPIs (AP) · 🔧 Rol: Configurador · Biblioteca de Guías SAP</footer>
+</body>
+</html>

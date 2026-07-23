@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 · Closing Activities in Accounts Payable — Profundización | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t2:#E08585;
+    --t2-dark:#A94444;
+    --t2-pale:rgba(224,133,133,0.14);
+    --t2-pale-border:rgba(224,133,133,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t2); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t2); border-bottom-color:var(--t2); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A1616 55%, #4A1F1F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t2); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:680px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(224,133,133,0.14); border-left:4px solid var(--t2); border-radius:0 8px 8px 0; padding:13px 18px; max-width:680px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t2); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t2-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(169,68,68,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .kind-tag{ display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase;
+    padding:3px 9px; border-radius:20px; margin-left:2px; }
+  .kind-adjacent{ background:rgba(26,107,153,0.1); color:#1A6B99; }
+  .kind-depth{ background:var(--t2-pale); color:var(--t2-dark); }
+
+  .theory-box{ background:var(--t2-pale); border-left:4px solid var(--t2-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:24px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t2-dark); font-weight:700; }
+
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:760px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t2-dark); font-size:9px; top:4px; }
+  .flow-connector{ position:absolute; top:20px; right:-21px; width:28px; height:28px; background:white; border:2px solid #CBD5E1;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t2-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .cmp-card ul{ margin:10px 0 0; padding-left:18px; }
+  .cmp-card li{ font-size:0.83rem; color:var(--body); line-height:1.6; margin-bottom:4px; }
+
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border);
+    font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px;
+    text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t2-pale); color:var(--t2-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+  .badge-gold{ background:rgba(212,175,55,0.14); color:#8A6D1F; }
+
+  .formula-box{ background:var(--bg); border-radius:8px; padding:16px 20px; font-size:0.85rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:8px; font-family:'Syne',sans-serif; font-size:0.95rem; }
+  .formula-box div.frow{ padding:5px 0; color:var(--body); display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); }
+  .formula-box div.frow:last-child{ border-bottom:none; font-weight:700; color:var(--t2-dark); }
+  .formula-box .fval{ font-family:'JetBrains Mono',monospace; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t2-pale); border:1.5px solid var(--t2-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:190px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t2-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+  .chip .chip-desc{ font-size:0.72rem; color:var(--body); margin-top:6px; line-height:1.4; display:block; }
+
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t2); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+
+  @media (max-width:760px){ .cmp-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T2 · PROFUNDIZACIÓN</span>
+  <a href="#s1">Down Payments</a>
+  <a href="#s2">Withholding Tax</a>
+  <a href="#s3">Automatic Payment Program</a>
+  <a href="#s4">Parked Documents</a>
+  <a href="#s5">Invoice Verification</a>
+  <a href="#s6">GR/IR Mechanism</a>
+  <a href="#s7">Confirmation Methods</a>
+  <a href="#s8">Valuation Methods</a>
+  <a href="#s9">Regrouping Mechanism</a>
+  <a href="#s10">Special Periods Sequence</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Materials Management</span>
+    </div>
+    <h1><span class="accent">Closing</span> Activities in Accounts Payable</h1>
+    <h2>Actividades de Cierre en Cuentas por Pagar — Profundización</h2>
+    <p class="desc">Cinco temas adyacentes que el Tipo 1 no cubrió — anticipos, retenciones, el programa de pago automático, documentos parqueados y la verificación de tres vías — más el mecanismo interno de las cuatro actividades de cierre ya vistas: tolerancias, métodos de valoración, la lógica de reversión del regrouping y la secuencia real de períodos especiales.</p>
+    <div class="hlbox">Resumen Visual — <b>Closing Activities in Accounts Payable</b>, Tipo 2 (Profundización). 10 secciones — 5 de temas adyacentes, 5 de mayor profundidad sobre lo visto en T1.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — ADYACENTE: Down Payments -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Down Payments to Suppliers</span>
+          <span class="sec-title-es">Anticipos a proveedores</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Un saldo que también hay que revisar antes de cerrar, aunque T1 no lo haya mencionado.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Por qué conecta con el cierre?</strong> Un <strong>down payment</strong> es un pago adelantado a un proveedor, contabilizado en una cuenta especial de anticipos — no directamente en la cuenta de proveedor normal. Al cierre, un anticipo que todavía no se compensó contra su factura final queda como una <strong>partida abierta especial</strong> que también debe revisarse, igual que las partidas de GR/IR o de regrouping vistas en T1.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">💸</span><span class="title-en">Down Payment Made</span><span class="title-es">Se paga el anticipo</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Se contabiliza en cuenta especial de anticipos</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">🧾</span><span class="title-en">Final Invoice Arrives</span><span class="title-es">Llega la factura final</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Se registra el monto total del proveedor</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">🔗</span><span class="title-en">Down Payment Cleared</span><span class="title-es">Se compensa el anticipo</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Si queda sin compensar, aparece como partida abierta al cierre</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — ADYACENTE: Withholding Tax -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Withholding Tax Considerations</span>
+          <span class="sec-title-es">Consideraciones de retención de impuestos</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Otro componente del saldo de proveedor que hay que tener presente al confirmar y reportar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando aplica <strong>withholding tax</strong> (retención de impuestos), una parte del pago al proveedor se retiene y se declara ante la autoridad fiscal en nombre de él. Esto afecta el monto neto que efectivamente se le paga — un dato que también hay que tener claro al ejecutar <strong>Supplier Balance Confirmation</strong> (T1, sección 6), porque el saldo que el proveedor reconoce puede diferir si no contempla la retención.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card neutral">
+        <h4><span class="icon-inline">🧾</span>Retención al contabilizar la factura</h4>
+        <p>El sistema calcula y reserva la retención en el momento de contabilizar la factura, antes de que exista un pago.</p>
+      </div>
+      <div class="cmp-card accent">
+        <h4><span class="icon-inline">💳</span>Retención al efectuar el pago</h4>
+        <p>El cálculo se realiza en el momento del pago — el monto retenido depende de cuándo efectivamente se paga.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — ADYACENTE: Automatic Payment Program -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Automatic Payment Program and Closing</span>
+          <span class="sec-title-es">El programa de pago automático y el cierre</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Antes de cerrar, conviene saber qué facturas ya están comprometidas en una tanda de pago.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>Automatic Payment Program</strong> selecciona facturas vencidas y genera pagos en tanda. Si se ejecuta cerca del cierre, puede cambiar partidas que estaban abiertas (y que iban a aparecer en <strong>Supplier Balance Confirmation</strong> o en <strong>Foreign Currency Valuation</strong>) a partidas ya compensadas — por eso conviene coordinar el calendario de tandas de pago con la ventana de cierre.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">📋</span><span class="title-en">Proposal Run</span><span class="title-es">Corrida de propuesta</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Selecciona partidas vencidas según parámetros</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">✏️</span><span class="title-en">Review &amp; Edit</span><span class="title-es">Revisión y edición</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Se excluyen partidas en disputa o bajo revisión</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">💰</span><span class="title-en">Payment Run</span><span class="title-es">Corrida de pago</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Las partidas pagadas dejan de estar abiertas</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — ADYACENTE: Parked Documents -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Parked Documents at Period End</span>
+          <span class="sec-title-es">Documentos parqueados al fin de período</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">Una factura guardada pero no contabilizada no forma parte de ningún saldo — y eso es justamente el problema al cerrar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Park</strong> permite guardar un documento incompleto o pendiente de aprobación sin contabilizarlo todavía. A diferencia de una factura contabilizada, un documento parqueado <strong>no impacta ningún saldo</strong> ni la cuenta GR/IR ni el Libro Mayor — por eso, antes del cierre, es clave revisar que no queden documentos parqueados que en realidad ya deberían estar contabilizados.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card neutral">
+        <h4><span class="icon-inline">📥</span>Parked <span class="en-tag">Parqueado</span></h4>
+        <ul>
+          <li>No actualiza ningún saldo contable</li>
+          <li>Puede editarse o completarse libremente</li>
+          <li>Invisible para las 4 actividades de cierre de T1</li>
+        </ul>
+      </div>
+      <div class="cmp-card accent">
+        <h4><span class="icon-inline">✅</span>Posted <span class="en-tag">Contabilizado</span></h4>
+        <ul>
+          <li>Actualiza AP, GR/IR y el Libro Mayor</li>
+          <li>Ya es una partida real, sujeta a reconciliación</li>
+          <li>Recién ahí entra en el alcance del cierre</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — ADYACENTE: Invoice Verification / Three-Way Match -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Invoice Verification and the Three-Way Match</span>
+          <span class="sec-title-es">Verificación de facturas y la verificación de tres vías</span>
+          <span class="kind-tag kind-adjacent">Adyacente</span>
+        </div>
+        <div class="sec-desc">El control que ocurre ANTES del cierre y que determina si una factura se contabiliza limpia o queda en disputa.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      La <strong>verificación de tres vías</strong> compara tres documentos — orden de compra, entrada de mercadería y factura — antes de contabilizar. Si coinciden dentro de un margen de <strong>tolerancia</strong>, la factura se contabiliza sin bloqueo. Si no coinciden, queda bloqueada para pago, lo cual también repercute en la cuenta GR/IR que se revisa en T1, sección 4.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Documento</th><th>Qué informa</th><th>Se compara contra</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="mod-name">🛒 Purchase Order</span></td><td>Cantidad y precio acordados con el proveedor.</td><td>Entrada de mercadería y factura</td></tr>
+          <tr><td><span class="mod-name">📦 Goods Receipt</span></td><td>Cantidad efectivamente recibida.</td><td>Orden de compra y factura</td></tr>
+          <tr><td><span class="mod-name">🧾 Invoice</span></td><td>Monto facturado por el proveedor.</td><td>Orden de compra y entrada de mercadería</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — PROFUNDIDAD: GR/IR mecanismo -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">How GR/IR Reconciliation Actually Runs</span>
+          <span class="sec-title-es">Cómo corre realmente la reconciliación GR/IR</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El mecanismo detrás de lo que en T1 se presentó como concepto.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El programa de reconciliación GR/IR agrupa las partidas abiertas por material y proveedor, y las evalúa contra <strong>grupos de tolerancia</strong>: diferencias de cantidad o monto por debajo del umbral se pueden compensar automáticamente; el resto queda para revisión manual. No toda partida abierta es un error — muchas son diferencias de timing normales, como se vio en T1, sección 5.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Situación</th><th>Dentro de tolerancia</th><th>Fuera de tolerancia</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Diferencia de cantidad</td><td><span class="badge badge-accent">Compensación automática</span></td><td><span class="badge badge-neutral">Revisión manual</span></td></tr>
+          <tr><td>Diferencia de monto/precio</td><td><span class="badge badge-accent">Compensación automática</span></td><td><span class="badge badge-neutral">Revisión manual</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — PROFUNDIDAD: Confirmation Methods -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Supplier Balance Confirmation Methods</span>
+          <span class="sec-title-es">Métodos de confirmación de saldo de proveedores</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">No siempre se confirma el mismo tipo de saldo, ni de la misma manera.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      T1 presentó la confirmación como un flujo genérico de solicitud-respuesta. En la práctica existen dos enfoques: una <strong>carta de confirmación de saldo</strong> que pide al proveedor validar el total acumulado a una fecha, o la confirmación de <strong>partidas individuales</strong> abiertas, más útil cuando se necesita identificar exactamente qué factura puntual está en disputa.
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp-card neutral">
+        <h4><span class="icon-inline">✉️</span>Balance Confirmation Letter</h4>
+        <p>Confirma el <strong>saldo total</strong> a una fecha de corte. Rápido de enviar, pero no aísla qué partida puntual generó una diferencia si aparece una.</p>
+      </div>
+      <div class="cmp-card accent">
+        <h4><span class="icon-inline">🔎</span>Individual Open Item Confirmation</h4>
+        <p>Confirma <strong>partida por partida</strong>. Más lento de procesar, pero permite localizar exactamente dónde está el desacuerdo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — PROFUNDIDAD: Valuation Methods -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Foreign Currency Valuation Methods</span>
+          <span class="sec-title-es">Métodos de valoración de moneda extranjera</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">El ejemplo de T1 mostró el cálculo — esta sección muestra los criterios que decidien SI se contabiliza esa diferencia.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      No toda diferencia de valoración se contabiliza igual. El <strong>principio del valor más bajo</strong> solo registra la diferencia si representa una pérdida (nunca anticipa ganancias); <strong>Always Valuate</strong> contabiliza la diferencia sea ganancia o pérdida; y al abrir el nuevo período, muchas configuraciones aplican un <strong>Reset</strong> que revierte automáticamente el ajuste del período anterior.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Método</th><th>Qué contabiliza</th><th>Cuándo se usa</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="mod-name">⬇️ Lowest Value Principle</span></td><td>Solo pérdidas no realizadas, nunca ganancias.</td><td>Criterio contable prudencial, común en GAAP local.</td></tr>
+          <tr><td><span class="mod-name">↕️ Always Valuate</span></td><td>Tanto ganancias como pérdidas no realizadas.</td><td>Cuando se busca la posición económica real, sin sesgo conservador.</td></tr>
+          <tr><td><span class="mod-name">↩️ Reset</span></td><td>Revierte automáticamente el ajuste del período anterior.</td><td>Al abrir el nuevo período, antes de valorar de nuevo.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — PROFUNDIDAD: Regrouping mecanismo + reversión -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Mechanism Behind Regrouping</span>
+          <span class="sec-title-es">El mecanismo detrás del regrouping</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 mostró el resultado en el balance — acá se ve cómo el sistema decide qué reclasificar, y qué pasa al día siguiente.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El regrouping identifica automáticamente qué proveedores tienen <strong>saldo debe</strong> en su cuenta de reconciliación y genera una contabilización de ajuste hacia una cuenta de tipo activo, usando la <strong>clave de ordenación</strong> configurada para determinar la cuenta destino. Al abrir el nuevo período, ese asiento se revierte automáticamente — la cuenta original del proveedor nunca se modifica.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#A94444;">
+            <span class="icon">🔍</span><span class="title-en">Identify Debit Balances</span><span class="title-es">Se identifican saldos deudores</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Se filtran proveedores con saldo debe</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">📝</span><span class="title-en">Adjustment Posting</span><span class="title-es">Contabilización de ajuste</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Se traslada a cuenta de tipo activo</li></ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">↩️</span><span class="title-en">Automatic Reversal</span><span class="title-es">Reversión automática</span>
+          </div>
+          <div class="flow-step-body"><ul><li>Al abrir el nuevo período, sin intervención manual</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — PROFUNDIDAD: Special Periods secuencia -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Sequencing Adjustments Across Special Periods</span>
+          <span class="sec-title-es">Secuenciando ajustes entre períodos especiales</span>
+          <span class="kind-tag kind-depth">Profundidad</span>
+        </div>
+        <div class="sec-desc">T1 explicó qué es un período especial — acá se ve en qué orden se usan durante el cierre real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los hasta 4 <strong>special periods</strong> no se usan al azar: suele reservarse uno para los primeros ajustes de cierre (como el regrouping), otro para valoraciones (como Foreign Currency Valuation), y los restantes para ajustes de auditoría o de consolidación que llegan más tarde. Esta secuencia evita que un ajuste tardío pise a uno que ya se había cerrado.
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Período especial</th><th>Uso típico</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="mod-name">13</span></td><td>Primeros ajustes de cierre — regrouping/reclassification.</td></tr>
+          <tr><td><span class="mod-name">14</span></td><td>Valoraciones — foreign currency valuation.</td></tr>
+          <tr><td><span class="mod-name">15</span></td><td>Ajustes de auditoría posteriores a la primera revisión.</td></tr>
+          <tr><td><span class="mod-name">16</span></td><td>Ajustes finales de consolidación a nivel grupo.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos nuevos introducidos en este archivo (Tipo 2 — Profundización). No repite los ya vistos en el glosario de Tipo 1.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Down Payment</div><div class="term-es">Anticipo</div><div class="term-def">Pago adelantado a un proveedor, registrado en una cuenta especial hasta compensarse contra la factura final.</div></div>
+      <div class="gcard"><div class="term-en">Withholding Tax</div><div class="term-es">Retención de Impuestos</div><div class="term-def">Porción del pago a un proveedor que se retiene y declara ante la autoridad fiscal en su nombre.</div></div>
+      <div class="gcard"><div class="term-en">Automatic Payment Program</div><div class="term-es">Programa de Pago Automático</div><div class="term-def">Proceso que selecciona facturas vencidas y genera pagos en tanda de forma automática.</div></div>
+      <div class="gcard"><div class="term-en">Parked Document</div><div class="term-es">Documento Parqueado</div><div class="term-def">Documento guardado sin contabilizar; no impacta ningún saldo hasta que se contabiliza.</div></div>
+      <div class="gcard"><div class="term-en">Invoice Verification</div><div class="term-es">Verificación de Factura</div><div class="term-def">Control que compara la factura contra la orden de compra y la entrada de mercadería antes de contabilizar.</div></div>
+      <div class="gcard"><div class="term-en">Three-Way Match</div><div class="term-es">Verificación de Tres Vías</div><div class="term-def">Comparación de orden de compra, entrada de mercadería y factura como condición para contabilizar sin bloqueo.</div></div>
+      <div class="gcard"><div class="term-en">Tolerance Group</div><div class="term-es">Grupo de Tolerancia</div><div class="term-def">Margen configurado dentro del cual una diferencia se compensa automáticamente sin revisión manual.</div></div>
+      <div class="gcard"><div class="term-en">Lowest Value Principle</div><div class="term-es">Principio del Valor Más Bajo</div><div class="term-def">Criterio de valoración que solo registra pérdidas no realizadas, nunca ganancias, por prudencia contable.</div></div>
+      <div class="gcard"><div class="term-en">Exchange Rate Type</div><div class="term-es">Tipo de Tasa de Cambio</div><div class="term-def">Categoría de tasa de cambio (ej. cierre, promedio) usada según el propósito de la valoración.</div></div>
+      <div class="gcard"><div class="term-en">Sort Key</div><div class="term-es">Clave de Ordenación</div><div class="term-def">Parámetro que determina, entre otras cosas, la cuenta destino al reclasificar un saldo en regrouping.</div></div>
+      <div class="gcard"><div class="term-en">Reversal Posting</div><div class="term-es">Contabilización de Reversión</div><div class="term-def">Asiento automático que anula, al inicio del período siguiente, un ajuste contabilizado en el cierre anterior.</div></div>
+      <div class="gcard"><div class="term-en">Valuation Method</div><div class="term-es">Método de Valoración</div><div class="term-def">Criterio que determina qué diferencias de tipo de cambio se contabilizan y en qué dirección.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T2 · Profundización — Closing Activities in Accounts Payable · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>

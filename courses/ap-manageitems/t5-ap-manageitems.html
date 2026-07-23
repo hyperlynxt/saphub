@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · Manage Supplier Items — Holístico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E0A56F;--t1-dark:#A85F2B;--t1-pale:rgba(224,165,111,0.12);--t1-pale-border:rgba(224,165,111,0.38);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--gold:#D4AF37;--pill-sec:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#1C1206 55%,#2A1A08 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;}
+  .pill-gold{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-sec{border:1.5px solid var(--pill-sec);color:var(--pill-sec);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);color:rgba(255,255,255,0.62);margin:0 0 16px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,165,111,0.14);border-left:4px solid var(--t1-dark);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(168,95,43,0.35);}
+  .sec-titles{flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;}
+  .sec-tags{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .orbit-tag{background:rgba(10,15,28,0.07);border:1px solid #CBD5E1;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--muted);}
+  .type-tag-pos{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--t1-dark);}
+  .type-tag-flow{background:rgba(26,75,140,0.08);border:1.5px solid rgba(26,75,140,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:#1A4B8C;}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">AP Analysis within the AP Lifecycle</a>
+  <a href="#s2">Clearing as the Closing Mechanism</a>
+  <a href="#s3">Three Correction Paths</a>
+  <a href="#s4">Analysis Apps within Fiori AP</a>
+  <a href="#s5">Document Lifecycle Flow</a>
+  <a href="#s6">Reversal Flow</a>
+  <a href="#s7">Reset &amp; Reverse Flow</a>
+  <a href="#s8">Cross-Module Connections</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-gold">Accounts Payable</span>
+      <span class="pill pill-sec">Financial Accounting</span>
+    </div>
+    <h1>Manage Supplier <span class="accent">Line Items</span></h1>
+    <h2>Holístico — Ecosistema y Posicionamiento</h2>
+    <p class="desc">Dónde viven el análisis de cuentas y las correcciones de AP dentro del ecosistema FI, cómo se posiciona la compensación en el ciclo de vida de las partidas, y qué fluye hacia adentro y hacia afuera de cada proceso clave.</p>
+    <div class="hlbox">Holístico — <b>Manage Supplier Line Items (AP)</b>, Tipo 5. 4 secciones de posicionamiento + 4 secciones de flujos. Sin glosario.</div>
+  </div>
+</header>
+
+<main>
+
+<!-- S1 — STACK: AP ANALYSIS WITHIN THE AP LIFECYCLE -->
+<section class="section" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Account Analysis within the AP Lifecycle</span><span class="sec-title-es">El análisis como capa sobre las transacciones</span></div><div class="sec-desc">Las apps de análisis y corrección de este curso viven en la capa superior del ciclo de vida de AP — actúan sobre lo que las capas inferiores ya contabilizaron.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 FI — Accounts Payable</span><span class="type-tag-pos">📍 Posicionamiento — Stack</span></div>
+  <div class="theory-box"><strong>Las apps de análisis son la capa de revisión y corrección sobre las transacciones:</strong> el ciclo de vida de AP tiene capas. Primero se configuran los maestros (Vendor Master, payment terms). Luego se contabilizan las transacciones (facturas, pagos). Sobre ese resultado se construye la capa de análisis y corrección — que es exactamente lo que cubre este curso: Display Supplier Balances, Manage Supplier Line Items, Reverse, Clear.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 310" xmlns="http://www.w3.org/2000/svg">
+      <!-- Layer 5: Management/Reporting (top) -->
+      <rect x="220" y="14" width="420" height="40" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="30" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12">FI Reporting &amp; Period-End Closing</text>
+      <text x="430" y="46" text-anchor="middle" fill="rgba(255,255,255,0.60)" font-family="Inter" font-size="9.5">Financial Statements · AP KPIs · Audit Reports</text>
+      <!-- Layer 4: Analysis + Correction (highlighted) -->
+      <rect x="100" y="68" width="660" height="52" rx="8" fill="#A85F2B"/>
+      <text x="430" y="90" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13.5">AP Analysis &amp; Correction ★</text>
+      <text x="430" y="108" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="Inter" font-size="10">Display Supplier Balances · Manage Supplier Line Items · Reverse Invoice · Manual Clearing · Reset Clearing</text>
+      <!-- Layer 3: AP Transactions -->
+      <rect x="36" y="134" width="788" height="46" rx="8" fill="#1A4B8C"/>
+      <text x="430" y="155" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">AP Transactions</text>
+      <text x="430" y="172" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="10">Post Supplier Invoice (KR) · Execute Payment (KZ) · Post Credit Memo (KG) · Payment Program Run</text>
+      <!-- Layer 2: FI Documents -->
+      <rect x="20" y="194" width="820" height="44" rx="8" fill="#1A6B99"/>
+      <text x="430" y="213" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">FI Documents — Universal Journal (ACDOCA)</text>
+      <text x="430" y="230" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="10">Journal entries · Open items · Cleared items · Reversal references · Clearing document numbers</text>
+      <!-- Layer 1: Master Data + Config -->
+      <rect x="20" y="252" width="820" height="42" rx="8" fill="#5A6B8C"/>
+      <text x="430" y="270" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Master Data &amp; Configuration</text>
+      <text x="430" y="287" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Vendor Master · Payment Terms · Reversal Reasons · Document Types · Posting Periods · Number Ranges</text>
+      <!-- Side label -->
+      <text x="16" y="110" fill="#A85F2B" font-family="Inter" font-size="9" font-weight="700" writing-mode="tb" transform="rotate(-90,16,110)">This course ★</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S2 — MAMUSHKA: CLEARING AS THE CLOSING MECHANISM -->
+<section class="section" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Clearing as the Closing Mechanism of the AP Sub-Ledger</span><span class="sec-title-es">La compensación como mecanismo de cierre de las partidas</span></div><div class="sec-desc">Una partida compensada vive dentro de una serie de contenedores: la partida individual → la cuenta del proveedor → el subledger de AP → el GL.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 FI — AP Sub-ledger</span><span class="type-tag-pos">📍 Posicionamiento — Mamushka</span></div>
+  <div class="theory-box"><strong>El estado "cleared" no es solo un color — es la resolución de una obligación en múltiples niveles:</strong> cuando una partida se compensa, su estado cambia en el subledger del proveedor, que a su vez actualiza la cuenta de reconciliación del GL. La compensación es el mecanismo que "cierra" una obligación en todos los niveles a la vez — desde la partida individual hasta el balance general.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer: Balance Sheet / GL -->
+      <rect x="20" y="20" width="820" height="240" rx="14" fill="none" stroke="#0A0F1C" stroke-width="2.5"/>
+      <text x="56" y="44" fill="#0A0F1C" font-family="Syne" font-weight="800" font-size="12.5">Balance Sheet / General Ledger (GL)</text>
+      <text x="56" y="60" fill="#5A6B8C" font-family="Inter" font-size="9.5">Reconciliation account 191100 — aggregate AP balance</text>
+      <!-- FI-AP layer -->
+      <rect x="50" y="68" width="760" height="168" rx="12" fill="none" stroke="#1A4B8C" stroke-width="2"/>
+      <text x="72" y="88" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="12">FI-AP Sub-ledger — all vendor accounts</text>
+      <!-- Vendor account layer -->
+      <rect x="80" y="96" width="700" height="116" rx="10" fill="none" stroke="#A85F2B" stroke-width="2" stroke-dasharray="6,3"/>
+      <text x="100" y="115" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="11.5">Vendor Account (one per supplier)</text>
+      <text x="100" y="131" fill="#A85F2B" font-family="Inter" font-size="9.5">Open items + Cleared items · saldo neto = cumulative balance</text>
+      <!-- Open item -->
+      <rect x="110" y="138" width="210" height="60" rx="9" fill="#C0392B"/>
+      <text x="215" y="162" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">OPEN Item ★</text>
+      <text x="215" y="180" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Obligation pending · affects AP balance</text>
+      <!-- Cleared item -->
+      <rect x="340" y="138" width="210" height="60" rx="9" fill="#3D7A52"/>
+      <text x="445" y="162" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">CLEARED Item</text>
+      <text x="445" y="180" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Obligation closed · still visible for audit</text>
+      <!-- Arrow between them -->
+      <line x1="320" y1="168" x2="338" y2="168" stroke="#A85F2B" stroke-width="2"/>
+      <polygon points="335,163 345,168 335,173" fill="#A85F2B"/>
+      <text x="329" y="162" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="9">Payment /</text>
+      <text x="329" y="175" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="9">Clearing</text>
+      <!-- Note right -->
+      <rect x="570" y="138" width="190" height="60" rx="9" fill="#0A0F1C"/>
+      <text x="665" y="160" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Clearing Journal</text>
+      <text x="665" y="177" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Entry Number</text>
+      <text x="665" y="192" text-anchor="middle" fill="rgba(255,255,255,0.62)" font-family="Inter" font-size="9">Links Open ↔ Cleared pair</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S3 — BIFURCATION: THREE CORRECTION PATHS -->
+<section class="section" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Three Correction Paths — Parallel Branches</span><span class="sec-title-es">Tres caminos de corrección paralelos desde el mismo origen</span></div><div class="sec-desc">Cuando una factura contabilizada tiene un error o discrepancia, existen tres ramas de corrección distintas — cada una para un tipo de situación diferente.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 FI — Document Correction</span><span class="type-tag-pos">📍 Posicionamiento — Bifurcación</span></div>
+  <div class="theory-box"><strong>No todas las correcciones son reversiones:</strong> el origen es el mismo — se detecta un problema en una factura contabilizada. Pero desde ahí, el camino correcto depende de la naturaleza del problema. Modificar un campo editable, reversar un error interno, o registrar una nota de crédito del proveedor son tres ramas paralelas con lógica contable distinta. Confundirlas genera problemas de trazabilidad o saldos incorrectos.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a3t5mi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker>
+        <marker id="a3t5mig" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B8C"/></marker>
+      </defs>
+      <!-- Root -->
+      <rect x="295" y="14" width="270" height="50" rx="10" fill="#0A0F1C"/>
+      <text x="430" y="36" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Problem Detected in Posted Invoice</text>
+      <text x="430" y="54" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Error or discrepancy found after posting</text>
+      <!-- Fork lines -->
+      <line x1="430" y1="64" x2="430" y2="86" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="152" y1="86" x2="708" y2="86" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="152" y1="86" x2="152" y2="108" stroke="#5A6B8C" stroke-width="1.8" marker-end="url(#a3t5mig)"/>
+      <line x1="430" y1="86" x2="430" y2="108" stroke="#A85F2B" stroke-width="2.5" marker-end="url(#a3t5mi)"/>
+      <line x1="708" y1="86" x2="708" y2="108" stroke="#5A6B8C" stroke-width="1.8" marker-end="url(#a3t5mig)"/>
+      <!-- Branch 1: Edit field (muted) -->
+      <rect x="28" y="108" width="248" height="60" rx="10" fill="#5A6B8C" opacity="0.8"/>
+      <text x="152" y="133" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Change Field Value</text>
+      <text x="152" y="151" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Edit Line Item · if field is modifiable</text>
+      <!-- Branch 1 sub -->
+      <rect x="28" y="184" width="248" height="52" rx="8" fill="#5A6B8C" opacity="0.6"/>
+      <text x="152" y="206" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Result: same document,</text>
+      <text x="152" y="222" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">field corrected</text>
+      <line x1="152" y1="168" x2="152" y2="184" stroke="#5A6B8C" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#a3t5mig)"/>
+      <!-- Branch 2: Reversal (highlighted center) -->
+      <rect x="306" y="108" width="248" height="60" rx="10" fill="#A85F2B"/>
+      <text x="430" y="130" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">Reverse Invoice ★</text>
+      <text x="430" y="148" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="Inter" font-size="9.5">If field NOT modifiable · internal error</text>
+      <!-- Branch 2 sub -->
+      <rect x="306" y="184" width="248" height="52" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="206" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Result: new offsetting document,</text>
+      <text x="430" y="222" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">original cleared · pair linked</text>
+      <line x1="430" y1="168" x2="430" y2="184" stroke="#A85F2B" stroke-width="2" marker-end="url(#a3t5mi)"/>
+      <!-- Branch 3: Credit Memo (muted) -->
+      <rect x="584" y="108" width="248" height="60" rx="10" fill="#5A6B8C" opacity="0.8"/>
+      <text x="708" y="133" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Register Credit Memo</text>
+      <text x="708" y="151" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Supplier-issued KG · return / discount</text>
+      <!-- Branch 3 sub -->
+      <rect x="584" y="184" width="248" height="52" rx="8" fill="#5A6B8C" opacity="0.6"/>
+      <text x="708" y="206" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Result: independent KG document,</text>
+      <text x="708" y="222" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">cleared manually against invoice</text>
+      <line x1="708" y1="168" x2="708" y2="184" stroke="#5A6B8C" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#a3t5mig)"/>
+      <!-- Bottom labels -->
+      <text x="152" y="260" text-anchor="middle" fill="#5A6B8C" font-family="Inter" font-size="9.5">Condition: field must be editable</text>
+      <text x="430" y="260" text-anchor="middle" fill="#A85F2B" font-family="Inter" font-size="9.5" font-weight="700">Condition: doc must be OPEN (or reset first)</text>
+      <text x="708" y="260" text-anchor="middle" fill="#5A6B8C" font-family="Inter" font-size="9.5">Condition: supplier sends the credit memo</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S4 — FOUNDATION + PILLARS: ANALYSIS APPS WITHIN FIORI AP -->
+<section class="section" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Analysis Apps within the Fiori AP Landscape</span><span class="sec-title-es">Las apps de análisis como pilares del AP operativo</span></div><div class="sec-desc">Display Supplier Balances y Manage Supplier Line Items son dos de los pilares analítico-transaccionales del AP Fiori, todos apoyados en la misma base de datos.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 SAP Fiori — AP Apps</span><span class="type-tag-pos">📍 Posicionamiento — Fundación + Pilares</span></div>
+  <div class="theory-box"><strong>Las apps de este curso no están solas — son pilares dentro del landscape Fiori de AP:</strong> las apps de este curso (Display Supplier Balances, Manage Supplier Line Items, Manage Journal Entries) se apoyan en la misma base que las apps de procesamiento de facturas y pagos: el Universal Journal de ACDOCA. Cada pilar tiene su especialidad, pero todos leen y escriben del mismo origen.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 270" xmlns="http://www.w3.org/2000/svg">
+      <!-- Foundation -->
+      <rect x="20" y="222" width="820" height="40" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="240" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Universal Journal — ACDOCA (S/4HANA)</text>
+      <text x="430" y="257" text-anchor="middle" fill="rgba(255,255,255,0.62)" font-family="Inter" font-size="9.5">Single source · all FI postings · open items · clearing data · reversal references</text>
+      <!-- Pillar connectors -->
+      <line x1="100" y1="56" x2="100" y2="222" stroke="#D0D4DC" stroke-width="1.5"/>
+      <line x1="250" y1="56" x2="250" y2="222" stroke="#D0D4DC" stroke-width="1.5"/>
+      <line x1="400" y1="56" x2="400" y2="222" stroke="#A85F2B" stroke-width="3"/>
+      <line x1="560" y1="56" x2="560" y2="222" stroke="#A85F2B" stroke-width="3"/>
+      <line x1="720" y1="56" x2="720" y2="222" stroke="#D0D4DC" stroke-width="1.5"/>
+      <!-- Pillar boxes -->
+      <rect x="20" y="12" width="160" height="44" rx="9" fill="#1A4B8C" opacity="0.8"/>
+      <text x="100" y="31" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Create Supplier</text>
+      <text x="100" y="48" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Invoice (KR posting)</text>
+      <rect x="170" y="12" width="160" height="44" rx="9" fill="#1A6B99" opacity="0.8"/>
+      <text x="250" y="31" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Payment Program</text>
+      <text x="250" y="48" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">KZ · clears open items</text>
+      <!-- Highlighted pillars from this course -->
+      <rect x="320" y="4" width="160" height="54" rx="9" fill="#A85F2B"/>
+      <text x="400" y="26" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="11.5">Display Supplier</text>
+      <text x="400" y="42" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="11.5">Balances ★</text>
+      <text x="400" y="54" text-anchor="middle" fill="#FFD9A8" font-family="Inter" font-size="8.5">Analysis · periods</text>
+      <rect x="480" y="4" width="160" height="54" rx="9" fill="#A85F2B"/>
+      <text x="560" y="22" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="11">Manage Supplier</text>
+      <text x="560" y="38" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="11">Line Items ★</text>
+      <text x="560" y="52" text-anchor="middle" fill="#FFD9A8" font-family="Inter" font-size="8.5">Analysis + Reverse + Clear</text>
+      <rect x="640" y="12" width="160" height="44" rx="9" fill="#5A6B8C" opacity="0.8"/>
+      <text x="720" y="31" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">AP Overview</text>
+      <text x="720" y="48" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">KPIs · DPO · Overdue</text>
+      <text x="430" y="195" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="10.5">← The two apps of this course →</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S5 — FLOW: DOCUMENT LIFECYCLE -->
+<section class="section" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Document Lifecycle — From Invoice to Resolution</span><span class="sec-title-es">Ciclo de vida de una partida de proveedor</span></div><div class="sec-desc">Los dos caminos posibles de una partida desde que se contabiliza hasta que queda resuelta — pago normal o reversión por error.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 AP Document Lifecycle</span><span class="type-tag-flow">🔄 Flujo — Ciclo de vida</span></div>
+  <div class="theory-box"><strong>Toda partida de AP empieza abierta y termina compensada — la diferencia está en el cómo:</strong> el ciclo comienza siempre igual: se contabiliza una factura y aparece una partida abierta. Pero la resolución puede tomar dos caminos: el camino normal (pago → cleared) o el camino de corrección (reversión → cleared). En ambos casos el estado final es "cleared" — pero el audit trail que queda atrás es muy diferente.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a5t5mi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/></marker>
+        <marker id="a5t5mr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker>
+      </defs>
+      <!-- Start -->
+      <rect x="20" y="80" width="150" height="60" rx="10" fill="#1A4B8C"/>
+      <text x="95" y="107" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Invoice</text>
+      <text x="95" y="124" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">KR posted · FY doc created</text>
+      <line x1="170" y1="110" x2="210" y2="110" stroke="#3D7A52" stroke-width="2" marker-end="url(#a5t5mi)"/>
+      <!-- Open -->
+      <rect x="210" y="80" width="140" height="60" rx="10" fill="#C0392B"/>
+      <text x="280" y="105" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">OPEN</text>
+      <text x="280" y="121" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">✗ Obligation pending</text>
+      <!-- Normal path (top) -->
+      <line x1="350" y1="95" x2="430" y2="58" stroke="#3D7A52" stroke-width="1.8" marker-end="url(#a5t5mi)"/>
+      <text x="380" y="68" fill="#3D7A52" font-family="Syne" font-weight="700" font-size="9.5">Payment run</text>
+      <rect x="430" y="28" width="150" height="50" rx="8" fill="#3D7A52"/>
+      <text x="505" y="50" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">CLEARED ✓</text>
+      <text x="505" y="66" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Normal resolution</text>
+      <text x="505" y="28" text-anchor="middle" fill="#3D7A52" font-family="Syne" font-weight="700" font-size="9.5">Normal path</text>
+      <!-- Manual clearing path -->
+      <line x1="350" y1="110" x2="430" y2="110" stroke="#3D7A52" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a5t5mi)"/>
+      <rect x="430" y="88" width="150" height="44" rx="8" fill="#3D7A52" opacity="0.75"/>
+      <text x="505" y="107" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">CLEARED ✓</text>
+      <text x="505" y="123" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Manual clearing (KG match)</text>
+      <!-- Reversal path (bottom) -->
+      <line x1="350" y1="128" x2="430" y2="168" stroke="#A85F2B" stroke-width="2" marker-end="url(#a5t5mr)"/>
+      <text x="378" y="168" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="9.5">Reversal</text>
+      <rect x="430" y="152" width="150" height="50" rx="8" fill="#A85F2B"/>
+      <text x="505" y="174" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">REVERSED</text>
+      <text x="505" y="191" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Error correction path</text>
+      <!-- After reversal → cleared pair -->
+      <line x1="580" y1="177" x2="640" y2="177" stroke="#A85F2B" stroke-width="2" marker-end="url(#a5t5mr)"/>
+      <rect x="640" y="152" width="200" height="50" rx="8" fill="#0A0F1C"/>
+      <text x="740" y="172" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Original: CLEARED by reversal</text>
+      <text x="740" y="188" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9.5">New doc: offsetting entry</text>
+      <!-- Labels -->
+      <text x="430" y="224" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">All paths end in CLEARED — but only the reversal path creates a linked document pair with audit trail</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S6 — FLOW: REVERSAL -->
+<section class="section" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reversal Flow — Step by Step</span><span class="sec-title-es">Flujo de reversión — paso a paso</span></div><div class="sec-desc">El recorrido completo de una reversión: desde la detección del error hasta la verificación del par de documentos en Related Documents.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 FI — Document Reversal</span><span class="type-tag-flow">🔄 Flujo — Reversal</span></div>
+  <div class="theory-box"><strong>La reversión atraviesa dos apps y produce un par de documentos permanente:</strong> no es una operación de una sola pantalla. El flujo empieza en Manage Supplier Line Items (identificar el documento), continúa en Manage Journal Entries (ejecutar la reversión), y termina verificando en Related Documents que el par está correctamente vinculado. Cada uno de estos pasos deja una marca en ACDOCA que no puede eliminarse.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 190" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a6t5mi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker></defs>
+      <!-- Step boxes -->
+      <rect x="14" y="44" width="128" height="74" rx="9" fill="#5A6B8C"/>
+      <text x="78" y="70" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">1. Locate</text>
+      <text x="78" y="86" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Manage Supplier</text>
+      <text x="78" y="100" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Line Items</text>
+      <text x="78" y="114" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="8.5">Verify: OPEN status</text>
+      <line x1="142" y1="81" x2="176" y2="81" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6t5mi)"/>
+      <rect x="176" y="44" width="128" height="74" rx="9" fill="#1A4B8C"/>
+      <text x="240" y="70" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">2. Navigate</text>
+      <text x="240" y="86" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Click Journal</text>
+      <text x="240" y="100" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Entry Number (blue)</text>
+      <text x="240" y="114" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="8.5">→ Manage Journal Entries</text>
+      <line x1="304" y1="81" x2="338" y2="81" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6t5mi)"/>
+      <rect x="338" y="44" width="128" height="74" rx="9" fill="#C9932E"/>
+      <text x="402" y="70" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">3. Configure</text>
+      <text x="402" y="86" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Select Reversal</text>
+      <text x="402" y="100" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Reason + Date</text>
+      <text x="402" y="114" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="8.5">Eg. 01 — Wrong posting</text>
+      <line x1="466" y1="81" x2="500" y2="81" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6t5mi)"/>
+      <rect x="500" y="44" width="128" height="74" rx="9" fill="#A85F2B"/>
+      <text x="564" y="70" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="10.5">4. Execute</text>
+      <text x="564" y="86" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Click Reverse</text>
+      <text x="564" y="100" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">"Journal entry was</text>
+      <text x="564" y="114" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">reversed" ✓</text>
+      <line x1="628" y1="81" x2="662" y2="81" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6t5mi)"/>
+      <rect x="662" y="44" width="184" height="74" rx="9" fill="#0A0F1C"/>
+      <text x="754" y="68" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">5. Verify</text>
+      <text x="754" y="84" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">Original: "Reversed By: XXXXXX"</text>
+      <text x="754" y="98" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9">New doc: "Reversed Document: XXXXX"</text>
+      <text x="754" y="112" text-anchor="middle" fill="#E0A56F" font-family="Inter" font-size="8.5">Related Documents tab confirms pair</text>
+      <!-- App labels below -->
+      <text x="78" y="138" text-anchor="middle" fill="#5A6B8C" font-family="Inter" font-size="8.5">App 1</text>
+      <text x="78" y="150" text-anchor="middle" fill="#5A6B8C" font-family="JetBrains Mono" font-size="8">Manage Supplier</text>
+      <text x="78" y="162" text-anchor="middle" fill="#5A6B8C" font-family="JetBrains Mono" font-size="8">Line Items</text>
+      <text x="402" y="138" text-anchor="middle" fill="#A85F2B" font-family="Inter" font-size="8.5">App 2</text>
+      <text x="402" y="150" text-anchor="middle" fill="#A85F2B" font-family="JetBrains Mono" font-size="8">Manage Journal</text>
+      <text x="402" y="162" text-anchor="middle" fill="#A85F2B" font-family="JetBrains Mono" font-size="8">Entries</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S7 — FLOW: RESET AND REVERSE -->
+<section class="section" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Reset Clearing + Reverse — The Two-Step Correction</span><span class="sec-title-es">Resetear y reversar — la corrección en dos pasos</span></div><div class="sec-desc">El flujo más complejo: cuando un documento ya fue compensado, la corrección requiere deshacer primero la compensación y luego la factura.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 FI — Document Correction</span><span class="type-tag-flow">🔄 Flujo — Reset + Reverse</span></div>
+  <div class="theory-box"><strong>El orden importa: primero resetear, luego reversar — y nunca al revés:</strong> intentar reversar un documento cleared genera un error de sistema. El proceso de dos pasos existe porque cada operación tiene un propósito distinto: el Reset Clearing deshace el vínculo entre la factura y su pago (los separa), y la Reversal crea el documento opuesto que neutraliza la factura. Si se saltara el Reset, el pago quedaría vinculado a un documento que ya no existe como open item.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 210" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a7t5mi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker>
+        <marker id="a7t5mr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C0392B"/></marker>
+      </defs>
+      <!-- Initial state: Invoice (cleared) + Payment -->
+      <rect x="14" y="28" width="140" height="58" rx="8" fill="#3D7A52"/>
+      <text x="84" y="53" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Invoice</text>
+      <text x="84" y="70" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">CLEARED ✓</text>
+      <rect x="14" y="98" width="140" height="58" rx="8" fill="#3D7A52" opacity="0.7"/>
+      <text x="84" y="123" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Payment</text>
+      <text x="84" y="140" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">KZ · also cleared</text>
+      <!-- Link between them -->
+      <rect x="60" y="86" width="48" height="12" rx="4" fill="#0A0F1C"/>
+      <text x="84" y="96" text-anchor="middle" fill="white" font-family="JetBrains Mono" font-size="8">CJE linked</text>
+      <!-- Error indicator -->
+      <rect x="90" y="14" width="100" height="18" rx="4" fill="#C0392B"/>
+      <text x="140" y="26" text-anchor="middle" fill="white" font-family="Inter" font-size="9" font-weight="700">Error found in Invoice</text>
+      <!-- Step 1: Reset clearing -->
+      <rect x="192" y="60" width="36" height="56" rx="4" fill="#C9932E" opacity="0.3"/>
+      <text x="210" y="84" text-anchor="middle" fill="#C9932E" font-family="Syne" font-weight="800" font-size="11" writing-mode="tb">STEP 1</text>
+      <line x1="154" y1="88" x2="240" y2="88" stroke="#C9932E" stroke-width="2.5" marker-end="url(#a7t5mi)"/>
+      <text x="197" y="78" text-anchor="middle" fill="#C9932E" font-family="Syne" font-weight="700" font-size="9">Reset</text>
+      <text x="197" y="91" text-anchor="middle" fill="#C9932E" font-family="Syne" font-weight="700" font-size="9">Clearing</text>
+      <!-- After reset: Invoice OPEN again, Payment floats -->
+      <rect x="240" y="28" width="140" height="58" rx="8" fill="#C0392B"/>
+      <text x="310" y="53" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Invoice</text>
+      <text x="310" y="70" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">OPEN ✗ again</text>
+      <rect x="240" y="98" width="140" height="58" rx="8" fill="#5A6B8C" opacity="0.7"/>
+      <text x="310" y="123" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Payment</text>
+      <text x="310" y="140" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Now unlinked / open</text>
+      <!-- Step 2: Reverse -->
+      <rect x="418" y="28" width="36" height="58" rx="4" fill="#A85F2B" opacity="0.3"/>
+      <text x="436" y="60" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="800" font-size="11" writing-mode="tb">STEP 2</text>
+      <line x1="380" y1="57" x2="468" y2="57" stroke="#A85F2B" stroke-width="2.5" marker-end="url(#a7t5mi)"/>
+      <text x="423" y="47" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="9">Reverse</text>
+      <text x="423" y="60" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="9">Invoice</text>
+      <!-- Final state -->
+      <rect x="468" y="12" width="140" height="58" rx="8" fill="#5A6B8C" opacity="0.7"/>
+      <text x="538" y="38" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Original Invoice</text>
+      <text x="538" y="56" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">CLEARED by reversal doc</text>
+      <rect x="468" y="80" width="140" height="58" rx="8" fill="#A85F2B"/>
+      <text x="538" y="107" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Reversal Doc</text>
+      <text x="538" y="124" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Offsetting entry</text>
+      <rect x="468" y="148" width="140" height="48" rx="8" fill="#5A6B8C" opacity="0.6"/>
+      <text x="538" y="170" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Payment (KZ)</text>
+      <text x="538" y="186" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9">Re-open · can be re-applied</text>
+      <!-- Note -->
+      <text x="700" y="80" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="11">Mandatory sequence:</text>
+      <text x="700" y="97" fill="#5A6B8C" font-family="Inter" font-size="10">1. Reset Clearing</text>
+      <text x="700" y="113" fill="#5A6B8C" font-family="Inter" font-size="10">2. Reverse Invoice</text>
+      <text x="700" y="132" fill="#C0392B" font-family="Inter" font-size="9.5" font-weight="700">Cannot skip step 1</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S8 — FLOW: CROSS-MODULE CONNECTIONS -->
+<section class="section" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div class="sec-titles"><div class="sec-title-row"><span class="sec-title-en">Cross-Module Connections of AP Line Item Management</span><span class="sec-title-es">Conexiones de las partidas de AP con otros módulos</span></div><div class="sec-desc">Qué módulos y procesos dependen de — o son afectados por — el estado correcto de las partidas de AP.</div></div></div>
+  <div class="sec-tags"><span class="orbit-tag">🪐 Finance Ecosystem</span><span class="type-tag-flow">🔄 Flujo — Cross-módulo</span></div>
+  <div class="theory-box"><strong>El estado de las partidas de AP impacta en cuatro módulos simultáneamente:</strong> una partida abierta en AP bloquea el pago, distorsiona el DPO, genera un saldo en GL, y puede afectar el análisis de costos de CO. Una reversión mal ejecutada puede descuadrar la reconciliación GL-subledger. Entender estas conexiones permite dimensionar el impacto de cada operación de análisis y corrección.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 270" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a8t5mi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker>
+        <marker id="a8t5mo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1A6B99"/></marker>
+      </defs>
+      <!-- Central -->
+      <rect x="310" y="96" width="240" height="78" rx="12" fill="#A85F2B"/>
+      <text x="430" y="124" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">AP Line Items</text>
+      <text x="430" y="144" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">Open · Cleared · Reversed</text>
+      <text x="430" y="162" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">Display Balances · Manage Items</text>
+      <!-- GL (top) -->
+      <rect x="310" y="14" width="240" height="50" rx="9" fill="#1A4B8C"/>
+      <text x="430" y="37" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">General Ledger (GL)</text>
+      <text x="430" y="55" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Reconciliation account auto-updates on every posting</text>
+      <line x1="430" y1="64" x2="430" y2="96" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5mi)"/>
+      <text x="436" y="84" fill="#A85F2B" font-family="Inter" font-size="9" font-weight="700">AP → feeds GL</text>
+      <!-- Payment Program (left) -->
+      <rect x="20" y="108" width="210" height="52" rx="9" fill="#1A6B99"/>
+      <text x="125" y="131" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Payment Program</text>
+      <text x="125" y="149" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Only processes OPEN items free of block</text>
+      <line x1="230" y1="134" x2="308" y2="134" stroke="#1A6B99" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5mi)"/>
+      <text x="256" y="126" fill="#1A6B99" font-family="Inter" font-size="9.5" font-weight="700">reads open items</text>
+      <!-- AP KPIs (right) -->
+      <rect x="630" y="108" width="210" height="52" rx="9" fill="#5A6B8C" opacity="0.85"/>
+      <text x="735" y="131" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">AP KPI Apps</text>
+      <text x="735" y="149" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">DPO, Overdue, Aging — read from ACDOCA</text>
+      <line x1="550" y1="134" x2="628" y2="134" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5mi)"/>
+      <text x="572" y="126" fill="#A85F2B" font-family="Inter" font-size="9.5" font-weight="700">AP items → KPIs</text>
+      <!-- Audit / FI Reporting (bottom) -->
+      <rect x="310" y="206" width="240" height="52" rx="9" fill="#5A6B8C" opacity="0.85"/>
+      <text x="430" y="229" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">FI Audit Trail</text>
+      <text x="430" y="247" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Reversal pairs · clearing history · always visible in ACDOCA</text>
+      <line x1="430" y1="174" x2="430" y2="206" stroke="#A85F2B" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#a8t5mi)"/>
+      <text x="436" y="194" fill="#A85F2B" font-family="Inter" font-size="9" font-weight="700">AP → feeds audit</text>
+    </svg>
+  </div>
+</section>
+
+</main>
+<footer>T5 · Holístico — Manage Supplier Line Items (AP) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · Supplier Invoice Optimization — Holístico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--t1:#E0A56F;--t1-dark:#A85F2B;--t1-pale:rgba(224,165,111,0.12);--t1-pale-border:rgba(224,165,111,0.38);--navy-950:#0A0F1C;--navy-900:#0F1A2E;--navy-800:#16233B;--gold:#D4AF37;--pill-secondary:#8AA0C4;--ink:#16213A;--muted:#64748B;--bg:#F7F8FA;--border:#E3E7EE;--white:#FFFFFF;--body:#3D4A5F;--cat-fi:#1A4B8C;--cat-co:#1A6B99;--cat-log:#00A896;--cat-purchase:#7E4FBF;--cat-sales:#E07B39;--cat-legal:#C9932E;--cat-alert:#C0392B;--cat-steel:#5A6B8C;}
+  *{box-sizing:border-box;}html{scroll-behavior:smooth;}body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .topnav{position:sticky;top:0;z-index:50;background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:4px;padding:0 24px;overflow-x:auto;white-space:nowrap;}
+  .topnav-brand{font-family:'JetBrains Mono',monospace;color:var(--t1);font-size:12px;font-weight:600;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.12);margin-right:8px;flex-shrink:0;}
+  .topnav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:12.5px;font-weight:500;padding:14px 10px;border-bottom:2px solid transparent;flex-shrink:0;transition:color .15s;}
+  .topnav a:hover{color:var(--t1);border-bottom-color:var(--t1);}
+  .hero{background:linear-gradient(135deg,#0A0F1C 0%,#1C1206 55%,#2A1A08 100%);padding:56px 40px 40px;color:white;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .pill{border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:600;background:transparent;letter-spacing:.2px;}
+  .pill-primary{border:1.5px solid var(--gold);color:var(--gold);}
+  .pill-secondary{border:1.5px solid var(--pill-secondary);color:var(--pill-secondary);}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.4vw,3.2rem);margin:0 0 6px;line-height:1.08;}
+  .hero h1 .accent{color:var(--t1);}
+  .hero h2{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.1rem,2.2vw,1.5rem);color:rgba(255,255,255,0.62);margin:0 0 18px;}
+  .hero p.desc{max-width:640px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);margin:0 0 22px;}
+  .hlbox{background:rgba(224,165,111,0.14);border-left:4px solid var(--t1);border-radius:0 8px 8px 0;padding:13px 18px;max-width:680px;font-size:13.5px;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .hlbox b{color:var(--t1);font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+  .section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:64px;}
+  .section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
+  .sec-num{background:var(--t1-dark);color:white;font-family:'JetBrains Mono',monospace;font-weight:600;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;box-shadow:0 2px 6px rgba(168,95,43,0.35);}
+  .sec-titles{display:flex;flex-direction:column;gap:2px;flex:1;min-width:220px;}
+  .sec-title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .sec-title-en{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);}
+  .sec-title-es{font-family:'Inter',sans-serif;font-weight:500;font-size:0.92rem;color:var(--muted);}
+  .sec-desc{color:var(--muted);font-size:0.92rem;margin-top:2px;}
+  .sec-tags{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .orbit-tag{background:rgba(10,15,28,0.08);border:1px solid #CBD5E1;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--muted);}
+  .type-tag-pos{background:var(--t1-pale);border:1.5px solid var(--t1-pale-border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--t1-dark);}
+  .type-tag-flow{background:rgba(26,75,140,0.08);border:1.5px solid rgba(26,75,140,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--cat-fi);}
+  .type-tag-map{background:rgba(0,168,150,0.08);border:1.5px solid rgba(0,168,150,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--cat-log);}
+  .theory-box{background:var(--t1-pale);border-left:4px solid var(--t1-dark);border-radius:0 10px 10px 0;padding:16px 22px;margin-bottom:24px;font-size:0.94rem;line-height:1.7;color:var(--ink);}
+  .theory-box strong{color:var(--t1-dark);font-weight:700;}
+  .visual-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;box-shadow:0 2px 12px rgba(10,15,28,0.05);overflow-x:auto;}
+  .visual-wrap svg{display:block;margin:0 auto;}
+  footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:0.78rem;background:var(--bg);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">Optimization within S/4HANA Finance</a>
+  <a href="#s2">Manual vs Automated Paths</a>
+  <a href="#s3">Document Principles Foundation</a>
+  <a href="#s4">Finance Digitalization Stack</a>
+  <a href="#s5">Invoice Arrival Channels</a>
+  <a href="#s6">Recurring Entry Flow</a>
+  <a href="#s7">Import/Upload Flow</a>
+  <a href="#s8">Document Change Flow</a>
+</nav>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Payable</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">S/4HANA Finance</span>
+    </div>
+    <h1>Supplier Invoice <span class="accent">Optimization</span></h1>
+    <h2>Holístico — Ecosistema y Posicionamiento</h2>
+    <p class="desc">Dónde viven las herramientas de optimización dentro del ecosistema SAP, cómo se posicionan en la arquitectura de FI-AP, y qué fluye hacia adentro y hacia afuera en cada mecanismo de eficiencia del curso.</p>
+    <div class="hlbox">Holístico — <b>Supplier Invoice Optimization (AP)</b>, Tipo 5. 4 secciones de posicionamiento + 4 secciones de flujos. Sin glosario.</div>
+  </div>
+</header>
+<main>
+
+<!-- S1 — MAMUSHKA: OPTIMIZATION TOOLS WITHIN S/4HANA FINANCE -->
+<section class="section" id="s1">
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Invoice Optimization within S/4HANA Finance</span><span class="sec-title-es">Cadena de contenedores</span></div>
+      <div class="sec-desc">Las cuatro técnicas de optimización viven dentro de AP, que vive dentro de FI, que vive dentro de S/4HANA Finance.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 S/4HANA Finance</span>
+    <span class="type-tag-pos">📍 Posicionamiento</span>
+  </div>
+  <div class="theory-box"><strong>Contención pura:</strong> las herramientas de optimización (user settings, recurring entries, import/upload, document changes) no son módulos separados — son <strong>funcionalidades dentro de Accounts Payable</strong>, que a su vez es un sub-módulo de <strong>Financial Accounting (FI)</strong>, que forma parte de <strong>S/4HANA Finance</strong>, que es el componente financiero del <strong>S/4HANA Digital Core</strong>. Cada capa de contenedor le da contexto y reglas a lo que está adentro.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 310" xmlns="http://www.w3.org/2000/svg">
+      <!-- S/4HANA Core — outermost -->
+      <rect x="20" y="20" width="820" height="270" rx="14" fill="none" stroke="#0A0F1C" stroke-width="2.5"/>
+      <text x="44" y="44" fill="#0A0F1C" font-family="Syne" font-weight="800" font-size="13">S/4HANA Digital Core</text>
+      <!-- S/4HANA Finance -->
+      <rect x="50" y="54" width="760" height="212" rx="12" fill="none" stroke="#1A4B8C" stroke-width="2"/>
+      <text x="70" y="74" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="12">S/4HANA Finance</text>
+      <!-- Financial Accounting FI -->
+      <rect x="80" y="84" width="700" height="158" rx="10" fill="rgba(26,75,140,0.05)" stroke="#1A4B8C" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="100" y="104" fill="#1A4B8C" font-family="Syne" font-weight="700" font-size="11.5">Financial Accounting (FI)</text>
+      <!-- Accounts Payable -->
+      <rect x="110" y="114" width="640" height="110" rx="10" fill="rgba(168,95,43,0.07)" stroke="#A85F2B" stroke-width="2"/>
+      <text x="130" y="134" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="11.5">Accounts Payable (FI-AP)</text>
+      <!-- Optimization Tools -->
+      <rect x="140" y="146" width="580" height="64" rx="8" fill="#A85F2B"/>
+      <text x="430" y="173" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">AP Invoice Optimization Tools</text>
+      <text x="430" y="194" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="10">User Settings · Recurring Entries · Import/Upload · Document Changes</text>
+      <!-- Note -->
+      <text x="430" y="293" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Las herramientas de optimización son funcionalidades nativas de FI-AP — no módulos separados</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S2 — BIFURCATION: MANUAL VS AUTOMATED PATHS -->
+<section class="section" id="s2">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Manual Path vs Automated Path in AP</span><span class="sec-title-es">El punto de bifurcación en el procesamiento</span></div>
+      <div class="sec-desc">Cómo AP se bifurca entre el camino manual tradicional y el camino automatizado que habilitan las herramientas del curso.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 FI-AP Automation</span>
+    <span class="type-tag-pos">📍 Posicionamiento</span>
+  </div>
+  <div class="theory-box"><strong>El árbol de bifurcación revela la elección de eficiencia:</strong> cuando llega una factura de proveedor, AP se bifurca en dos caminos. El camino <strong>manual</strong> (entrada directa, una factura a la vez) sigue siendo válido. El camino <strong>automatizado</strong> usa las herramientas de optimización según el tipo de factura: recurrente → Recurring Entries; masiva desde Excel → Import; electrónica/PDF → Upload. Ambos caminos desembocan en el mismo resultado: un documento FI contabilizado en el GL.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 320" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a2t5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker></defs>
+      <!-- Root: Supplier Invoice arrives -->
+      <rect x="290" y="14" width="280" height="54" rx="10" fill="#5A6B8C"/>
+      <text x="430" y="38" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="13">Supplier Invoice Arrives</text>
+      <text x="430" y="56" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9.5">AP Accountant must process</text>
+      <!-- Branch line -->
+      <line x1="430" y1="68" x2="430" y2="88" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="170" y1="88" x2="690" y2="88" stroke="#94A3B8" stroke-width="2"/>
+      <line x1="170" y1="88" x2="170" y2="108" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a2t5)"/>
+      <line x1="690" y1="88" x2="690" y2="108" stroke="#A85F2B" stroke-width="2.5" marker-end="url(#a2t5)"/>
+      <!-- Manual path (left, attenuated) -->
+      <rect x="50" y="108" width="240" height="56" rx="10" fill="#5A6B8C" opacity="0.7"/>
+      <text x="170" y="132" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Manual Entry</text>
+      <text x="170" y="150" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Create Supplier Invoice · one by one</text>
+      <!-- Automated path (right, highlighted) -->
+      <rect x="570" y="108" width="240" height="56" rx="10" fill="#A85F2B"/>
+      <text x="690" y="132" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12.5">Optimization Tools ★</text>
+      <text x="690" y="150" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Match tool to invoice type</text>
+      <!-- Automated sub-branches -->
+      <line x1="610" y1="164" x2="560" y2="194" stroke="#A85F2B" stroke-width="1.5" marker-end="url(#a2t5)"/>
+      <line x1="660" y1="164" x2="660" y2="194" stroke="#A85F2B" stroke-width="1.5" marker-end="url(#a2t5)"/>
+      <line x1="720" y1="164" x2="750" y2="194" stroke="#A85F2B" stroke-width="1.5" marker-end="url(#a2t5)"/>
+      <rect x="460" y="194" width="130" height="44" rx="8" fill="#0A0F1C"/>
+      <text x="525" y="213" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Recurring</text>
+      <text x="525" y="229" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">Same invoice every period</text>
+      <rect x="595" y="194" width="130" height="44" rx="8" fill="#1A4B8C"/>
+      <text x="660" y="213" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Import (Excel)</text>
+      <text x="660" y="229" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">Multiple invoices in batch</text>
+      <rect x="730" y="194" width="110" height="44" rx="8" fill="#00A896"/>
+      <text x="785" y="213" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Upload (PDF)</text>
+      <text x="785" y="229" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">Electronic documents</text>
+      <!-- Both converge to GL -->
+      <line x1="170" y1="164" x2="330" y2="264" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a2t5)"/>
+      <line x1="525" y1="238" x2="450" y2="264" stroke="#A85F2B" stroke-width="1.5" marker-end="url(#a2t5)"/>
+      <line x1="660" y1="238" x2="490" y2="264" stroke="#A85F2B" stroke-width="1.5" marker-end="url(#a2t5)"/>
+      <line x1="785" y1="238" x2="530" y2="264" stroke="#A85F2B" stroke-width="1.5" marker-end="url(#a2t5)"/>
+      <!-- Converge point: FI Document -->
+      <rect x="330" y="264" width="200" height="42" rx="8" fill="#1A4B8C"/>
+      <text x="430" y="283" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">FI Document Posted</text>
+      <text x="430" y="298" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">AP subledger · GL updated</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S3 — FOUNDATION + PILLARS: ACCOUNTING PRINCIPLES AS BASE -->
+<section class="section" id="s3">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Document Immutability as the Foundation</span><span class="sec-title-es">Los principios contables como base</span></div>
+      <div class="sec-desc">Las reglas de inmutabilidad contable como base sobre la que se apoyan todos los pilares de AP — incluyendo las herramientas de optimización.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 Accounting Principles</span>
+    <span class="type-tag-pos">📍 Posicionamiento</span>
+  </div>
+  <div class="theory-box"><strong>Fundación compartida:</strong> todas las operaciones de AP — crear facturas, automatizarlas, cambiarlas — se apoyan sobre una base común: los <strong>principios contables de inmutabilidad</strong>. Estos principios definen qué puede hacerse y qué no, independientemente de qué herramienta use el contador. La columna del medio — <strong>Document Changes</strong> — es el pilar que más depende explícitamente de esta base: sus reglas son consecuencia directa de los principios contables.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Foundation bar -->
+      <rect x="20" y="228" width="820" height="44" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="248" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Accounting Principles — Document Immutability</text>
+      <text x="430" y="264" text-anchor="middle" fill="rgba(255,255,255,0.62)" font-family="Inter" font-size="9.5">Posted data has updated account balances · cannot be reversed retroactively · audit trail must be complete</text>
+      <!-- Pillar connectors -->
+      <line x1="130" y1="80" x2="130" y2="228" stroke="#D4D8DC" stroke-width="1.5"/>
+      <line x1="310" y1="80" x2="310" y2="228" stroke="#D4D8DC" stroke-width="1.5"/>
+      <line x1="490" y1="80" x2="490" y2="228" stroke="#D4D8DC" stroke-width="1.5"/>
+      <line x1="670" y1="80" x2="670" y2="228" stroke="#A85F2B" stroke-width="3"/>
+      <!-- Pillars -->
+      <rect x="20" y="20" width="220" height="60" rx="10" fill="#5A6B8C"/>
+      <text x="130" y="46" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">User Settings</text>
+      <text x="130" y="64" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Edit Supplier Invoice Settings</text>
+      <rect x="200" y="20" width="220" height="60" rx="10" fill="#1A4B8C"/>
+      <text x="310" y="46" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Recurring Entries</text>
+      <text x="310" y="64" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Automate periodic invoices</text>
+      <rect x="380" y="20" width="220" height="60" rx="10" fill="#00A896"/>
+      <text x="490" y="46" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Import / Upload</text>
+      <text x="490" y="64" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Mass processing tools</text>
+      <rect x="560" y="14" width="220" height="68" rx="10" fill="#A85F2B"/>
+      <text x="670" y="40" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">Document Changes</text>
+      <text x="670" y="58" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Inter" font-size="9.5">Single &amp; mass change of posted docs</text>
+      <text x="670" y="74" text-anchor="middle" fill="#FFD9A8" font-family="Inter" font-size="9">★ Directly governed by the foundation</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S4 — STACK: FINANCE DIGITALIZATION LAYERS -->
+<section class="section" id="s4">
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">AP Optimization in the Finance Digitalization Stack</span><span class="sec-title-es">La pila de digitalización financiera</span></div>
+      <div class="sec-desc">Cómo las herramientas de optimización del curso se ubican en el stack de madurez digital de Finance.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 Finance Digitalization</span>
+    <span class="type-tag-pos">📍 Posicionamiento</span>
+  </div>
+  <div class="theory-box"><strong>El stack de digitalización va de operativo a estratégico:</strong> las herramientas de optimización del curso viven en la <strong>capa de Process Efficiency</strong> — por encima de las transacciones manuales pero por debajo de la integración digital avanzada (EDI, APIs) y el analytics. Son el primer escalón de automatización real que el contador de AP puede activar sin necesidad de integraciones técnicas complejas.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- Layer 5: Analytics & Reporting -->
+      <rect x="200" y="18" width="460" height="38" rx="8" fill="#0A0F1C"/>
+      <text x="430" y="34" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Analytics &amp; Strategic Reporting</text>
+      <text x="430" y="50" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9.5">KPIs · Days Payable Outstanding · Cash forecasting</text>
+      <!-- Layer 4: Digital Integration -->
+      <rect x="130" y="70" width="600" height="38" rx="8" fill="#1A4B8C"/>
+      <text x="430" y="86" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Digital Integration</text>
+      <text x="430" y="102" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9.5">EDI · API connections · e-invoicing mandates · OCR intelligence</text>
+      <!-- Layer 3: Process Efficiency (highlighted) -->
+      <rect x="40" y="122" width="780" height="54" rx="8" fill="#A85F2B"/>
+      <text x="430" y="145" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13">Process Efficiency Tools ★</text>
+      <text x="430" y="163" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Inter" font-size="10">User Settings · Recurring Entries · Import from Excel · Upload PDFs · Document Changes</text>
+      <text x="430" y="178" text-anchor="middle" fill="#FFD9A8" font-family="Inter" font-size="9">← Este curso vive aquí</text>
+      <!-- Layer 2: FI Document Management -->
+      <rect x="20" y="190" width="820" height="38" rx="8" fill="#1A6B99"/>
+      <text x="430" y="206" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">FI Document Management</text>
+      <text x="430" y="222" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9.5">Posting rules · Document types · Number ranges · Account determination · Vendor master</text>
+      <!-- Layer 1: Manual Transactions -->
+      <rect x="20" y="242" width="820" height="38" rx="8" fill="#5A6B8C"/>
+      <text x="430" y="258" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="12">Manual Transactions</text>
+      <text x="430" y="274" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter" font-size="9.5">One-by-one invoice entry · Paper-based · Full manual intervention</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S5 — FLOWS IN: INVOICE ARRIVAL CHANNELS -->
+<section class="section" id="s5">
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Invoice Arrival Channels — Flows In</span><span class="sec-title-es">Canales de llegada — flujos de entrada</span></div>
+      <div class="sec-desc">Las rutas por las que las facturas de proveedores llegan al sistema SAP, y qué herramienta del curso corresponde a cada canal.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 AP Invoice Channels</span>
+    <span class="type-tag-flow">🔄 Flujo de entrada</span>
+  </div>
+  <div class="theory-box"><strong>No existe un solo canal de llegada:</strong> las facturas de proveedores llegan a AP de múltiples formas simultáneamente. Cada canal tiene su herramienta de procesamiento correspondiente. El contador de AP necesita identificar el canal de cada factura y elegir la herramienta adecuada — no todas las facturas se procesan igual, y usar la herramienta correcta para cada canal es la clave de la eficiencia.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a5s" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker></defs>
+      <!-- Source channels -->
+      <rect x="20" y="20" width="170" height="56" rx="8" fill="#5A6B8C"/>
+      <text x="105" y="44" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Fixed-Amount Invoice</text>
+      <text x="105" y="60" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Same amount every period (rent)</text>
+      <rect x="20" y="90" width="170" height="56" rx="8" fill="#1A4B8C"/>
+      <text x="105" y="114" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Supplier Excel File</text>
+      <text x="105" y="130" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Multiple invoices in spreadsheet</text>
+      <rect x="20" y="160" width="170" height="56" rx="8" fill="#00A896"/>
+      <text x="105" y="184" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Electronic Document</text>
+      <text x="105" y="200" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">PDF, scan, e-invoice</text>
+      <rect x="670" y="20" width="170" height="56" rx="8" fill="#C9932E"/>
+      <text x="755" y="44" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Manual Invoice</text>
+      <text x="755" y="60" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">One-off, unique invoice</text>
+      <rect x="670" y="90" width="170" height="56" rx="8" fill="#7E4FBF"/>
+      <text x="755" y="114" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Settings Change</text>
+      <text x="755" y="130" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">User wants to personalize AP screen</text>
+      <!-- Arrows to center -->
+      <line x1="190" y1="48" x2="330" y2="130" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5s)"/>
+      <line x1="190" y1="118" x2="330" y2="140" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5s)"/>
+      <line x1="190" y1="188" x2="330" y2="150" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5s)"/>
+      <line x1="670" y1="48" x2="530" y2="130" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5s)"/>
+      <line x1="670" y1="118" x2="530" y2="140" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a5s)"/>
+      <!-- Center: tool selection -->
+      <rect x="330" y="104" width="200" height="72" rx="10" fill="#A85F2B"/>
+      <text x="430" y="130" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">AP Optimization</text>
+      <text x="430" y="147" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="12.5">Toolkit</text>
+      <text x="430" y="165" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Identify channel → choose tool</text>
+      <!-- Channel-tool mapping at bottom -->
+      <text x="105" y="242" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="10.5">→ Recurring Entry</text>
+      <text x="105" y="258" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="10.5">→ Import Invoices</text>
+      <text x="105" y="274" text-anchor="middle" fill="#A85F2B" font-family="Syne" font-weight="700" font-size="10.5">→ Upload Invoices</text>
+      <text x="755" y="242" text-anchor="middle" fill="#C9932E" font-family="Syne" font-weight="700" font-size="10.5">→ Manual Create</text>
+      <text x="755" y="258" text-anchor="middle" fill="#7E4FBF" font-family="Syne" font-weight="700" font-size="10.5">→ Edit Settings</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S6 — RECURRING ENTRY FLOW -->
+<section class="section" id="s6">
+  <div class="sec-head">
+    <div class="sec-num">06</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Recurring Entry — End-to-End Flow</span><span class="sec-title-es">Flujo de principio a fin de las entradas recurrentes</span></div>
+      <div class="sec-desc">Desde el contrato real que genera la necesidad hasta los asientos FI periódicos que el contador de AP y los auditores pueden consultar.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 AP Automation</span>
+    <span class="type-tag-flow">🔄 Flujo — Recurring Entries</span>
+  </div>
+  <div class="theory-box"><strong>Cuatro pasos desde el contrato hasta el asiento mensual:</strong> el flujo de entradas recurrentes transforma un contrato de negocio (ej. alquiler) en asientos FI automáticos sin intervención manual repetida. La clave está en que la <strong>carga de trabajo se hace una sola vez</strong> (crear la plantilla) y el sistema se encarga de todo lo demás — a menos que algo cambie.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a6s" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker></defs>
+      <!-- Step 1 -->
+      <rect x="20" y="60" width="155" height="80" rx="10" fill="#5A6B8C"/>
+      <text x="97" y="88" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">1. Business</text>
+      <text x="97" y="104" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Agreement</text>
+      <text x="97" y="124" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Rental contract</text>
+      <text x="97" y="138" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Fixed monthly amount</text>
+      <!-- Step 2 -->
+      <line x1="175" y1="100" x2="215" y2="100" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6s)"/>
+      <rect x="215" y="60" width="155" height="80" rx="10" fill="#A85F2B"/>
+      <text x="292" y="88" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">2. Create</text>
+      <text x="292" y="104" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Template (Once)</text>
+      <text x="292" y="124" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Original Document</text>
+      <text x="292" y="138" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Pattern + Start Date</text>
+      <!-- Step 3 -->
+      <line x1="370" y1="100" x2="410" y2="100" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6s)"/>
+      <rect x="410" y="60" width="170" height="80" rx="10" fill="#0A0F1C"/>
+      <text x="495" y="88" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">3. Recurring</text>
+      <text x="495" y="104" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Entry Program</text>
+      <text x="495" y="124" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9.5">Runs each period</text>
+      <text x="495" y="138" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Scheduled / manual run</text>
+      <!-- Step 4 -->
+      <line x1="580" y1="100" x2="620" y2="100" stroke="#A85F2B" stroke-width="2" marker-end="url(#a6s)"/>
+      <rect x="620" y="20" width="115" height="60" rx="8" fill="#1A4B8C"/>
+      <text x="677" y="46" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">FI Doc</text>
+      <text x="677" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Period 1 (May)</text>
+      <rect x="745" y="20" width="115" height="60" rx="8" fill="#1A4B8C" opacity="0.75"/>
+      <text x="802" y="46" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">FI Doc</text>
+      <text x="802" y="63" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Period 2 (June)</text>
+      <rect x="620" y="120" width="115" height="60" rx="8" fill="#1A4B8C" opacity="0.55"/>
+      <text x="677" y="146" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">FI Doc</text>
+      <text x="677" y="162" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9">Period 3 (July)</text>
+      <rect x="745" y="120" width="115" height="60" rx="8" fill="#1A4B8C" opacity="0.35"/>
+      <text x="802" y="154" text-anchor="middle" fill="white" font-family="Inter" font-size="16">···</text>
+      <line x1="677" y1="80" x2="677" y2="100" stroke="#A85F2B" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#a6s)"/>
+      <line x1="802" y1="80" x2="720" y2="100" stroke="#A85F2B" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#a6s)"/>
+      <text x="430" y="195" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Carga de trabajo del contador: solo el paso 2 · El programa hace el paso 3 automáticamente cada período</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S7 — IMPORT/UPLOAD FLOW -->
+<section class="section" id="s7">
+  <div class="sec-head">
+    <div class="sec-num">07</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Import &amp; Upload — Parallel Paths to the GL</span><span class="sec-title-es">Dos rutas paralelas hacia el Libro Mayor</span></div>
+      <div class="sec-desc">Cómo los dos canales masivos (Import desde Excel y Upload de electrónicos) convergen en el mismo resultado: documentos FI en el GL.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 AP Mass Processing</span>
+    <span class="type-tag-flow">🔄 Flujo — Import / Upload</span>
+  </div>
+  <div class="theory-box"><strong>Rutas paralelas, destino común:</strong> Import y Upload son herramientas independientes que operan desde insumos distintos (datos tabulares vs documentos de imagen) pero ambas producen el mismo resultado final: documentos FI contabilizados en el AP subledger y en el GL Universal Journal. La diferencia está en el insumo, el proceso de validación y el tipo de adjunto que queda en SAP.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 260" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a7s" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker></defs>
+      <!-- Import path (top) -->
+      <rect x="20" y="20" width="140" height="50" rx="8" fill="#1A4B8C"/>
+      <text x="90" y="43" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Excel File</text>
+      <text x="90" y="59" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">Supplier invoice data</text>
+      <line x1="160" y1="45" x2="200" y2="45" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7s)"/>
+      <rect x="200" y="20" width="160" height="50" rx="8" fill="#A85F2B"/>
+      <text x="280" y="43" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Import Supplier</text>
+      <text x="280" y="58" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Invoices app</text>
+      <line x1="360" y1="45" x2="400" y2="45" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7s)"/>
+      <rect x="400" y="20" width="140" height="50" rx="8" fill="#C9932E"/>
+      <text x="470" y="38" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">Validate</text>
+      <text x="470" y="52" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9">Row-level error check</text>
+      <text x="470" y="64" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="8.5">Post valid rows only</text>
+      <line x1="540" y1="45" x2="580" y2="80" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7s)"/>
+      <!-- Upload path (bottom) -->
+      <rect x="20" y="130" width="140" height="50" rx="8" fill="#00A896"/>
+      <text x="90" y="153" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">PDF / Image</text>
+      <text x="90" y="169" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">Electronic invoice doc</text>
+      <line x1="160" y1="155" x2="200" y2="155" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7s)"/>
+      <rect x="200" y="130" width="160" height="50" rx="8" fill="#A85F2B"/>
+      <text x="280" y="153" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Upload Supplier</text>
+      <text x="280" y="168" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Invoices app</text>
+      <line x1="360" y1="155" x2="400" y2="155" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7s)"/>
+      <rect x="400" y="130" width="140" height="50" rx="8" fill="#00A896" opacity="0.85"/>
+      <text x="470" y="148" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="10.5">OCR + Link</text>
+      <text x="470" y="162" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9">Extract data from image</text>
+      <text x="470" y="174" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="8.5">Attach PDF to SAP doc</text>
+      <line x1="540" y1="155" x2="580" y2="130" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7s)"/>
+      <!-- Converge: AP Subledger -->
+      <rect x="580" y="80" width="140" height="50" rx="8" fill="#7E4FBF"/>
+      <text x="650" y="103" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">AP Subledger</text>
+      <text x="650" y="120" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Inter" font-size="9">FI Document · Vendor open item</text>
+      <line x1="720" y1="105" x2="760" y2="105" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a7s)"/>
+      <!-- GL -->
+      <rect x="760" y="80" width="80" height="50" rx="8" fill="#0A0F1C"/>
+      <text x="800" y="102" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">GL</text>
+      <text x="800" y="118" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Universal</text>
+      <text x="430" y="230" text-anchor="middle" fill="#64748B" font-family="Inter" font-size="10">Import y Upload son rutas paralelas que convergen en el mismo AP subledger y GL</text>
+    </svg>
+  </div>
+</section>
+
+<!-- S8 — DOCUMENT CHANGE FLOW -->
+<section class="section" id="s8">
+  <div class="sec-head">
+    <div class="sec-num">08</div>
+    <div class="sec-titles">
+      <div class="sec-title-row"><span class="sec-title-en">Document Change — Decision &amp; Propagation Flow</span><span class="sec-title-es">Flujo de decisión y propagación del cambio</span></div>
+      <div class="sec-desc">Desde la detección de un error o actualización necesaria hasta el impacto del cambio en el programa de pagos.</div>
+    </div>
+  </div>
+  <div class="sec-tags">
+    <span class="orbit-tag">🪐 AP Document Management</span>
+    <span class="type-tag-map">🗺 Flujo de decisión</span>
+  </div>
+  <div class="theory-box"><strong>El cambio en un documento no termina en el documento:</strong> cuando Jennifer modifica un campo (ej. payment terms) en una partida abierta, el cambio no solo afecta ese documento. Actualiza la <strong>fecha de vencimiento esperada</strong>, lo que impacta directamente en el <strong>programa de pagos</strong> que usa esas fechas para determinar cuándo ejecutar el pago. El Change Document Log registra el cambio para auditores. Si el campo no es modificable, la única salida es reversar y recontabilizar.</div>
+  <div class="visual-wrap">
+    <svg viewBox="0 0 860 290" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a8s" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A85F2B"/></marker>
+        <marker id="a8r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C0392B"/></marker>
+        <marker id="a8g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+      </defs>
+      <!-- Trigger -->
+      <rect x="20" y="110" width="155" height="60" rx="10" fill="#C9932E"/>
+      <text x="97" y="136" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Error / Update</text>
+      <text x="97" y="152" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Detected in posted FI doc</text>
+      <text x="97" y="165" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter" font-size="9">Reference # wrong · Pay.terms changed</text>
+      <!-- Decision: field type -->
+      <line x1="175" y1="140" x2="215" y2="140" stroke="#A85F2B" stroke-width="2" marker-end="url(#a8s)"/>
+      <rect x="215" y="110" width="160" height="60" rx="10" fill="#0A0F1C"/>
+      <text x="295" y="136" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">Is the field</text>
+      <text x="295" y="152" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11.5">changeable?</text>
+      <text x="295" y="167" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-family="Inter" font-size="9">Check Change Rules config</text>
+      <!-- NO path (up) -->
+      <line x1="295" y1="110" x2="295" y2="70" stroke="#C0392B" stroke-width="1.8" marker-end="url(#a8r)"/>
+      <rect x="215" y="20" width="160" height="50" rx="8" fill="#C0392B"/>
+      <text x="295" y="42" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">NEVER changeable</text>
+      <text x="295" y="58" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">→ Reverse &amp; re-post</text>
+      <text x="230" y="96" fill="#C0392B" font-family="Syne" font-weight="700" font-size="9.5">NO</text>
+      <!-- YES path (right) -->
+      <line x1="375" y1="140" x2="415" y2="140" stroke="#2E7D32" stroke-width="1.8" marker-end="url(#a8g)"/>
+      <text x="390" y="130" fill="#2E7D32" font-family="Syne" font-weight="700" font-size="9.5">YES</text>
+      <!-- Conditions check -->
+      <rect x="415" y="110" width="165" height="60" rx="10" fill="#1A6B99"/>
+      <text x="497" y="132" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Conditions met?</text>
+      <text x="497" y="148" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Period open?</text>
+      <text x="497" y="162" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Item not cleared?</text>
+      <!-- Apply change -->
+      <line x1="580" y1="140" x2="620" y2="140" stroke="#2E7D32" stroke-width="1.8" marker-end="url(#a8g)"/>
+      <rect x="620" y="110" width="125" height="60" rx="10" fill="#A85F2B"/>
+      <text x="682" y="132" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Apply Change</text>
+      <text x="682" y="148" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Inter" font-size="9.5">Single or mass</text>
+      <text x="682" y="162" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Manage Line Items</text>
+      <!-- Propagation -->
+      <line x1="682" y1="170" x2="682" y2="200" stroke="#A85F2B" stroke-width="1.8" marker-end="url(#a8s)"/>
+      <rect x="595" y="200" width="175" height="60" rx="10" fill="#1A4B8C"/>
+      <text x="682" y="224" text-anchor="middle" fill="white" font-family="Syne" font-weight="700" font-size="11">Impact Propagation</text>
+      <text x="682" y="240" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Inter" font-size="9.5">Change Doc Log updated</text>
+      <text x="682" y="253" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Inter" font-size="9">Payment program uses new terms</text>
+      <!-- Log -->
+      <line x1="745" y1="140" x2="810" y2="140" stroke="#5A6B8C" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a8s)"/>
+      <rect x="810" y="118" width="40" height="44" rx="6" fill="#5A6B8C"/>
+      <text x="830" y="137" text-anchor="middle" fill="white" font-family="Inter" font-size="9" font-weight="600">Audit</text>
+      <text x="830" y="149" text-anchor="middle" fill="white" font-family="Inter" font-size="9" font-weight="600">Log</text>
+    </svg>
+  </div>
+</section>
+
+</main>
+<footer>T5 · Holístico — Supplier Invoice Optimization (AP) · Biblioteca de Guías SAP</footer>
+</body>
+</html>

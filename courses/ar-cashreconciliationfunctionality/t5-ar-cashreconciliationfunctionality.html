@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T5 · SAP Cash Reconciliation Functionality — Holístico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t5:#E0A56F; --t5-dark:#A85F2E; --t5-pale:rgba(224,165,111,0.14); --t5-pale-border:rgba(224,165,111,0.4);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE; --white:#FFFFFF; --body:#3D4A5F;
+    --steel:#5A6B8C; --teal:#00A896;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t5); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t5); border-bottom-color:var(--t5); }
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A2015 55%, #4A3320 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t5); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:var(--t5-pale); border-left:4px solid var(--t5); border-radius:0 8px 8px 0; padding:13px 18px;
+    max-width:660px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t5); font-weight:700; }
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t5-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(168,95,46,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .tag-row{ display:flex; align-items:center; gap:8px; margin-top:4px; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .orbit-tag{ display:inline-flex; align-items:center; gap:5px; font-size:9.5px; line-height:1.4; font-weight:700;
+    letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px;
+    background:rgba(168,95,46,0.1); color:var(--t5-dark); vertical-align:middle; }
+  .kind-tag{ display:inline-flex; align-items:center; font-size:9px; line-height:1.4; font-weight:700; letter-spacing:.5px;
+    text-transform:uppercase; padding:3px 11px; border-radius:20px; color:white; vertical-align:middle; }
+  .kind-tag.kind-nest{ background:var(--steel); }
+  .kind-tag.flow{ background:var(--teal); }
+  .theory-box{ background:var(--t5-pale); border-left:4px solid var(--t5-dark); border-radius:0 10px 10px 0;
+    padding:15px 22px; margin-bottom:22px; font-size:0.93rem; line-height:1.7; color:var(--ink); }
+  .theory-box strong{ color:var(--t5-dark); font-weight:700; }
+  .visual-wrap{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:30px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05); overflow-x:auto; }
+  .visual-caption{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:14px; }
+  .nest-stage{ display:flex; justify-content:center; padding:6px 0; min-width:600px; }
+  .nest{ border:2px dashed var(--t5-pale-border); border-radius:26px; padding:36px 32px 26px; position:relative;
+    display:inline-flex; flex-direction:column; align-items:center; }
+  .nest-label{ position:absolute; top:-11px; left:24px; background:white; padding:0 10px; font-size:10.5px; font-weight:700; letter-spacing:.3px; color:var(--t5-dark); }
+  .nest-core{ background:var(--t5-dark); color:white; border-radius:14px; padding:16px 26px; font-family:'Syne',sans-serif; font-weight:800; text-align:center; font-size:0.95rem; }
+  .nest-core .sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:0.7rem; opacity:.85; margin-top:5px; }
+  .layer-stack{ display:flex; flex-direction:column; gap:8px; min-width:520px; align-items:center; }
+  .layer-bar{ width:100%; max-width:460px; border-radius:10px; padding:13px 18px; text-align:center; }
+  .layer-bar.top{ background:var(--t5-pale); border:1.5px solid var(--t5-pale-border); color:var(--t5-dark); font-weight:700; }
+  .layer-bar.mid{ background:var(--t5-dark); color:white; font-weight:700; }
+  .layer-bar.bottom{ background:white; border:2px solid var(--t5-dark); color:var(--t5-dark); font-weight:700; }
+  .layer-bar .sub{ display:block; font-size:0.72rem; font-weight:400; opacity:.8; margin-top:2px; }
+  .layer-arrow{ font-size:16px; color:var(--t5-dark); }
+  .peer-tree{ display:flex; flex-direction:column; align-items:center; min-width:560px; }
+  .peer-parent{ background:var(--t5-dark); color:white; border-radius:10px; padding:12px 22px; font-weight:700; font-size:0.9rem; margin-bottom:4px; }
+  .peer-connector{ width:1px; height:16px; background:var(--t5-pale-border); }
+  .peer-hline{ height:1px; background:var(--t5-pale-border); width:70%; margin-bottom:0; }
+  .peer-row{ display:flex; gap:26px; justify-content:center; margin-top:0; flex-wrap:wrap; }
+  .peer-branch{ display:flex; flex-direction:column; align-items:center; }
+  .peer-vline{ width:1px; height:14px; background:var(--t5-pale-border); }
+  .peer-box{ border-radius:10px; padding:12px 16px; color:white; font-weight:700; font-size:0.8rem; text-align:center; min-width:150px; }
+  .peer-box.a{ background:var(--t5-dark); }
+  .peer-box.b{ background:var(--steel); }
+  .peer-box .sub{ font-weight:400; font-size:0.66rem; opacity:.85; margin-top:3px; }
+  .foundation-stack{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:480px; }
+  .fnd-box{ width:100%; max-width:420px; text-align:center; border-radius:10px; padding:14px 18px; }
+  .fnd-box.top{ background:var(--t5-dark); color:white; font-weight:700; }
+  .fnd-box.bottom{ background:white; border:2px dashed var(--t5-pale-border); color:var(--t5-dark); font-weight:700; }
+  .fnd-arrow{ font-size:18px; color:var(--t5-dark); }
+  .fnd-box .sub{ display:block; font-size:0.72rem; font-weight:400; opacity:.8; margin-top:3px; }
+  .flow-io{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; justify-content:center; min-width:720px; }
+  .io-side{ display:flex; flex-direction:column; gap:9px; }
+  .io-box{ border:1.5px solid var(--t5-pale-border); background:var(--t5-pale); border-radius:8px; padding:10px 15px;
+    font-size:12px; font-weight:600; color:var(--t5-dark); min-width:190px; text-align:center; }
+  .io-box .act{ display:block; font-size:9.5px; font-weight:400; color:var(--muted); margin-top:2px; }
+  .io-arrow{ font-size:24px; color:var(--t5-dark); font-weight:700; }
+  .io-center{ background:var(--t5-dark); color:white; border-radius:12px; padding:18px 22px; text-align:center; min-width:180px; }
+  .io-center .t-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; }
+  .io-center .t-es{ font-size:0.7rem; opacity:.8; margin-top:2px; }
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T5 · HOLÍSTICO</span>
+  <a href="#s1">Nested Inside SAP Cash Application</a>
+  <a href="#s2">A Layer on Top of SAP BTP</a>
+  <a href="#s3">Peer to Rule-Based Clearing</a>
+  <a href="#s4">Standing on Open Item Data</a>
+  <a href="#s5">Input from Bank Statement Processing</a>
+  <a href="#s6">Output to the Universal Journal</a>
+  <a href="#s7">Output to Payment Advice Management</a>
+  <a href="#s8">Round-Trip with the AR/AP Accountant</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Accounts Receivable</span>
+      <span class="pill pill-secondary">SAP Cash Application</span>
+      <span class="pill pill-secondary">SAP BTP</span>
+      <span class="pill pill-secondary">SAP Business AI</span>
+    </div>
+    <h1>SAP Cash Reconciliation Functionality — <span class="accent">Ecosistema</span></h1>
+    <h2>Holístico</h2>
+    <p class="desc">Dónde vive exactamente el motor de Line-Item Matching dentro de SAP Cash Application y de SAP BTP, en qué se diferencia de Rule-Based Clearing ya visto en esta biblioteca, y qué entra y sale hacia contabilidad y payment advices.</p>
+    <div class="hlbox">Resumen Visual — <b>SAP Cash Reconciliation Functionality</b>, Tipo 5 (Holístico). 8 secciones — 4 de posicionamiento (con formas distintas, no solo anidamiento) y 4 de flujo de entrada/salida con actividades puntuales de otros procesos.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- S1 — POSICIONAMIENTO: mamushka -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Nested Inside SAP Cash Application</span>
+          <span class="sec-title-es">Anidado dentro de SAP Cash Application</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Accounts Receivable</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">No es todo Cash Application — es específicamente el par de servicios de Line-Item Matching.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Receivables Line-Item Matching y Payables Line-Item Matching son los dos servicios de ML concretos que viven adentro de SAP Cash Application, la solución más amplia que también cubre captura de payment advices y lockbox.
+    </div>
+    <div class="visual-wrap">
+      <div class="nest-stage">
+        <div class="nest">
+          <span class="nest-label">SAP Cash Application</span>
+          <div class="nest-core">Line-Item Matching<span class="sub">Receivables + Payables</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2 — POSICIONAMIENTO: capas -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">A Layer on Top of SAP BTP</span>
+          <span class="sec-title-es">Una capa arriba de SAP BTP</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 SAP Business Technology Platform</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">El matching en sí no corre "en" S/4HANA — corre sobre la plataforma técnica que lo sostiene.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Los jobs que Linda y José programan desde Fiori disparan procesamiento que efectivamente ocurre en el motor de matching de SAP BTP — S/4HANA Cloud provee los datos y recibe el resultado, pero el cómputo de ML vive en la capa de plataforma.
+    </div>
+    <div class="visual-wrap">
+      <div class="layer-stack">
+        <div class="layer-bar top">Line-Item Matching Jobs<span class="sub">programados desde Fiori</span></div>
+        <div class="layer-arrow">↓ se apoya sobre</div>
+        <div class="layer-bar bottom">Matching Engine (SAP BTP)<span class="sub">cómputo de machine learning</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 — POSICIONAMIENTO: pares -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Peer to Rule-Based Clearing</span>
+          <span class="sec-title-es">Par de Rule-Based Clearing</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Accounts Receivable</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Ya vimos Rule-Based Clearing en otro curso de esta biblioteca — Line-Item Matching es su hermano de ML, no su reemplazo.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Rule-Based Clearing resuelve con reglas de contabilización y procesamiento fijas o configuradas por el usuario; Line-Item Matching resuelve con machine learning entrenado en el historial — ambos actúan sobre el mismo ítem de extracto, en secuencia, sin que uno reemplace al otro.
+    </div>
+    <div class="visual-wrap">
+      <div class="peer-tree">
+        <div class="peer-parent">Cash Reconciliation Mechanisms</div>
+        <div class="peer-connector"></div>
+        <div class="peer-hline"></div>
+        <div class="peer-row">
+          <div class="peer-branch"><div class="peer-vline"></div><div class="peer-box a">Rule-Based Clearing<span class="sub">reglas fijas y configuradas</span></div></div>
+          <div class="peer-branch"><div class="peer-vline"></div><div class="peer-box b">Line-Item Matching<span class="sub">machine learning entrenado</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4 — POSICIONAMIENTO: fundación -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Standing on Open Item Data</span>
+          <span class="sec-title-es">Parado sobre el dato de partidas abiertas</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Accounts Receivable</span>
+          <span class="kind-tag kind-nest">Posicionamiento</span>
+        </div>
+        <div class="sec-desc">Sin el job de Open Item Upload corriendo, no hay nada contra qué emparejar.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Todo el mecanismo de matching depende de que el job de Open Item Upload mantenga actualizada la foto de partidas abiertas — sin ese dato de base, ni las propuestas ni las aclaraciones automáticas tendrían con qué compararse.
+    </div>
+    <div class="visual-wrap">
+      <div class="foundation-stack">
+        <div class="fnd-box top">Line-Item Matching<span class="sub">propuestas y aclaración automática</span></div>
+        <div class="fnd-arrow">↑ se apoya en</div>
+        <div class="fnd-box bottom">Open Item Upload Job<span class="sub">foto actualizada de partidas abiertas</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 — FLUJO: entrada -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Input from Bank Statement Processing</span>
+          <span class="sec-title-es">Entrada desde el procesamiento de extractos</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Bank Accounting</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">No es todo el extracto — son puntualmente los ítems que las reglas dejaron sin resolver.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El job de Automatic Bank Statement Reprocessing consume específicamente los ítems que Rule-Based Clearing no pudo resolver antes — es la actividad puntual de "lo no resuelto por reglas" lo que dispara el análisis con machine learning.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-io">
+        <div class="io-side">
+          <div class="io-box">Unresolved Bank Statement Items<span class="act">actividad de Rule-Based Clearing</span></div>
+        </div>
+        <div class="io-arrow">→</div>
+        <div class="io-center"><div class="t-en">Line-Item Matching</div><div class="t-es">análisis con ML</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 — FLUJO: salida -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Output to the Universal Journal</span>
+          <span class="sec-title-es">Salida hacia el Diario Universal</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 General Ledger</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">Cada match aclarado, ya sea automáticamente o confirmado por el usuario, termina en un asiento real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Ya sea que un ítem cruzó el Target Auto-Clear Accuracy o que Linda confirmó una propuesta a mano, el resultado final es el mismo: un documento contable que impacta el Diario Universal, la fuente de verdad del reporting financiero.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-io">
+        <div class="io-center"><div class="t-en">Match Confirmed (Auto or Manual)</div><div class="t-es">match confirmado</div></div>
+        <div class="io-arrow">→</div>
+        <div class="io-side">
+          <div class="io-box">Post Clearing Document<span class="act">actividad puntual</span></div>
+          <div class="io-box">Universal Journal Entry<span class="act">registro resultante</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 — FLUJO: salida -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Output to Payment Advice Management</span>
+          <span class="sec-title-es">Salida hacia la gestión de payment advices</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Accounts Payable</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">No es todo Accounts Payable — es puntualmente la alerta de factura omitida antes de enviar el advice.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Cuando el chequeo de facturas omitidas detecta una discrepancia, esa señal puntual sale hacia Manage Payment Advices, dando a José la oportunidad de corregir el documento antes de que llegue al proveedor — no después de la disputa.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-io">
+        <div class="io-center"><div class="t-en">Skipped Invoice Detected</div><div class="t-es">factura omitida detectada</div></div>
+        <div class="io-arrow">→</div>
+        <div class="io-side">
+          <div class="io-box">Notify via Situation<span class="act">actividad puntual</span></div>
+          <div class="io-box">Correct Payment Advice<span class="act">consumido por AP</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 — FLUJO: ida y vuelta -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Round-Trip with the AR/AP Accountant</span>
+          <span class="sec-title-es">Ida y vuelta con el contador de AR/AP</span>
+        </div>
+        <div class="tag-row">
+          <span class="orbit-tag">🪐 Accounts Receivable</span>
+          <span class="kind-tag flow">Flujo</span>
+        </div>
+        <div class="sec-desc">El único flujo de los cuatro que vuelve como dato de entrenamiento, no como transacción contable.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Una propuesta de confianza media sale del motor de matching hacia el usuario para confirmación o rechazo. Esa decisión — confirmar o corregir — vuelve al modelo como nuevo dato de entrenamiento, mejorando la próxima predicción sobre un ítem similar.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-io">
+        <div class="io-center"><div class="t-en">Line-Item Matching</div><div class="t-es">propuesta de confianza media</div></div>
+        <div class="io-arrow">⇄</div>
+        <div class="io-side">
+          <div class="io-box">User Confirms / Rejects<span class="act">ida</span></div>
+          <div class="io-box">Feeds Back Into the Model<span class="act">vuelta</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T5 · Holístico — SAP Cash Reconciliation Functionality · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>
