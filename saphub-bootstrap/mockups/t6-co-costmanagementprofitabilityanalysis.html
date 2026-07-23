@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T6 · Cost Management &amp; Profitability Analysis — Q&amp;A | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t6:#E3B341;
+    --t6-dark:#8C6D1B;
+    --t6-pale:rgba(227,179,65,0.14);
+    --t6-pale-border:rgba(227,179,65,0.4);
+    --steel:#5A6B8C;
+    --steel-pale:rgba(90,107,140,0.10);
+    --navy-950:#0A0F1C; --navy-900:#0F1A2E; --navy-800:#16233B;
+    --gold:#D4AF37; --pill-secondary:#8AA0C4;
+    --ink:#16213A; --muted:#64748B; --bg:#F7F8FA; --border:#E3E7EE;
+    --white:#FFFFFF; --body:#3D4A5F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t6); font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500;
+    padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t6); border-bottom-color:var(--t6); }
+
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #2A2410 55%, #4A3A0F 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2rem,4.2vw,3rem); margin:0 0 6px; line-height:1.1; }
+  .hero h1 .accent{ color:var(--t6); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.05rem,2vw,1.4rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:680px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+  .hlbox{ background:rgba(227,179,65,0.14); border-left:4px solid var(--t6); border-radius:0 8px 8px 0;
+    padding:13px 18px; max-width:680px; font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .hlbox b{ color:var(--t6); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:48px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:18px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t6-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(140,109,27,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.4rem; color:var(--ink); }
+
+  .note-box{ background:var(--t6-pale); border-left:4px solid var(--t6-dark); border-radius:0 10px 10px 0;
+    padding:16px 22px; margin-bottom:20px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .note-box strong{ color:var(--t6-dark); font-weight:700; }
+  .note-box ul{ margin:8px 0 0; padding-left:20px; }
+  .note-box li{ margin-bottom:4px; }
+  .note-box .own-take{ display:block; margin-top:10px; font-style:italic; color:var(--muted); font-size:0.87rem; }
+
+  .qa-box{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:20px 22px;
+    margin-bottom:16px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .qa-box:last-child{ margin-bottom:0; }
+  .qa-question{ display:flex; align-items:flex-start; gap:10px; font-family:'Syne',sans-serif; font-weight:700;
+    font-size:1.0rem; color:var(--ink); margin-bottom:14px; line-height:1.4; }
+  .qa-question .q-icon{ font-size:1.1rem; flex-shrink:0; }
+  .qa-answer{ border-radius:0 8px 8px 0; padding:12px 16px; font-size:0.9rem; line-height:1.65; color:var(--body); }
+  .qa-answer + .qa-answer{ margin-top:10px; }
+  .qa-answer p{ margin:8px 0 0; }
+  .qa-answer p:first-of-type{ margin-top:8px; }
+  .qa-answer--doc{ background:var(--t6-pale); border-left:4px solid var(--t6-dark); }
+  .qa-source-tag--doc{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700;
+    letter-spacing:.3px; text-transform:uppercase; color:white; background:var(--t6-dark); padding:3px 10px; border-radius:20px; }
+  .qa-answer--external{ background:var(--steel-pale); border-left:4px dashed var(--steel); }
+  .qa-source-tag--external{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700;
+    letter-spacing:.3px; text-transform:uppercase; color:var(--steel); background:white; border:1.5px dashed var(--steel);
+    padding:2px 9px; border-radius:20px; }
+  .qa-answer--doc strong{ color:var(--t6-dark); }
+  .qa-answer--external strong{ color:var(--steel); }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  /* ---- T6 extras: tables, compare cards, chips, diagrams, step-flow ---- */
+  .data-table{ width:100%; border-collapse:collapse; margin:18px 0 22px; font-size:0.86rem; }
+  .data-table th, .data-table td{ padding:10px 12px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; }
+  .data-table th{ background:#F1F3F6; font-family:'Syne',sans-serif; font-weight:700; color:var(--ink);
+    font-size:0.76rem; text-transform:uppercase; letter-spacing:.4px; }
+  .data-table td strong{ color:var(--t6-dark); }
+  .data-table tr:last-child td{ border-bottom:none; }
+
+  .compare-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:18px 0 22px; }
+  .compare-card{ background:var(--white); border:1px solid var(--border); border-radius:12px; padding:18px 20px; border-top:4px solid var(--steel); }
+  .compare-card.alt{ border-top-color:var(--t6-dark); }
+  .compare-card h4{ margin:0 0 4px; font-family:'Syne',sans-serif; font-weight:700; font-size:0.98rem; color:var(--ink); }
+  .compare-card .ck{ display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.3px; text-transform:uppercase; color:var(--steel); margin-bottom:8px; }
+  .compare-card.alt .ck{ color:var(--t6-dark); }
+  .compare-card p{ margin:0 0 8px; font-size:0.87rem; line-height:1.6; color:var(--body); }
+  .compare-card p:last-child{ margin-bottom:0; }
+  @media (max-width:640px){ .compare-grid{ grid-template-columns:1fr; } }
+
+  .chip-grid{ display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 22px; }
+  .chip{ background:var(--t6-pale); border:1.5px solid var(--t6-pale-border); border-radius:20px; padding:7px 14px;
+    font-size:0.82rem; font-weight:600; color:var(--t6-dark); }
+  .chip.fallback{ background:var(--steel-pale); border:1.5px dashed var(--steel); color:var(--steel); }
+
+  .diagram-wrap{ margin:18px 0 22px; padding:20px 16px; background:var(--white); border:1px solid var(--border); border-radius:12px; }
+  .diagram-wrap svg{ display:block; width:100%; height:auto; }
+  .diagram-cap{ text-align:center; font-size:0.78rem; color:var(--muted); margin-top:8px; }
+
+  .step-flow{ display:flex; flex-direction:column; gap:0; margin:18px 0 22px; }
+  .step-card{ position:relative; display:flex; gap:14px; padding:14px 16px 14px 0; }
+  .step-card:not(:last-child)::after{ content:""; position:absolute; left:19px; top:40px; bottom:-2px; width:2px; background:var(--border); }
+  .step-num{ flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--t6-dark); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px; z-index:1; }
+  .step-num.ext{ background:var(--steel); }
+  .step-body{ flex:1; background:var(--white); border:1px solid var(--border); border-radius:10px; padding:12px 16px; }
+  .step-body h5{ margin:0 0 3px; font-family:'Syne',sans-serif; font-size:0.92rem; color:var(--ink); }
+  .step-body p{ margin:0; font-size:0.83rem; color:var(--body); line-height:1.55; }
+
+  /* ---- origen: original (del documento) vs. repregunta agregada en vivo ---- */
+  .round-tag{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700;
+    letter-spacing:.3px; text-transform:uppercase; padding:3px 11px; border-radius:20px; white-space:nowrap; }
+  .round-tag--followup{ background:#E6F1FB; color:#0C447C; border:1.5px solid #85B7EB; }
+  .qa-box--followup{ border-left:3px solid #85B7EB; padding-left:19px; }
+  .qa-box--followup .qa-question{ margin-bottom:10px; }
+  .qa-box--followup .round-tag{ margin-bottom:12px; }
+  .followup-divider{ display:flex; align-items:center; gap:10px; margin:20px 0 14px; }
+  .followup-divider::before{ content:""; flex:0 0 14px; height:1px; background:#85B7EB; }
+  .followup-divider::after{ content:""; flex:1 1 auto; height:1px; background:#85B7EB; }
+  .sec-followup-flag{ display:inline-block; margin-left:10px; vertical-align:middle; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T6 · Q&amp;A / REPASO</span>
+  <a href="#s1">CO Objects</a>
+  <a href="#s2">Org Levels</a>
+  <a href="#s3">FI vs. MA</a>
+  <a href="#s4">MM/PP/SD → PCA</a>
+  <a href="#s5">Overhead/Product/Margin</a>
+  <a href="#s6">Cost Objects — Solo Costos</a>
+  <a href="#s7">Cost Objects — Costos+Revenue</a>
+  <a href="#s8">WIP &amp; Results Analysis</a>
+  <a href="#s9">COGM</a>
+  <a href="#s10">Material Ledger</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Controlling (CO)</span>
+      <span class="pill pill-secondary">Financial Accounting</span>
+      <span class="pill pill-secondary">Profit Center Accounting</span>
+      <span class="pill pill-secondary">Product Costing</span>
+    </div>
+    <h1>Cost Management <span class="accent">&amp; Profitability</span></h1>
+    <h2>Preguntas y Repaso — Unit 1</h2>
+    <p class="desc">Cada duda que marcaste mientras leías el documento del curso, respondida acá mismo — apoyada primero en lo que dice el material, y solo con conocimiento general de SAP donde el documento se queda corto. Pensado para releer antes de seguir a la Unit 2, no para reemplazar tus notas.</p>
+    <div class="hlbox"><b>13 preguntas del documento resueltas</b> — 8 directamente del documento, 4 combinando documento + conocimiento general, 1 de conocimiento general · más una ronda de repreguntas en vivo (Projects/Internal Orders, Profit Center vs. Cost Center Accounting, Networks, Sales Order + MTS/MTO, WIP/Variance/Results Analysis, COGM/COGS, Material Ledger).</div>
+    <p style="margin-top:12px; font-size:0.8rem; color:#B9C3D6;">Convención: sin marca = pregunta/respuesta original de tus notas del documento. <span class="round-tag round-tag--followup" style="margin:0 4px;">💬 Repregunta — repaso en chat</span> = agregado después, en la ronda de repreguntas en vivo.</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row"><span class="sec-title-en">Management Accounting &amp; CO Objects</span></div>
+      </div>
+    </div>
+    <div class="note-box">
+      <strong>Management Accounting</strong> asigna datos de transacciones de negocio a objetos CO, para dejar claro quién es responsable de gastos operativos e ingresos. Para mostrar el P&amp;L de un segmento de mercado necesitás costos de producción directos + costos auxiliares e ingresos de:
+      <ul>
+        <li><strong>Profitability Segments</strong> — las áreas de mercado que querés analizar</li>
+        <li><strong>Cost Centers</strong> — áreas de responsabilidad, ~departamentos</li>
+        <li><strong>Projects</strong> — evento/actividad con inicio y fin planeados; sus costos e ingresos se recolectan sobre el proyecto</li>
+        <li><strong>Internal Orders</strong> — solo en Private Edition; proyectos con funcionalidad limitada</li>
+      </ul>
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">No me quedó claro los Projects. Are the costs not associated with Segments, Cost Centers, etc.?</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p>Sí se asocian — un proyecto no vive aislado del resto. El documento lo lista como objeto CO que captura costos e ingresos por derecho propio, pero más adelante (en Cost Element Accounting) aclara que los costos entre-cost-centers gestionados en proyectos (WBS-elements) después se <strong>settlean</strong> (liquidan) hacia otros objetos de costo — cost centers, otros proyectos, o directo al resultado de la empresa.</p>
+        <p>En la sección de Parallel Accounting hay un caso concreto: los costos se acumulan en un WBS element y, en un momento dado, se capitalizan a un activo (asset under construction). El proyecto es un punto de recolección intermedio, no un final — eventualmente esos costos migran hacia cost centers, activos, o resultado general.</p>
+      </div>
+      <div class="followup-divider"><span class="round-tag round-tag--followup">💬 Repregunta — repaso en chat</span></div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>Cost Center, Internal Order y Project no son alternativas entre sí — se distinguen por duración y estructura, no por tipo de costo. Cost Center es permanente y solo lleva costos. Internal Order es temporal y liviano, para algo puntual. Project (con sus WBS elements) es temporal pero jerárquico, y es el único de los tres que además puede llevar ingresos.</p>
+      </div>
+      <table class="data-table">
+        <thead><tr><th></th><th>Cost Center</th><th>Internal Order</th><th>Project (WBS)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Duración</strong></td><td>Permanente</td><td>Temporal, acotado</td><td>Temporal, inicio/fin planeado</td></tr>
+          <tr><td><strong>Ingresos</strong></td><td>No</td><td>No (en general)</td><td>Sí</td></tr>
+          <tr><td><strong>Estructura</strong></td><td>Plana (organizacional)</td><td>Plana</td><td>Jerárquica (WBS + Networks)</td></tr>
+          <tr><td><strong>Uso típico</strong></td><td>Departamento / área</td><td>Evento puntual</td><td>Iniciativa compleja y trazable</td></tr>
+          <tr><td><strong>Destino final del costo</strong></td><td>Es el destino</td><td>Puede liquidar a Cost Center</td><td>Liquida a Cost Center, Asset, Profitability Segment</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — sin Q&A, solo repaso -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row"><span class="sec-title-en">Organizational Levels</span></div>
+      </div>
+    </div>
+    <div class="note-box">
+      Los <strong>Organizational Levels</strong> representan el plan organizativo de la empresa y se mantienen en todos los módulos. Los tres que más vas a ver:
+      <ul>
+        <li><strong>Financial Accounting → Company Code</strong> — reporting financiero local (ej. una planta en Alemania vs. una sociedad de ventas en Singapur)</li>
+        <li><strong>Management Accounting → Controlling Area</strong> — para mostrar juntos los costos de producir en Alemania y vender en Singapur, ambas sociedades tienen que pertenecer a la misma Controlling Area</li>
+        <li><strong>Logistics – General → Plant</strong> — el costo de producir varía según dónde se produce</li>
+      </ul>
+      A veces aparece <strong>Sales</strong> también como nivel organizativo adicional.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row"><span class="sec-title-en">Financial Accounting vs. Management Accounting</span></div>
+      </div>
+    </div>
+    <div class="note-box">
+      <strong>Financial Accounting</strong> estructura y recolecta datos transaccionales en cuentas para dar el set estándar de reportes externos: Balance Sheet, Income Statement, Statement of Cash Flows. Es la <strong>interfaz</strong> entre los módulos logísticos + Human Capital Management de un lado, y Controlling del otro. Principios aplicables: IFRS, US GAAP, HGB. Los procesos logísticos que se valúan: goods movements, invoices, warehouse stock, y postings puramente financieros. Para cumplir IFRS en operational segment reporting, se definen profit centers y se les asignan segmentos → se pueden armar Balance Sheets y P&amp;L a cualquier nivel.
+      <span class="own-take">Tu intento de resumen: "intenta relacionar dónde FI toma control o acciones en relación a áreas o dinámicas dentro de Controlling + (PP, etc.)" — vas bien encaminado, ver la respuesta abajo para afinarlo.</span>
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">What does "controlling on the other side" mean?</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p>El documento describe a FI como "la interfaz entre los módulos logísticos y Human Capital Management de un lado, y Controlling del otro" — y agrega que todos los costos e ingresos primarios posteados en FI deben asignarse a objetos de costo.</p>
+        <p>Es decir: cuando MM, PP, SD o HCM generan una transacción (una factura, un movimiento de mercadería, una nómina), FI la registra como posting financiero — pero esa misma transacción, al mismo tiempo, lleva una cuenta CO asignada (cost center, cost object, etc.). FI es el punto de paso obligado: todo lo que entra desde logística/HCM sale hacia Controlling con un account assignment. No son dos pasos separados en el tiempo, es la misma posting con dos caras.</p>
+      </div>
+    </div>
+    <div class="qa-box qa-box--followup">
+      <span class="round-tag round-tag--followup">💬 Repregunta — repaso en chat</span>
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">¿Para TODOS los ingresos va a estar linkeado un cost object? Pensé que solo se asignaban a profit centers.</span></div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>Sí — todo ingreso primario necesita un account assignment CO, pero tiene que ser un objeto que pueda portar ingresos (Cost Center queda afuera de esa lista, es solo-costo). El objeto operativo depende del proceso de negocio que originó la venta:</p>
+      </div>
+      <div class="chip-grid">
+        <span class="chip">Sales Order — venta estándar de producto/servicio</span>
+        <span class="chip">Project / WBS Element — contrato de proyecto</span>
+        <span class="chip">Customer Service Order — mantenimiento/reparación</span>
+        <span class="chip fallback">Profitability Segment — fallback, vía derivación CO-PA</span>
+      </div>
+      <div class="qa-answer qa-answer--external">
+        <p><strong>Profit Center no es una alternativa a esta lista</strong> — es una asignación adicional y automática que viaja pegada al objeto operativo real (ver sección 04). Un ingreso normal termina con dos asignaciones simultáneas: el objeto operativo que lo originó + el Profit Center derivado para reporting de segmento.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row"><span class="sec-title-en">Where MM / PP / SD Point To</span></div>
+      </div>
+    </div>
+    <div class="note-box">
+      Material Management → Profit Center Accounting. Production Planning → Profit Center Accounting (Segment – Operating Segment Reporting). Sales &amp; Distribution → Profit Center Accounting (Segment – Operating Segment Reporting).
+      <span class="own-take">Tu nota: "igual toda esa primer fila vertical tiene que ver con FI" — correcto, esa fila describe cómo la valuación logística llega a FI antes de aparecer acá.</span>
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">No termino de entender por qué va a Profit Center Accounting y no Cost Center — ¿no existe Cost Center Accounting? / MM me suena mucho más a costos que a profit center; entiendo que a profit center accounting y reporting tienen que ir tanto los profits como los costos.</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p>Cost Center Accounting sí existe — está ahí, solo que en otro nivel de la arquitectura. El documento describe capas: en la base, Cost Element Accounting separa costos por criterio funcional y los carga sobre cost centers; Overhead Cost Controlling gestiona esos cost centers (junto con projects e internal orders).</p>
+        <p>Profit Center Accounting está un piso más arriba: es la capa de consolidación. El documento es explícito — "los objetos profit-relevant incluyen materiales, cost centers, orders, projects, sales orders, assets, cost objects, y profitability segments", y todas las transacciones cost-relevant y profit-relevant se actualizan simultáneamente en la estructura jerárquica de la empresa. Tu segunda intuición estaba bien: a Profit Center Accounting le llegan tanto costos como ingresos, de todos los objetos de abajo (cost center incluido). El diagrama dibuja la flecha de MM directo a Profit Center Accounting no porque se salte Cost Center Accounting, sino porque PCA es el nivel que se alimenta de él.</p>
+      </div>
+      <div class="followup-divider"><span class="round-tag round-tag--followup">💬 Repregunta — repaso en chat</span></div>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <span class="ck">Cost Center Accounting</span>
+          <h4>Costos, por área de responsabilidad</h4>
+          <p>Captura y distribuye costos (solo costos, sin ingresos) sobre cost centers — dónde se incurrió el gasto operativo.</p>
+          <p>Nivel de detalle: gestión interna, día a día del departamento.</p>
+        </div>
+        <div class="compare-card alt">
+          <span class="ck">Profit Center Accounting</span>
+          <h4>Costos + ingresos, por segmento de negocio</h4>
+          <p>Consolida costos e ingresos de todos los objetos profit-relevant (cost centers incluido) para calcular resultado por unidad de negocio.</p>
+          <p>Nivel de detalle: reporting IFRS, Balance Sheet y P&amp;L por segmento.</p>
+        </div>
+      </div>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1040 340" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ar4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#8AA0C4" stroke-width="1.6"/>
+            </marker>
+          </defs>
+          <rect x="20" y="50" width="150" height="54" rx="8" fill="#7E4FBF"/>
+          <text x="95" y="72" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="13">MM</text>
+          <text x="95" y="89" text-anchor="middle" fill="#EFE7FA" font-family="Inter" font-size="10.5">Material Management</text>
+
+          <rect x="190" y="50" width="150" height="54" rx="8" fill="#00A896"/>
+          <text x="265" y="72" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="13">PP</text>
+          <text x="265" y="89" text-anchor="middle" fill="#DFF7F2" font-family="Inter" font-size="10.5">Production Planning</text>
+
+          <rect x="360" y="50" width="150" height="54" rx="8" fill="#E07B39"/>
+          <text x="435" y="72" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="13">SD</text>
+          <text x="435" y="89" text-anchor="middle" fill="#FCEADC" font-family="Inter" font-size="10.5">Sales &amp; Distribution</text>
+
+          <rect x="530" y="50" width="150" height="54" rx="8" fill="#1A6B99"/>
+          <text x="605" y="72" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12.5">Cost Centers</text>
+          <text x="605" y="89" text-anchor="middle" fill="#D9EEF6" font-family="Inter" font-size="10.5">áreas de responsabilidad</text>
+
+          <rect x="700" y="50" width="150" height="54" rx="8" fill="#1A6B99"/>
+          <text x="775" y="72" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12.5">Orders &amp; Projects</text>
+          <text x="775" y="89" text-anchor="middle" fill="#D9EEF6" font-family="Inter" font-size="10.5">internal orders, WBS</text>
+
+          <rect x="870" y="50" width="150" height="54" rx="8" fill="#5A6B8C"/>
+          <text x="945" y="72" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12.5">Assets &amp; Sales Orders</text>
+          <text x="945" y="89" text-anchor="middle" fill="#E4E8F0" font-family="Inter" font-size="10.5">cost objects, revenue</text>
+
+          <line x1="95" y1="104" x2="412" y2="260" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar4)"/>
+          <line x1="265" y1="104" x2="455" y2="260" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar4)"/>
+          <line x1="435" y1="104" x2="498" y2="260" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar4)"/>
+          <line x1="605" y1="104" x2="542" y2="260" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar4)"/>
+          <line x1="775" y1="104" x2="585" y2="260" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar4)"/>
+          <line x1="945" y1="104" x2="628" y2="260" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar4)"/>
+
+          <rect x="390" y="260" width="260" height="60" rx="10" fill="#0A0F1C"/>
+          <text x="520" y="284" text-anchor="middle" fill="#E3B341" font-family="Syne" font-weight="700" font-size="14">Profit Center Accounting</text>
+          <text x="520" y="302" text-anchor="middle" fill="#C7CEDD" font-family="Inter" font-size="10.5">consolidación, costos + ingresos</text>
+        </svg>
+        <div class="diagram-cap">Todos los objetos profit-relevant actualizan Profit Center Accounting en paralelo a su propia posting cost-relevant</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row"><span class="sec-title-en">Overhead Cost Controlling / Product Costing / Margin Analysis</span></div>
+      </div>
+    </div>
+    <div class="note-box">
+      Las tres ramas de Management Accounting: <strong>Overhead Cost Controlling</strong> (Cost Centers, Projects, Internal Orders), <strong>Product Costing</strong> (Product Cost Planning, Cost Object Controlling), <strong>Margin Analysis – Profitability Analysis</strong> (Profitability Segments).
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">¿Solo se relacionan esos 3 con overhead? ¿No puede haber otra actividad que alimente Internal Orders dentro de MA, o esas internal orders/projects ya se completan en MM, PP, FI, SD y MA/CO solo hace el overhead cost controlling?</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p>Según la agrupación del documento, sí: Overhead Cost Controlling cubre específicamente Cost Centers, Projects e Internal Orders como los tres objetos que administra; Product Costing y Margin Analysis son las otras dos ramas, cada una con sus propios objetos.</p>
+      </div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>Sobre la segunda parte: los Internal Orders y Projects no "vienen completados" desde MM/PP/SD — se crean y viven dentro de CO / Project System. Lo que sí puede pasar es que reciban imputaciones DESDE esas áreas (ej. una factura de MM imputada a un internal order), pero el objeto en sí y su control de presupuesto/liquidación son tarea de Overhead Cost Controlling, no de MM/PP/SD.</p>
+      </div>
+    </div>
+    <div class="qa-box qa-box--followup">
+      <span class="round-tag round-tag--followup">💬 Repregunta — repaso en chat</span>
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">Tenía entendido que Overhead Cost Controlling era solo costos fijos tipo luz/agua prorrateados a objetos — ¿por qué Projects e Internal Orders (que a veces llevan revenue) caen ahí también?</span></div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>"Overhead Cost Controlling" acá es el nombre de un <strong>componente SAP</strong> (CO-OM), no una descripción del tipo de costo. Cost Center Accounting sí es el caso puro de costo indirecto compartido — tu ejemplo de luz/agua. Internal Orders y Projects entran al mismo componente porque comparten el mismo rol estructural: son objetos internos, con el mismo kit de herramientas (planificación, budgeting, settlement periódico), no porque todos manejen costos indirectos.</p>
+      </div>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <span class="ck">Caso clásico</span>
+          <h4>Costo indirecto compartido</h4>
+          <p>Ej: Internal Order para una feria comercial — se junta el gasto y se liquida (settlement) hacia uno o varios Cost Centers al cierre. Calza 100% con la idea de "overhead".</p>
+        </div>
+        <div class="compare-card alt">
+          <span class="ck">Caso menos intuitivo</span>
+          <h4>Costo directo, mismo componente</h4>
+          <p>Ej: Project de implementación con revenue propio — el costo ya no es "indirecto", pero sigue viviendo en CO-OM porque usa las mismas reglas de control/liquidación que un Cost Center.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row"><span class="sec-title-en">Cost Objects — Solo Costos</span></div>
+      </div>
+    </div>
+    <div class="note-box">
+      Hay distintos tipos de cost objects. Todos llevan costos, pero solo algunos llevan ingresos. <strong>Objetos que solo llevan costos (sin revenue):</strong>
+      <ul>
+        <li><strong>Cost Centers</strong> — dónde se incurren los costos, en qué unidad organizativa</li>
+        <li><strong>Manufacturing Orders</strong> — production orders y process orders</li>
+        <li><strong>Networks</strong> — actividades de red que subdividen WBS-elements, que a su vez subdividen projects</li>
+      </ul>
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">Repasar bien Organizational Units (MA, FI, SD, Plants) o Cost Center – Profit Center – Controlling – Company Code</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p><strong>Company Code</strong> = nivel organizativo de FI (reporting local). <strong>Controlling Area</strong> = nivel organizativo de Management Accounting/CO (agrupa uno o más company codes para poder ver costos cruzados). <strong>Plant</strong> = nivel organizativo de Logística. <strong>Cost Center</strong> = área de responsabilidad, vive dentro de una Controlling Area. <strong>Profit Center</strong> = también vive dentro de la Controlling Area, pero es una vista distinta: consolida costos e ingresos de varios objetos (cost centers incluidos) para calcular resultado, no es un nivel organizativo "por encima" del cost center, es una dimensión de reporting en paralelo.</p>
+      </div>
+    </div>
+    <div class="qa-box qa-box--followup">
+      <span class="round-tag round-tag--followup">💬 Repregunta — repaso en chat</span>
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">La jerarquía "Controlling Area → Company Code → Profit Center → Cost Center → Functional Area" que aprendí al principio, ¿es lo mismo que "Organizational Units"?</span></div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>No — esa secuencia mezcla tres categorías de naturaleza distinta como si fuera un solo árbol. Solo el primer tramo (Controlling Area → Company Code) es contención real. Cost Center y Profit Center son estructuras <strong>paralelas</strong> entre sí, no una anidada en la otra. Functional Area ni siquiera es un nivel — es una etiqueta de clasificación transversal.</p>
+      </div>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ar6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#8AA0C4" stroke-width="1.6"/>
+            </marker>
+          </defs>
+          <rect x="40" y="30" width="920" height="410" rx="20" fill="#0A0F1C" fill-opacity="0.045" stroke="#0A0F1C" stroke-width="1.3"/>
+          <text x="64" y="58" fill="#16213A" font-family="Syne" font-weight="700" font-size="14">Controlling Area</text>
+          <text x="64" y="76" fill="#64748B" font-family="Inter" font-size="10.5">agrupa uno o más company codes — contención real</text>
+
+          <rect x="80" y="90" width="840" height="60" rx="10" fill="#1A6B99"/>
+          <text x="500" y="115" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="13.5">Company Code(s)</text>
+          <text x="500" y="133" text-anchor="middle" fill="#D9EEF6" font-family="Inter" font-size="10.5">entidad legal — FI</text>
+
+          <line x1="280" y1="150" x2="280" y2="190" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar6)"/>
+          <line x1="720" y1="150" x2="720" y2="190" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar6)"/>
+
+          <rect x="80" y="190" width="400" height="90" rx="10" fill="#00A896"/>
+          <text x="280" y="222" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="13">Cost Center hierarchy</text>
+          <text x="280" y="242" text-anchor="middle" fill="#DFF7F2" font-family="Inter" font-size="10.5">áreas de responsabilidad</text>
+
+          <rect x="520" y="190" width="400" height="90" rx="10" fill="#7E4FBF"/>
+          <text x="720" y="222" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="13">Profit Center hierarchy</text>
+          <text x="720" y="242" text-anchor="middle" fill="#EFE7FA" font-family="Inter" font-size="10.5">vista de rentabilidad</text>
+
+          <text x="500" y="272" text-anchor="middle" fill="#8AA0C4" font-family="Inter" font-style="italic" font-size="10.5">paralelas — ninguna adentro de la otra</text>
+
+          <line x1="280" y1="280" x2="280" y2="320" stroke="#B4B2A9" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <line x1="720" y1="280" x2="720" y2="320" stroke="#B4B2A9" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+          <rect x="80" y="320" width="840" height="70" rx="10" fill="#5A6B8C" fill-opacity="0.9" stroke="#5A6B8C" stroke-dasharray="4 3"/>
+          <text x="500" y="350" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="13">Functional Area</text>
+          <text x="500" y="369" text-anchor="middle" fill="#E4E8F0" font-family="Inter" font-size="10.5">clasificación cruzada (COGS, admin, selling…) — no es un nivel</text>
+        </svg>
+        <div class="diagram-cap">Contención real (Controlling Area → Company Code) + estructuras paralelas (Cost Center / Profit Center) + clasificación transversal (Functional Area)</div>
+      </div>
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">¿Qué sería bien Network y cómo se diferencia de Human Capital Management?</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p>Un <strong>Network</strong> son "actividades de red que subdividen WBS-elements, que a su vez subdividen projects" — es decir, una herramienta de Project System para desglosar un proyecto en actividades concretas (con dependencias, fechas, recursos) por debajo del nivel de WBS-element.</p>
+      </div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>Human Capital Management no tiene relación estructural directa — es el módulo de personal/nómina/RRHH. La única conexión que menciona el documento es que FI es también interfaz con HCM (los costos de personal, como salarios, se postean desde HCM hacia cost centers). Un Network no reemplaza ni depende de HCM; solo se cruzan cuando una actividad de un network consume tiempo/recurso de una persona cuyo costo viene de HCM.</p>
+      </div>
+    </div>
+    <div class="qa-box qa-box--followup">
+      <span class="round-tag round-tag--followup">💬 Repregunta — repaso en chat</span>
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">¿Podés dar ejemplos concretos de Network dentro de un Project?</span></div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>Ejemplo con el caso base (WBS "Realización" de un rollout S/4HANA en Bike GmbH) — el Network debajo de ese WBS element sería una secuencia de actividades concretas, cada una interna (consume Cost Center propio) o externa (dispara una orden de compra):</p>
+      </div>
+      <div class="step-flow">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-body"><h5>Configurar FI</h5><p>Actividad interna — horas de un consultor cargadas contra un Cost Center.</p></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-body"><h5>Configurar CO</h5><p>Interna, predecesora obligatoria: no arranca hasta que termine "Configurar FI".</p></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-body"><h5>Migración de datos</h5><p>Interna — corre en paralelo a la configuración.</p></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num ext">4</div>
+          <div class="step-body"><h5>Testing de integración externo</h5><p>Externa — subcontratada a una consultora tercera, dispara una orden de compra.</p></div>
+        </div>
+      </div>
+      <div class="qa-answer qa-answer--external">
+        <p>Los tres tipos de actividad que siempre vas a ver: <strong>interna</strong> (consume Cost Center propio), <strong>externa</strong> (dispara Purchase Requisition/PO contra un vendor), y <strong>de servicio</strong> (similar a externa, contra un catálogo de servicios). El Network es donde los costos se originan realmente; el WBS Element es la capa de agregación que los junta para reporting del proyecto.</p>
+      </div>
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">Repasar bien Product Costing</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p>En <strong>Product Cost Controlling</strong>, la cost accounting sigue los procesos de valor agregado de la empresa. El product cost estimate calcula el <strong>COGM</strong> (cost of goods manufactured) y el <strong>COGS</strong> (cost of goods sold). Los materiales se documentan en el <strong>BOM</strong> (bill of material) y las actividades de cost center necesarias para producir se documentan en el <strong>routing</strong>. La cuenta es: cantidad de material requerida × precio de material, más cantidad de actividad requerida × precio de cost center, complementado por <strong>overhead rates</strong> (y process costs si aplica) = costo del producto. El objetivo es tener costos realistas como base para el sales order costing y la valuación de inventario semi-terminado/terminado.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row"><span class="sec-title-en">Cost Objects — Costos + Revenue</span></div>
+      </div>
+    </div>
+    <div class="note-box">
+      <strong>Objetos que llevan costos Y revenue:</strong>
+      <ul>
+        <li><strong>Projects</strong> y sus WBS-elements</li>
+        <li><strong>Sales Orders</strong> (productos, servicios)</li>
+        <li><strong>Customer Service Orders</strong> — mantenimiento y reparación de activos</li>
+        <li><strong>Internal Orders</strong> — no disponibles en S/4HANA Cloud, Public Edition</li>
+      </ul>
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">¿WBS es solo para Human Capital?</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p>No — WBS-elements (Work Breakdown Structure) subdividen <strong>Projects</strong>, no HCM. Es una herramienta de Project System (PS) para descomponer un proyecto en partes manejables donde se recolectan costos e ingresos. HCM no aparece en esta cadena en absoluto según el documento.</p>
+      </div>
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">How does a sales order carry costs? Is it in a make-to-order type production?</span></div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>El documento solo dice que Sales Orders son un cost object que lleva costos y revenue, sin detallar el mecanismo — así que esto viene de conocimiento general, no del documento. En la práctica estándar, sí, esto ocurre típicamente en escenarios <strong>make-to-order</strong> (o engineer-to-order): el ítem de la orden de venta se convierte él mismo en el cost object que acumula los costos de producción (materiales, actividades), en vez de una manufacturing order genérica. En make-to-stock, en cambio, los costos van a una manufacturing order y el sales order solo factura contra stock ya valuado.</p>
+      </div>
+      <div class="followup-divider"><span class="round-tag round-tag--followup">💬 Repregunta — repaso en chat</span></div>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <span class="ck">Make-to-stock</span>
+          <h4>Costo pasivo, heredado</h4>
+          <p>El costo real vive en la Production Order. El Sales Order recibe el ingreso, y el costo (COGS) llega recién en el Goods Issue, como el standard cost que ya tenía el material en stock — un solo evento, no acumulación.</p>
+        </div>
+        <div class="compare-card alt">
+          <span class="ck">Make-to-order</span>
+          <h4>Costo activo, generado ahí mismo</h4>
+          <p>No hay stock genérico intermedio. El Sales Order Item es el cost object real: recibe material, horas y overhead directamente, a lo largo del tiempo — igual que una Production Order.</p>
+        </div>
+      </div>
+      <div class="step-flow">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-body"><h5>Goods Issue (make-to-stock)</h5><p>Sale la unidad del stock al standard price del Material Master → posting: débito COGS, crédito inventario.</p></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-body"><h5>Propagación a CO-PA</h5><p>La posting de COGS se propaga en paralelo al Sales Order Item como value field — así el reporte de margen muestra revenue − COGS para ese pedido puntual.</p></div>
+        </div>
+      </div>
+      <div class="qa-answer qa-answer--external">
+        <p>Por eso el sales order en make-to-stock <strong>porta</strong> el costo (para calcular margen) pero no lo <strong>genera</strong> ni lo <strong>acumula</strong> — es el standard cost del producto vendido, no un costo propio del pedido.</p>
+      </div>
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">What revenues does a project have? Like SAP Implementation (the contract revenue)</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p>El documento confirma que Projects y sus WBS-elements son cost objects que llevan tanto costos como ingresos, y que existe "Results Analysis for cost objects with revenue" (reserves for unrealized costs / imminent loss) — es decir, se espera que un proyecto con ingresos pase por un proceso periódico de revenue recognition.</p>
+      </div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>En tu ejemplo (una implementación de SAP vendida a un cliente), el ingreso es la facturación del contrato — se factura contra el proyecto/WBS a medida que avanza (por hitos, tiempo y materiales, o precio fijo), y el resultado (margen) se calcula comparando esos ingresos contra los costos acumulados en el mismo WBS.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row"><span class="sec-title-en">WIP, Variance Analysis &amp; Results Analysis</span></div>
+      </div>
+    </div>
+    <div class="note-box">
+      Para cost centers y cost objects: cálculo de <strong>WIP</strong> (work in process — inventario no terminado) y <strong>variance analysis</strong> por categoría (quantity variance, price/scrap variance, etc.). Para cost objects con revenue: <strong>Results Analysis</strong> — reserves for unrealized costs, reserves for imminent loss (cuando el costo real supera el revenue planeado).
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">Full-on help: What are these (WIP, variance analysis, reserves) and where do they belong in the ecosystem?</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p><strong>WIP</strong> es el valor de lo que está "a medio hacer" en un cost object en un momento dado del período — se calcula para poder valuar inventario antes de que el producto esté terminado. <strong>Variance analysis</strong> compara costo planeado/target vs. costo real sobre un cost object, categorizado (cantidad, precio, scrap). Las dos pertenecen al mismo grupo — "Analysis for cost centers and cost objects" — dentro de Cost Object Controlling / Overhead Cost Controlling.</p>
+        <p><strong>Results Analysis</strong> (las reserves) es el equivalente para objetos que sí llevan revenue (proyectos, sales orders): en vez de mirar solo el costo, mira el resultado. Si el objeto todavía no facturó todo lo que ya costó, se crea una <em>reserve for unrealized costs</em>; si el costo real ya superó el ingreso planeado, una <em>reserve for imminent loss</em>. Ambos grupos son actividades de fin de período dentro de Product Cost Controlling / Cost Object Controlling — el puente entre "lo que pasó operacionalmente" y "cómo se refleja eso en el balance/resultado".</p>
+      </div>
+      <div class="followup-divider"><span class="round-tag round-tag--followup">💬 Repregunta — repaso en chat</span></div>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1000 370" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ar8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#8AA0C4" stroke-width="1.6"/>
+            </marker>
+          </defs>
+          <rect x="60" y="30" width="400" height="50" rx="10" fill="#1A6B99"/>
+          <text x="260" y="51" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12.5">Cost objects sin revenue</text>
+          <text x="260" y="68" text-anchor="middle" fill="#D9EEF6" font-family="Inter" font-size="10">cost centers, production orders</text>
+
+          <rect x="540" y="30" width="400" height="50" rx="10" fill="#7E4FBF"/>
+          <text x="740" y="51" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12.5">Cost objects con revenue</text>
+          <text x="740" y="68" text-anchor="middle" fill="#EFE7FA" font-family="Inter" font-size="10">projects, sales orders</text>
+
+          <line x1="260" y1="80" x2="150" y2="120" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar8)"/>
+          <line x1="260" y1="80" x2="370" y2="120" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar8)"/>
+          <line x1="740" y1="80" x2="740" y2="120" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar8)"/>
+
+          <rect x="60" y="120" width="180" height="80" rx="10" fill="#00A896"/>
+          <text x="150" y="150" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="13">WIP</text>
+          <text x="150" y="168" text-anchor="middle" fill="#DFF7F2" font-family="Inter" font-size="9.5">valor de lo</text>
+          <text x="150" y="181" text-anchor="middle" fill="#DFF7F2" font-family="Inter" font-size="9.5">no terminado</text>
+
+          <rect x="280" y="120" width="180" height="80" rx="10" fill="#00A896"/>
+          <text x="370" y="150" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12.5">Variance Analysis</text>
+          <text x="370" y="168" text-anchor="middle" fill="#DFF7F2" font-family="Inter" font-size="9.5">planeado/target</text>
+          <text x="370" y="181" text-anchor="middle" fill="#DFF7F2" font-family="Inter" font-size="9.5">vs. real</text>
+
+          <rect x="540" y="120" width="400" height="80" rx="10" fill="#7E4FBF"/>
+          <text x="740" y="150" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12.5">Results Analysis</text>
+          <text x="740" y="168" text-anchor="middle" fill="#EFE7FA" font-family="Inter" font-size="9.5">reserve for unrealized costs</text>
+          <text x="740" y="181" text-anchor="middle" fill="#EFE7FA" font-family="Inter" font-size="9.5">reserve for imminent loss</text>
+
+          <line x1="150" y1="200" x2="380" y2="270" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar8)"/>
+          <line x1="370" y1="200" x2="500" y2="270" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar8)"/>
+          <line x1="740" y1="200" x2="620" y2="270" stroke="#8AA0C4" stroke-width="1.4" marker-end="url(#ar8)"/>
+
+          <rect x="310" y="270" width="380" height="60" rx="10" fill="#0A0F1C"/>
+          <text x="500" y="294" text-anchor="middle" fill="#E3B341" font-family="Syne" font-weight="700" font-size="13.5">Cierre de período</text>
+          <text x="500" y="312" text-anchor="middle" fill="#C7CEDD" font-family="Inter" font-size="10">ambos alimentan el resultado del período</text>
+        </svg>
+        <div class="diagram-cap">Mismo momento de cierre, dos ramas paralelas según si el cost object lleva revenue o no</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row"><span class="sec-title-en">Cost of Goods Manufactured (COGM)</span></div>
+      </div>
+    </div>
+    <div class="note-box">
+      Otra función de CO: el cálculo de <strong>COGM</strong>, usado para: valuación de stock de productos de producción propia, cálculo de standard COGS, y como base para calcular target costs usados en la variance analysis de cost objects (production orders).
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">Doesn't the COGM get already calculated by PP and MM? What is the function of CO in COGM?</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p>PP y MM aportan los <strong>insumos</strong> — el BOM (de dónde salen las cantidades de material) y el routing (de dónde salen las actividades/tiempos de producción) — pero no calculan el valor monetario. El documento es explícito: "la cantidad requerida de productos preliminares se multiplica por los precios de material, las cantidades de actividad requeridas se multiplican por los precios de cost center, complementado por overhead rates". Ese cálculo — la multiplicación por precios, el costing — es tarea de CO. PP/MM dan las cantidades y la estructura; CO hace la valuación.</p>
+      </div>
+    </div>
+    <div class="qa-box">
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">Maybe I need the end to end of COGM and COGS — it would involve Plan to Procure, Plan to Produce, Overhead Cost Controlling, etc.</span></div>
+      <div class="qa-answer qa-answer--doc">
+        <span class="qa-source-tag--doc">📘 Del documento del curso</span>
+        <p>Uniendo lo que el documento describe en distintas secciones, la cadena es: (1) MM/Procurement aporta precios de material, (2) PP aporta el BOM y el routing, (3) Overhead Cost Controlling calcula y transfiere los overhead rates hacia el cost object, (4) Product Cost Controlling combina todo eso (material × precio + actividad × precio de cost center + overhead) en el product cost estimate → COGM, (5) el COGM se usa para valuar stock, calcular COGS estándar, y como base de target costs para la variance analysis de las production orders.</p>
+      </div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>El framing "Plan to Procure → Plan to Produce → ..." como secuencia end-to-end nombrada así no aparece literal en el documento — es una forma útil de conectar mentalmente las piezas, pero vale la pena chequearla contra una lección de Product Cost Planning más específica si el curso la tiene más adelante.</p>
+      </div>
+    </div>
+    <div class="qa-box qa-box--followup">
+      <span class="round-tag round-tag--followup">💬 Repregunta — repaso en chat</span>
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">¿Qué hace específicamente CO vs. lo que hacen PP y MM en este cálculo?</span></div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>La división de roles cambia según si estás en el <strong>Cost Estimate</strong> (costo estándar unitario) o en la <strong>Production Order</strong> (costo real). En ambos casos, PP y MM nunca calculan valor monetario — aportan cantidades y precios de material; CO es el único que multiplica, agrega overhead y compara planeado vs. real.</p>
+      </div>
+      <table class="data-table">
+        <thead><tr><th></th><th>PP</th><th>MM</th><th>CO</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Cost Estimate (unitario)</strong></td><td>BOM, Routing — cantidades</td><td>Precio de material</td><td>Precio de actividad, overhead rate, multiplicación final → COGM</td></tr>
+          <tr><td><strong>Production Order (real)</strong></td><td>Confirmaciones de cantidad/tiempo real</td><td>Goods Issue real de materiales</td><td>Acumula costo real, target cost, variance analysis, WIP</td></tr>
+        </tbody>
+      </table>
+      <div class="step-flow">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-body"><h5>COGM — Cost of Goods Manufactured</h5><p>Resultado del Cost Estimate. Valúa el stock cuando el producto termina de fabricarse.</p></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-body"><h5>COGS — Cost of Goods Sold</h5><p>El mismo valor del COGM, reconocido como gasto en el momento de la venta (Goods Issue).</p></div>
+        </div>
+      </div>
+      <div class="qa-answer qa-answer--external">
+        <p>No son dos cálculos distintos — es el mismo número, aplicado en dos momentos contables diferentes: COGM es "cuánto costó hacerlo" (evento de producción), COGS es "ese mismo costo, reconocido cuando se vende" (evento de venta).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row"><span class="sec-title-en">Material Master vs. Material Ledger</span><span class="sec-followup-flag round-tag round-tag--followup">💬 Sección agregada en el repaso</span></div>
+      </div>
+    </div>
+    <div class="note-box">
+      Duda que surgió repasando el costeo de materiales, en la ronda de repreguntas en vivo (no estaba marcada en las notas originales): si <strong>Material Master</strong> y <strong>Material Ledger</strong> son lo mismo. No lo son — están relacionados pero resuelven problemas distintos.
+    </div>
+    <div class="qa-box qa-box--followup">
+      <span class="round-tag round-tag--followup">💬 Repregunta — repaso en chat</span>
+      <div class="qa-question"><span class="q-icon">❓</span><span class="q-text">¿El Material Master es lo mismo que el Material Ledger?</span></div>
+      <div class="qa-answer qa-answer--external">
+        <span class="qa-source-tag--external">🌐 Conocimiento general SAP</span>
+        <p>No. El Material Master es el registro maestro donde vive el precio (standard price / moving average price). El Material Ledger es un componente aparte que corre en paralelo, acumulando las diferencias reales del período y — opcionalmente — actualizando ese precio al costo real recalculado.</p>
+      </div>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <span class="ck">Material Master</span>
+          <h4>Dónde vive el precio</h4>
+          <p>Ficha central del material — vistas de Basic Data, Purchasing, Sales, Accounting, Costing, MRP. Ahí se guarda el standard price o moving average price usado para valuar cada movimiento de stock.</p>
+        </div>
+        <div class="compare-card alt">
+          <span class="ck">Material Ledger</span>
+          <h4>El motor que reconcilia contra la realidad</h4>
+          <p>Acumula las variances reales del período y calcula un periodic unit price al cierre. Permite valuación paralela en varias monedas (local, grupo, transacción) simultáneamente. En S/4HANA está activo por default.</p>
+        </div>
+      </div>
+      <div class="qa-answer qa-answer--external">
+        <p>Ejemplo con el caso base: Kevin fija el standard price de la Excavadora XL-3000 en €118.000 (estimación). El costo real termina en €121.500. Sin Material Ledger, el stock se queda mostrando €118.000. Con Material Ledger activo, al cierre se puede revaluar el stock a los €121.500 reales — y, como Bike GmbH (EUR) y Bike Inc (USD) comparten Controlling Area, también permite ver ese valor en ambas monedas sin recalcular a mano.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T6 · Q&amp;A / Repaso — Cost Management &amp; Profitability Analysis, Unit 1 · Biblioteca de Guías SAP · Fuente primaria: documento del curso · complementado con conocimiento general SAP donde se indica</footer>
+
+</body>
+</html>

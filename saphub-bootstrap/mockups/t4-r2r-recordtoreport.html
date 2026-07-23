@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T4 · Record to Report — Configurador (GUI) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t4:#A78BC9;
+    --t4-dark:#6B4C8F;
+    --t4-pale:rgba(167,139,201,0.14);
+    --t4-pale-border:rgba(167,139,201,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* SAP GUI clasico — colores reales, uso EXCLUSIVO dentro de mockups de pantalla */
+    --gui-bg:#ECECEC;
+    --gui-panel:#F5F4F0;
+    --gui-border:#8E8E8E;
+    --gui-titlebar1:#4A85B8;
+    --gui-titlebar2:#2E5C87;
+    --gui-tab-inactive:#C6C2B6;
+    --gui-tab-active:#F5F4F0;
+    --gui-field-border:#7F9DB9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+
+  /* NAV */
+  .topnav{ position:sticky; top:0; z-index:50; background:var(--navy-950); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:4px; padding:0 24px; overflow-x:auto; white-space:nowrap; }
+  .topnav-brand{ font-family:'JetBrains Mono',monospace; color:var(--t4); font-size:12px; font-weight:600; padding:14px 16px 14px 0; border-right:1px solid rgba(255,255,255,0.12); margin-right:8px; flex-shrink:0; }
+  .topnav a{ color:rgba(255,255,255,0.65); text-decoration:none; font-size:12.5px; font-weight:500; padding:14px 10px; border-bottom:2px solid transparent; flex-shrink:0; transition:color .15s; }
+  .topnav a:hover{ color:var(--t4); border-bottom-color:var(--t4); }
+
+  /* HERO */
+  .hero{ background:linear-gradient(135deg,#0A0F1C 0%, #241A2E 55%, #402C56 100%); padding:56px 40px 40px; color:white; }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t4); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(167,139,201,0.14); border-left:4px solid var(--t4); border-radius:0 10px 10px 0; padding:14px 20px; max-width:680px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t4-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t4); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t4-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(107,76,143,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-area{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 11px; border-radius:20px; background:rgba(107,76,143,0.1); color:var(--t4-dark); margin-left:8px; vertical-align:middle; }
+
+  .task-box{ background:var(--t4-pale); border-left:4px solid var(--t4-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t4-dark); font-weight:700; }
+
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t4-dark); font-weight:700; margin-bottom:10px; }
+
+  /* ARBOL SPRO */
+  .spro-box{ background:white; border:1px solid var(--border); border-radius:10px; padding:16px 20px 16px 18px; margin-bottom:26px; box-shadow:0 2px 8px rgba(10,15,28,0.04); }
+  .spro-tree{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; line-height:1.5; }
+  .spro-tree, .spro-tree ul{ list-style:none; margin:0; padding-left:0; }
+  .spro-tree ul{ padding-left:20px; border-left:1.5px dashed #C9BEDD; margin-left:7px; }
+  .spro-tree li{ position:relative; padding:4px 0 4px 18px; color:var(--body); }
+  .spro-tree li::before{ content:''; position:absolute; left:0; top:14px; width:14px; height:1.5px; background:#C9BEDD; }
+  .spro-tree .folder .icon{ margin-right:5px; opacity:.8; }
+  .spro-tree .target{ background:var(--t4-pale); border:1.5px solid var(--t4-dark); border-radius:6px; padding:4px 12px; display:inline-flex; align-items:center; gap:7px; color:var(--t4-dark); font-weight:700; }
+
+  /* GUI SCREEN MOCKUP */
+  .gui-screen{ background:var(--gui-bg); border:1px solid #6E6E6E; border-radius:2px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.14); font-family:Arial,Tahoma,sans-serif; color:#000; }
+  .gui-titlebar{ background:linear-gradient(180deg,var(--gui-titlebar1),var(--gui-titlebar2)); color:white; padding:4px 10px; font-size:11px; display:flex; justify-content:space-between; align-items:center; }
+  .gui-titlebar .gt-icons{ opacity:.85; letter-spacing:3px; font-size:9px; }
+  .gui-menubar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:3px 10px; font-size:10.5px; color:#222; display:flex; gap:14px; }
+  .gui-toolbar{ background:var(--gui-bg); border-bottom:1px solid #B8B8B8; padding:5px 8px; display:flex; align-items:center; gap:5px; }
+  .gui-toolbar .t-btn{ width:22px; height:19px; background:#DEDEDE; border:1px solid #9A9A9A; border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:10.5px; color:#333; }
+  .gui-crumbbar{ background:#DEDEDE; border-bottom:1px solid #B8B8B8; padding:5px 10px; font-size:11.5px; font-weight:700; color:#111; }
+  .gui-tabs{ display:flex; background:var(--gui-bg); padding:5px 8px 0; gap:2px; }
+  .gui-tab{ padding:5px 14px; font-size:10.5px; background:var(--gui-tab-inactive); border:1px solid var(--gui-border); border-bottom:none; color:#333; }
+  .gui-tab.active{ background:var(--gui-tab-active); font-weight:700; color:#000; }
+  .gui-body{ background:var(--gui-panel); padding:18px; border-top:1px solid #fff; }
+  .gui-field-row{ display:grid; grid-template-columns:150px 1fr; gap:8px; align-items:center; margin-bottom:9px; font-size:11.5px; }
+  .gui-field-row label{ text-align:right; color:#000; }
+  .gui-field-row .val{ background:white; border:1px solid var(--gui-field-border); padding:3px 7px; font-family:'Courier New',monospace; font-size:11.5px; max-width:260px; }
+  .gui-field-row .val.grey{ background:#E8E8E8; border-color:#B8B8B8; color:#555; }
+  .gui-field-row .val.check{ font-family:Arial,sans-serif; }
+  .gui-table{ width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+  .gui-table th{ background:var(--gui-tab-inactive); border:1px solid var(--gui-border); padding:5px 9px; text-align:left; font-weight:700; color:#111; }
+  .gui-table td{ border:1px solid #C6C2B6; padding:5px 9px; background:white; font-family:'Courier New',monospace; }
+  .gui-statusbar{ background:var(--gui-bg); border-top:1px solid #B8B8B8; padding:4px 10px; font-size:10px; color:#555; display:flex; justify-content:space-between; }
+  .gui-hint{ background:#FFFAE0; border:1px solid #E0D48A; padding:8px 12px; font-size:10.5px; color:#5C4A1E; margin-top:12px; display:flex; align-items:center; gap:7px; }
+
+  /* DEBE/HABER (fuera del mockup) */
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  /* ARBOL DE JERARQUIA dentro de una pantalla GUI (estilo distinto al arbol de navegacion SPRO) */
+  .hier-tree, .hier-tree ul{ list-style:none; margin:0; padding-left:0; font-family:'Courier New',monospace; font-size:11.5px; }
+  .hier-tree ul{ padding-left:18px; border-left:1px dotted #999; margin-left:6px; }
+  .hier-tree li{ position:relative; padding:4px 0 4px 16px; color:#000; }
+  .hier-tree li::before{ content:''; position:absolute; left:0; top:12px; width:12px; height:1px; background:#999; }
+  .hier-tree .grp{ font-weight:700; }
+  .hier-tree .leaf{ color:#1A4B8C; }
+  .hier-tree .leaf .code{ font-weight:700; margin-right:5px; }
+
+  .gui-checklist{ display:flex; flex-wrap:wrap; gap:14px; margin:6px 0 8px 158px; font-size:11.5px; }
+  .gui-checklist span{ display:inline-flex; align-items:center; gap:5px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T4 · CONFIGURADOR (GUI)</span>
+  <a href="#s1">Company Code</a>
+  <a href="#s2">Controlling Area</a>
+  <a href="#s3">Segments</a>
+  <a href="#s4">Parallel Ledger</a>
+  <a href="#s5">Profit Centers</a>
+  <a href="#s6">Functional Areas</a>
+  <a href="#s7">Cost of Sales</a>
+  <a href="#s8">Document Type</a>
+  <a href="#s9">GR/IR Accounts</a>
+  <a href="#s10">Recon. Account</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Record to Report</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+      <span class="pill pill-secondary">Accounts Receivable</span>
+    </div>
+    <h1><span class="accent">Record</span> to Report</h1>
+    <h2>Del Registro al Reporte — Configuración en SPRO</h2>
+    <p class="desc">Las tareas de customizing que dejan lista la base para que Kevin, José y Linda trabajen en Fiori: sociedades, Controlling Area, segmentos y ledgers paralelos.</p>
+    <div class="protagonist">
+      <div class="avatar">🔧</div>
+      <div>
+        <div class="p-name">Vos, en el rol de Configurador</div>
+        <div class="p-role">Implementación Bike Company · Financial Accounting</div>
+        <div class="p-note">Cada pantalla de este recorrido arma la base que Kevin, José y Linda usan del otro lado, en Fiori (T3)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Company Code</span>
+          <span class="sec-title-es">Definiendo la sociedad</span>
+          <span class="sec-area">Enterprise Structure</span>
+        </div>
+        <div class="sec-desc">El primer paso de cualquier implementación: la unidad legal que va a existir en el sistema.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Antes de que exista un solo asiento, tiene que existir <strong>DE01</strong>. Company Code no es un maestro más — es la unidad legal e independiente sobre la que se apoya todo lo demás: moneda local, calendario fiscal, plan de cuentas.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Enterprise Structure
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Definition
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Financial Accounting
+                      <ul>
+                        <li><span class="target">⚙️ Define Company Code</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Company Code": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Company Code": Details — T-Code: OX02</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Company Code</label><div class="val">DE01</div></div>
+        <div class="gui-field-row"><label>Company Name</label><div class="val">Bike GmbH</div></div>
+        <div class="gui-field-row"><label>&nbsp;</label><div class="val">Bahnhofstraße 12</div></div>
+        <div class="gui-field-row"><label>City</label><div class="val">Berlin</div></div>
+        <div class="gui-field-row"><label>Country</label><div class="val">DE</div></div>
+        <div class="gui-field-row"><label>Currency</label><div class="val">EUR</div></div>
+        <div class="gui-field-row"><label>Language Key</label><div class="val">DE</div></div>
+        <div class="gui-hint">💡 El botón "Address" abre una pantalla aparte para calle, código postal y teléfono — no está en esta vista.</div>
+      </div>
+      <div class="gui-statusbar"><span>DE01 Bike GmbH</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Assigning the Company Code to a Controlling Area</span>
+          <span class="sec-title-es">Asignando la sociedad al Controlling Area</span>
+          <span class="sec-area">Controlling</span>
+        </div>
+        <div class="sec-desc">Acá es donde DE01 y US01 dejan de ser dos islas y empiezan a compartir gestión interna.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      DE01 ya existe. Ahora hay que decidir bajo qué <strong>Controlling Area</strong> reporta a nivel de gestión — y en Bike Company esa área (A000) no es exclusiva de una sociedad: contiene a DE01 <strong>y</strong> a US01 al mismo tiempo.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>General Controlling
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Organization
+                      <ul>
+                        <li><span class="target">⚙️ Maintain Controlling Area</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Display Controlling Area: Basic Data</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Controlling Area</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Display Controlling Area: Basic Data — T-Code: OKKP</div>
+      <div class="gui-tabs">
+        <div class="gui-tab active">Basic Data</div>
+        <div class="gui-tab">Activation</div>
+        <div class="gui-tab">Assignment of Company Code(s)</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Controlling Area</label><div class="val">A000</div></div>
+        <div class="gui-field-row"><label>Name</label><div class="val">BIKE-CO</div></div>
+        <div class="gui-field-row"><label>CoCd→CO Area</label><div class="val grey check">☐ Controlling Area = Company Code</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Company Code</th><th>Company Name</th><th>Currency</th></tr></thead>
+          <tbody>
+            <tr><td>DE01</td><td>Bike GmbH</td><td>EUR</td></tr>
+            <tr><td>US01</td><td>Bike Inc</td><td>USD</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 El checkbox sin marcar es la señal clave: este Controlling Area cruza más de una sociedad — no es 1 a 1.</div>
+      </div>
+      <div class="gui-statusbar"><span>A000 BIKE-CO</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Segments</span>
+          <span class="sec-title-es">Definiendo segmentos</span>
+          <span class="sec-area">Enterprise Structure</span>
+        </div>
+        <div class="sec-desc">Los códigos de segmento que después van a aparecer solos en cada línea de asiento.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Esta tabla es chica pero es la que hace posible todo lo que viste en T1 y T2 sobre <strong>Segment Reporting</strong> — sin estos códigos definidos acá, el campo Segmento del asiento no tendría de dónde salir.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Enterprise Structure
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Definition
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Financial Accounting
+                      <ul>
+                        <li><span class="target">⚙️ Define Segment</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Segment for Segmental Reporting": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">🗑</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Segment for Segmental Reporting": Overview</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Segment</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>1000_A</td><td>Segment A — Product Sales</td></tr>
+            <tr><td>1000_B</td><td>Segment B — Product Sales</td></tr>
+            <tr><td>2000</td><td>Spare Parts</td></tr>
+            <tr><td>3000</td><td>Consulting Services</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 "New Entries" agrega filas a esta tabla — cada fila es un valor posible que después va a aparecer en el dropdown del campo Segmento.</div>
+      </div>
+      <div class="gui-statusbar"><span>4 entries</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up the Parallel Ledger</span>
+          <span class="sec-title-es">Configurando el ledger paralelo</span>
+          <span class="sec-area">Financial Accounting Global Settings</span>
+        </div>
+        <div class="sec-desc">El segundo ledger que hace posible reportar bajo IFRS sin tocar el ledger líder.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El Ledger Líder (0L) ya reporta bajo GAAP local. Para que Bike GmbH y Bike Inc <strong>también</strong> reporten bajo IFRS sin duplicar el trabajo de carga, se define un segundo ledger — no líder — asociado a ese principio contable.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Ledgers
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Ledger
+                          <ul>
+                            <li><span class="target">⚙️ Define Settings for Ledgers and Currency Types</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Display View "Ledger": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Display View "Ledger": Details</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Ledger</label><div class="val">2L</div></div>
+        <div class="gui-field-row"><label>Ledger Name</label><div class="val">IFRS Reporting Ledger</div></div>
+        <div class="gui-field-row"><label>Leading Ledger</label><div class="val grey check">☐ (0L es el líder — este no lo es)</div></div>
+        <div class="gui-field-row"><label>Accounting Principle</label><div class="val">IFRS</div></div>
+        <table class="gui-table">
+          <thead><tr><th>Company Code</th><th>Currency</th><th>Ledger Assigned</th></tr></thead>
+          <tbody>
+            <tr><td>DE01</td><td>EUR</td><td>2L</td></tr>
+            <tr><td>US01</td><td>USD</td><td>2L</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 Un mismo asiento (como la comisión de venta de T2) va a generar líneas en 0L y en 2L al mismo tiempo, cada una con su propia valoración.</div>
+      </div>
+      <div class="gui-statusbar"><span>2L IFRS Reporting Ledger</span><span>INS</span></div>
+    </div>
+  </section>
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Building the Profit Center Hierarchy</span>
+          <span class="sec-title-es">Armando la jerarquía de Profit Centers</span>
+          <span class="sec-area">Controlling</span>
+        </div>
+        <div class="sec-desc">El árbol que agrupa YB110, YB120 y el resto bajo una sola estructura de gestión.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Un Profit Center suelto no sirve de mucho — necesita un lugar dentro de una <strong>jerarquía estándar</strong>. Acá se arma el árbol completo de BIKE-CO: qué grupos existen, y qué Profit Center cuelga de cada uno.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Controlling
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Profit Center Accounting
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Master Data
+                      <ul>
+                        <li class="folder"><span class="icon">📁</span>Profit Center
+                          <ul>
+                            <li><span class="target">⚙️ Define Standard Hierarchy</span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change Standard Hierarchy: BIKE-CO</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Edit</span><span>Goto</span><span>Extras</span><span>Environment</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change Standard Hierarchy: BIKE-CO</div>
+      <div class="gui-body">
+        <ul class="hier-tree">
+          <li class="grp">BIKE-CO (Controlling Area A000)
+            <ul>
+              <li class="grp">Products
+                <ul>
+                  <li class="leaf"><span class="code">YB110</span>Product A</li>
+                  <li class="leaf"><span class="code">YB120</span>Product B</li>
+                </ul>
+              </li>
+              <li class="grp">Spare Parts
+                <ul><li class="leaf"><span class="code">YB200</span>Spare Parts</li></ul>
+              </li>
+              <li class="grp">Consulting
+                <ul><li class="leaf"><span class="code">YB300</span>Consulting Services</li></ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <div class="gui-hint">💡 Cada Profit Center individual (YB110, YB120...) se crea después con su propia transacción de maestro — acá solo se define dónde va a "colgar" dentro del árbol.</div>
+      </div>
+      <div class="gui-statusbar"><span>BIKE-CO</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining Functional Areas</span>
+          <span class="sec-title-es">Definiendo áreas funcionales</span>
+          <span class="sec-area">Financial Accounting Global Settings</span>
+        </div>
+        <div class="sec-desc">Los códigos que van a determinar solos, sin que nadie los tipee, en cada gasto.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Igual que con Segmento, primero hay que <strong>declarar los valores posibles</strong>. Recién después se puede configurar la derivación automática (T1 §8, T2 §5) que hace que YB30 aparezca solo en la línea de un gasto de ventas.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Fields
+                      <ul>
+                        <li><span class="target">⚙️ Define Functional Area</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Functional Area": Overview</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">＋</div><div class="t-btn">🗑</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Functional Area": Overview</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Functional Area</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>YB10</td><td>Production</td></tr>
+            <tr><td>YB20</td><td>Administration</td></tr>
+            <tr><td>YB30</td><td>Sales and Distribution</td></tr>
+            <tr><td>YB40</td><td>Research &amp; Development</td></tr>
+            <tr><td>YB50</td><td>Marketing</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-hint">💡 YB30 es exactamente el código que apareció solo, sin que Kevin lo tipeara, en la comisión de venta de T2 y T3.</div>
+      </div>
+      <div class="gui-statusbar"><span>5 entries</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Activating Cost of Sales Accounting</span>
+          <span class="sec-title-es">Activando Cost of Sales Accounting</span>
+          <span class="sec-area">Financial Accounting Global Settings</span>
+        </div>
+        <div class="sec-desc">El interruptor que hace obligatorio el Área Funcional en cada gasto de DE01.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Este checkbox es la diferencia entre los dos caminos que viste en T1 §8: sin marcar, DE01 reporta P&amp;L por naturaleza. Marcado, reporta por función — y automáticamente <strong>exige</strong> que cada gasto lleve un Área Funcional.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Ledgers
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Ledger
+                      <ul>
+                        <li><span class="target">⚙️ Define Settings for Ledgers and Currency Types</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Display View "Company Code Settings": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Display View "Company Code Settings": Details</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Company Code</label><div class="val">DE01</div></div>
+        <div class="gui-field-row"><label>Ledger</label><div class="val">0L</div></div>
+        <div class="gui-field-row"><label>Cost of Sales Accounting</label><div class="val grey check">☑ Active</div></div>
+        <div class="gui-field-row"><label>Functional Area mandatory</label><div class="val grey check">☑ (derivado, no editable)</div></div>
+        <div class="gui-hint">💡 El segundo checkbox no se marca a mano — el sistema lo activa solo en cuanto "Cost of Sales Accounting" queda en Active.</div>
+      </div>
+      <div class="gui-statusbar"><span>DE01 / 0L</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Defining the Document Type</span>
+          <span class="sec-title-es">Definiendo el tipo de documento</span>
+          <span class="sec-area">Financial Accounting Global Settings</span>
+        </div>
+        <div class="sec-desc">De dónde sale la "SA" que Kevin vio en cabecera de cada asiento (T2, T3).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cada vez que Kevin contabilizó un asiento, el sistema le puso <strong>SA — G/L Account Document</strong> solo. Ese tipo de documento no aparece de la nada: alguien tiene que definirlo acá, con su propio rango de numeración y qué tipos de cuenta acepta.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Financial Accounting Global Settings (New)
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Document
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Document Types
+                      <ul>
+                        <li><span class="target">⚙️ Define Document Types for Entry View</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Change View "Document Types": Details</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Table View</span><span>Edit</span><span>Goto</span><span>Utilities</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Change View "Document Types": Details</div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>Document Type</label><div class="val">SA</div></div>
+        <div class="gui-field-row"><label>Description</label><div class="val">G/L Account Document</div></div>
+        <div class="gui-field-row"><label>Number Range</label><div class="val">01</div></div>
+        <div class="gui-field-row"><label>Account types allowed</label><div class="val" style="visibility:hidden;">.</div></div>
+        <div class="gui-checklist">
+          <span>☑ Assets</span><span>☑ Customer</span><span>☑ Vendor</span><span>☑ G/L Account</span><span>☐ Material</span>
+        </div>
+        <div class="gui-field-row"><label>Reverse Document Type</label><div class="val">SA</div></div>
+        <div class="gui-hint">💡 Que "Material" quede sin marcar es a propósito: SA es para asientos manuales de contabilidad, no para movimientos de mercadería.</div>
+      </div>
+      <div class="gui-statusbar"><span>SA G/L Account Document</span><span>INS</span></div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Configuring the GR/IR Account Determination</span>
+          <span class="sec-title-es">Configurando la determinación de cuenta GR/IR</span>
+          <span class="sec-area">Materials Management</span>
+        </div>
+        <div class="sec-desc">Dónde se define QUÉ cuenta usa el sistema cada vez que José revisa GR/IR (T2 §3, T3 §4).</div>
+      </div>
+    </div>
+    <div class="task-box">
+      José nunca elige la cuenta GR/IR a mano — el sistema la determina sola en cada Goods Receipt e Invoice Receipt. Esa automatización vive acá: la <strong>clave de transacción WRX</strong>, mapeada a una cuenta de mayor concreta.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>SAP Customizing Implementation Guide
+          <ul>
+            <li class="folder"><span class="icon">📁</span>Materials Management
+              <ul>
+                <li class="folder"><span class="icon">📁</span>Valuation and Account Assignment
+                  <ul>
+                    <li class="folder"><span class="icon">📁</span>Account Determination
+                      <ul>
+                        <li><span class="target">⚙️ Configure Automatic Postings</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Configure Automatic Postings</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Configure Automatic Postings — T-Code: OBYC</div>
+      <div class="gui-body">
+        <table class="gui-table">
+          <thead><tr><th>Transaction Key</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>BSX</td><td>Inventory Posting</td></tr>
+            <tr style="background:#EEE6F5;"><td><b>WRX</b></td><td><b>GR/IR Clearing</b></td></tr>
+            <tr><td>PRD</td><td>Price Differences</td></tr>
+          </tbody>
+        </table>
+        <div class="gui-field-row" style="margin-top:14px;"><label>Chart of Accounts</label><div class="val">BIKE</div></div>
+        <div class="gui-field-row"><label>Valuation Modif.</label><div class="val">0001</div></div>
+        <div class="gui-field-row"><label>G/L Account</label><div class="val">19100000 — GR/IR Clearing Acct</div></div>
+      </div>
+      <div class="gui-statusbar"><span>WRX · BIKE</span><span>INS</span></div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      Cuando entra la mercadería (Goods Receipt), el sistema debita <b>Inventario (BSX)</b> y acredita <b>GR/IR (WRX)</b> — todavía no hay factura. Cuando llega la factura (Invoice Receipt), débita <b>GR/IR (WRX)</b> — la cierra — y acredita <b>Accounts Payable</b>. Todo automático, gracias a esta configuración.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting the Reconciliation Account</span>
+          <span class="sec-title-es">Configurando la cuenta de enlace</span>
+          <span class="sec-area">General Ledger</span>
+        </div>
+        <div class="sec-desc">El campo que convierte una cuenta de mayor cualquiera en el puente hacia un sub-libro.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Ni AP ni AR se actualizan solos en el GL por magia — hace falta <strong>un campo puntual</strong> en el maestro de la cuenta de mayor. Marcarlo es lo que convierte a 12100000 en la <strong>Reconciliation Account</strong> (T2 glosario) que Linda concilia todos los días (T3 §5).
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="spro-box">
+      <ul class="spro-tree">
+        <li class="folder"><span class="icon">📁</span>Maestro de cuenta de mayor (no es un nodo de SPRO — es la transacción de mantenimiento del Chart of Accounts)
+          <ul>
+            <li><span class="target">⚙️ FS00 — G/L Account Master Record</span></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gui-screen">
+      <div class="gui-titlebar"><span>Display G/L Account Centrally</span><span class="gt-icons">▭ ▭ ✕</span></div>
+      <div class="gui-menubar"><span>G/L Account</span><span>Edit</span><span>Goto</span><span>Extras</span><span>System</span><span>Help</span></div>
+      <div class="gui-toolbar">
+        <div class="t-btn">✓</div><div class="t-btn">✎</div><div class="t-btn">⟲</div><div class="t-btn">⎙</div><div class="t-btn">🔍</div>
+      </div>
+      <div class="gui-crumbbar">Display G/L Account Centrally — T-Code: FS00</div>
+      <div class="gui-tabs">
+        <div class="gui-tab">Type/Description</div>
+        <div class="gui-tab active">Control Data</div>
+        <div class="gui-tab">Create/Bank/Interest</div>
+      </div>
+      <div class="gui-body">
+        <div class="gui-field-row"><label>G/L Account</label><div class="val">12100000</div></div>
+        <div class="gui-field-row"><label>Short Text</label><div class="val">Accounts Receivable - Dom.</div></div>
+        <div class="gui-field-row"><label>Account Group</label><div class="val">Balance Sheet Accounts</div></div>
+        <div class="gui-field-row"><label>Recon. Acct for Acct Type</label><div class="val grey">D — Customers</div></div>
+        <div class="gui-field-row"><label>Field Status Group</label><div class="val">G067</div></div>
+        <div class="gui-hint">💡 "D — Customers" es la única razón por la que este G/L account puede recibir postings automáticos desde Accounts Receivable — sin este valor, sería una cuenta de mayor común y corriente.</div>
+      </div>
+      <div class="gui-statusbar"><span>12100000 Accounts Receivable</span><span>INS</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T4 · Configurador (GUI) — Record to Report · Biblioteca de Guías SAP · Fuente: documento del curso + conocimiento general de SAP validado</footer>
+
+</body>
+</html>

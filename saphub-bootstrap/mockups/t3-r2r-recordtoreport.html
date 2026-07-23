@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Record to Report — Usuario (Fiori) | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* SAP Fiori — colores reales, uso EXCLUSIVO dentro de mockups de pantalla */
+    --sap-shell:#354A5F;
+    --sap-blue:#0070F2;
+    --sap-blue-dark:#0040A0;
+    --sap-border:#D9D9D9;
+    --sap-text:#32363A;
+    --sap-muted:#6A6D70;
+    --sap-bg-field:#F7F7F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t3);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #14262E 55%, #1C4256 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{ border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:600; background:transparent; letter-spacing:.2px; }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+  .hero h1{ font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.1rem,4.4vw,3.2rem); margin:0 0 6px; line-height:1.08; }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{ font-family:'Syne',sans-serif; font-weight:600; font-size:clamp(1.1rem,2.2vw,1.5rem); color:rgba(255,255,255,0.62); margin:0 0 18px; }
+  .hero p.desc{ max-width:660px; font-size:15px; line-height:1.65; color:rgba(255,255,255,0.82); margin:0 0 22px; }
+
+  /* protagonista block (reemplaza el hlbox generico en T3/T4) */
+  .protagonist{ display:flex; align-items:center; gap:16px; background:rgba(127,196,224,0.14); border-left:4px solid var(--t3); border-radius:0 10px 10px 0; padding:14px 20px; max-width:660px; }
+  .avatar{ width:46px; height:46px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+  .protagonist .p-name{ color:var(--t3); font-weight:700; font-size:14px; }
+  .protagonist .p-role{ color:rgba(255,255,255,0.75); font-size:12.5px; margin-top:2px; }
+  .protagonist .p-note{ color:rgba(255,255,255,0.55); font-size:11.5px; margin-top:4px; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{ background:var(--t3-dark); color:white; font-family:'JetBrains Mono',monospace; font-weight:600; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:15px; box-shadow:0 2px 6px rgba(46,112,150,0.35); }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .sec-actor{ display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 10px 3px 6px; border-radius:20px; background:rgba(46,112,150,0.1); color:var(--t3-dark); margin-left:8px; vertical-align:middle; }
+  .sec-actor .dot{ width:16px; height:16px; border-radius:50%; background:var(--t3-dark); color:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'Syne'; font-weight:800; }
+
+  .task-box{ background:var(--t3-pale); border-left:4px solid var(--t3-dark); border-radius:0 10px 10px 0; padding:16px 22px; margin-bottom:22px; font-size:0.94rem; line-height:1.7; color:var(--ink); }
+  .task-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  /* BREADCRUMB (Como llegaste) */
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--t3-dark); font-weight:700; margin-bottom:8px; }
+  .breadcrumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .breadcrumb .crumb{ display:flex; align-items:center; gap:6px; padding:6px 13px; background:white; border:1px solid var(--border); border-radius:8px; color:var(--body); font-weight:500; font-size:0.8rem; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); border-color:var(--t3-dark); color:white; font-weight:700; }
+  .breadcrumb .sep{ color:#B8C4D6; font-size:0.85rem; }
+
+  /* FIORI SCREEN MOCKUP */
+  .fiori-screen{ background:white; border:1px solid var(--sap-border); border-radius:8px; overflow:hidden; box-shadow:0 3px 16px rgba(10,15,28,0.09); font-family:'Inter',sans-serif; }
+  .fiori-topbar{ background:var(--sap-shell); color:white; padding:7px 16px; display:flex; align-items:center; gap:10px; font-size:0.74rem; }
+  .fiori-topbar .sap-logo{ background:var(--sap-blue); color:white; font-weight:800; font-size:0.68rem; padding:2px 6px; border-radius:3px; letter-spacing:.5px; }
+  .fiori-appbar{ padding:13px 20px; border-bottom:1px solid #EAEAEA; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .fiori-appbar h6{ margin:0; font-size:1rem; color:var(--sap-text); font-weight:700; }
+  .fiori-appbar .sub{ font-size:0.76rem; color:var(--sap-muted); }
+  .fiori-appbar .tag{ background:#FFF3CD; color:#8A6A1E; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-body{ padding:22px 20px; }
+  .fiori-tabs{ display:flex; gap:22px; border-bottom:1px solid #EAEAEA; margin-bottom:18px; }
+  .fiori-tab{ padding:7px 2px; font-size:0.8rem; color:var(--sap-muted); border-bottom:2px solid transparent; }
+  .fiori-tab.active{ color:var(--sap-blue); border-bottom-color:var(--sap-blue); font-weight:600; }
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px 22px; margin-bottom:6px; }
+  .fiori-field label{ display:block; font-size:0.7rem; color:var(--sap-muted); margin-bottom:4px; }
+  .fiori-field .val{ font-size:0.83rem; color:var(--sap-text); padding:7px 10px; background:var(--sap-bg-field); border:1px solid var(--sap-border); border-radius:4px; }
+  .fiori-field .val.filled{ background:white; border-color:var(--sap-blue); font-weight:600; }
+  .fiori-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.78rem; }
+  .fiori-table th{ text-align:left; padding:8px 10px; color:var(--sap-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:.3px; border-bottom:1px solid var(--sap-border); white-space:nowrap; }
+  .fiori-table td{ padding:9px 10px; border-bottom:1px solid #F0F0F0; color:var(--sap-text); white-space:nowrap; }
+  .fiori-table td.num{ text-align:right; font-family:'JetBrains Mono',monospace; }
+  .fiori-table tr.total td{ font-weight:700; border-top:1.5px solid var(--sap-border); border-bottom:none; }
+  .fiori-btnbar{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid #EAEAEA; flex-wrap:wrap; }
+  .fiori-btn{ padding:7px 18px; border-radius:4px; font-size:0.78rem; font-weight:600; border:1px solid var(--sap-border); background:white; color:var(--sap-text); }
+  .fiori-btn.primary{ background:var(--sap-blue); color:white; border-color:var(--sap-blue); }
+  .fiori-btn.text{ border:none; color:var(--sap-blue); background:none; padding:7px 4px; }
+  .fiori-status{ display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .fiori-status.ok{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-status.open{ background:#FFF3CD; color:#8A6A1E; }
+  .fiori-list-item{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border:1px solid var(--sap-border); border-radius:6px; margin-bottom:8px; }
+  .fiori-list-item .li-title{ font-size:0.85rem; font-weight:600; color:var(--sap-text); }
+  .fiori-list-item .li-sub{ font-size:0.72rem; color:var(--sap-muted); margin-top:2px; }
+  .fiori-pill{ font-size:0.66rem; font-weight:700; padding:3px 9px; border-radius:20px; }
+  .fiori-pill.public{ background:#E4F5E9; color:#1D7A3E; }
+  .fiori-pill.private{ background:#F0F0F0; color:#5A5A5A; }
+  .fiori-pill.held{ background:#FFF3CD; color:#8A6A1E; }
+
+  /* KPI TILES (launchpad-style) */
+  .kpi-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .kpi-tile{ background:white; border:1px solid var(--sap-border); border-radius:8px; padding:18px 16px; }
+  .kpi-tile .kpi-icon{ font-size:19px; margin-bottom:9px; display:block; }
+  .kpi-tile .kpi-val{ font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem; color:var(--sap-text); }
+  .kpi-tile .kpi-trend{ font-size:0.68rem; font-weight:700; margin-left:3px; }
+  .kpi-tile .kpi-trend.up{ color:#1D7A3E; }
+  .kpi-tile .kpi-trend.warn{ color:#8A6A1E; }
+  .kpi-tile .kpi-label{ font-size:0.72rem; color:var(--sap-muted); margin-top:7px; }
+
+  /* SIMULATION BANNER */
+  .sim-banner{ display:flex; align-items:center; gap:10px; background:#E4F5E9; border:1px solid #B8E0C4; border-radius:8px; padding:12px 16px; margin-bottom:16px; color:#1D7A3E; font-weight:700; font-size:0.85rem; }
+
+  /* DEBE/HABER */
+  .dc-note{ background:#FFF8ED; border:1px solid #F0DCAE; border-radius:8px; padding:13px 16px; margin-top:16px; font-size:0.82rem; color:#5C4A1E; line-height:1.6; }
+  .dc-note .dc-label{ font-weight:800; color:#8A6A1E; font-size:0.7rem; text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+  .dc-note b{ color:#8A6A1E; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO (FIORI)</span>
+  <a href="#s1">Post Entry</a>
+  <a href="#s2">Review Entry</a>
+  <a href="#s3">Templates</a>
+  <a href="#s4">GR/IR Check</a>
+  <a href="#s5">AR Reconciliation</a>
+  <a href="#s6">Segment Report</a>
+  <a href="#s7">KPI Dashboard</a>
+  <a href="#s8">Simulate</a>
+  <a href="#s9">Trial Balance</a>
+  <a href="#s10">Held Documents</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Record to Report</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+      <span class="pill pill-secondary">Accounts Receivable</span>
+    </div>
+    <h1><span class="accent">Record</span> to Report</h1>
+    <h2>Del Registro al Reporte — Vivido por el Usuario</h2>
+    <p class="desc">Cómo se vive el proceso R2R desde Fiori, día a día: contabilizar, revisar y verificar — pantallas reales, un caso a la vez.</p>
+    <div class="protagonist">
+      <div class="avatar">K</div>
+      <div>
+        <div class="p-name">Kevin</div>
+        <div class="p-role">General Ledger &amp; Asset Accounting · Bike GmbH (DE01)</div>
+        <div class="p-note">Guía principal de este recorrido — José (Accounts Payable) aparece en la sección 4, Linda (Accounts Receivable) en la sección 5</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Posting the Sales Commission Entry</span>
+          <span class="sec-title-es">Contabilizando la comisión de venta</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Un asiento manual de Ledger 0L, con Segmento, Profit Center y Área Funcional en la línea de gasto.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Kevin necesita registrar la <strong>comisión de venta de Producto A</strong> del mes en Bike GmbH. No es un asiento automático de un proceso integrado — lo carga a mano desde <strong>Post General Journal Entries</strong>, completando cabecera y partidas él mismo.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Post General Journal Entries</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Post General Journal Entries</div>
+      <div class="fiori-appbar">
+        <div><h6>Nuevo asiento</h6><span class="sub">Journal Entry Type: SA (G/L Account Document)</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-tabs">
+          <div class="fiori-tab active">Header</div>
+          <div class="fiori-tab">Attachments</div>
+          <div class="fiori-tab">Notes</div>
+          <div class="fiori-tab">Balances</div>
+        </div>
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Journal Entry Date</label><div class="val filled">06.03.2023</div></div>
+          <div class="fiori-field"><label>Company Code</label><div class="val filled">DE01</div></div>
+          <div class="fiori-field"><label>Ledger Group</label><div class="val filled">0L</div></div>
+          <div class="fiori-field"><label>Posting Date</label><div class="val filled">06.03.2023</div></div>
+          <div class="fiori-field"><label>Transaction Currency</label><div class="val filled">EUR</div></div>
+          <div class="fiori-field"><label>Reference</label><div class="val">—</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>Line Items (2)</th><th>G/L Account</th><th>Segment</th><th>Profit Center</th><th>Functional Area</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>61500000 Sales Commissions</td><td>1000_A</td><td>YB110</td><td>YB30</td><td class="num">100,00</td><td class="num">0,00</td></tr>
+            <tr><td>2</td><td>11001000 Main Bank Account</td><td>1000_A</td><td>YB110</td><td>—</td><td class="num">0,00</td><td class="num">100,00</td></tr>
+            <tr class="total"><td colspan="5">Total</td><td class="num">100,00</td><td class="num">100,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn text">Select Templates</button>
+          <button class="fiori-btn">Hold Journal Entry</button>
+          <button class="fiori-btn">Simulate</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      <b>61500000 (Sales Commissions) → Debe:</b> es un gasto que aumenta. <b>11001000 (Main Bank Account) → Haber:</b> un activo (el banco) que disminuye porque la comisión se pagó directo, sin pasar por Accounts Payable.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Posted Entry</span>
+          <span class="sec-title-es">Revisando el asiento ya contabilizado</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Confirmar que la clasificación por Segmento, Profit Center y Área Funcional quedó bien.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Después de contabilizar, Kevin busca el documento para <strong>confirmar que todo quedó bien clasificado</strong> antes de que el dato viaje a los reportes — no alcanza con que el asiento haya sido aceptado, hay que revisar que las dimensiones de reporting estén correctas.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Manage Journal Entries → buscar "100000035"</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Manage Journal Entries</div>
+      <div class="fiori-appbar">
+        <div><h6>Journal Entry (100000035) · Ledger 0L</h6><span class="sub">Posting Period 3 / 2023 · Company Code DE01</span></div>
+        <span class="tag">✓ Posted</span>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Posting View</th><th>G/L Account</th><th>Segment</th><th>Profit Center</th><th>Functional Area</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>000001</td><td>61500000 (Sales Commissions)</td><td>1000_A (Segment A)</td><td>YB110 (Product A)</td><td>YB30 (Sales &amp; Distribution)</td><td class="num">100,00 EUR</td><td class="num">0,00 EUR</td></tr>
+            <tr><td>000002</td><td>11001000 (Main Bank Acct)</td><td>1000_A (Segment A)</td><td>YB110 (Product A)</td><td>—</td><td class="num">0,00 EUR</td><td class="num">100,00 EUR</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Reverse</button>
+          <button class="fiori-btn">Display Changes</button>
+          <button class="fiori-btn primary">Edit</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reusing a Journal Entry Template</span>
+          <span class="sec-title-es">Reutilizando una plantilla de asiento</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Un asiento recurrente no se vuelve a armar de cero cada mes.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Cada fin de mes Kevin contabiliza la <strong>asignación de gastos compartidos</strong> entre departamentos — siempre las mismas cuentas, los mismos centros de costo. En vez de tipear todo de nuevo, elige una plantilla ya armada.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Post General Journal Entries</div><span class="sep">›</span>
+      <div class="crumb current">botón "Select Templates"</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Select Templates</div>
+      <div class="fiori-appbar">
+        <div><h6>Plantillas disponibles</h6><span class="sub">3 resultados · Company Code DE01</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-list-item">
+          <div><div class="li-title">Sales Commission — Standard</div><div class="li-sub">61500000 · Sales &amp; Distribution · usada 14 veces</div></div>
+          <span class="fiori-pill public">Public</span>
+        </div>
+        <div class="fiori-list-item">
+          <div><div class="li-title">Monthly Accruals — Manufacturing</div><div class="li-sub">Cost Center 10101301 · usada 8 veces</div></div>
+          <span class="fiori-pill public">Public</span>
+        </div>
+        <div class="fiori-list-item">
+          <div><div class="li-title">Utility Expense Allocation (Kevin)</div><div class="li-sub">creada por Kevin · sin compartir</div></div>
+          <span class="fiori-pill private">Private</span>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Cancel</button>
+          <button class="fiori-btn primary">Use Template</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking GR/IR Clearing Status</span>
+          <span class="sec-title-es">Verificando el estado de GR/IR</span>
+          <span class="sec-actor"><span class="dot">J</span>José</span>
+        </div>
+        <div class="sec-desc">Confirmar si una compra ya tiene mercadería Y factura, o si todavía queda algo pendiente.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      José, de Accounts Payable, recibió una consulta de un proveedor y necesita saber si su factura ya <strong>compensó</strong> la cuenta GR/IR o si todavía está <strong>abierta</strong> — es decir, si falta la mercadería, la factura, o ya está todo prolijo.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Payable</div><span class="sep">›</span>
+      <div class="crumb current">Monitor GR/IR Clearing Account</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Monitor GR/IR Clearing Account</div>
+      <div class="fiori-appbar">
+        <div><h6>Proveedor: Tireless Tires</h6><span class="sub">Company Code DE01</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>PO Item</th><th>Goods Receipt</th><th>Invoice Receipt</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>4500001231 / 10</td><td class="num">500,00 EUR</td><td class="num">500,00 EUR</td><td><span class="fiori-status ok">✓ Compensado</span></td></tr>
+            <tr><td>4500001231 / 20</td><td class="num">1.200,00 EUR</td><td class="num">0,00 EUR</td><td><span class="fiori-status open">⏳ Factura pendiente</span></td></tr>
+            <tr><td>4500001255 / 10</td><td class="num">0,00 EUR</td><td class="num">340,00 EUR</td><td><span class="fiori-status open">⏳ Mercadería pendiente</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Export</button>
+          <button class="fiori-btn primary">Contactar Compras</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Qué significa cada estado</span>
+      <b>Compensado:</b> mercadería y factura ya se registraron los dos — la cuenta GR/IR quedó en cero para esa línea. <b>Pendiente:</b> falta uno de los dos lados — el valor sigue "en tránsito" hasta que aparezca.
+    </div>
+  </section>
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reconciling Accounts Receivable</span>
+          <span class="sec-title-es">Conciliando cuentas por cobrar</span>
+          <span class="sec-actor"><span class="dot">L</span>Linda</span>
+        </div>
+        <div class="sec-desc">El chequeo diario entre el sub-libro de AR y su cuenta de enlace en el GL.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Todas las mañanas, antes de tocar nada nuevo, Linda corre la <strong>conciliación de AR</strong> contra el Libro Mayor. No espera al cierre — si algo no coincide, prefiere enterarse hoy y no en la última semana del mes.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Accounts Receivable</div><span class="sep">›</span>
+      <div class="crumb current">Reconcile Sub-Ledger to GL</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Reconcile Sub-Ledger to GL</div>
+      <div class="fiori-appbar">
+        <div><h6>Accounts Receivable — Company Code DE01</h6><span class="sub">Cuenta de enlace: 12100000 · corte de hoy</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>Cliente</th><th>Saldo Sub-Libro AR</th><th>Saldo Cuenta de Enlace GL</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Velotics</td><td class="num">18.450,00 EUR</td><td class="num">18.450,00 EUR</td><td><span class="fiori-status ok">✓ Coincide</span></td></tr>
+            <tr><td>North Wheels Co.</td><td class="num">7.200,00 EUR</td><td class="num">7.200,00 EUR</td><td><span class="fiori-status ok">✓ Coincide</span></td></tr>
+            <tr><td>Metro Bike Supply</td><td class="num">4.980,00 EUR</td><td class="num">4.630,00 EUR</td><td><span class="fiori-status open">⚠ Diferencia</span></td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Export</button>
+          <button class="fiori-btn primary">Investigar Diferencia</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking Results by Segment</span>
+          <span class="sec-title-es">Consultando resultados por segmento</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Filtrar el reporte por Segmento y Profit Center, no por sociedad entera.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      El gerente de Producto A quiere saber cómo viene el mes. Kevin no le manda el balance completo de Bike GmbH — filtra el reporte por <strong>Segmento 1000_A</strong> y <strong>Profit Center YB110</strong>, así el gerente ve solo lo suyo.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">Reporting</div><span class="sep">›</span>
+      <div class="crumb current">Display Financial Statement (filtrado)</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Display Financial Statement</div>
+      <div class="fiori-appbar">
+        <div><h6>Resultado filtrado</h6><span class="sub">Periodo 03/2023</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid" style="margin-bottom:18px;">
+          <div class="fiori-field"><label>Segment</label><div class="val filled">1000_A (Segment A)</div></div>
+          <div class="fiori-field"><label>Profit Center</label><div class="val filled">YB110 (Product A)</div></div>
+          <div class="fiori-field"><label>Period</label><div class="val filled">03 / 2023</div></div>
+        </div>
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Descripción</th><th>Monto</th></tr></thead>
+          <tbody>
+            <tr><td>60000000</td><td>Sales Revenue — Product A</td><td class="num">45.000,00 EUR</td></tr>
+            <tr><td>61200000</td><td>Freight &amp; Distribution</td><td class="num">850,00 EUR</td></tr>
+            <tr><td>61500000</td><td>Sales Commissions</td><td class="num">100,00 EUR</td></tr>
+            <tr class="total"><td colspan="2">Resultado del segmento</td><td class="num">44.050,00 EUR</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Starting the Day With the KPI Dashboard</span>
+          <span class="sec-title-es">Arrancando el día con el dashboard de KPIs</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Antes de abrir ninguna app puntual, un vistazo a los números del día.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Lo primero que ve Kevin al entrar es su <strong>Fiori Launchpad</strong> — un panorama rápido de caja, ventas y cumplimiento, sin abrir ninguna transacción todavía. Si algo llama la atención, ahí decide qué mirar primero.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb current">🏠 Fiori Launchpad — página de inicio de Kevin</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Fiori Launchpad</div>
+      <div class="fiori-appbar">
+        <div><h6>Buenos días, Kevin</h6><span class="sub">jueves 09.03.2023</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="kpi-grid">
+          <div class="kpi-tile">
+            <span class="kpi-icon">💶</span>
+            <div><span class="kpi-val">€182.400</span><span class="kpi-trend up">▲ 4%</span></div>
+            <div class="kpi-label">Cash Flow — hoy</div>
+          </div>
+          <div class="kpi-tile">
+            <span class="kpi-icon">🛒</span>
+            <div><span class="kpi-val">€340.200</span><span class="kpi-trend up">▲ 8%</span></div>
+            <div class="kpi-label">Ventas — MTD vs. objetivo</div>
+          </div>
+          <div class="kpi-tile">
+            <span class="kpi-icon">📥</span>
+            <div><span class="kpi-val">12</span><span class="kpi-trend warn">pend.</span></div>
+            <div class="kpi-label">Facturas AP abiertas</div>
+          </div>
+          <div class="kpi-tile">
+            <span class="kpi-icon">✅</span>
+            <div><span class="kpi-val">Al día</span></div>
+            <div class="kpi-label">Compliance Monitoring</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Simulating Before Posting</span>
+          <span class="sec-title-es">Simulando antes de contabilizar</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Un asiento de devengamiento con varias partidas — mejor revisarlo antes de que quede en firme.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Kevin arma el <strong>devengamiento de servicios</strong> del mes, con partidas en dos centros de costo. Antes de tocar "Post", usa <strong>Simulate</strong> — así ve el resultado sin contabilizar todavía, y puede corregir si algo no cierra.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">Post General Journal Entries</div><span class="sep">›</span>
+      <div class="crumb current">botón "Simulate"</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Simulate Journal Entry</div>
+      <div class="fiori-appbar">
+        <div><h6>Vista previa — sin contabilizar</h6><span class="sub">Journal Entry Type: SA</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="sim-banner">✓ Simulación balanceada — Total Debe = Total Haber</div>
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Cost Center</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>61800000 Utilities Expense</td><td>10101301 (Manufacturing)</td><td class="num">450,00</td><td class="num">0,00</td></tr>
+            <tr><td>61800000 Utilities Expense</td><td>10101305 (Admin)</td><td class="num">210,00</td><td class="num">0,00</td></tr>
+            <tr><td>21500000 Accrued Liabilities</td><td>—</td><td class="num">0,00</td><td class="num">660,00</td></tr>
+            <tr class="total"><td colspan="2">Total</td><td class="num">660,00</td><td class="num">660,00</td></tr>
+          </tbody>
+        </table>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Volver a editar</button>
+          <button class="fiori-btn primary">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dc-note">
+      <span class="dc-label">Por qué va así, Debe / Haber</span>
+      Las dos líneas de <b>Utilities Expense → Debe</b> porque son gastos que aumenta, uno por cada centro de costo que lo usó. <b>Accrued Liabilities → Haber</b> porque es un pasivo nuevo: la empresa reconoce que debe ese gasto aunque todavía no llegó la factura.
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Pre-Close Trial Balance</span>
+          <span class="sec-title-es">Revisando el balance de comprobación previo al cierre</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Un corte de saldos antes del cierre formal, para detectar algo raro con tiempo.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      A dos días del cierre, Kevin pide el <strong>Trial Balance</strong> completo de DE01. No busca nada puntual — recorre los saldos buscando algo que "no cierre a ojo": una cuenta con un importe fuera de lo esperado, algo que no debería tener saldo y lo tiene.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">Trial Balance</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> Trial Balance</div>
+      <div class="fiori-appbar">
+        <div><h6>Company Code DE01</h6><span class="sub">Periodo 03/2023 · pre-close</span></div>
+      </div>
+      <div class="fiori-body">
+        <table class="fiori-table">
+          <thead><tr><th>G/L Account</th><th>Descripción</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody>
+            <tr><td>11001000</td><td>Main Bank Account</td><td class="num">245.300,00</td><td class="num">—</td></tr>
+            <tr><td>12100000</td><td>Accounts Receivable</td><td class="num">30.630,00</td><td class="num">—</td></tr>
+            <tr><td>21100000</td><td>Accounts Payable</td><td class="num">—</td><td class="num">18.900,00</td></tr>
+            <tr><td>60000000</td><td>Sales Revenue</td><td class="num">—</td><td class="num">257.130,00</td></tr>
+            <tr><td>61500000</td><td>Sales Commissions</td><td class="num">100,00</td><td class="num">—</td></tr>
+            <tr class="total"><td colspan="2">Total</td><td class="num">276.030,00</td><td class="num">276.030,00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Resuming a Held Journal Entry</span>
+          <span class="sec-title-es">Retomando un asiento retenido</span>
+          <span class="sec-actor"><span class="dot">K</span>Kevin</span>
+        </div>
+        <div class="sec-desc">Lo que se guarda con "Hold" cuando falta un dato, y cómo se retoma después.</div>
+      </div>
+    </div>
+    <div class="task-box">
+      Ayer Kevin empezó a cargar una <strong>reasignación de costos</strong>, pero le faltaba la aprobación del centro de costo destino. En vez de perder lo ya tipeado, usó <strong>Hold Journal Entry</strong> — hoy, con la aprobación en mano, lo retoma justo donde lo dejó.
+    </div>
+
+    <div class="step-label">Cómo llegaste</div>
+    <div class="breadcrumb">
+      <div class="crumb">🏠 Fiori Launchpad</div><span class="sep">›</span>
+      <div class="crumb">Finance</div><span class="sep">›</span>
+      <div class="crumb">General Ledger</div><span class="sep">›</span>
+      <div class="crumb current">My Held Documents</div>
+    </div>
+
+    <div class="fiori-screen">
+      <div class="fiori-topbar"><span class="sap-logo">SAP</span> My Held Documents</div>
+      <div class="fiori-appbar">
+        <div><h6>Documentos retenidos de Kevin</h6><span class="sub">2 resultados</span></div>
+      </div>
+      <div class="fiori-body">
+        <div class="fiori-list-item">
+          <div><div class="li-title">HELD-000482 — Reasignación de costos</div><div class="li-sub">Company Code DE01 · retenido ayer 15:40 · faltaba aprobación de Cost Center</div></div>
+          <span class="fiori-pill held">Held</span>
+        </div>
+        <div class="fiori-list-item">
+          <div><div class="li-title">HELD-000479 — Ajuste de depreciación</div><div class="li-sub">Company Code DE01 · retenido hace 3 días</div></div>
+          <span class="fiori-pill held">Held</span>
+        </div>
+        <div class="fiori-btnbar">
+          <button class="fiori-btn">Eliminar</button>
+          <button class="fiori-btn primary">Retomar HELD-000482</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario (Fiori) — Record to Report · Biblioteca de Guías SAP · Fuente: documento del curso + capturas reales de Fiori</footer>
+
+</body>
+</html>

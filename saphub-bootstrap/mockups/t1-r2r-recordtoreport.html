@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1 · Record to Report — Básico | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t1:#7FBF8F;
+    --t1-dark:#3D7A52;
+    --t1-pale:rgba(127,191,143,0.14);
+    --t1-pale-border:rgba(127,191,143,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    /* paleta de categoria - de uso libre DENTRO de un diagrama puntual cuando hace falta distinguir 3+ dominios en paralelo */
+    --cat-fi:#1A4B8C;
+    --cat-co:#1A6B99;
+    --cat-log:#00A896;
+    --cat-purchase:#7E4FBF;
+    --cat-sales:#E07B39;
+    --cat-legal:#C9932E;
+    --cat-alert:#C0392B;
+    --cat-steel:#5A6B8C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t1);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t1); border-bottom-color:var(--t1); }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #142A22 55%, #1F4A32 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t1); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:640px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .hlbox{
+    background:rgba(127,191,143,0.14);
+    border-left:4px solid var(--t1);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:640px;
+    font-size:13.5px;
+    color:rgba(255,255,255,0.9);
+    line-height:1.5;
+  }
+  .hlbox b{ color:var(--t1); font-weight:700; }
+
+  /* SECTIONS */
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t1-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(61,122,82,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+
+  /* THEORY BOX — envuelve la explicacion teorica de cada seccion, ancho completo */
+  .theory-box{
+    background:var(--t1-pale);
+    border-left:4px solid var(--t1-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t1-dark); font-weight:700; }
+
+  .visual-wrap{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 30px;
+    box-shadow:0 2px 12px rgba(10,15,28,0.05);
+    overflow-x:auto;
+  }
+  .visual-wrap svg{ display:block; margin:0 auto; min-width:640px; }
+
+  /* FLOW (seccion 1) */
+  .flow-row{ display:flex; align-items:stretch; gap:14px; min-width:960px; }
+  .flow-step{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .flow-step-head{ padding:12px 10px 10px; border-radius:12px 12px 0 0; color:white; text-align:center; position:relative; }
+  .flow-step-head .icon{ font-size:19px; display:block; margin-bottom:3px; }
+  .flow-step-head .title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; display:block; }
+  .flow-step-head .title-es{ display:block; font-size:9.5px; font-weight:400; color:rgba(255,255,255,0.68); font-style:italic; margin-top:2px; }
+  .flow-step-body{ background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; padding:12px 11px; flex:1; }
+  .flow-step-body ul{ list-style:none; margin:0; padding:0; }
+  .flow-step-body li{ font-size:10.3px; color:var(--body); padding:3px 0 3px 12px; position:relative; line-height:1.4; }
+  .flow-step-body li::before{ content:'▸'; position:absolute; left:0; color:var(--t1-dark); font-size:9px; top:4px; }
+  /* conector: anclado con position:absolute al propio .flow-step (top fijo = altura del header),
+     NO como flex-item separado -- evita que la altura estirada de hermanos con distinto contenido lo desalinee */
+  .flow-connector{
+    position:absolute; top:20px; right:-21px; width:28px; height:28px;
+    background:white; border:2px solid #CBD5E1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 5px rgba(10,15,28,0.18); z-index:5;
+  }
+
+  /* CARD ROW (seccion 4 — partes de una pantalla) */
+  .cardrow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .cardrow .item{ background:white; border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .cardrow .item .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .cardrow .item h5{ margin:0 0 2px; font-family:'Syne',sans-serif; font-size:0.85rem; color:var(--ink); }
+  .cardrow .item .en{ font-size:0.68rem; color:var(--muted); font-style:italic; display:block; margin-bottom:6px; }
+  .cardrow .item p{ margin:0; font-size:0.76rem; color:var(--body); line-height:1.5; }
+
+  /* COMPARISON CARDS (secciones 5, 8) */
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t1-dark); }
+  .cmp-card.neutral{ border-top:4px solid #94A3B8; }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .icon-inline{ font-size:1.05rem; margin-right:4px; }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+  .formula-box{ background:var(--bg); border-radius:8px; padding:12px 14px; margin-top:14px; font-size:0.8rem; }
+  .formula-box .flabel{ font-weight:700; color:var(--ink); display:block; margin-bottom:4px; }
+  .formula-box div.frow{ padding:2px 0; color:var(--body); }
+
+  /* CHIPS (seccion 7) */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{ background:var(--t1-pale); border:1.5px solid var(--t1-pale-border); border-radius:10px; padding:14px 18px; text-align:center; flex:1; min-width:180px; }
+  .chip .chip-icon{ font-size:21px; display:block; margin-bottom:5px; }
+  .chip .chip-title{ font-size:0.83rem; font-weight:700; color:var(--t1-dark); }
+  .chip .chip-en{ font-size:0.7rem; color:var(--muted); font-style:italic; display:block; margin-top:2px; }
+
+  /* CHIP COLOR VARIANTS — para sets donde cada item es un dominio distinto */
+  .chip-navy{ background:rgba(26,75,140,0.07); border-color:rgba(26,75,140,0.28); }
+  .chip-navy .chip-title{ color:#1A4B8C; }
+  .chip-teal{ background:rgba(0,168,150,0.08); border-color:rgba(0,168,150,0.28); }
+  .chip-teal .chip-title{ color:#00A896; }
+  .chip-purple{ background:rgba(126,79,191,0.08); border-color:rgba(126,79,191,0.28); }
+  .chip-purple .chip-title{ color:#7E4FBF; }
+  .chip-orange{ background:rgba(224,123,57,0.08); border-color:rgba(224,123,57,0.28); }
+  .chip-orange .chip-title{ color:#E07B39; }
+  .chip-gold{ background:rgba(201,147,46,0.09); border-color:rgba(201,147,46,0.3); }
+  .chip-gold .chip-title{ color:#C9932E; }
+  .chip-red{ background:rgba(192,57,43,0.07); border-color:rgba(192,57,43,0.28); }
+  .chip-red .chip-title{ color:#C0392B; }
+
+  /* SEGMENT MATRIX (seccion 6) */
+  .segment-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .segment-col{ border:1.5px dashed var(--t1-dark); border-radius:12px; padding:18px; }
+  .segment-col h4{ text-align:center; font-family:'Syne',sans-serif; font-size:0.95rem; color:var(--ink); margin:0 0 6px; }
+  .segment-col .sub{ text-align:center; font-size:0.72rem; color:var(--muted); margin-bottom:14px; }
+  .segment-item{ background:var(--t1-pale); border-radius:8px; padding:10px 14px; margin-bottom:8px; font-size:0.83rem; font-weight:600; color:var(--t1-dark); text-align:center; }
+  .segment-item .em{ margin-right:6px; }
+
+  /* TABLE (seccion 10) */
+  .data-table{ width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); font-size:0.85rem; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .data-table th{ background:var(--navy-900); color:white; padding:11px 14px; text-align:left; font-size:0.7rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+  .data-table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--body); }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .data-table tr:nth-child(even) td{ background:#FAFBFD; }
+  .data-table .mod-name{ font-weight:700; color:var(--ink); font-size:0.88rem; }
+  .data-table .mod-en{ font-size:0.7rem; color:var(--muted); display:block; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+  .badge-accent{ background:var(--t1-pale); color:var(--t1-dark); }
+  .badge-neutral{ background:#E8EDF6; color:#1A4B8C; }
+
+  /* GLOSSARY */
+  .glossary{ background:var(--navy-950); padding:64px 40px 72px; scroll-margin-top:64px; }
+  .glossary-inner{ max-width:1100px; margin:0 auto; }
+  .glossary h2{ font-family:'Syne',sans-serif; color:white; font-size:1.6rem; margin:0 0 6px; }
+  .glossary p.gloss-sub{ color:rgba(255,255,255,0.55); font-size:0.9rem; margin:0 0 30px; }
+  .glossary-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .gcard{ background:var(--navy-800); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px 18px; }
+  .term-en{ font-family:'Syne',sans-serif; font-weight:700; color:var(--t1); font-size:1rem; }
+  .term-es{ font-family:'Inter',sans-serif; color:rgba(255,255,255,0.5); font-size:0.78rem; margin:2px 0 8px; }
+  .term-def{ color:rgba(255,255,255,0.82); font-size:0.83rem; line-height:1.5; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+
+  .box-label{ font-family:'Inter',sans-serif; font-weight:600; font-size:12px; }
+  .box-sub{ font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T1 · BÁSICO</span>
+  <a href="#s1">R2R Process</a>
+  <a href="#s2">S/4HANA &amp; Central Finance</a>
+  <a href="#s3">Universal Journal</a>
+  <a href="#s4">Journal Entry</a>
+  <a href="#s5">Ledgers</a>
+  <a href="#s6">Segment Reporting</a>
+  <a href="#s7">Profit Center</a>
+  <a href="#s8">Cost of Sales</a>
+  <a href="#s9">Enterprise Structure</a>
+  <a href="#s10">Sub-Ledgers</a>
+  <a href="#glossary">Glosario</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Record to Report</span>
+      <span class="pill pill-secondary">General Ledger</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Accounts Payable</span>
+      <span class="pill pill-secondary">Accounts Receivable</span>
+    </div>
+    <h1><span class="accent">Record</span> to Report</h1>
+    <h2>Del Registro al Reporte</h2>
+    <p class="desc">Fundamentos teóricos del proceso R2R en SAP S/4HANA: cómo se registra una transacción financiera, dónde vive el Diario Universal, y qué estructuras organizativas y contables sostienen el reporting legal y de gestión.</p>
+    <div class="hlbox">Resumen Visual — <b>Record to Report</b>, Tipo 1 (Básico). 10 secciones teóricas basadas exclusivamente en el documento fuente del curso.</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 — FLOW con iconos y color por etapa -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Record to Report Process</span>
+          <span class="sec-title-es">El proceso de Record to Report</span>
+        </div>
+        <div class="sec-desc">Las seis etapas que transforman transacciones diarias en reportes financieros y de gestión.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>¿Qué es R2R?</strong> Es el proceso que va del <strong>registro de transacciones</strong> a la <strong>generación de reportes</strong> financieros y de gestión. Consta de seis etapas — desde el registro diario hasta las <strong>presentaciones regulatorias</strong> — que en conjunto le dan a la gerencia feedback estratégico, financiero y operativo sobre el desempeño de la organización.
+    </div>
+    <div class="visual-wrap">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A4B8C;">
+            <span class="icon">📝</span><span class="title-en">Record</span><span class="title-es">Registro</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Ventas a clientes, pagos a proveedores</li>
+            <li>Entradas automáticas desde sistemas integrados</li>
+            <li>Asientos manuales: acumulados, reclasificaciones</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#00A896;">
+            <span class="icon">🔒</span><span class="title-en">Entity Close</span><span class="title-es">Cierre de Entidad</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Cierre del Libro Mayor de período</li>
+            <li>Reconciliación diaria de sub-libros vs. GL</li>
+            <li>Cuentas temporales → permanentes</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#1A6B99;">
+            <span class="icon">🔗</span><span class="title-en">Consolidation</span><span class="title-es">Consolidación</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Categorización de transacciones registradas</li>
+            <li>Transacciones inter-entidad para eliminación</li>
+            <li>Conversión de moneda multinacional</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#7E4FBF;">
+            <span class="icon">🏢</span><span class="title-en">Corporate Close</span><span class="title-es">Cierre Corporativo</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>ICMR: matching continuo entre unidades</li>
+            <li>Ajustes desde la perspectiva del grupo</li>
+            <li>Aprobación y ejecución de eliminación</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#E07B39;">
+            <span class="icon">📊</span><span class="title-en">Reporting</span><span class="title-es">Reportes</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Reportes diarios: cash flow, ventas</li>
+            <li>Dashboards de KPIs</li>
+          </ul></div>
+          <div class="flow-connector"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L11 7 M7 3 L11 7 L7 11" stroke="#5A6B8C" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-head" style="background:#C0392B;">
+            <span class="icon">⚖️</span><span class="title-en">Regulatory</span><span class="title-es">Regulatorio</span>
+          </div>
+          <div class="flow-step-body"><ul>
+            <li>Reportes volumétricos estatales/federales</li>
+            <li>Monitoreo diario de cumplimiento</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 — SVG embudo -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">SAP S/4HANA and Central Finance</span>
+          <span class="sec-title-es">SAP S/4HANA y Central Finance</span>
+        </div>
+        <div class="sec-desc">La base tecnológica del proceso R2R y cómo se centralizan sistemas heterogéneos.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      SAP S/4HANA es un ERP inteligente que corre exclusivamente sobre <strong>HANA</strong>, su base de datos in-memory, con IA embebida para no depender de proveedores externos. <strong>Central Finance</strong> es un add-on que recibe transacciones contables en tiempo real desde sistemas SAP o no-SAP, permitiendo centralizar el landscape existente sin interrumpirlo.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D7A52"/>
+          </marker>
+        </defs>
+        <line x1="220" y1="185" x2="220" y2="165" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="185" x2="450" y2="165" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="680" y1="185" x2="680" y2="165" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="220" y1="165" x2="680" y2="165" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="165" x2="450" y2="155" stroke="#3D7A52" stroke-width="2.5" marker-end="url(#a2)"/>
+        <line x1="450" y1="95" x2="450" y2="68" stroke="#3D7A52" stroke-width="2.5" marker-end="url(#a2)"/>
+
+        <rect x="125" y="185" width="190" height="60" rx="10" fill="#5A6B8C"/>
+        <text x="220" y="209" text-anchor="middle" fill="white" class="box-label" font-family="Inter">💻 SAP ECC</text>
+        <text x="220" y="226" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">sistema origen</text>
+
+        <rect x="355" y="185" width="190" height="60" rx="10" fill="#5A6B8C"/>
+        <text x="450" y="209" text-anchor="middle" fill="white" class="box-label" font-family="Inter">🖥️ Otro S/4HANA</text>
+        <text x="450" y="226" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">sistema origen</text>
+
+        <rect x="585" y="185" width="190" height="60" rx="10" fill="#5A6B8C"/>
+        <text x="680" y="209" text-anchor="middle" fill="white" class="box-label" font-family="Inter">🌐 Sistema no-SAP</text>
+        <text x="680" y="226" text-anchor="middle" fill="rgba(255,255,255,0.72)" class="box-sub">sistema origen</text>
+
+        <rect x="340" y="95" width="220" height="60" rx="10" fill="#1A6B99"/>
+        <text x="450" y="120" text-anchor="middle" fill="white" class="box-label" font-family="Inter">🔄 Central Finance</text>
+        <text x="450" y="137" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">recibe en tiempo real</text>
+
+        <rect x="315" y="10" width="270" height="58" rx="10" fill="#0A0F1C"/>
+        <text x="450" y="35" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="13.5">S/4HANA Digital Core</text>
+        <text x="450" y="52" text-anchor="middle" fill="#7FE3D8" class="box-sub">un solo sistema centralizado</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 — HUB diagrama entradas/salidas -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Universal Journal — Single Source of Truth</span>
+          <span class="sec-title-es">El Diario Universal</span>
+        </div>
+        <div class="sec-desc">Cómo se fusionan Financial Accounting (FI) y Controlling (CO) en una sola tabla, y cómo alimenta cada tipo de reporte.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>Diario Universal</strong> es la fuente única de verdad de SAP S/4HANA Finance: <strong>Libro Mayor = Diario Universal</strong>. Captura en un solo lugar todas las transacciones de <strong>Financial Accounting (FI)</strong> y <strong>Controlling (CO)</strong>, y desde ahí alimenta cada tipo de reporte que la organización necesita.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg">
+        <rect x="310" y="160" width="280" height="100" rx="12" fill="#0A0F1C"/>
+        <text x="450" y="200" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="15">DIARIO UNIVERSAL</text>
+        <text x="450" y="219" text-anchor="middle" fill="#7FE3D8" class="box-sub" font-size="11">Universal Journal</text>
+        <text x="450" y="238" text-anchor="middle" fill="rgba(255,255,255,0.65)" class="box-sub" font-size="10">Única fuente de verdad · FI + CO</text>
+
+        <rect x="30" y="30" width="180" height="56" rx="8" fill="#E07B39"/>
+        <text x="120" y="54" text-anchor="middle" fill="white" class="box-label">Ventas e Ingresos</text>
+        <text x="120" y="70" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Facturación · O2C</text>
+        <line x1="210" y1="58" x2="310" y2="185" stroke="#E07B39" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="306,181 315,187 307,196" fill="#E07B39"/>
+
+        <rect x="30" y="120" width="180" height="56" rx="8" fill="#7E4FBF"/>
+        <text x="120" y="144" text-anchor="middle" fill="white" class="box-label">Compras</text>
+        <text x="120" y="160" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Proveedores · P2P</text>
+        <line x1="210" y1="148" x2="310" y2="200" stroke="#7E4FBF" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="306,196 316,202 307,210" fill="#7E4FBF"/>
+
+        <rect x="30" y="210" width="180" height="56" rx="8" fill="#00A896"/>
+        <text x="120" y="234" text-anchor="middle" fill="white" class="box-label">Activos Fijos</text>
+        <text x="120" y="250" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Adquisición · Retiro</text>
+        <line x1="210" y1="238" x2="310" y2="225" stroke="#00A896" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="306,221 316,224 308,232" fill="#00A896"/>
+
+        <rect x="30" y="300" width="180" height="56" rx="8" fill="#1A6B99"/>
+        <text x="120" y="324" text-anchor="middle" fill="white" class="box-label">Asientos Manuales</text>
+        <text x="120" y="340" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Acumulados · Ajustes</text>
+        <line x1="210" y1="328" x2="310" y2="245" stroke="#1A6B99" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="306,241 317,247 307,254" fill="#1A6B99"/>
+
+        <rect x="690" y="30" width="180" height="56" rx="8" fill="#1A4B8C"/>
+        <text x="780" y="54" text-anchor="middle" fill="white" class="box-label">Reporte Legal</text>
+        <text x="780" y="70" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Balance · P&amp;L · GAAP/IFRS</text>
+        <line x1="590" y1="185" x2="690" y2="58" stroke="#1A4B8C" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="686,54 695,60 688,68" fill="#1A4B8C"/>
+
+        <rect x="690" y="120" width="180" height="56" rx="8" fill="#C9932E"/>
+        <text x="780" y="144" text-anchor="middle" fill="white" class="box-label">Reporte por Segmento</text>
+        <text x="780" y="160" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">IFRS 8 · ASC 280</text>
+        <line x1="590" y1="200" x2="690" y2="148" stroke="#C9932E" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="686,144 696,150 688,158" fill="#C9932E"/>
+
+        <rect x="690" y="210" width="180" height="56" rx="8" fill="#00A896"/>
+        <text x="780" y="234" text-anchor="middle" fill="white" class="box-label">Reporte de Gestión</text>
+        <text x="780" y="250" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Centros de Beneficio</text>
+        <line x1="590" y1="218" x2="690" y2="238" stroke="#00A896" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="686,234 696,240 688,248" fill="#00A896"/>
+
+        <rect x="690" y="300" width="180" height="56" rx="8" fill="#7E4FBF"/>
+        <text x="780" y="324" text-anchor="middle" fill="white" class="box-label">Costo de Ventas</text>
+        <text x="780" y="340" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Por Área Funcional</text>
+        <line x1="590" y1="238" x2="690" y2="328" stroke="#7E4FBF" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="686,324 696,330 688,338" fill="#7E4FBF"/>
+
+        <text x="120" y="395" text-anchor="middle" fill="#64748B" font-size="11">⬅ ENTRADAS (transacciones)</text>
+        <text x="780" y="395" text-anchor="middle" fill="#64748B" font-size="11">SALIDAS (reportes) ➡</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 — cards de las partes de la pantalla -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Recording a Financial Transaction</span>
+          <span class="sec-title-es">Cómo se registra una transacción financiera</span>
+        </div>
+        <div class="sec-desc">Las cuatro áreas de la pantalla de un asiento contable.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un asiento se contabiliza a través de una pantalla dividida en cuatro áreas. Primero se completan los <strong>datos de cabecera</strong> y la primera partida; antes de contabilizar, el asiento puede <strong>simularse</strong> para verificarlo.
+    </div>
+    <div class="visual-wrap">
+      <div class="cardrow">
+        <div class="item">
+          <span class="icon">📋</span>
+          <h5>Header Data</h5>
+          <span class="en">Datos de Cabecera</span>
+          <p>Fecha de contabilización y tipo de documento — aplican a todo el asiento.</p>
+        </div>
+        <div class="item">
+          <span class="icon">📝</span>
+          <h5>Line Items</h5>
+          <span class="en">Partidas</span>
+          <p>Cada línea del asiento; el ícono de detalle abre la pantalla completa de la partida.</p>
+        </div>
+        <div class="item">
+          <span class="icon">💰</span>
+          <h5>Tax Items</h5>
+          <span class="en">Partidas de Impuesto</span>
+          <p>Detalle de impuestos, con cálculo automático opcional al simular o contabilizar.</p>
+        </div>
+        <div class="item">
+          <span class="icon">📑</span>
+          <h5>Templates</h5>
+          <span class="en">Plantillas</span>
+          <p>Plantillas reutilizables de referencia; pueden compartirse en toda la organización.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 — comparacion simple 2 cajas -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Ledgers and Parallel Accounting</span>
+          <span class="sec-title-es">Ledgers y Contabilidad Paralela</span>
+        </div>
+        <div class="sec-desc">Cómo conviven distintos principios contables dentro de una misma sociedad.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un <strong>Ledger</strong> es una sección de la tabla de totales con las dimensiones necesarias para un reporte. El <strong>Ledger Líder</strong> sigue el GAAP local; los <strong>Ledgers Paralelos</strong> registran los mismos hechos bajo otros principios — como IFRS — para que convivan varias contabilidades sobre una misma transacción.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📗</span>Leading Ledger <span class="en-tag">· Ledger Líder</span></h4>
+          <p>Se alinea con el <strong>GAAP local</strong>. Incluye todos los asientos estándar necesarios para el set completo de estados financieros de la sociedad.</p>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">📘</span>Parallel Ledger <span class="en-tag">· Ledger Paralelo</span></h4>
+          <p>Registra los mismos hechos bajo <strong>otro principio contable</strong> (ej. IFRS). Puede haber uno o varios conviviendo junto al ledger líder.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 — matriz segmentos HTML -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Segment Reporting</span>
+          <span class="sec-title-es">Reporting por Segmento</span>
+        </div>
+        <div class="sec-desc">Cómo IFRS 8 y ASC 280 exigen visibilidad por unidad de negocio, más allá de la sociedad.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Según <strong>IFRS 8</strong>, las compañías deben informar los resultados financieros de sus <strong>segmentos de negocio</strong>. Un segmento es una subárea con ingresos y gastos propios, y sus reportes pueden <strong>agrupar actividades de varias Company Codes</strong> — no se limitan a una sola sociedad legal.
+    </div>
+    <div class="visual-wrap">
+      <div class="segment-grid">
+        <div class="segment-col">
+          <h4>Company Code DE01</h4>
+          <div class="sub">Bike GmbH · Alemania</div>
+          <div class="segment-item"><span class="em">📦</span>Segment: Product Sales</div>
+          <div class="segment-item"><span class="em">🔧</span>Segment: Spare Parts</div>
+          <div class="segment-item"><span class="em">🧑‍💼</span>Segment: Consulting Services</div>
+        </div>
+        <div class="segment-col">
+          <h4>Company Code US01</h4>
+          <div class="sub">Bike Inc · EE.UU.</div>
+          <div class="segment-item"><span class="em">📦</span>Segment: Product Sales</div>
+          <div class="segment-item"><span class="em">🔧</span>Segment: Spare Parts</div>
+          <div class="segment-item"><span class="em">🧑‍💼</span>Segment: Consulting Services</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 — chips de criterios -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Profit Centers and Internal Reporting</span>
+          <span class="sec-title-es">Centros de Beneficio y reporting interno</span>
+        </div>
+        <div class="sec-desc">La dimensión que permite ver la compañía como "empresas dentro de la empresa".</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Un <strong>Profit Center</strong> es una unidad de gestión interna — en la práctica, una <strong>empresa dentro de la empresa</strong> — que permite armar un balance y un P&amp;L internos, a su nivel o al de un <strong>Profit Center Group</strong>. Se puede definir con distintos criterios, sin que ninguno sea obligatorio o excluyente.
+    </div>
+    <div class="visual-wrap">
+      <div class="chip-row">
+        <div class="chip">
+          <span class="chip-icon">📍</span>
+          <span class="chip-title">Estructura Geográfica</span>
+          <span class="chip-en">por región</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">📦</span>
+          <span class="chip-title">Estructura de Producto</span>
+          <span class="chip-en">por línea</span>
+        </div>
+        <div class="chip">
+          <span class="chip-icon">⚙️</span>
+          <span class="chip-title">Estructura Funcional</span>
+          <span class="chip-en">producción, ventas, I+D</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 — comparacion + chips de areas funcionales -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Period Accounting vs. Cost of Sales Accounting</span>
+          <span class="sec-title-es">Contabilidad por Naturaleza vs. por Función</span>
+        </div>
+        <div class="sec-desc">Las dos formas de construir el estado de resultados y el rol del Área Funcional.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El estado de resultados se arma por uno de dos métodos. <strong>Period Accounting</strong> agrupa ingresos y gastos por su naturaleza; <strong>Cost of Sales Accounting</strong> los clasifica por <strong>Área Funcional</strong>, mostrando el propósito comercial de cada gasto.
+    </div>
+    <div class="visual-wrap">
+      <div class="cmp-grid">
+        <div class="cmp-card neutral">
+          <h4><span class="icon-inline">📅</span>Period Accounting <span class="en-tag">· Contabilidad por Naturaleza</span></h4>
+          <p>Presenta los <strong>ingresos y gastos primarios</strong> del período, junto con los cambios en stock, trabajo en proceso y actividades capitalizadas.</p>
+          <div class="formula-box">
+            <span class="flabel">Estructura típica</span>
+            <div class="frow">+ Ingresos por ventas</div>
+            <div class="frow">± Variación en inventario</div>
+            <div class="frow">− Gastos del período (por tipo)</div>
+            <div class="frow">= Resultado operativo</div>
+          </div>
+        </div>
+        <div class="cmp-card accent">
+          <h4><span class="icon-inline">🏷️</span>Cost of Sales Accounting <span class="en-tag">· Contabilidad por Función</span></h4>
+          <p>Compara los <strong>ingresos por ventas</strong> con los <strong>costos de fabricación</strong> del período, clasificando gastos por área funcional.</p>
+          <div class="formula-box">
+            <span class="flabel">Estructura típica</span>
+            <div class="frow">+ Ingresos por ventas</div>
+            <div class="frow">− Costo de producción vendida</div>
+            <div class="frow">− Gastos de ventas / administrativos</div>
+            <div class="frow">= Resultado operativo</div>
+          </div>
+        </div>
+      </div>
+      <div class="chip-row" style="margin-top:16px;">
+        <div class="chip chip-teal"><span class="chip-icon">🏭</span><span class="chip-title">Producción</span><span class="chip-en">Production</span></div>
+        <div class="chip chip-orange"><span class="chip-icon">🛒</span><span class="chip-title">Ventas</span><span class="chip-en">Sales</span></div>
+        <div class="chip chip-gold"><span class="chip-icon">📋</span><span class="chip-title">Administración</span><span class="chip-en">Administration</span></div>
+        <div class="chip chip-purple"><span class="chip-icon">🔬</span><span class="chip-title">I+D</span><span class="chip-en">R&amp;D</span></div>
+        <div class="chip chip-red"><span class="chip-icon">📣</span><span class="chip-title">Marketing</span><span class="chip-en">Marketing</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 — SVG jerarquia real de niveles -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">The Enterprise Structure</span>
+          <span class="sec-title-es">La Estructura Empresarial</span>
+        </div>
+        <div class="sec-desc">Los niveles reales entre Controlling Area, Company Code y las unidades logísticas.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      Para registrar transacciones, SAP necesita una <strong>estructura empresarial</strong>. El <strong>Controlling Area</strong> puede contener una o varias <strong>Company Codes</strong> — no son del mismo nivel — y estas a su vez se apoyan en unidades logísticas como <strong>Plant</strong>, <strong>Purchasing Organization</strong> y <strong>Sales Organization</strong>.
+    </div>
+    <div class="visual-wrap">
+      <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg">
+        <line x1="450" y1="68" x2="450" y2="95" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="330" y="10" width="240" height="58" rx="10" fill="#1A6B99"/>
+        <text x="450" y="33" text-anchor="middle" fill="white" font-family="Syne" font-weight="800" font-size="14">Controlling Area</text>
+        <text x="450" y="50" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">A000 · Contabilidad gerencial</text>
+
+        <line x1="450" y1="185" x2="450" y2="210" stroke="#94A3B8" stroke-width="2"/>
+        <rect x="300" y="95" width="300" height="90" rx="10" fill="#1A4B8C"/>
+        <text x="450" y="119" text-anchor="middle" fill="white" class="box-label" font-size="13">Company Code</text>
+        <text x="450" y="136" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">1 a muchas por Controlling Area</text>
+        <text x="450" y="152" text-anchor="middle" fill="#B8D4F0" class="box-sub" font-style="italic">Sociedad · unidad legal</text>
+        <text x="450" y="170" text-anchor="middle" fill="rgba(255,255,255,0.6)" class="box-sub" font-size="9">ej. DE01 (Alemania) · US01 (EE.UU.)</text>
+
+        <line x1="190" y1="210" x2="710" y2="210" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="190" y1="210" x2="190" y2="235" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="450" y1="210" x2="450" y2="235" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="710" y1="210" x2="710" y2="235" stroke="#94A3B8" stroke-width="2"/>
+
+        <rect x="80" y="235" width="220" height="78" rx="10" fill="#00A896"/>
+        <text x="190" y="259" text-anchor="middle" fill="white" class="box-label">Plant</text>
+        <text x="190" y="276" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Producción · Aprovisionamiento</text>
+        <text x="190" y="293" text-anchor="middle" fill="#C8F0E6" class="box-sub" font-style="italic">Centro</text>
+
+        <rect x="340" y="235" width="220" height="78" rx="10" fill="#7E4FBF"/>
+        <text x="450" y="259" text-anchor="middle" fill="white" class="box-label">Purchasing Org.</text>
+        <text x="450" y="276" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Negociación con proveedores</text>
+        <text x="450" y="293" text-anchor="middle" fill="#E4D4F7" class="box-sub" font-style="italic">Org. de Compras</text>
+
+        <rect x="600" y="235" width="220" height="78" rx="10" fill="#E07B39"/>
+        <text x="710" y="259" text-anchor="middle" fill="white" class="box-label">Sales Org.</text>
+        <text x="710" y="276" text-anchor="middle" fill="rgba(255,255,255,0.75)" class="box-sub">Distribución de bienes/servicios</text>
+        <text x="710" y="293" text-anchor="middle" fill="#FBE0C8" class="box-sub" font-style="italic">Org. de Ventas</text>
+
+        <rect x="70" y="335" width="11" height="11" rx="2" fill="#1A6B99"/>
+        <text x="86" y="344" font-size="10" fill="#64748B">Controlling</text>
+        <rect x="185" y="335" width="11" height="11" rx="2" fill="#1A4B8C"/>
+        <text x="201" y="344" font-size="10" fill="#64748B">Financiero</text>
+        <rect x="300" y="335" width="11" height="11" rx="2" fill="#00A896"/>
+        <text x="316" y="344" font-size="10" fill="#64748B">Logística</text>
+        <rect x="405" y="335" width="11" height="11" rx="2" fill="#7E4FBF"/>
+        <text x="421" y="344" font-size="10" fill="#64748B">Compras</text>
+        <rect x="510" y="335" width="11" height="11" rx="2" fill="#E07B39"/>
+        <text x="526" y="344" font-size="10" fill="#64748B">Ventas</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 — tabla -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Sub-Ledgers Integrated with the General Ledger</span>
+          <span class="sec-title-es">Los sub-libros integrados con el Libro Mayor</span>
+        </div>
+        <div class="sec-desc">Cómo Accounts Payable, Accounts Receivable y Asset Accounting actualizan el Libro Mayor en tiempo real.</div>
+      </div>
+    </div>
+    <div class="theory-box">
+      El <strong>Libro Mayor</strong> es el registro centralizado y completo de toda transacción con impacto en valor. <strong>Accounts Payable</strong>, <strong>Accounts Receivable</strong> y <strong>Asset Accounting</strong> son sub-libros que lo actualizan en <strong>tiempo real</strong> mediante cuentas de enlace (reconciliation accounts).
+    </div>
+    <div class="visual-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Módulo</th><th>Función Principal</th><th>Qué registra</th><th>Integración con GL</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mod-name">📒 General Ledger</span><span class="mod-en">Libro Mayor</span></td>
+            <td>Registro centralizado y completo de <strong>todas</strong> las transacciones de valor.</td>
+            <td>Asientos de diario · saldos de cuentas · transacciones de todas las áreas</td>
+            <td><span class="badge badge-accent">Es el GL mismo</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📥 Accounts Payable</span><span class="mod-en">Cuentas por Pagar</span></td>
+            <td>Administra los datos contables de <strong>todos los proveedores</strong>.</td>
+            <td>Entregas · facturas de proveedores · verificación de facturas</td>
+            <td><span class="badge badge-neutral">Tiempo real vía cuenta de enlace</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">📤 Accounts Receivable</span><span class="mod-en">Cuentas por Cobrar</span></td>
+            <td>Registra los datos contables de <strong>todos los clientes</strong>.</td>
+            <td>Salidas de mercadería · facturación · cobros</td>
+            <td><span class="badge badge-neutral">Tiempo real vía cuenta de enlace</span></td>
+          </tr>
+          <tr>
+            <td><span class="mod-name">🏗️ Asset Accounting</span><span class="mod-en">Activos Fijos (FI-AA)</span></td>
+            <td>Gestión y supervisión de <strong>activos fijos</strong>; sub-libro del GL.</td>
+            <td>Adquisición · retiro · transferencia de activos</td>
+            <td><span class="badge badge-neutral">Tiempo real vía cuenta de enlace</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<section class="glossary" id="glossary">
+  <div class="glossary-inner">
+    <h2>Glosario</h2>
+    <p class="gloss-sub">Términos introducidos en este archivo (Tipo 1 — Básico). Inglés primero, español a continuación.</p>
+    <div class="glossary-grid">
+      <div class="gcard"><div class="term-en">Universal Journal</div><div class="term-es">Diario Universal</div><div class="term-def">Tabla única que unifica FI y CO como fuente de verdad contable en S/4HANA.</div></div>
+      <div class="gcard"><div class="term-en">Ledger</div><div class="term-es">Ledger / Libro</div><div class="term-def">Sección de la tabla de totales que contiene solo las dimensiones necesarias para un reporte.</div></div>
+      <div class="gcard"><div class="term-en">Leading Ledger</div><div class="term-es">Ledger Líder</div><div class="term-def">Ledger principal, alineado al GAAP local, base del set completo de estados financieros.</div></div>
+      <div class="gcard"><div class="term-en">Parallel Ledger</div><div class="term-es">Ledger Paralelo</div><div class="term-def">Ledger adicional que registra los mismos hechos según otro principio contable (ej. IFRS).</div></div>
+      <div class="gcard"><div class="term-en">Segment</div><div class="term-es">Segmento</div><div class="term-def">Subárea de la compañía con ingresos y gastos propios, exigida por IFRS 8 / ASC 280.</div></div>
+      <div class="gcard"><div class="term-en">Profit Center</div><div class="term-es">Centro de Beneficio</div><div class="term-def">Unidad de gestión interna que agrupa transacciones de resultado y de balance.</div></div>
+      <div class="gcard"><div class="term-en">Profit Center Group</div><div class="term-es">Grupo de Centros de Beneficio</div><div class="term-def">Estructura jerárquica de profit centers usada para reporting o planificación agregada.</div></div>
+      <div class="gcard"><div class="term-en">Functional Area</div><div class="term-es">Área Funcional</div><div class="term-def">Clasificación de gastos operativos por función: producción, ventas, admin, I+D.</div></div>
+      <div class="gcard"><div class="term-en">Cost of Sales Accounting</div><div class="term-es">Contabilidad por Función</div><div class="term-def">Método de P&amp;L que compara los ingresos con el costo de fabricación de la actividad vendida.</div></div>
+      <div class="gcard"><div class="term-en">Period Accounting</div><div class="term-es">Contabilidad por Naturaleza</div><div class="term-def">Método de P&amp;L basado en ingresos y gastos primarios del período.</div></div>
+      <div class="gcard"><div class="term-en">Central Finance</div><div class="term-es">Central Finance</div><div class="term-def">Add-on de S/4HANA que centraliza transacciones de múltiples sistemas en tiempo real.</div></div>
+      <div class="gcard"><div class="term-en">GR/IR Clearing</div><div class="term-es">Compensación GR/IR</div><div class="term-def">Proceso que compensa las cuentas de mercadería y factura pendientes de recibo.</div></div>
+      <div class="gcard"><div class="term-en">Company Code</div><div class="term-es">Sociedad</div><div class="term-def">Unidad legal independiente que representa la vista fiscal y local de la compañía.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>T1 · Básico — Record to Report · Biblioteca de Guías SAP · Fuente exclusiva: documento del curso</footer>
+
+</body>
+</html>
