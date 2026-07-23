@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3 · Cost Estimate Options in Product Cost Planning — Usuario/Fiori | Biblioteca SAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --t3:#7FC4E0;
+    --t3-dark:#2E7096;
+    --t3-pale:rgba(127,196,224,0.14);
+    --t3-pale-border:rgba(127,196,224,0.4);
+    --navy-950:#0A0F1C;
+    --navy-900:#0F1A2E;
+    --navy-800:#16233B;
+    --gold:#D4AF37;
+    --pill-secondary:#8AA0C4;
+    --ink:#16213A;
+    --muted:#64748B;
+    --bg:#F7F8FA;
+    --border:#E3E7EE;
+    --white:#FFFFFF;
+    --body:#3D4A5F;
+    --sap-blue:#0854A0;
+    --sap-blue-light:#EAF2FB;
+    --sap-tile:#F5F6F7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-950);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:4px;
+    padding:0 24px; overflow-x:auto;
+    white-space:nowrap;
+  }
+  .topnav-brand{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--t3);
+    font-size:12px; font-weight:600;
+    padding:14px 16px 14px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+    margin-right:8px;
+    flex-shrink:0;
+  }
+  .topnav a{
+    color:rgba(255,255,255,0.65);
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:500;
+    padding:14px 10px;
+    border-bottom:2px solid transparent;
+    flex-shrink:0;
+    transition:color .15s;
+  }
+  .topnav a:hover{ color:var(--t3); border-bottom-color:var(--t3); }
+
+  .hero{
+    background:linear-gradient(135deg,#0A0F1C 0%, #122B3A 55%, #1A4A63 100%);
+    padding:56px 40px 40px;
+    color:white;
+  }
+  .hero-inner{ max-width:1100px; margin:0 auto; }
+  .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .pill{
+    border-radius:999px; padding:5px 14px;
+    font-size:11.5px; font-weight:600; font-family:'Inter',sans-serif;
+    background:transparent; letter-spacing:.2px;
+  }
+  .pill-primary{ border:1.5px solid var(--gold); color:var(--gold); }
+  .pill-secondary{ border:1.5px solid var(--pill-secondary); color:var(--pill-secondary); }
+
+  .hero h1{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem,4.4vw,3.2rem);
+    margin:0 0 6px;
+    line-height:1.08;
+  }
+  .hero h1 .accent{ color:var(--t3); }
+  .hero h2{
+    font-family:'Syne',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:rgba(255,255,255,0.62);
+    margin:0 0 18px;
+  }
+  .hero p.desc{
+    max-width:640px;
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,0.82);
+    margin:0 0 22px;
+  }
+  .protagonist-box{
+    display:flex; align-items:center; gap:14px;
+    background:rgba(127,196,224,0.14);
+    border-left:4px solid var(--t3);
+    border-radius:0 8px 8px 0;
+    padding:13px 18px;
+    max-width:640px;
+  }
+  .protagonist-avatar{
+    width:40px; height:40px; min-width:40px; border-radius:50%;
+    background:var(--t3-dark); color:white;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Syne',sans-serif; font-weight:800; font-size:16px;
+  }
+  .protagonist-text{ font-size:13.5px; color:rgba(255,255,255,0.9); line-height:1.5; }
+  .protagonist-text b{ color:var(--t3); font-weight:700; }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 40px; }
+  .section{ padding:56px 0; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  .section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .sec-num{
+    background:var(--t3-dark); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:600;
+    width:40px; height:40px; min-width:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:8px; font-size:15px;
+    box-shadow:0 2px 6px rgba(46,112,150,0.35);
+  }
+  .sec-titles{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:220px; }
+  .sec-title-row{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .sec-title-en{ font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .sec-title-es{ font-family:'Inter',sans-serif; font-weight:500; font-size:0.92rem; color:var(--muted); }
+  .sec-desc{ color:var(--muted); font-size:0.92rem; margin-top:2px; }
+  .app-tag{ display:inline-flex; align-self:flex-start; align-items:center; gap:5px; font-size:0.7rem; font-weight:700; letter-spacing:.2px; padding:3px 10px; border-radius:20px; margin-top:6px; background:var(--t3-pale); color:var(--t3-dark); }
+
+  .theory-box{
+    background:var(--t3-pale);
+    border-left:4px solid var(--t3-dark);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    margin-bottom:24px;
+    font-size:0.94rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .theory-box strong{ color:var(--t3-dark); font-weight:700; }
+
+  .breadcrumb{ display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:14px; font-size:0.8rem; color:var(--muted); }
+  .breadcrumb .crumb{ background:white; border:1px solid var(--t3-pale-border); color:var(--t3-dark); border-radius:6px; padding:4px 10px; font-weight:600; }
+  .breadcrumb .sep{ color:#B7C2D0; }
+  .breadcrumb .crumb.current{ background:var(--t3-dark); color:white; border-color:var(--t3-dark); }
+
+  .fiori-frame{ border-radius:12px; overflow:hidden; border:1px solid var(--border); box-shadow:0 2px 12px rgba(10,15,28,0.06); }
+  .fiori-topbar{ background:var(--sap-blue); color:white; padding:10px 18px; display:flex; align-items:center; gap:10px; font-size:0.85rem; font-weight:600; }
+  .fiori-topbar .fiori-icon{ font-size:16px; }
+  .fiori-body{ background:var(--sap-tile); padding:22px 24px; }
+
+  .fiori-field-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 24px; background:white; border-radius:8px; padding:18px 20px; }
+  .fiori-field{ display:flex; flex-direction:column; gap:2px; }
+  .fiori-field label{ font-size:0.68rem; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); font-weight:600; }
+  .fiori-field .val{ font-size:0.88rem; color:var(--ink); font-weight:600; }
+  .fiori-field .val.tag-s{ color:var(--sap-blue); }
+
+  .fiori-tile-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .fiori-tile{ background:white; border-radius:8px; padding:16px; text-align:left; box-shadow:0 1px 4px rgba(10,15,28,0.08); }
+  .fiori-tile .t-icon{ font-size:18px; }
+  .fiori-tile .t-title{ font-size:0.78rem; font-weight:700; color:var(--ink); margin-top:8px; }
+  .fiori-tile .t-status{ font-size:0.68rem; color:var(--muted); margin-top:2px; }
+
+  .fiori-list{ background:white; border-radius:8px; overflow:hidden; }
+  .fiori-list-row{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:8px; padding:11px 16px; border-bottom:1px solid var(--border); font-size:0.8rem; align-items:center; }
+  .fiori-list-row:last-child{ border-bottom:none; }
+  .fiori-list-row.head{ background:#EEF1F5; font-size:0.68rem; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); font-weight:700; }
+  .fiori-list-row .strong{ font-weight:700; color:var(--ink); }
+  .status-pill{ display:inline-block; padding:2px 9px; border-radius:20px; font-size:0.68rem; font-weight:600; }
+  .status-open{ background:#E8EDF6; color:#1A4B8C; }
+  .status-done{ background:rgba(0,168,150,0.12); color:#00754A; }
+  .status-marked{ background:rgba(212,175,55,0.15); color:#8A6A0E; }
+
+  .cmp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cmp-card{ background:white; border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:0 2px 10px rgba(10,15,28,0.05); }
+  .cmp-card.accent{ border-top:4px solid var(--t3-dark); }
+  .cmp-card h4{ font-family:'Syne',sans-serif; font-size:1.05rem; margin:0 0 2px; color:var(--ink); }
+  .cmp-card .en-tag{ font-size:0.75rem; color:var(--muted); font-style:italic; font-weight:400; }
+  .cmp-card p{ font-size:0.85rem; color:var(--body); line-height:1.6; margin:8px 0 0; }
+
+  .bar-row{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .bar-label{ width:170px; font-size:0.78rem; color:var(--ink); font-weight:600; flex-shrink:0; }
+  .bar-track{ flex:1; background:#E7ECF2; border-radius:6px; height:16px; overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:6px; }
+  .bar-value{ width:70px; text-align:right; font-size:0.78rem; color:var(--body); flex-shrink:0; }
+
+  .debit-credit{ display:grid; grid-template-columns:1fr 1fr; gap:0; border-radius:8px; overflow:hidden; border:1px solid var(--border); margin-top:16px; }
+  .debit-credit .dc-col{ padding:14px 18px; }
+  .debit-credit .dc-col.debe{ background:rgba(46,112,150,0.06); border-right:1px solid var(--border); }
+  .debit-credit .dc-col.haber{ background:rgba(0,168,150,0.06); }
+  .debit-credit .dc-label{ font-size:0.68rem; text-transform:uppercase; letter-spacing:.4px; font-weight:700; color:var(--muted); margin-bottom:6px; }
+  .debit-credit .dc-line{ font-size:0.85rem; color:var(--ink); font-weight:600; }
+  .debit-credit .dc-sub{ font-size:0.72rem; color:var(--muted); margin-top:2px; }
+
+  footer{ text-align:center; padding:26px 20px; color:var(--muted); font-size:0.78rem; background:var(--bg); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">T3 · USUARIO/FIORI</span>
+  <a href="#s1">Setting Up the Material</a>
+  <a href="#s2">Running the Cost Estimate</a>
+  <a href="#s3">Reviewing Results</a>
+  <a href="#s4">Itemization</a>
+  <a href="#s5">Cost Component Split</a>
+  <a href="#s6">Comparing Estimates</a>
+  <a href="#s7">Costing Run</a>
+  <a href="#s8">Marking</a>
+  <a href="#s9">Release &amp; Revaluate</a>
+  <a href="#s10">Valuation Strategy</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="pills">
+      <span class="pill pill-primary">Product Cost Planning</span>
+      <span class="pill pill-secondary">Controlling</span>
+      <span class="pill pill-secondary">Materials Management</span>
+      <span class="pill pill-secondary">Production Planning</span>
+    </div>
+    <h1><span class="accent">Cost Estimate</span> Options — A Day in Fiori</h1>
+    <h2>Opciones de Estimación de Costos — Un día en Fiori</h2>
+    <p class="desc">Recorrido práctico de las apps Fiori que usa el equipo de Controlling para costear un producto nuevo, de punta a punta: desde el material master hasta la actualización del precio estándar.</p>
+    <div class="protagonist-box">
+      <div class="protagonist-avatar">P</div>
+      <div class="protagonist-text"><b>Priya</b>, Controlling — Bike Company (BIKE-CO) necesita costear el prototipo de una bicicleta nueva antes de arrancar producción. Este archivo sigue su recorrido real por las apps de Product Cost Planning.</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECCIÓN 1 -->
+  <section class="section" id="s1">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Setting Up the Material for Costing</span>
+          <span class="sec-title-es">Preparando el material para poder costearlo</span>
+        </div>
+        <div class="sec-desc">Antes de estimar nada, Priya verifica que el material tenga los datos de costeo correctos.</div>
+        <span class="app-tag">📱 Manage Product Master Data</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Priya abre el material master del nuevo cuadro de bicicleta para confirmar que las vistas de <strong>Costing</strong> y <strong>Accounting</strong> estén completas antes de intentar costearlo — sin esto, el cost estimate ni siquiera puede ejecutarse.
+    </div>
+    <div class="breadcrumb">
+      <span class="crumb">SAP Fiori Launchpad</span><span class="sep">›</span>
+      <span class="crumb">Manage Product Master Data</span><span class="sep">›</span>
+      <span class="crumb current">BIKE-FRAME-001 · Costing 1</span>
+    </div>
+    <div class="fiori-frame">
+      <div class="fiori-topbar"><span class="fiori-icon">📦</span> Manage Product Master Data — BIKE-FRAME-001</div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Costing Lot Size</label><span class="val">100 PC</span></div>
+          <div class="fiori-field"><label>Price Control</label><span class="val tag-s">S — Standard Price</span></div>
+          <div class="fiori-field"><label>Origin Group</label><span class="val">FRAME-RAW</span></div>
+          <div class="fiori-field"><label>Overhead Group</label><span class="val">PROD-STD</span></div>
+          <div class="fiori-field"><label>Valuation Class</label><span class="val">7920 — Semifinished</span></div>
+          <div class="fiori-field"><label>No Costing</label><span class="val">☐ Sin marcar</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2 -->
+  <section class="section" id="s2">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Running the Material Cost Estimate</span>
+          <span class="sec-title-es">Corriendo el cost estimate del material</span>
+        </div>
+        <div class="sec-desc">Con el material listo, Priya crea el cost estimate con quantity structure.</div>
+        <span class="app-tag">📱 Manage Material Cost Estimates</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Priya elige la <strong>costing variant PPC1</strong> (Standard Cost Estimate Material), indica material y planta, y deja el <strong>lot size</strong> en blanco a propósito — así el sistema toma el de la vista Costing 1 que acaba de confirmar.
+    </div>
+    <div class="breadcrumb">
+      <span class="crumb">Manage Material Cost Estimates</span><span class="sep">›</span>
+      <span class="crumb current">Create Cost Estimate</span>
+    </div>
+    <div class="fiori-frame">
+      <div class="fiori-topbar"><span class="fiori-icon">🧮</span> Create Material Cost Estimate</div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Costing Variant</label><span class="val">PPC1 — Standard Cost Estimate</span></div>
+          <div class="fiori-field"><label>Material</label><span class="val">BIKE-FRAME-001</span></div>
+          <div class="fiori-field"><label>Plant</label><span class="val">DE01 — Bike GmbH</span></div>
+          <div class="fiori-field"><label>Lot Size</label><span class="val">(vacío — toma Costing 1)</span></div>
+          <div class="fiori-field"><label>Costing Version</label><span class="val">1</span></div>
+          <div class="fiori-field"><label>Validity Period</label><span class="val">01.01.2026 – 31.12.9999</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3 -->
+  <section class="section" id="s3">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Reviewing the Costing Results</span>
+          <span class="sec-title-es">Revisando el resultado del costeo</span>
+        </div>
+        <div class="sec-desc">El sistema devuelve un resultado — antes de guardarlo, Priya lo revisa.</div>
+        <span class="app-tag">📱 Display Material Cost Estimates</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de guardar, Priya verifica que no haya errores evidentes: precios o cantidades incorrectas, o una quantity structure incompleta — el sistema no detecta estos errores por sí solo.
+    </div>
+    <div class="breadcrumb">
+      <span class="crumb">Display Material Cost Estimates</span><span class="sep">›</span>
+      <span class="crumb current">BIKE-FRAME-001 · Costs</span>
+    </div>
+    <div class="fiori-frame">
+      <div class="fiori-topbar"><span class="fiori-icon">📊</span> Display Material Cost Estimates — Costs</div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Cost of Goods Manufactured</label><span class="val">€ 84,20 / PC</span></div>
+          <div class="fiori-field"><label>Cost of Goods Sold</label><span class="val">€ 91,50 / PC</span></div>
+          <div class="fiori-field"><label>Lot Size Used</label><span class="val">100 PC</span></div>
+          <div class="fiori-field"><label>Status</label><span class="val tag-s">Sin marcar (Unmarked)</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4 -->
+  <section class="section" id="s4">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Digging Into the Itemization</span>
+          <span class="sec-title-es">Metiéndose en la itemización</span>
+        </div>
+        <div class="sec-desc">Priya quiere ver el detalle línea por línea, no solo el total.</div>
+        <span class="app-tag">📱 Itemization - Materials</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      En la itemización, cada costing item aparece bajo el cost element que le corresponde según su categoría — <strong>material</strong> bajo su primary cost element, la <strong>actividad interna</strong> bajo el allocation cost element del activity type.
+    </div>
+    <div class="breadcrumb">
+      <span class="crumb">Itemization - Materials</span><span class="sep">›</span>
+      <span class="crumb current">BIKE-FRAME-001</span>
+    </div>
+    <div class="fiori-frame">
+      <div class="fiori-topbar"><span class="fiori-icon">🧾</span> Itemization — BIKE-FRAME-001</div>
+      <div class="fiori-body">
+        <div class="fiori-list">
+          <div class="fiori-list-row head"><span>Item Category</span><span>Cost Element</span><span>Resource</span><span>Value</span></div>
+          <div class="fiori-list-row"><span class="strong">M — Material</span><span>400100</span><span>Steel Tube 28mm</span><span>€ 38,00</span></div>
+          <div class="fiori-list-row"><span class="strong">E — Internal Activity</span><span>619000</span><span>Assembly Work Center</span><span>€ 22,40</span></div>
+          <div class="fiori-list-row"><span class="strong">M — Material</span><span>400120</span><span>Paint &amp; Coating</span><span>€ 6,80</span></div>
+          <div class="fiori-list-row"><span class="strong">Overhead</span><span>655000</span><span>Production Overhead</span><span>€ 17,00</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5 -->
+  <section class="section" id="s5">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Analyzing the Cost Component Split</span>
+          <span class="sec-title-es">Analizando el desglose de componentes de costo</span>
+        </div>
+        <div class="sec-desc">La misma información, ahora agrupada en las cinco categorías del cost component split.</div>
+        <span class="app-tag">📱 Cost Components - Materials</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Priya cambia la vista a <strong>Cost of Goods Manufactured</strong> para ver el mismo resultado agrupado por categoría en vez de por línea — más fácil de comunicar a producción que la itemización cruda.
+    </div>
+    <div class="breadcrumb">
+      <span class="crumb">Cost Components - Materials</span><span class="sep">›</span>
+      <span class="crumb current">Vista: COGM</span>
+    </div>
+    <div class="fiori-frame">
+      <div class="fiori-topbar"><span class="fiori-icon">🧩</span> Cost Components — BIKE-FRAME-001 (COGM)</div>
+      <div class="fiori-body">
+        <div class="bar-row"><span class="bar-label">Material Costs</span><div class="bar-track"><div class="bar-fill" style="width:52%;background:#00A896;"></div></div><span class="bar-value">€ 44,80</span></div>
+        <div class="bar-row"><span class="bar-label">Production Costs</span><div class="bar-track"><div class="bar-fill" style="width:27%;background:#1A4B8C;"></div></div><span class="bar-value">€ 22,40</span></div>
+        <div class="bar-row"><span class="bar-label">Material Overhead</span><div class="bar-track"><div class="bar-fill" style="width:9%;background:#7E4FBF;"></div></div><span class="bar-value">€ 7,20</span></div>
+        <div class="bar-row"><span class="bar-label">Production Overhead</span><div class="bar-track"><div class="bar-fill" style="width:12%;background:#E07B39;"></div></div><span class="bar-value">€ 9,80</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 6 -->
+  <section class="section" id="s6">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Comparing Two Cost Estimates</span>
+          <span class="sec-title-es">Comparando dos cost estimates</span>
+        </div>
+        <div class="sec-desc">Priya compara este resultado contra el costeo del prototipo anterior, para entender qué cambió.</div>
+        <span class="app-tag">📱 Comparison of Itemizations</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Antes de correr la comparación, Priya elige los dos cost estimates a comparar con los botones de <strong>Cost Estimate</strong>, ajusta el <strong>Cost Base</strong> (lot size) para que sean comparables, y puede alternar moneda con <strong>Switch Currency</strong>.
+    </div>
+    <div class="breadcrumb">
+      <span class="crumb">Comparison of Itemizations</span><span class="sep">›</span>
+      <span class="crumb current">Prototipo v1 vs. v2</span>
+    </div>
+    <div class="fiori-frame">
+      <div class="fiori-topbar"><span class="fiori-icon">🔀</span> Comparison of Itemizations</div>
+      <div class="fiori-body">
+        <div class="fiori-list">
+          <div class="fiori-list-row head"><span>Item Category</span><span>Prototipo v1</span><span>Prototipo v2</span><span>Delta</span></div>
+          <div class="fiori-list-row"><span class="strong">M — Steel Tube</span><span>€ 41,50</span><span>€ 38,00</span><span>−€ 3,50</span></div>
+          <div class="fiori-list-row"><span class="strong">E — Assembly</span><span>€ 20,10</span><span>€ 22,40</span><span>+€ 2,30</span></div>
+          <div class="fiori-list-row"><span class="strong">Overhead</span><span>€ 16,20</span><span>€ 17,00</span><span>+€ 0,80</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7 -->
+  <section class="section" id="s7">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Costing Many Materials at Once</span>
+          <span class="sec-title-es">Costeando muchos materiales a la vez</span>
+        </div>
+        <div class="sec-desc">El prototipo ya está validado — ahora Priya tiene que costear toda la línea de bicicletas del trimestre.</div>
+        <span class="app-tag">📱 Manage Costing Runs</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      En vez de repetir el proceso material por material, Priya crea un <strong>costing run</strong> que procesa varios materiales de una sola vez — el enfoque periódico para costear un rango completo de productos.
+    </div>
+    <div class="breadcrumb">
+      <span class="crumb">Manage Costing Runs</span><span class="sep">›</span>
+      <span class="crumb current">Q1-2026-BIKES</span>
+    </div>
+    <div class="fiori-frame">
+      <div class="fiori-topbar"><span class="fiori-icon">📋</span> Costing Run — Q1-2026-BIKES</div>
+      <div class="fiori-body">
+        <div class="fiori-list">
+          <div class="fiori-list-row head"><span>Material</span><span>Plant</span><span>Status</span><span></span></div>
+          <div class="fiori-list-row"><span class="strong">BIKE-FRAME-001</span><span>DE01</span><span><span class="status-pill status-done">Costed</span></span><span></span></div>
+          <div class="fiori-list-row"><span class="strong">BIKE-WHEEL-002</span><span>DE01</span><span><span class="status-pill status-done">Costed</span></span><span></span></div>
+          <div class="fiori-list-row"><span class="strong">BIKE-FULL-100</span><span>DE01</span><span><span class="status-pill status-open">Not Started</span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8 -->
+  <section class="section" id="s8">
+    <div class="sec-head">
+      <div class="sec-num">08</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Marking the Standard Cost Estimate</span>
+          <span class="sec-title-es">Marcando el standard cost estimate</span>
+        </div>
+        <div class="sec-desc">Con el costeo validado, Priya da el primer paso para actualizar el precio estándar.</div>
+        <span class="app-tag">📱 Manage Material Cost Estimates</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      <strong>Mark</strong> fija el precio futuro (planned price) en el material master para un contexto específico — Company Code, Fiscal Year, Costing Variant. Todavía no hay ningún impacto en inventario ni en contabilidad.
+    </div>
+    <div class="breadcrumb">
+      <span class="crumb">Manage Material Cost Estimates</span><span class="sep">›</span>
+      <span class="crumb current">Mark</span>
+    </div>
+    <div class="fiori-frame">
+      <div class="fiori-topbar"><span class="fiori-icon">🏷️</span> Mark Standard Cost Estimate</div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Company Code</label><span class="val">DE01 — Bike GmbH</span></div>
+          <div class="fiori-field"><label>Fiscal Year</label><span class="val">2026</span></div>
+          <div class="fiori-field"><label>Costing Variant</label><span class="val">PPC1</span></div>
+          <div class="fiori-field"><label>Future Planned Price</label><span class="val">€ 91,50</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 9 -->
+  <section class="section" id="s9">
+    <div class="sec-head">
+      <div class="sec-num">09</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Releasing and Revaluating</span>
+          <span class="sec-title-es">Liberando y revaluando</span>
+        </div>
+        <div class="sec-desc">El precio marcado pasa a ser el vigente, y si hay stock, se revalúa el inventario existente.</div>
+        <span class="app-tag">📱 Manage Material Cost Estimates</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Al hacer <strong>Release</strong>, el precio futuro pasa a ser el precio actual y el anterior queda como histórico. Como hay stock del material, el sistema hace <strong>Revaluate</strong> automáticamente al nuevo precio.
+    </div>
+    <div class="breadcrumb">
+      <span class="crumb">Manage Material Cost Estimates</span><span class="sep">›</span>
+      <span class="crumb current">Release &amp; Revaluate</span>
+    </div>
+    <div class="fiori-frame">
+      <div class="fiori-topbar"><span class="fiori-icon">📈</span> Release &amp; Revaluate — BIKE-FRAME-001</div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Precio Anterior</label><span class="val">€ 10,00</span></div>
+          <div class="fiori-field"><label>Precio Nuevo (Released)</label><span class="val">€ 15,00</span></div>
+          <div class="fiori-field"><label>Stock Existente</label><span class="val">10 PC</span></div>
+          <div class="fiori-field"><label>Ajuste de Inventario</label><span class="val">+ € 50,00</span></div>
+        </div>
+        <div class="debit-credit">
+          <div class="dc-col debe">
+            <div class="dc-label">Debe</div>
+            <div class="dc-line">Inventario (Stock Account)</div>
+            <div class="dc-sub">+ € 50,00 — nuevo valor de las 10 unidades a € 15</div>
+          </div>
+          <div class="dc-col haber">
+            <div class="dc-label">Haber</div>
+            <div class="dc-line">Ganancia de Revaluación</div>
+            <div class="dc-sub">+ € 50,00 — diferencia entre precio viejo y nuevo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10 -->
+  <section class="section" id="s10">
+    <div class="sec-head">
+      <div class="sec-num">10</div>
+      <div class="sec-titles">
+        <div class="sec-title-row">
+          <span class="sec-title-en">Checking Which Valuation Strategy Was Used</span>
+          <span class="sec-title-es">Verificando qué estrategia de valuación se usó</span>
+        </div>
+        <div class="sec-desc">Antes de cerrar el caso, Priya deja documentado con qué criterio quedó valuado el material.</div>
+        <span class="app-tag">📱 Manage Material Valuation</span>
+      </div>
+    </div>
+    <div class="theory-box">
+      Con el botón <strong>Information on Cost Estimate</strong>, Priya accede directamente desde la pantalla del cost estimate a los datos del entorno de costeo — material master, BOM y routing — sin tener que salir a buscarlos por separado.
+    </div>
+    <div class="breadcrumb">
+      <span class="crumb">Manage Material Valuation</span><span class="sep">›</span>
+      <span class="crumb current">BIKE-FRAME-001 · Information on Cost Estimate</span>
+    </div>
+    <div class="fiori-frame">
+      <div class="fiori-topbar"><span class="fiori-icon">🔎</span> Information on Cost Estimate</div>
+      <div class="fiori-body">
+        <div class="fiori-field-grid">
+          <div class="fiori-field"><label>Valuation Strategy</label><span class="val tag-s">Standard Price (S)</span></div>
+          <div class="fiori-field"><label>Sourced From</label><span class="val">Standard Cost Estimate · PPC1</span></div>
+          <div class="fiori-field"><label>Quantity Structure</label><span class="val">BOM + Routing (Bike Frame)</span></div>
+          <div class="fiori-field"><label>Última actualización</label><span class="val">Q1-2026-BIKES</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>T3 · Usuario/Fiori — Cost Estimate Options in Product Cost Planning · Biblioteca de Guías SAP</footer>
+
+</body>
+</html>
