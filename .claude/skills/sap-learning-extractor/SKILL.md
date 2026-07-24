@@ -20,6 +20,17 @@ Teo will usually paste **one** lesson link. You do NOT need him to paste every l
 - If the link is to a mega-course/journey landing page spanning **multiple courses**, or it's ambiguous which course he means, ask before downloading everything.
 - If Teo explicitly asks for just one unit, or for the whole mega-course/journey (multiple courses), follow that instead.
 
+### Step 1b — Exceptional: splitting the docx for very long courses (6-7h+)
+
+Rare path, not the default — only relevant when a course's **total duration is 6-7 hours or more** (the course landing page shows total duration up front, e.g. "6 hr 40 min • X Units"). This threshold on its own does not trigger anything automatically.
+
+When you hit that threshold while scoping Step 1: **ask Teo** whether he wants the usual single course-wide `.docx`, or one `.docx` per unit instead (or per logical group of units, if he'd rather group 2-3 short units together and split off only the heavy one) — do not assume either way, and do not split silently. If he doesn't answer or says nothing about it, default to the normal single course-wide `.docx`.
+
+If he confirms the split:
+- Extract and build content per unit exactly as Steps 2-4 already describe, just scoped to one unit's lessons (+ its quiz) instead of the whole course's.
+- **Filename per unit:** the course's slugified title with a `-u[X]` suffix, matching the same unit-numbering convention already used for T1-T5 files in Modo Unidad (see `SISTEMA_DISENO_5_TIPOS.md` §5.1) — e.g. `describing-management-accounting-in-sap-s-4hana-u1.docx`, `-u2.docx`. This keeps the course grouping visible in the filename itself even though the docx isn't one file.
+- Everything else (repo copy to `docs/sap-source/`, commit message, delivery) applies per resulting file, same as Step 5.
+
 ## Step 2 — Fetch and traverse
 
 1. `web_fetch` the given URL.
