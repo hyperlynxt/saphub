@@ -228,12 +228,15 @@ function render(){
 function renderStats(){
   const courses = uniqueCourses().length;
   const files = DATA.length;
-  document.getElementById("stat-courses").textContent = courses;
-  document.getElementById("stat-files").textContent = files;
+  const elCourses = document.getElementById("stat-courses");
+  const elFiles = document.getElementById("stat-files");
+  if(elCourses) elCourses.textContent = courses;
+  if(elFiles) elFiles.textContent = files;
 }
 
 function renderTypeGrid(){
   const grid = document.getElementById("type-grid");
+  if(!grid) return;
   grid.innerHTML = TYPE_ORDER.map(code=>{
     const m = TYPE_META[code];
     const count = DATA.filter(d=>d.tipo===code).length;
@@ -326,16 +329,81 @@ function openCourseModal(slug){
 }
 
 function closeCourseModal(){
-  document.getElementById("modal-overlay").classList.remove("open");
+  document.getElementById("modal-overlay")?.classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+/* Popup de "journey" (usado en los mapas de dependencias): recibe una lista
+   de cursos {curso, modulo, cursoSlug} y muestra, uno debajo del otro, cada
+   curso con su propia fila de 5 tipos (o un aviso de pendiente si todavía
+   no tiene cursoSlug en la librería). No abre pop ups anidados: cada tipo
+   linkea directo al archivo. */
+function openJourneyModal(pillText, titleText, items){
+  const courses = uniqueCourses();
+
+  const blocks = items.map(item=>{
+    const course = item.cursoSlug ? courses.find(c=>c.cursoSlug===item.cursoSlug) : null;
+
+    if(!course){
+      return `
+        <div class="jmodal-course">
+          <div class="jmodal-course-head">
+            <span class="course-pill">${item.modulo || ""}</span>
+            <h4>${item.curso}</h4>
+            <span class="jmodal-pending">Pendiente</span>
+          </div>
+        </div>`;
+    }
+
+    const tiles = TYPE_ORDER.map(code=>{
+      const m = TYPE_META[code];
+      const entry = course.entries.find(e=>e.tipo===code);
+      if(entry){
+        return `
+          <a class="modal-type-tile mini" style="--tint-dark:${m.dark}; --tint:${m.color}" href="${entry.archivo}" target="_blank" rel="noopener">
+            <div class="mt-code">${code}</div>
+          </a>`;
+      }
+      return `
+        <div class="modal-type-tile mini disabled" title="Todavía no existe este tipo para este curso">
+          <div class="mt-code">${code}</div>
+        </div>`;
+    }).join("");
+
+    return `
+      <div class="jmodal-course">
+        <div class="jmodal-course-head">
+          <span class="course-pill">${course.modulo}</span>
+          <h4>${course.curso}</h4>
+        </div>
+        <div class="modal-types mini">${tiles}</div>
+      </div>`;
+  }).join("");
+
+  document.getElementById("jmodal-pill").textContent = pillText;
+  document.getElementById("jmodal-title").textContent = titleText;
+  document.getElementById("jmodal-list").innerHTML = blocks;
+
+  const overlay = document.getElementById("jmodal-overlay");
+  overlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeJourneyModal(){
+  document.getElementById("jmodal-overlay")?.classList.remove("open");
   document.body.style.overflow = "";
 }
 
 loadLibrary();
 
-document.getElementById("modal-overlay").addEventListener("click", (e)=>{
+document.getElementById("modal-overlay")?.addEventListener("click", (e)=>{
   if(e.target.id === "modal-overlay") closeCourseModal();
 });
-document.getElementById("modal-close").addEventListener("click", closeCourseModal);
+document.getElementById("modal-close")?.addEventListener("click", closeCourseModal);
+document.getElementById("jmodal-overlay")?.addEventListener("click", (e)=>{
+  if(e.target.id === "jmodal-overlay") closeJourneyModal();
+});
+document.getElementById("jmodal-close")?.addEventListener("click", closeJourneyModal);
 document.addEventListener("keydown", (e)=>{
-  if(e.key === "Escape") closeCourseModal();
+  if(e.key === "Escape"){ closeCourseModal(); closeJourneyModal(); }
 });

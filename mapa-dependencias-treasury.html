@@ -3,14 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mapa de dependencias — SAP Treasury Learning Path</title>
+<title>Treasury Path — interlynkx</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,700&family=Source+Serif+4:wght@400&display=swap">
 <style>
 :root{
   --navy:#0A0F1C; --navy2:#121B33;
   --gold:#E3B341; --gold-dark:#8C6D1B;
   --ink:#1B2130; --muted:#6B7280; --border:#E4E6EC; --white:#FFFFFF; --bg:#F7F8FA;
+  --body:#3D4A5F;
+  --brand-violet:#A78BC9; --brand-violet-dark:#6B4C8F;
 
   --done:#7FBF8F; --done-dark:#2E6B45; --done-pale:rgba(127,191,143,0.14);
   --partial:#E3B341; --partial-dark:#8C6D1B; --partial-pale:rgba(227,179,65,0.16);
@@ -60,27 +62,21 @@ a.link-hover:hover{text-decoration:underline;}
 .trunk{width:2px;height:34px;background:var(--border);margin:0 auto;position:relative;}
 .trunk::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--border);}
 
-/* SPLIT */
-.split-label{text-align:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;}
-.tracks{display:grid;grid-template-columns:1fr 1fr;gap:34px;position:relative;width:100%;}
-.tracks::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--border);width:60%;margin:0 auto;}
-.track{position:relative;padding-top:26px;min-width:0;}
-.track::before{content:'';position:absolute;top:0;left:50%;width:2px;height:26px;background:var(--border);}
-.track-label{text-align:center;font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--navy2);margin-bottom:18px;padding:6px 14px;background:var(--white);border:1px solid var(--border);border-radius:20px;display:inline-block;position:relative;left:50%;transform:translateX(-50%);white-space:nowrap;}
-
 /* JOURNEY CARD */
 .journey{background:var(--white);border:1px solid var(--border);border-radius:14px;margin-bottom:18px;overflow:hidden;min-width:0;}
-.journey.is-cert{border-color:rgba(167,139,201,0.5);}
 .journey-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
 .journey-head .jname{display:flex;align-items:center;gap:8px;min-width:0;}
 .journey-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:#fff;background:var(--navy2);width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.journey-num.complete{background:var(--done-dark);}
 .journey-head h4{font-family:'Syne',sans-serif;font-size:0.92rem;margin:0;line-height:1.3;min-width:0;}
 .journey-head h4 a{border-bottom:1px dashed var(--navy2);}
 .journey-head h4 a:hover{border-bottom-style:solid;}
-.journey-status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.journey-status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;border:none;font-family:inherit;}
 .journey-status.done{background:var(--done-pale);color:var(--done-dark);}
 .journey-status.partial{background:var(--partial-pale);color:var(--partial-dark);}
 .journey-status.pending{background:var(--pending-pale);color:var(--pending-dark);}
+.journey-status.types{cursor:pointer;}
+.journey-status.types:hover{filter:brightness(0.94);}
 .journey-sub{padding:8px 18px;font-size:11.5px;color:var(--muted);border-bottom:1px solid var(--border);background:#FAFBFC;}
 .journey-sub b{color:var(--ink);}
 
@@ -94,26 +90,23 @@ a.link-hover:hover{text-decoration:underline;}
 .course-name a:hover{border-bottom-style:solid;color:var(--navy2);}
 .course-name .note{font-weight:400;font-size:11px;}
 .course-meta{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);white-space:nowrap;margin-left:8px;}
-.course-badge{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;padding:2px 7px;border-radius:20px;margin-left:6px;white-space:nowrap;}
+.course-badge{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;padding:2px 7px;border-radius:20px;margin-left:6px;white-space:nowrap;border:none;font-family:inherit;}
 .course-badge.done{background:var(--done-pale);color:var(--done-dark);}
 .course-badge.partial{background:var(--partial-pale);color:var(--partial-dark);}
 .course-badge.pending{background:var(--pending-pale);color:var(--pending-dark);}
+.course-badge.clickable{cursor:pointer;}
+.course-badge.clickable:hover{filter:brightness(0.94);}
 .course-right{display:flex;align-items:center;flex-shrink:0;}
-.course.reused{border-style:dashed;background:#FCFCFA;}
-.reused-tag{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cert-dark);background:var(--cert-pale);border:1px dashed rgba(167,139,201,0.5);padding:2px 7px;border-radius:20px;margin-left:6px;white-space:nowrap;text-transform:uppercase;letter-spacing:0.3px;}
-.section-divider{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;padding:10px 18px 2px;}
-
-.arrow-down{width:2px;height:20px;background:var(--border);margin:0 auto;}
-
-.cert-flag{font-family:'JetBrains Mono',monospace;font-size:9.5px;background:var(--cert-pale);color:var(--cert-dark);padding:2px 8px;border-radius:20px;border:1px solid rgba(167,139,201,0.4);white-space:nowrap;}
+.section-divider{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;padding:10px 2px 2px;}
+.section-divider:first-child{padding-top:0;}
 
 .reused-note{font-size:10.5px;color:var(--cert-dark);background:var(--cert-pale);border:1px dashed rgba(167,139,201,0.5);border-radius:8px;padding:7px 10px;margin:0 18px 12px;line-height:1.6;}
-.reused-note a{border-bottom:1px dotted var(--cert-dark);}
-.reused-note a:hover{border-bottom-style:solid;}
 
 .track-note{font-size:11.5px;color:var(--muted);text-align:center;margin-top:8px;line-height:1.5;padding:0 10px;}
 
 .prereq-note{font-size:10.5px;color:var(--partial-dark);background:var(--partial-pale);border:1px dashed rgba(227,179,65,0.5);border-radius:8px;padding:7px 10px;margin:0 18px 12px;line-height:1.6;}
+
+.arrow-down{width:2px;height:20px;background:var(--border);margin:0 auto;}
 
 /* SUMMARY FOOTER */
 .summary-wrap{width:100%;padding:0 40px;zoom:1.1;}
@@ -127,10 +120,40 @@ a.link-hover:hover{text-decoration:underline;}
 .stat.pending-stat .num{color:var(--pending);}
 .footer-space{height:50px;}
 
+/* ---- POPUPS (mismo look que el modal de curso del index) ---- */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,15,12,0.55);backdrop-filter:blur(3px);z-index:100;align-items:center;justify-content:center;padding:24px;}
+.modal-overlay.open{display:flex;}
+.modal-card{background:var(--white);border-radius:18px;max-width:640px;width:100%;padding:36px 38px 30px;position:relative;box-shadow:0 24px 60px rgba(10,15,28,0.28);animation:modalIn .18s ease;}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(0.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+.modal-close{position:absolute;top:16px;right:18px;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:20px;line-height:1;cursor:pointer;}
+.modal-close:hover{background:var(--border);color:var(--ink);}
+.modal-pill{display:inline-block;font-family:'Inter',sans-serif;font-weight:600;font-size:11px;border:1.5px solid var(--brand-violet);color:var(--brand-violet-dark);border-radius:99px;padding:3px 11px;margin-bottom:14px;}
+.modal-title{font-family:'Fraunces',serif;font-weight:700;font-size:1.6rem;color:var(--ink);margin:0 0 12px;}
+.modal-desc{font-family:'Source Serif 4',serif;font-size:0.98rem;color:var(--body);line-height:1.6;margin:0 0 26px;}
+.modal-types{display:grid;grid-template-columns:repeat(5, 1fr);gap:12px;}
+.modal-type-tile{display:block;border:1px solid var(--border);border-top:3px solid var(--tint-dark, var(--done-dark));border-radius:12px;padding:14px 10px;text-align:center;transition:transform .15s ease, box-shadow .15s ease;}
+.modal-type-tile:not(.disabled):hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(10,15,28,0.1);}
+.modal-type-tile .icon{width:22px;height:22px;margin:0 auto 8px;color:var(--tint-dark, var(--done-dark));}
+.modal-type-tile .mt-code{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--tint-dark, var(--done-dark));}
+.modal-type-tile .mt-label{font-family:'Inter',sans-serif;font-weight:600;font-size:10.5px;color:var(--ink);margin-top:3px;line-height:1.25;}
+.modal-type-tile.disabled{opacity:0.4;border-top-color:var(--border);cursor:not-allowed;}
+.modal-type-tile.disabled .icon,.modal-type-tile.disabled .mt-code{color:var(--muted);}
+.modal-type-tile .mt-soon{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--muted);margin-top:4px;text-transform:uppercase;}
+
+/* journey popup: lista de cursos, cada uno con su fila mini de 5 tipos */
+.jmodal-list{max-height:56vh;overflow-y:auto;padding-right:4px;margin-top:4px;}
+.jmodal-course{padding:14px 0;border-bottom:1px solid var(--border);}
+.jmodal-course:last-child{border-bottom:none;padding-bottom:0;}
+.jmodal-course:first-child{padding-top:0;}
+.jmodal-course-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.jmodal-course-head h4{font-family:'Syne',sans-serif;font-size:0.95rem;margin:0;color:var(--ink);flex:1;min-width:0;}
+.jmodal-pending{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:var(--pending-dark);background:var(--pending-pale);padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.course-pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;border:1.5px solid var(--brand-violet);color:var(--brand-violet-dark);border-radius:6px;padding:2px 7px;white-space:nowrap;}
+.modal-types.mini{gap:6px;}
+.modal-type-tile.mini{padding:6px 4px;border-top-width:2px;}
+.modal-type-tile.mini .mt-code{font-size:9px;}
+
 @media(max-width:900px){
-  .tracks{grid-template-columns:1fr;}
-  .tracks::before{display:none;}
-  .track::before{display:none;}
   .stat-grid{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:640px){
@@ -140,6 +163,8 @@ a.link-hover:hover{text-decoration:underline;}
   .legend{padding:14px 16px;}
   .summary-wrap{padding:0 16px;}
   .course-right{width:100%;justify-content:space-between;margin-top:4px;}
+  .modal-types{grid-template-columns:repeat(2, 1fr);}
+  .modal-card{padding:28px 22px 24px;}
 }
 @supports not (zoom: 1){
   .content, .summary-wrap{
@@ -159,8 +184,8 @@ a.link-hover:hover{text-decoration:underline;}
   <div class="hero">
     <div class="hero-inner">
       <div class="eyebrow">SAP S/4HANA · Payables / Cash Application / Treasury</div>
-      <h1>Mapa de dependencias — <span>Treasury</span></h1>
-      <p>Las journeys y cursos oficiales de SAP detrás de la sección Treasury, encadenados en el orden real: Payables Management como raíz, seguido de Cash Application/Bank Reconciliation, Treasury Management y Cash Reconciliation con AI. Los nombres subrayados con puntos son links directos a learning.sap.com.</p>
+      <h1>Treasury <span>Path</span></h1>
+      <p>Las journeys y cursos oficiales de SAP detrás de la sección Treasury, encadenados en el orden real: Payables Management como raíz, seguido de Cash Application/Bank Reconciliation, Treasury Management y Cash Reconciliation con AI. Los nombres subrayados con puntos son links directos a learning.sap.com. Los badges violeta ("N types") abren el mismo pop up de tipos que en el índice.</p>
     </div>
   </div>
 
@@ -185,29 +210,88 @@ a.link-hover:hover{text-decoration:underline;}
       <div class="root-flag">Raíz · journey base · prerequisito de los 4 cursos que arma este mapa</div>
       <div class="journey-head">
         <div class="jname"><h4><a class="link-hover" href="https://learning.sap.com/learning-journeys/describing-the-payables-management-process" target="_blank" rel="noopener">Describing the Payables Management Process</a></h4></div>
-        <span class="journey-status partial">Parcial</span>
+        <span class="journey-status partial types" role="button" tabindex="0" onclick="openJourneyModal('AP','Describing the Payables Management Process', JOURNEY_PAYABLES)">75 types</span>
       </div>
-      <div class="journey-sub">Journey · <b>prerequisito: Outlining the Financial Accounting Overview ✓</b> (mapa de New Joiner) · 4 cursos · ~9h 36min totales</div>
+      <div class="journey-sub">Journey · <b>prerequisito: Outlining the Financial Accounting Overview ✓</b> (mapa de New Joiner) · 4 cursos oficiales (F1131-F1134), desglosados abajo en sus 17 unidades · ~9h 36min totales</div>
       <div class="courses">
-        <div class="course partial">
-          <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/explaining-payables-management-master-data" target="_blank" rel="noopener">Explaining Payables Management Master Data</a> <span class="note">(F1131)</span></div>
-          <div class="course-right"><span class="course-meta">2h 10min · 3 u</span><span class="course-badge partial">2/3</span></div>
+        <div class="section-divider">F1131 · Explaining Payables Management Master Data</div>
+        <div class="course pending">
+          <div class="course-name">Managing Supplier Master Data <span class="note">(F1131)</span></div>
+          <div class="course-right"><span class="course-meta">46 min</span><span class="course-badge pending">Pend.</span></div>
         </div>
         <div class="course done">
-          <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/explaining-payables-invoice-processing" target="_blank" rel="noopener">Explaining Payables Invoice Processing</a> <span class="note">(F1132)</span></div>
-          <div class="course-right"><span class="course-meta">3h 34min · 4 u</span><span class="course-badge done">Hecho</span></div>
-        </div>
-        <div class="course partial">
-          <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/explaining-the-outgoing-payment-process" target="_blank" rel="noopener">Explaining the Outgoing Payment Process</a> <span class="note">(F1133)</span></div>
-          <div class="course-right"><span class="course-meta">1h 43min · 3 u</span><span class="course-badge partial">2/3</span></div>
+          <div class="course-name">Key Elements of Supplier Master Data <span class="note">(F1131)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-supplierkeyelements')">5 types</span></div>
         </div>
         <div class="course done">
-          <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/explaining-payables-management-period-end-closing-activities" target="_blank" rel="noopener">Explaining Payables Management Period-End Closing Activities</a> <span class="note">(F1134)</span></div>
-          <div class="course-right"><span class="course-meta">2h 9min · 5 lecciones</span><span class="course-badge done">Hecho</span></div>
+          <div class="course-name">Supplier Master Data Maintenance <span class="note">(F1131)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-suppliermasterdata')">5 types</span></div>
+        </div>
+
+        <div class="section-divider">F1132 · Explaining Payables Invoice Processing</div>
+        <div class="course done">
+          <div class="course-name">Invoice Holding &amp; Parking <span class="note">(F1132)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-holdpark')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Manage Supplier Items <span class="note">(F1132)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-manageitems')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">AP Posting Logic <span class="note">(F1132)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-postinglogic')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Supplier Invoice Optimization <span class="note">(F1132)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-streamlining')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Procure-to-Pay <span class="note">(F1132)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-procuretopay')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Payables KPIs <span class="note">(F1132)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-kpis')">5 types</span></div>
+        </div>
+
+        <div class="section-divider">F1133 · Explaining the Outgoing Payment Process</div>
+        <div class="course done">
+          <div class="course-name">Manual Payments Processing <span class="note">(F1133)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-manualpaymentsprocessing')">5 types</span></div>
+        </div>
+        <div class="course pending">
+          <div class="course-name">Outgoing Automatic Supplier Payments <span class="note">(F1133)</span></div>
+          <div class="course-right"><span class="course-meta">1h 3min</span><span class="course-badge pending">Pend.</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Supplier Payments Monitoring <span class="note">(F1133)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-supplierpaymentsmonitoring')">5 types</span></div>
+        </div>
+
+        <div class="section-divider">F1134 · Explaining Payables Management Period-End Closing Activities</div>
+        <div class="course done">
+          <div class="course-name">Balance Confirmations for Suppliers <span class="note">(F1134)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-balanceconfirmations')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Closing Activities in Accounts Payable <span class="note">(F1134)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-closingactivities')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">GR/IR Reconciliation <span class="note">(F1134)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-grirreconciliation')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Foreign Currency Valuation <span class="note">(F1134)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-foreigncurrencyvaluation')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Accounts Payable Regrouping <span class="note">(F1134)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ap-regrouping')">5 types</span></div>
         </div>
       </div>
       <div class="reused-note">
-        15 archivos T1-T5 de tu librería (Balance Confirmations, Closing Activities, Foreign Currency Valuation, GR/IR Reconciliation, Invoice Holding &amp; Parking, Payables KPIs, Manage Supplier Items, AP Posting Logic, Procure-to-Pay, AP Regrouping, Supplier Invoice Optimization, Key Elements of Supplier Master Data, Supplier Master Data Maintenance, Manual Payments Processing, Supplier Payments Monitoring) cubren estos 4 cursos. Quedan 2 lecciones oficiales sin cobertura: <b>Managing Supplier Master Data</b> (F1131, 46 min) y <b>Outgoing Automatic Supplier Payments</b> (F1133, 1h 3min).
+        Quedan 2 lecciones oficiales sin cobertura: <b>Managing Supplier Master Data</b> (F1131, 46 min) y <b>Outgoing Automatic Supplier Payments</b> (F1133, 1h 3min). Las otras 15 ya tienen sus 5 tipos — clickeá cualquier badge violeta para verlos.
       </div>
     </div>
 
@@ -215,18 +299,26 @@ a.link-hover:hover{text-decoration:underline;}
 
     <div class="journey" style="max-width:820px;margin-left:auto;margin-right:auto">
       <div class="journey-head">
-        <div class="jname"><span class="journey-num">2</span><h4><a class="link-hover" href="https://learning.sap.com/courses/detailing-sap-cash-application-and-processing-rules-for-bank-statements" target="_blank" rel="noopener">Detailing SAP Cash Application and Processing Rules For Bank Statements</a></h4></div>
-        <span class="journey-status done">Hecho</span>
+        <div class="jname"><span class="journey-num complete">2</span><h4><a class="link-hover" href="https://learning.sap.com/courses/detailing-sap-cash-application-and-processing-rules-for-bank-statements" target="_blank" rel="noopener">Detailing SAP Cash Application and Processing Rules For Bank Statements</a></h4></div>
+        <span class="journey-status done types" role="button" tabindex="0" onclick="openJourneyModal('AR','Detailing SAP Cash Application and Processing Rules For Bank Statements', JOURNEY_BANKAPP)">20 types</span>
       </div>
-      <div class="journey-sub">Curso · 2h 15min · 2 unidades</div>
+      <div class="journey-sub">Curso · 2h 15min · 2 unidades, desglosadas abajo en sus 4 lecciones</div>
       <div class="courses">
         <div class="course done">
-          <div class="course-name">Introducing Bank Statement Upload Options</div>
-          <div class="course-right"><span class="course-meta">32 min</span><span class="course-badge done">Hecho</span></div>
+          <div class="course-name">Bank Statement Upload Options</div>
+          <div class="course-right"><span class="course-meta">32 min</span><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ar-bankstatementuploadoptions')">5 types</span></div>
         </div>
         <div class="course done">
-          <div class="course-name">Examining Posting and Clearing Options <span class="note">(Rule-Based Clearing + Cash Reconciliation Functionality + Manual Clearing)</span></div>
-          <div class="course-right"><span class="course-meta">1h 43min · 3 lecc.</span><span class="course-badge done">Hecho</span></div>
+          <div class="course-name">Rule-Based Clearing <span class="note">(Examining Posting and Clearing Options)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ar-rulebasedclearing')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">SAP Cash Reconciliation Functionality <span class="note">(Examining Posting and Clearing Options)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ar-cashreconciliationfunctionality')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Manual Clearing Functionality <span class="note">(Examining Posting and Clearing Options)</span></div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ar-manualclearingfunctionality')">5 types</span></div>
         </div>
       </div>
       <div class="prereq-note">
@@ -238,14 +330,30 @@ a.link-hover:hover{text-decoration:underline;}
 
     <div class="journey" style="max-width:820px;margin-left:auto;margin-right:auto">
       <div class="journey-head">
-        <div class="jname"><span class="journey-num">3</span><h4><a class="link-hover" href="https://learning.sap.com/courses/discovering-treasury-management" target="_blank" rel="noopener">Discovering Treasury Management in SAP S/4HANA</a></h4></div>
-        <span class="journey-status done">Hecho</span>
+        <div class="jname"><span class="journey-num complete">3</span><h4><a class="link-hover" href="https://learning.sap.com/courses/discovering-treasury-management" target="_blank" rel="noopener">Discovering Treasury Management in SAP S/4HANA</a></h4></div>
+        <span class="journey-status done types" role="button" tabindex="0" onclick="openJourneyModal('TR','Discovering Treasury Management in SAP S/4HANA', JOURNEY_TREASURYCORE)">25 types</span>
       </div>
-      <div class="journey-sub">Curso · 1h 40min · 1 unidad, 5 lecciones</div>
+      <div class="journey-sub">Curso · 1h 40min · 1 unidad, desglosada abajo en sus 5 lecciones</div>
       <div class="courses">
         <div class="course done">
-          <div class="course-name">Defining Treasury Management and Describing Key Elements of the Portfolio <span class="note">(Treasury Mgmt, Cash Mgmt Benefits, Advanced Payment Mgmt, Treasury &amp; Risk Mgmt, Process Improvements)</span></div>
-          <div class="course-right"><span class="course-meta">5 lecc.</span><span class="course-badge done">Hecho</span></div>
+          <div class="course-name">Treasury Management</div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('tr-treasurymanagement')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">SAP Cash Management Benefits</div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('tr-cashmanagementbenefits')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Advanced Payment Management</div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('tr-advancedpaymentmanagement')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Treasury &amp; Risk Management</div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('tr-treasuryriskmanagement')">5 types</span></div>
+        </div>
+        <div class="course done">
+          <div class="course-name">Treasury Process Improvements</div>
+          <div class="course-right"><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('tr-processimprovements')">5 types</span></div>
         </div>
       </div>
       <div class="prereq-note">
@@ -257,18 +365,18 @@ a.link-hover:hover{text-decoration:underline;}
 
     <div class="journey" style="max-width:820px;margin-left:auto;margin-right:auto">
       <div class="journey-head">
-        <div class="jname"><span class="journey-num">4</span><h4><a class="link-hover" href="https://learning.sap.com/courses/optimizing-cash-reconciliation-with-sap-business-ai" target="_blank" rel="noopener">Optimizing Cash Reconciliation with SAP Business AI</a></h4></div>
-        <span class="journey-status done">Hecho</span>
+        <div class="jname"><span class="journey-num complete">4</span><h4><a class="link-hover" href="https://learning.sap.com/courses/optimizing-cash-reconciliation-with-sap-business-ai" target="_blank" rel="noopener">Optimizing Cash Reconciliation with SAP Business AI</a></h4></div>
+        <span class="journey-status done types" role="button" tabindex="0" onclick="openJourneyModal('AR','Optimizing Cash Reconciliation with SAP Business AI', JOURNEY_CASHAI)">10 types</span>
       </div>
       <div class="journey-sub">Curso · <b>sin prerequisitos</b> · 58 min · 2 unidades</div>
       <div class="courses">
         <div class="course done">
-          <div class="course-name">Reviewing the Cash Reconciliation Process in SAP S/4HANA Cloud</div>
-          <div class="course-right"><span class="course-meta">27 min</span><span class="course-badge done">Hecho</span></div>
+          <div class="course-name">Reviewing the Cash Reconciliation Process in SAP</div>
+          <div class="course-right"><span class="course-meta">27 min</span><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ar-cashreconciliation')">5 types</span></div>
         </div>
         <div class="course done">
-          <div class="course-name">Introducing SAP Business AI Optimization Strategies for Cash Reconciliation</div>
-          <div class="course-right"><span class="course-meta">31 min</span><span class="course-badge done">Hecho</span></div>
+          <div class="course-name">Cash Reconciliation with AI</div>
+          <div class="course-right"><span class="course-meta">31 min</span><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('ar-cashreconciliationai')">5 types</span></div>
         </div>
       </div>
       <div class="track-note">
@@ -284,7 +392,7 @@ a.link-hover:hover{text-decoration:underline;}
       <h3>Resumen general del árbol</h3>
       <div class="stat-grid">
         <div class="stat done-stat"><div class="num">2/4</div><div class="lbl">cursos de la raíz completos al 100% (los otros 2, parciales)</div></div>
-        <div class="stat done-stat"><div class="num">2/2</div><div class="lbl">unidades de Bank Statements — hechas</div></div>
+        <div class="stat done-stat"><div class="num">4/4</div><div class="lbl">unidades de Bank Statements/Cash App — hechas</div></div>
         <div class="stat done-stat"><div class="num">5/5</div><div class="lbl">lecciones de Treasury Management — hechas</div></div>
         <div class="stat pending-stat"><div class="num">~1h49</div><div class="lbl">de contenido oficial pendiente (2 lecciones de la raíz)</div></div>
       </div>
@@ -292,5 +400,64 @@ a.link-hover:hover{text-decoration:underline;}
   </div>
   <div class="footer-space"></div>
 </div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close" aria-label="Cerrar">×</button>
+    <span class="modal-pill" id="modal-pill"></span>
+    <h3 class="modal-title" id="modal-title"></h3>
+    <p class="modal-desc" id="modal-desc"></p>
+    <div class="modal-types" id="modal-types"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="jmodal-overlay">
+  <div class="modal-card">
+    <button class="modal-close" id="jmodal-close" aria-label="Cerrar">×</button>
+    <span class="modal-pill" id="jmodal-pill"></span>
+    <h3 class="modal-title" id="jmodal-title"></h3>
+    <div class="jmodal-list" id="jmodal-list"></div>
+  </div>
+</div>
+
+<script>
+const JOURNEY_PAYABLES = [
+  {curso:"Managing Supplier Master Data (F1131)", modulo:"AP", cursoSlug:null},
+  {curso:"Key Elements of Supplier Master Data (F1131)", modulo:"AP", cursoSlug:"ap-supplierkeyelements"},
+  {curso:"Supplier Master Data Maintenance (F1131)", modulo:"AP", cursoSlug:"ap-suppliermasterdata"},
+  {curso:"Invoice Holding & Parking (F1132)", modulo:"AP", cursoSlug:"ap-holdpark"},
+  {curso:"Manage Supplier Items (F1132)", modulo:"AP", cursoSlug:"ap-manageitems"},
+  {curso:"AP Posting Logic (F1132)", modulo:"AP", cursoSlug:"ap-postinglogic"},
+  {curso:"Supplier Invoice Optimization (F1132)", modulo:"AP", cursoSlug:"ap-streamlining"},
+  {curso:"Procure-to-Pay (F1132)", modulo:"AP", cursoSlug:"ap-procuretopay"},
+  {curso:"Payables KPIs (F1132)", modulo:"AP", cursoSlug:"ap-kpis"},
+  {curso:"Manual Payments Processing (F1133)", modulo:"AP", cursoSlug:"ap-manualpaymentsprocessing"},
+  {curso:"Outgoing Automatic Supplier Payments (F1133)", modulo:"AP", cursoSlug:null},
+  {curso:"Supplier Payments Monitoring (F1133)", modulo:"AP", cursoSlug:"ap-supplierpaymentsmonitoring"},
+  {curso:"Balance Confirmations for Suppliers (F1134)", modulo:"AP", cursoSlug:"ap-balanceconfirmations"},
+  {curso:"Closing Activities in Accounts Payable (F1134)", modulo:"AP", cursoSlug:"ap-closingactivities"},
+  {curso:"GR/IR Reconciliation (F1134)", modulo:"AP", cursoSlug:"ap-grirreconciliation"},
+  {curso:"Foreign Currency Valuation (F1134)", modulo:"AP", cursoSlug:"ap-foreigncurrencyvaluation"},
+  {curso:"Accounts Payable Regrouping (F1134)", modulo:"AP", cursoSlug:"ap-regrouping"}
+];
+const JOURNEY_BANKAPP = [
+  {curso:"Bank Statement Upload Options", modulo:"AR", cursoSlug:"ar-bankstatementuploadoptions"},
+  {curso:"Rule-Based Clearing", modulo:"AR", cursoSlug:"ar-rulebasedclearing"},
+  {curso:"SAP Cash Reconciliation Functionality", modulo:"AR", cursoSlug:"ar-cashreconciliationfunctionality"},
+  {curso:"Manual Clearing Functionality", modulo:"AR", cursoSlug:"ar-manualclearingfunctionality"}
+];
+const JOURNEY_TREASURYCORE = [
+  {curso:"Treasury Management", modulo:"TR", cursoSlug:"tr-treasurymanagement"},
+  {curso:"SAP Cash Management Benefits", modulo:"TR", cursoSlug:"tr-cashmanagementbenefits"},
+  {curso:"Advanced Payment Management", modulo:"TR", cursoSlug:"tr-advancedpaymentmanagement"},
+  {curso:"Treasury & Risk Management", modulo:"TR", cursoSlug:"tr-treasuryriskmanagement"},
+  {curso:"Treasury Process Improvements", modulo:"TR", cursoSlug:"tr-processimprovements"}
+];
+const JOURNEY_CASHAI = [
+  {curso:"Reviewing the Cash Reconciliation Process in SAP", modulo:"AR", cursoSlug:"ar-cashreconciliation"},
+  {curso:"Cash Reconciliation with AI", modulo:"AR", cursoSlug:"ar-cashreconciliationai"}
+];
+</script>
+<script src="assets/hub.js"></script>
 </body>
 </html>
