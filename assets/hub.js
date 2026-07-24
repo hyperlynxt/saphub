@@ -192,7 +192,7 @@ const TYPE_ORDER = ["T1","T2","T3","T4","T5"];
    in index.html. To add a course to a section, just add its cursoSlug to the array —
    no other changes needed. */
 const SECTION_COURSES = {
-  "newjoiner": ["r2r-recordtoreport","ap-payablesmanagement","ar-receivablemanagement","aa-assetaccountingprocesses"],
+  "newjoiner": ["r2r-recordtoreport","ap-payablesmanagement","ar-receivablemanagement","aa-assetaccountingprocesses","o2c-ordertocash","p2p-procuretopay","pp-plantoproduce","gl-financialpostingdocuments","gl-orgstructuremasterdata","gl-parallelaccountingdocsplitting"],
   "mgmtacct": ["co-costmanagementprofitabilityanalysis","co-managementaccountingprocesses","co-costestimateoptions"],
   "treasury": ["ar-cashreconciliation","ar-cashreconciliationai"]
 };
@@ -273,10 +273,17 @@ function renderMegaSections(){
       container.innerHTML = `<div class="empty-state"><div class="big">Todavía no hay cursos en esta sección</div>Sumalos en SECTION_COURSES, en hub.js.</div>`;
       return;
     }
-    const mega = list[0].megaCurso;
-    container.innerHTML = `
-      <div class="mega-label">${mega}</div>
-      <div class="course-subgrid">${list.map(courseCardHTML).join("")}</div>`;
+    const groups = [];
+    list.forEach(c=>{
+      const last = groups[groups.length-1];
+      if(last && last.mega===c.megaCurso) last.items.push(c);
+      else groups.push({ mega:c.megaCurso, items:[c] });
+    });
+    container.innerHTML = groups.map((g,i)=>`
+      <div${i<groups.length-1 ? ' style="margin-bottom:24px"' : ''}>
+        <div class="mega-label">${g.mega}</div>
+        <div class="course-subgrid">${g.items.map(courseCardHTML).join("")}</div>
+      </div>`).join("");
     container.querySelectorAll(".course-card").forEach(el=>{
       el.addEventListener("click", ()=> openCourseModal(el.dataset.slug));
     });
