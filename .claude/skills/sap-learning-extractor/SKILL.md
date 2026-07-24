@@ -13,11 +13,12 @@ Turns a public `learning.sap.com` course/unit into a single `.docx` with the ful
 
 ## Step 1 — Get the URL and figure out scope
 
-Teo will usually paste **one** lesson link. You do NOT need him to paste every lesson link — one page's sidebar contains the full list of lessons for that unit, and often the surrounding units of the same mega-course too.
+Teo will usually paste **one** lesson link. You do NOT need him to paste every lesson link — one page's sidebar contains the full list of units/lessons for that course, and often the surrounding courses of the same mega-course/journey too.
 
-- **Default scope: the whole unit** the given lesson belongs to (all lessons under the same bold sidebar group heading, e.g. "Describing Management Accounting in SAP S/4HANA"), including its quiz. Download it without asking — this is Teo's confirmed default.
-- If the link is to a mega-course landing page (not a specific lesson) spanning multiple units, or it's ambiguous which unit he means, ask before downloading everything.
-- If Teo explicitly asks for more than one unit or the whole mega-course, follow that instead.
+- **Default scope: the whole COURSE** the given lesson/unit belongs to — every unit under that course (every bold sidebar group heading that belongs to the same course, not just the one containing the pasted link), including each unit's quiz. Download it without asking — this is Teo's confirmed default.
+  - **Why per-course, not per-unit:** the source `.docx` is always one-per-course regardless of how the T1-T5 guides end up being generated from it (Modo Curso = one set of 5 types for the whole course, Modo Unidad = one set per unit) — that split happens later, downstream, in the T1-T5 pipeline, never in the source document. See `SISTEMA_DISENO_5_TIPOS.md` §5.1.
+- If the link is to a mega-course/journey landing page spanning **multiple courses**, or it's ambiguous which course he means, ask before downloading everything.
+- If Teo explicitly asks for just one unit, or for the whole mega-course/journey (multiple courses), follow that instead.
 
 ## Step 2 — Fetch and traverse
 
@@ -52,7 +53,7 @@ Always verify the render before delivering: convert to PDF and view a couple of 
 
 ## Step 5 — Naming and delivery
 
-- **Filename = the unit/course's own display title**, slugified to kebab-case, no prefix (e.g. `describing-management-accounting-in-sap-s-4hana.docx`). This is Teo's confirmed convention — it deliberately does NOT use the `t[N]-modulo-tema` naming from the T1-T5 pipeline, since this file is raw source material, not a typed guide.
+- **Filename = the course's own display title** (or the unit's, on the rare run where scope was explicitly just one unit), slugified to kebab-case, no prefix (e.g. `describing-management-accounting-in-sap-s-4hana.docx`). This is Teo's confirmed convention — it deliberately does NOT use the `t[N]-modulo-tema` naming from the T1-T5 pipeline, since this file is raw source material, not a typed guide.
 - Save to `/mnt/user-data/outputs/` and `present_files` it (or `SendUserFile` in Claude Code).
 - **Also copy the same file into `docs/sap-source/` in the repo**, `git add`/`commit`/`push` it there (commit message `"Agrego fuente SAP: {título del curso}"`). This is Teo's persistent knowledge base of source docs — it must not depend on him downloading the chat attachment or staying on his notebook. Do this even if he didn't ask this specific time; it's now the default for every run of this skill.
 - Mention briefly that it's ready to drop into the T1-T5 pipeline (`PROMPT_NUEVOS_CHATS.txt`) as the source `.docx` whenever he wants to start generating guides from it — don't start that pipeline unprompted.

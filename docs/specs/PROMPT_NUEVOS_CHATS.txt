@@ -120,6 +120,10 @@ En Modo Unidad:
   dentro de Treasury). No requiere cambio de esquema.
 - Combinable con Volumen 2 si hiciera falta: t1v2-...-u1.html.
 
+El .docx fuente NUNCA sigue este split — siempre es 1 por curso completo, sin importar si el
+curso se termina generando en Modo Curso o Modo Unidad. Eso ya es el default de la skill
+sap-learning-extractor.
+
 Ver detalle y motivo en SISTEMA_DISENO_5_TIPOS.md §5.1 (fuente de verdad).
 
 ============================================================

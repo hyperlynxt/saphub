@@ -110,6 +110,8 @@ Antes de arrancar T1 de un curso nuevo, el usuario decide explícitamente uno de
 
 **Motivo:** dentro de una misma librería, algunas "unidades" individuales duran y pesan en contenido tanto como un curso entero de otro journey — tratarlas igual (1 set de 5 tipos por curso completo, sin importar la densidad real) aplana la profundidad de forma pareja donde no corresponde.
 
+**El documento fuente (.docx) NO sigue este split — siempre es 1 por curso completo.** Modo Curso vs. Modo Unidad es una decisión que afecta solo la generación de los HTML T1-T5, nunca la extracción de la fuente. Aunque el curso termine generándose en Modo Unidad (varios sets de 5 tipos, uno por unidad), el `.docx` que los alimenta a todos sigue siendo uno solo, con el curso completo adentro — nunca un `.docx` separado por unidad. Esto ya está reflejado como default en la skill `sap-learning-extractor` (ver su SKILL.md, paso 1).
+
 **Indexación en `library.json` (sin cambio de esquema — ya soportado):**
 - Modo Curso: como siempre — `curso` = nombre del curso, `megaCurso` = journey/mega curso si aplica.
 - Modo Unidad: `curso` = nombre de la unidad específica, `megaCurso` = nombre del curso oficial que la contiene. Mismo patrón ya usado en la sección Treasury del hub (las 15 entradas de "Describing the Payables Management Process", cada unidad con su propio set de 5 tipos, agrupadas bajo el mismo `megaCurso`).
