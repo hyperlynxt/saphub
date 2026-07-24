@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Controlling Path — interlynkx</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,700&family=Source+Serif+4:wght@400&display=swap">
 <style>
 :root{
   --navy:#0A0F1C; --navy2:#121B33;
@@ -16,6 +16,14 @@
   --partial:#E3B341; --partial-dark:#8C6D1B; --partial-pale:rgba(227,179,65,0.16);
   --pending:#B9BEC9; --pending-dark:#5A6070; --pending-pale:rgba(185,190,201,0.18);
   --cert:#A78BC9; --cert-dark:#6B4C8F; --cert-pale:rgba(167,139,201,0.14);
+  --body:#3D4A5F;
+  --brand-violet:#A78BC9; --brand-violet-dark:#6B4C8F;
+
+  --t1:#7FBF8F; --t1-dark:#3D7A52;
+  --t2:#E08585; --t2-dark:#A94444;
+  --t3:#7FC4E0; --t3-dark:#2E7096;
+  --t4:#A78BC9; --t4-dark:#6B4C8F;
+  --t5:#E0A56F; --t5-dark:#A85F2B;
 }
 *{box-sizing:border-box;}
 html,body{width:100%;margin:0;padding:0;}
@@ -78,13 +86,16 @@ a.link-hover:hover{text-decoration:underline;}
 .journey-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
 .journey-head .jname{display:flex;align-items:center;gap:8px;min-width:0;}
 .journey-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:#fff;background:var(--navy2);width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.journey-num.complete{background:var(--done-dark);}
 .journey-head h4{font-family:'Syne',sans-serif;font-size:0.92rem;margin:0;line-height:1.3;min-width:0;}
 .journey-head h4 a{border-bottom:1px dashed var(--navy2);}
 .journey-head h4 a:hover{border-bottom-style:solid;}
-.journey-status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.journey-status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;border:none;font-family:inherit;}
 .journey-status.done{background:var(--done-pale);color:var(--done-dark);}
 .journey-status.partial{background:var(--partial-pale);color:var(--partial-dark);}
 .journey-status.pending{background:var(--pending-pale);color:var(--pending-dark);}
+.journey-status.types{cursor:pointer;}
+.journey-status.types:hover{filter:brightness(0.94);}
 .journey-sub{padding:8px 18px;font-size:11.5px;color:var(--muted);border-bottom:1px solid var(--border);background:#FAFBFC;}
 .journey-sub b{color:var(--ink);}
 
@@ -98,10 +109,12 @@ a.link-hover:hover{text-decoration:underline;}
 .course-name a:hover{border-bottom-style:solid;color:var(--navy2);}
 .course-name .note{font-weight:400;font-size:11px;}
 .course-meta{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);white-space:nowrap;margin-left:8px;}
-.course-badge{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;padding:2px 7px;border-radius:20px;margin-left:6px;white-space:nowrap;}
+.course-badge{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;padding:2px 7px;border-radius:20px;margin-left:6px;white-space:nowrap;border:none;font-family:inherit;}
 .course-badge.done{background:var(--done-pale);color:var(--done-dark);}
 .course-badge.partial{background:var(--partial-pale);color:var(--partial-dark);}
 .course-badge.pending{background:var(--pending-pale);color:var(--pending-dark);}
+.course-badge.clickable{cursor:pointer;}
+.course-badge.clickable:hover{filter:brightness(0.94);}
 .course-right{display:flex;align-items:center;flex-shrink:0;}
 .course.reused{border-style:dashed;background:#FCFCFA;}
 .reused-tag{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cert-dark);background:var(--cert-pale);border:1px dashed rgba(167,139,201,0.5);padding:2px 7px;border-radius:20px;margin-left:6px;white-space:nowrap;text-transform:uppercase;letter-spacing:0.3px;}
@@ -153,6 +166,44 @@ a.link-hover:hover{text-decoration:underline;}
     margin-right:auto;
   }
 }
+
+/* ---- POPUPS (mismo look que el modal de curso del index) ---- */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,15,12,0.55);backdrop-filter:blur(3px);z-index:100;align-items:center;justify-content:center;padding:24px;}
+.modal-overlay.open{display:flex;}
+.modal-card{background:var(--white);border-radius:18px;max-width:640px;width:100%;padding:36px 38px 30px;position:relative;box-shadow:0 24px 60px rgba(10,15,28,0.28);animation:modalIn .18s ease;}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(0.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+.modal-close{position:absolute;top:16px;right:18px;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:20px;line-height:1;cursor:pointer;}
+.modal-close:hover{background:var(--border);color:var(--ink);}
+.modal-pill{display:inline-block;font-family:'Inter',sans-serif;font-weight:600;font-size:11px;border:1.5px solid var(--brand-violet);color:var(--brand-violet-dark);border-radius:99px;padding:3px 11px;margin-bottom:14px;}
+.modal-title{font-family:'Fraunces',serif;font-weight:700;font-size:1.6rem;color:var(--ink);margin:0 0 12px;}
+.modal-desc{font-family:'Source Serif 4',serif;font-size:0.98rem;color:var(--body);line-height:1.6;margin:0 0 26px;}
+.modal-types{display:grid;grid-template-columns:repeat(5, 1fr);gap:12px;}
+.modal-type-tile{display:block;border:1px solid var(--border);border-top:3px solid var(--tint-dark, var(--done-dark));border-radius:12px;padding:14px 10px;text-align:center;transition:transform .15s ease, box-shadow .15s ease;}
+.modal-type-tile:not(.disabled):hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(10,15,28,0.1);}
+.modal-type-tile .icon{width:22px;height:22px;margin:0 auto 8px;color:var(--tint-dark, var(--done-dark));}
+.modal-type-tile .mt-code{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--tint-dark, var(--done-dark));}
+.modal-type-tile .mt-label{font-family:'Inter',sans-serif;font-weight:600;font-size:10.5px;color:var(--ink);margin-top:3px;line-height:1.25;}
+.modal-type-tile.disabled{opacity:0.4;border-top-color:var(--border);cursor:not-allowed;}
+.modal-type-tile.disabled .icon,.modal-type-tile.disabled .mt-code{color:var(--muted);}
+.modal-type-tile .mt-soon{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--muted);margin-top:4px;text-transform:uppercase;}
+
+/* journey popup: lista de cursos, cada uno con su fila mini de 5 tipos */
+.jmodal-list{max-height:56vh;overflow-y:auto;padding-right:4px;margin-top:4px;}
+.jmodal-course{padding:14px 0;border-bottom:1px solid var(--border);}
+.jmodal-course:last-child{border-bottom:none;padding-bottom:0;}
+.jmodal-course:first-child{padding-top:0;}
+.jmodal-course-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.jmodal-course-head h4{font-family:'Syne',sans-serif;font-size:0.95rem;margin:0;color:var(--ink);flex:1;min-width:0;}
+.jmodal-pending{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:var(--pending-dark);background:var(--pending-pale);padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.course-pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;border:1.5px solid var(--brand-violet);color:var(--brand-violet-dark);border-radius:6px;padding:2px 7px;white-space:nowrap;}
+.modal-types.mini{gap:6px;}
+.modal-type-tile.mini{padding:6px 4px;border-top-width:2px;}
+.modal-type-tile.mini .mt-code{font-size:9px;}
+
+@media(max-width:640px){
+  .modal-types{grid-template-columns:repeat(2, 1fr);}
+  .modal-card{padding:28px 22px 24px;}
+}
 </style>
 </head>
 <body>
@@ -162,7 +213,7 @@ a.link-hover:hover{text-decoration:underline;}
     <div class="hero-inner">
       <div class="eyebrow">SAP S/4HANA · Controlling / Management Accounting</div>
       <h1>Controlling <span>Path</span></h1>
-      <p>Las 6 learning journeys oficiales de SAP relevadas, con su cadena real de prerequisitos, cada curso y sus unidades, y el estado de avance actual en tu biblioteca T1-T9. Todos los nombres de curso y journey son links directos a learning.sap.com.</p>
+      <p>Las 6 learning journeys oficiales de SAP relevadas, con su cadena real de prerequisitos, cada curso y sus unidades, y el estado de avance actual en tu biblioteca T1-T5. Todos los nombres de curso y journey son links directos a learning.sap.com. Los badges violeta ("N types") abren el mismo pop up de tipos que en el índice.</p>
     </div>
   </div>
 
@@ -191,7 +242,7 @@ a.link-hover:hover{text-decoration:underline;}
       <div class="tag">Raíz · curso base de todo el árbol</div>
       <h3><a class="link-hover" href="https://learning.sap.com/courses/outlining-cost-management-and-profitability-analysis" target="_blank" rel="noopener">Outlining Cost Management and Profitability Analysis</a></h3>
       <div class="meta">3 unidades · 2h 29min · prerequisito de 6 cursos/journeys distintos</div>
-      <div style="margin-top:8px"><span class="chip done"><span class="dot done"></span>Hecho — T1-T6 en tu librería</span></div>
+      <div style="margin-top:8px"><span class="journey-status done types" role="button" tabindex="0" onclick="openCourseModal('co-costmanagementprofitabilityanalysis')">5 types</span></div>
     </div>
 
     <div class="trunk"></div>
@@ -205,22 +256,25 @@ a.link-hover:hover{text-decoration:underline;}
         <div class="journey">
           <div class="journey-head">
             <div class="jname"><span class="journey-num">2</span><h4><a class="link-hover" href="https://learning.sap.com/learning-journeys/performing-overhead-cost-controlling" target="_blank" rel="noopener">Performing Overhead Cost Controlling</a></h4></div>
-            <span class="journey-status done">Hecho</span>
+            <span class="journey-status partial types" role="button" tabindex="0" onclick="openJourneyModal('CO','Performing Overhead Cost Controlling', JOURNEY_OVERHEAD)">5 types</span>
           </div>
-          <div class="journey-sub">Journey · <b>2 pilares:</b> Cost Center Accounting + Project Controlling · 3 cursos · ~10h totales</div>
+          <div class="journey-sub">Journey · <b>2 pilares oficiales:</b> Cost Center Accounting + Project Controlling · 3 cursos · ~10h totales</div>
           <div class="courses">
-            <div class="course done">
+            <div class="course pending">
               <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/overhead-cost-controlling-basics" target="_blank" rel="noopener">Overhead Cost Controlling basics</a></div>
-              <div class="course-right"><span class="course-meta">1 unidad · 1h 8min</span><span class="course-badge done">Hecho</span></div>
-            </div>
-            <div class="course partial">
-              <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/explaining-cost-center-accounting" target="_blank" rel="noopener">Explaining Cost Center Accounting</a></div>
-              <div class="course-right"><span class="course-meta">6 unidades · 4h 51min</span><span class="course-badge partial">T5 pend.</span></div>
+              <div class="course-right"><span class="course-meta">1 unidad · 1h 8min</span><span class="course-badge pending">Pend.</span></div>
             </div>
             <div class="course done">
-              <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/explaining-project-controlling" target="_blank" rel="noopener">Explaining Project Controlling</a></div>
-              <div class="course-right"><span class="course-meta">6 unidades · ~4h 8min</span><span class="course-badge done">Hecho</span></div>
+              <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/explaining-cost-center-accounting" target="_blank" rel="noopener">Explaining Cost Center Accounting</a></div>
+              <div class="course-right"><span class="course-meta">6 unidades · 4h 51min</span><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('co-managementaccountingprocesses')">5 types</span></div>
             </div>
+            <div class="course pending">
+              <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/explaining-project-controlling" target="_blank" rel="noopener">Explaining Project Controlling</a></div>
+              <div class="course-right"><span class="course-meta">6 unidades · ~4h 8min</span><span class="course-badge pending">Pend.</span></div>
+            </div>
+          </div>
+          <div class="reused-note">
+            Al cruzar esto contra tu librería real, sólo <b>Explaining Cost Center Accounting</b> tiene un set T1-T5 propio (<code>co-managementaccountingprocesses</code>, cubre cost center, overhead, activity type y distribución). "Overhead Cost Controlling basics" y "Explaining Project Controlling" no tienen archivos todavía — antes figuraban como "Hecho" por error, ya corregido.
           </div>
         </div>
 
@@ -229,18 +283,21 @@ a.link-hover:hover{text-decoration:underline;}
         <div class="journey">
           <div class="journey-head">
             <div class="jname"><span class="journey-num">3</span><h4><a class="link-hover" href="https://learning.sap.com/learning-journeys/introducing-product-cost-planning-and-production-accounting" target="_blank" rel="noopener">Introducing Product Cost Planning and Production Accounting</a></h4></div>
-            <span class="journey-status pending">Pendiente</span>
+            <span class="journey-status partial types" role="button" tabindex="0" onclick="openJourneyModal('CO','Introducing Product Cost Planning and Production Accounting', JOURNEY_PRODCOST)">5 types</span>
           </div>
           <div class="journey-sub">Journey · 2 cursos · ~5h 50min totales</div>
           <div class="courses">
-            <div class="course pending">
+            <div class="course done">
               <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/outlining-cost-estimate-options-in-product-cost-planning" target="_blank" rel="noopener">Outlining Cost Estimate Options in Product Cost Planning</a></div>
-              <div class="course-right"><span class="course-meta">5 u · 3h 35min</span><span class="course-badge pending">Pend.</span></div>
+              <div class="course-right"><span class="course-meta">5 u · 3h 35min</span><span class="course-badge done clickable" role="button" tabindex="0" onclick="openCourseModal('co-costestimateoptions')">5 types</span></div>
             </div>
             <div class="course pending">
               <div class="course-name"><a class="link-hover" href="https://learning.sap.com/courses/explaining-scenarios-in-production-accounting" target="_blank" rel="noopener">Explaining Scenarios in Production Accounting</a></div>
               <div class="course-right"><span class="course-meta">3 u · 2h 15min</span><span class="course-badge pending">Pend.</span></div>
             </div>
+          </div>
+          <div class="reused-note">
+            Este journey figuraba entero como "Pendiente", pero <b>Outlining Cost Estimate Options in Product Cost Planning</b> ya tiene su set T1-T5 completo (<code>co-costestimateoptions</code>), sumado después de que se armó este mapa. Falta sólo "Explaining Scenarios in Production Accounting".
           </div>
         </div>
 
@@ -348,14 +405,46 @@ a.link-hover:hover{text-decoration:underline;}
     <div class="summary">
       <h3>Resumen general del árbol</h3>
       <div class="stat-grid">
-        <div class="stat done-stat"><div class="num">1</div><div class="lbl">curso raíz — 100% hecho</div></div>
-        <div class="stat done-stat"><div class="num">3/3</div><div class="lbl">cursos de Journey 2 — hechos (T5 de uno pendiente)</div></div>
-        <div class="stat pending-stat"><div class="num">13</div><div class="lbl">cursos únicos pendientes (J3, J4, J5, J6)</div></div>
-        <div class="stat pending-stat"><div class="num">~130h</div><div class="lbl">de contenido pendiente en total</div></div>
+        <div class="stat done-stat"><div class="num">1/1</div><div class="lbl">curso raíz — 100% hecho</div></div>
+        <div class="stat done-stat"><div class="num">1/3</div><div class="lbl">cursos de Journey 2 — hecho (Cost Center Accounting)</div></div>
+        <div class="stat done-stat"><div class="num">1/2</div><div class="lbl">cursos de Journey 3 — hecho (Cost Estimate Options)</div></div>
+        <div class="stat pending-stat"><div class="num">14 · ~132h</div><div class="lbl">cursos únicos pendientes (J2, J3, J4, J5, J6)</div></div>
       </div>
     </div>
   </div>
   <div class="footer-space"></div>
 </div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close" aria-label="Cerrar">×</button>
+    <span class="modal-pill" id="modal-pill"></span>
+    <h3 class="modal-title" id="modal-title"></h3>
+    <p class="modal-desc" id="modal-desc"></p>
+    <div class="modal-types" id="modal-types"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="jmodal-overlay">
+  <div class="modal-card">
+    <button class="modal-close" id="jmodal-close" aria-label="Cerrar">×</button>
+    <span class="modal-pill" id="jmodal-pill"></span>
+    <h3 class="modal-title" id="jmodal-title"></h3>
+    <div class="jmodal-list" id="jmodal-list"></div>
+  </div>
+</div>
+
+<script>
+const JOURNEY_OVERHEAD = [
+  {curso:"Overhead Cost Controlling basics", modulo:"CO", cursoSlug:null},
+  {curso:"Explaining Cost Center Accounting", modulo:"CO", cursoSlug:"co-managementaccountingprocesses"},
+  {curso:"Explaining Project Controlling", modulo:"CO", cursoSlug:null}
+];
+const JOURNEY_PRODCOST = [
+  {curso:"Outlining Cost Estimate Options in Product Cost Planning", modulo:"CO", cursoSlug:"co-costestimateoptions"},
+  {curso:"Explaining Scenarios in Production Accounting", modulo:"CO", cursoSlug:null}
+];
+</script>
+<script src="assets/hub.js"></script>
 </body>
 </html>
