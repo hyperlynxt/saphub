@@ -97,7 +97,24 @@ Aplica a los 5 tipos por igual (con el color de accent correspondiente al tipo):
 - **T1, T2, T3, T4:** 10 secciones/diagramas cada uno como default.
   - En T3 y T4, cada sección cuenta como 1 aunque tenga 2 sub-partes (ver §10) — la sección es más larga en superficie visual pero sigue contando como una unidad de las 10.
 - **T5:** ~8 secciones, sin glosario.
-- **Cursos muy largos (8+ horas de contenido):** no se resuelve con un sistema adaptativo de longitud. El usuario divide el documento fuente en partes/documentos separados y cada parte se trata como curso independiente con su propio set de 5 tipos.
+- **Cursos muy largos (8+ horas de contenido):** no se resuelve con un sistema adaptativo de longitud — se resuelve con Modo Unidad, ver §5.1.
+
+---
+
+## 5.1 Modo Curso vs. Modo Unidad (decisión manual, por curso)
+
+Antes de arrancar T1 de un curso nuevo, el usuario decide explícitamente uno de los dos modos. **Decisión 100% manual — sin heurística automática de duración que la dispare.** El usuario la indica al arrancar el chat del curso (ej. "esto lo hacemos por unidad" o, si no dice nada, se asume Modo Curso).
+
+- **Modo Curso (default):** 1 set de 5 tipos para el curso completo, sin importar cuántas unidades oficiales tenga.
+- **Modo Unidad:** 1 set de 5 tipos por cada unidad oficial del curso — o por un subconjunto: puede ser mixto, con 2 unidades chicas compartiendo un set y una unidad particularmente densa yendo sola. El usuario define el corte caso por caso.
+
+**Motivo:** dentro de una misma librería, algunas "unidades" individuales duran y pesan en contenido tanto como un curso entero de otro journey — tratarlas igual (1 set de 5 tipos por curso completo, sin importar la densidad real) aplana la profundidad de forma pareja donde no corresponde.
+
+**Indexación en `library.json` (sin cambio de esquema — ya soportado):**
+- Modo Curso: como siempre — `curso` = nombre del curso, `megaCurso` = journey/mega curso si aplica.
+- Modo Unidad: `curso` = nombre de la unidad específica, `megaCurso` = nombre del curso oficial que la contiene. Mismo patrón ya usado en la sección Treasury del hub (las 15 entradas de "Describing the Payables Management Process", cada unidad con su propio set de 5 tipos, agrupadas bajo el mismo `megaCurso`).
+
+**Naming de archivo en Modo Unidad:** sufijo de unidad pegado al nombre del cursoSlug, antes de la extensión: `t[N]-[modulo]-[nombretema]-u[X].html`. Ejemplo: `t1-co-costmanagementprofitabilityanalysis-u1.html`, `t1-co-costmanagementprofitabilityanalysis-u2.html`. Es una dimensión distinta del sufijo de Volumen (`t1v2-...`, ver §17) y pueden combinarse si hiciera falta: `t1v2-co-costmanagementprofitabilityanalysis-u1.html`.
 
 ---
 
@@ -321,7 +338,6 @@ Formato: `t[N]-[modulo]-[nombretema].html`
 - Página hub (Sublearning o nombre similar con S.A.P.) — postergada hasta tener los 5 tipos completamente validados con al menos los cursos ya hechos.
 - Responsive mobile — se diseña desktop-first por ahora; mobile se resuelve cuando se aborde el hub.
 - Gap analysis de módulos SAP faltantes en el corpus — después de tener la biblioteca construida bajo este sistema.
-- Cursos largos (8+ horas) — se resuelven dividiendo el documento fuente en partes/cursos independientes, no con un sistema de longitud adaptativa.
 - Hex de color definitivos — **los 5 tipos validados** (ver tabla de §2.1), más la paleta de categorías de §2.2, común a los 5 tipos. Un curso nuevo reusa estos mismos valores sin redefinir.
 - Confirmado en la práctica: T2 mantiene el mismo criterio "rol sin nombre propio" que T1 (se aplicó sin inconvenientes al generar T2 de R2R).
 

@@ -98,8 +98,29 @@ El módulo SAP (AR/AP/AA/etc.) NUNCA se representa con color — solo con pills 
 - T5 → ~8 secciones, sin glosario.
 - En T3/T4, una sección con doble sub-parte (Cómo llegaste + Pantalla) sigue contando como 1 sola
   de las 10, aunque ocupe el doble de espacio visual.
-- Cursos de 8+ horas de contenido: NO usar longitud adaptativa. Avisar al usuario que conviene
-  dividir el .docx fuente en partes/cursos independientes, cada uno con su propio set de 5 tipos.
+- Cursos de 8+ horas de contenido: NO usar longitud adaptativa. Resolver con Modo Unidad (§7.1).
+
+============================================================
+7.1 MODO CURSO vs. MODO UNIDAD
+============================================================
+Antes de generar T1 de un curso nuevo, confirmar con el usuario qué modo aplica. Decisión 100%
+manual — el asistente NUNCA sugiere ni dispara el modo por duración/densidad, solo pregunta si
+el usuario no lo indicó ya. Default si no se aclara: Modo Curso.
+
+- MODO CURSO (default): 1 set de 5 tipos para el curso entero.
+- MODO UNIDAD: 1 set de 5 tipos por cada unidad oficial del curso (o por un subconjunto — puede
+  ser mixto, con 2 unidades chicas compartiendo un set y una unidad densa yendo sola). El usuario
+  define el corte.
+
+En Modo Unidad:
+- Naming: sufijo -u[X] pegado al nombre, antes de la extensión →
+  t1-co-costmanagementprofitabilityanalysis-u1.html
+- Indexación en library.json: "curso" = nombre de la unidad, "megaCurso" = nombre del curso
+  oficial que la contiene (mismo patrón ya usado en las 15 entradas de Payables Management
+  dentro de Treasury). No requiere cambio de esquema.
+- Combinable con Volumen 2 si hiciera falta: t1v2-...-u1.html.
+
+Ver detalle y motivo en SISTEMA_DISENO_5_TIPOS.md §5.1 (fuente de verdad).
 
 ============================================================
 8. REGLAS POR TIPO
