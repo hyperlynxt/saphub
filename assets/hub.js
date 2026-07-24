@@ -194,7 +194,7 @@ const TYPE_ORDER = ["T1","T2","T3","T4","T5"];
 const SECTION_COURSES = {
   "newjoiner": ["r2r-recordtoreport","ap-payablesmanagement","ar-receivablemanagement","aa-assetaccountingprocesses","o2c-ordertocash","p2p-procuretopay","pp-plantoproduce","gl-financialpostingdocuments","gl-orgstructuremasterdata","gl-parallelaccountingdocsplitting"],
   "mgmtacct": ["co-costmanagementprofitabilityanalysis","co-managementaccountingprocesses","co-costestimateoptions"],
-  "treasury": ["ap-balanceconfirmations","ap-closingactivities","ap-foreigncurrencyvaluation","ap-grirreconciliation","ap-holdpark","ap-kpis","ap-manageitems","ap-postinglogic","ap-procuretopay","ap-regrouping","ap-streamlining","ap-supplierkeyelements","ap-suppliermasterdata","ap-manualpaymentsprocessing","ap-supplierpaymentsmonitoring","ar-rulebasedclearing","ar-manualclearingfunctionality","ar-bankstatementuploadoptions","ar-cashreconciliationfunctionality","tr-treasurymanagement","tr-cashmanagementbenefits","tr-advancedpaymentmanagement","tr-treasuryriskmanagement","tr-processimprovements","ar-cashreconciliation","ar-cashreconciliationai"]
+  "treasury": ["ar-cashreconciliation","ar-cashreconciliationai"]
 };
 
 let DATA = [];
